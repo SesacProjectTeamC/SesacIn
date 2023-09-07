@@ -1,29 +1,52 @@
-"use strict";
+'use strict';
 
-// sequelize 모듈 호출
-const Sequelize = require("sequelize");
+// 시퀄라이즈 모듈 호출
+const Sequelize = require('sequelize');
 
-// config.json파일을 불러와서 development 환경의 db설정 적용
-// config: db접근 가능한 설정 값 저장
-const config = require(__dirname + "/../config/config.json")["development"];
-
-// 빈 db객체 생성
+// config.json 파일을 불러와서 환경설정
+const env = 'development';
+const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
-// Sequelize 객체 생성해서 sequelize 변수에 저장
-const sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
+// config를 이용해서 시퀄라이즈 객체 설정 및 생성
+let sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config
 );
 
-// db = {sequelize: sequelize, Sequelize: Sequelize}
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+const User = require('./User')(sequelize, Sequelize);
+const Answer = require('./Answer')(sequelize, Sequelize);
+const Board = require('./Board')(sequelize, Sequelize);
+const Comment = require('./Comment')(sequelize, Sequelize);
+const Question = require('./Question')(sequelize, Sequelize);
 
-//  !! models/ 폴더에 정의되는 model(테이블)은 db 객체에 저장
-// db.Visitor = require("./Visitor")(sequelize, Sequelize);
+User.hasMany(Question, { foreignKey: 'uid', onDelete: 'CASCADE' });
+Question.belongsTo(User, { foreignKey: 'uid', onDelete: 'CASCADE' });
+// 한명의 유저는 여러개의 답변 가능 / 답변 올린 유저 존재
+User.hasMany(Answer, { foreignKey: 'uid', onDelete: 'CASCADE' });
+Answer.belongsTo(User, { foreignKey: 'uid', onDelete: 'CASCADE' });
+// 하나의 질문에는 여러개의 답변 가능 / 답변은 질문에 속해있음
+Question.hasMany(Answer, { foreignKey: 'qid', onDelete: 'CASCADE' });
+Answer.belongsTo(Question, { foreignKey: 'qid', onDelete: 'CASCADE' });
+// 한명의 유저는 여러개 게시글 업로드 가능 / 게시글 올린 사람 존재
+User.hasMany(Board, { foreignKey: 'uid', onDelete: 'CASCADE' });
+Board.belongsTo(User, { foreignKey: 'uid', onDelete: 'CASCADE' });
+// 한명의 유저는 여러개의 댓글 가능 / 댓글 올린 유저 존재
+User.hasMany(Comment, { foreignKey: 'uid', onDelete: 'CASCADE' });
+Comment.belongsTo(User, { foreignKey: 'uid', onDelete: 'CASCADE' });
+// 하나의 게시글에는 여러개의 댓글 가능 / 댓글은 게시글에 속해있음
+Board.hasMany(Comment, { foreignKey: 'bid', onDelete: 'CASCADE' });
+Comment.belongsTo(Board, { foreignKey: 'bid', onDelete: 'CASCADE' });
 
-// db 객체 내보냄 (모듈화 내보냄. 다른 곳에서 db 객체 사용 가능)
+db.sequelize = sequelize; // DB연결정보를 가진 시퀄라이저
+db.Sequelize = Sequelize; // 시퀄라이저 모듈
+
+db.User = User;
+db.Answer = Answer;
+db.Board = Board;
+db.Comment = Comment;
+db.Question = Question;
+
 module.exports = db;
