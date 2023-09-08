@@ -1,0 +1,36 @@
+.carousel-inner > .carousel-item > img {
+  height: 380px;
+}
+
+header {
+  display: flex;
+  padding-right: 48px;
+  padding-left: 48px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+a {
+  text-decoration-line: none;
+  color: black;
+  font-weight: 700;
+}
+
+menu {
+  display: flex;
+  font-weight: 700;
+  font-size: 38px;
+  margin-left: 64px;
+}
+
+.menu {
+  cursor: pointer;
+  color: lightgray;
+  margin-right: 16px;
+}
+
+.activeM {
+  color: black;
+}
