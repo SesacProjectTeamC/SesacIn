@@ -1,0 +1,29 @@
+@server = http://localhost:8000
+@qId = 1
+
+
+###; '전체' 질문 조회
+# GET http://localhost:8000/questions
+GET {{server}}/questions
+
+###; '특정' 질문 조회
+# GET http://localhost:8000/question/1
+GET {{server}}/question/{{qId}}
+
+###; 질문 추가
+POST {{server}}/question
+# 인코딩
+Content-Type: application/json; charset=utf-8
+
+# body 쓸 때는 한 줄 띄어줘야 함
+{
+   "qId" : 1,
+    "title": "제목",
+    "content": "내용",
+    "viewCount": 1,
+    "likeCount": 1,
+    "type": "프론트"
+}
+
+###; 특정 선수 삭제
+DELETE {{server}}/questions/{{qId}}

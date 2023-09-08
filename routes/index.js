@@ -1,9 +1,11 @@
 // (시작) module
 // 경로 선언과 관련된 내용 기술
-const express = require('express');
-const Cpage = require('../controller/Cpage');
+const express = require("express");
+const Cpage = require("../controller/Cpage");
+const Cquestion = require("../controller/Cquestion");
 const router = express.Router();
 
+router.get("/", Cpage.main);
 /**
  * @swagger
  * /:
@@ -16,6 +18,20 @@ const router = express.Router();
  *       500:
  *         description: 서버 에러
  */
-router.get('/', Cpage.main);
+
+// 전체 질문 조회
+router.get("/questions", Cquestion.getQuestions);
+
+// 특정 질문 조회
+router.get("/question/:qId", Cquestion.getQuestion);
+
+// 질문 추가
+router.post("/question", Cquestion.postQuestion);
+
+// 특정 질문 내용 수정
+router.patch("/questions/:qId/question", Cquestion.patchQuestion);
+
+// 특정 질문 삭제
+router.delete("/questions/:qId", Cquestion.deleteQuestion);
 
 module.exports = router;
