@@ -4,7 +4,7 @@ const User = (Sequelize, DataTypes) => {
   const User = Sequelize.define(
     'User',
     {
-      uid: {
+      uId: {
         // id INT NOT NULL PRIMARY KEY auto_increment,
         type: DataTypes.STRING(50),
         allowNull: false,
@@ -15,7 +15,7 @@ const User = (Sequelize, DataTypes) => {
         type: DataTypes.STRING(50),
         allowNull: false,
       },
-      uname: {
+      uName: {
         // name VARCHAR(10) NOT NULL,
         type: DataTypes.STRING(50),
         allowNull: false,
@@ -25,7 +25,7 @@ const User = (Sequelize, DataTypes) => {
         type: DataTypes.STRING(50),
         allowNull: false,
       },
-      is_sesac: {
+      isSesac: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
