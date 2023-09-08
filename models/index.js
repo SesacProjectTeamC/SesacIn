@@ -40,6 +40,10 @@ Comment.belongsTo(User, { foreignKey: 'uId', onDelete: 'CASCADE' });
 Board.hasMany(Comment, { foreignKey: 'bId', onDelete: 'CASCADE' });
 Comment.belongsTo(Board, { foreignKey: 'bId', onDelete: 'CASCADE' });
 
+// 하나의 게시글에는 여러개의 댓글 가능 / 댓글은 게시글에 속해있음
+Answer.hasMany(Comment, { foreignKey: 'aId', onDelete: 'CASCADE' });
+Comment.belongsTo(Answer, { foreignKey: 'aId', onDelete: 'CASCADE' });
+
 db.sequelize = sequelize; // DB연결정보를 가진 시퀄라이저
 db.Sequelize = Sequelize; // 시퀄라이저 모듈
 
