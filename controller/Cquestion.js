@@ -29,17 +29,7 @@ exports.getQuestion = async (req, res) => {
 // 질문 올리기
 exports.postQuestion = async (req, res) => {
   try {
-    const {
-      qId,
-      title,
-      content,
-      viewCount,
-      likeCount,
-      type,
-      createdAt,
-      updatedAt,
-      uId,
-    } = req.body;
+    const { qId, title, content, viewCount, likeCount, type, uId } = req.body;
     const newQuestion = await Question.create({
       qId,
       title,
@@ -47,8 +37,6 @@ exports.postQuestion = async (req, res) => {
       viewCount,
       likeCount,
       type,
-      createdAt,
-      updatedAt,
       uId,
     });
     res.send(newQuestion);
