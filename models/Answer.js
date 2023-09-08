@@ -6,7 +6,7 @@ const Answer = (Sequelize, DataTypes) => {
   const Answer = Sequelize.define(
     'Answer',
     {
-      aid: {
+      aId: {
         // id INT NOT NULL PRIMARY KEY auto_increment,
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -17,7 +17,7 @@ const Answer = (Sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
-      like_count: {
+      likeCount: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,

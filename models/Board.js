@@ -4,7 +4,7 @@ const Board = (Sequelize, DataTypes) => {
   const Board = Sequelize.define(
     'Board',
     {
-      bid: {
+      bId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
@@ -18,12 +18,12 @@ const Board = (Sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
-      view_count: {
+      viewCount: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
         allowNull: false,
       },
-      like_count: {
+      likeCount: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
         allowNull: false,

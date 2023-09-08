@@ -4,7 +4,7 @@ const Question = (Sequelize, DataTypes) => {
   const Question = Sequelize.define(
     'Question',
     {
-      qid: {
+      qId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
@@ -18,12 +18,12 @@ const Question = (Sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
-      view_count: {
+      viewCount: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
       },
-      like_count: {
+      likeCount: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,

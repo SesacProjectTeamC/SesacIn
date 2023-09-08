@@ -4,7 +4,7 @@ const Comment = (Sequelize, DataTypes) => {
   const Comment = Sequelize.define(
     'Comment',
     {
-      cid: {
+      cId: {
         // id INT NOT NULL PRIMARY KEY auto_increment,
         type: DataTypes.INTEGER,
         allowNull: false,
