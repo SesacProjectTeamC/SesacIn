@@ -1,6 +1,7 @@
 const { Board } = require('../models/index');
 const { Op } = require('sequelize');
 
+// 게시글 전체 조회
 exports.getBoardList = async (req, res) => {
   try {
     const BoardList = await Board.findAll();
@@ -11,6 +12,7 @@ exports.getBoardList = async (req, res) => {
   }
 };
 
+// 게시글 개별 조회
 exports.getBoard = async (req, res) => {
   try {
     const { bId } = req.params;
