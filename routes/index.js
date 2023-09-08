@@ -6,6 +6,7 @@ const Cquestion = require("../controller/Cquestion");
 const router = express.Router();
 
 router.get("/", Cpage.main);
+router.get("/login",Cpage.login);
 /**
  * @swagger
  * /:
