@@ -8,6 +8,8 @@ const Cuser = require('../controller/Cuser');
 // 메인 페이지 관련
 router.get('/', Cmain.main);
 
+router.get('/join', Cuser.getJoin);
+
 // 로그인 페이지 렌더링
 router.get('/login', Cuser.login);
 

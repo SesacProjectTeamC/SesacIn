@@ -2,8 +2,14 @@ const { User } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 
+// 회원가입 창 렌더링
+exports.getJoin = (req, res) => {
+  res.render('jointest');
+};
+
 // 회원 가입 시 사용자 생성
 exports.postUser = async (req, res) => {
+  console.log(req.body)
   try {
     let { uId, pw, uName, email, isSesac, campus } = req.body;
     // db에 넣기전 pw 암호화
