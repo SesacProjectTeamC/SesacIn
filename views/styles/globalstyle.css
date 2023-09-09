@@ -1,11 +1,7 @@
 * {
-  font-family: "Spoqa Han Sans", "Spoqa Han Sans JP", "Sans-serif";
-  box-sizing: border-box;
- 
+  font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', 'Sans-serif';
 }
 :root {
-  --main-color : #DDECCA;
-  --border-color : #B7B763;
-  --hover-color :rgb(220, 219, 219);
-  --hover-color2: rgb(118, 118, 118);
+  --main-color: #ddecca;
+  --border-color: #b7b763;
 }
