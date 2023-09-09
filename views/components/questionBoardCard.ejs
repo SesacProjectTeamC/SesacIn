@@ -43,6 +43,12 @@
         flex-wrap: wrap;
         overflow: auto;
     }
+    .ques {
+        margin-right: 5px;
+        font-size: 24px;
+        font-weight: bold;
+        color: lightpink;
+    }
     .like {
         display: flex;
         flex-direction: row;
@@ -57,7 +63,10 @@
 <a href="/board/<%= data.id%>">
     <div id="cardContainer">
         <type> <%= data.type%> | <%= data.time%> </type>
-        <div class="title"><%= data.title%></div>
+        <div class="title">
+            <div class="ques">Q.</div>
+            <%= data.title%>
+        </div>
         <content><%= data.content%></content>
         <hr />
         <user>
