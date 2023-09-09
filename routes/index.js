@@ -2,51 +2,46 @@
 // 경로 선언과 관련된 내용 기술
 const express = require('express');
 const router = express.Router();
-const Cpage = require('../controller/Cpage');
-const Cquestion = require('../controller/Cquestion');
-const Cboard = require('../controller/Cboard');
+const Cmain = require('../controller/Cmain');
+const Cuser = require('../controller/Cuser');
 
+// 메인 페이지 관련
+router.get('/', Cmain.main);
 
-router.get("/", Cpage.main);
-router.get("/login",Cpage.login);
+// 로그인 페이지 렌더링
+router.get('/login', Cuser.login);
 
+// 유저 관련
 /**
  * @swagger
- * /:
- *   get:
- *     summary: 첫 페이지 보여주기
- *     description: 첫 페이지를 보여주는 기능입니다.
- *     responses:
- *       200:
- *         description: 성공적으로 사용자 목록을 가져왔을 때 응답
- *       500:
- *         description: 서버 에러
+ * tags:
+ *   name: User
+ *   description: 사용자 관리
  */
-
-const controller = require('../controller/Cuser');
 
 /**
  * @swagger
  * /users:
  *   post:
- *     summary: 회원 가입 관련 api
- *     description: post /user 요청이 오면 선수 추가
+ *     summary: 회원 가입
+ *     tags: [User]
+ *     description: 회원 가입 처리
  *     responses:
  *       200:
  *         description: 성공적으로 사용자 추가되었을 때 응답
  *       500:
  *         description: 서버 에러
  */
-
 // 회원 가입 관련 api
 // post /user 요청이 오면 선수 추가
-router.post('/users', controller.postUser);
+router.post('/users', Cuser.postUser);
 
 /**
  * @swagger
  * /users/{uId}:
  *   get:
  *     summary: 특정 플레이어 데이터 가져오기
+ *     tags: [User]
  *     description: 특정 플레이어의 데이터를 가져옵니다.
  *     parameters:
  *       - in: path
@@ -63,13 +58,14 @@ router.post('/users', controller.postUser);
  *       500:
  *         description: 서버 에러
  */
-router.get('/users/:uId', controller.getUser);
+router.get('/users/:uId', Cuser.getUser);
 
 /**
  * @swagger
  * /users/{uId}/patch:
  *   patch:
  *     summary: 회원 정보 수정
+ *     tags: [User]
  *     description: 비밀번호, 이름을 수정하여 사용자 정보를 업데이트합니다.
  *     parameters:
  *       - in: path
@@ -99,74 +95,70 @@ router.get('/users/:uId', controller.getUser);
  *       500:
  *         description: 서버 에러
  */
-router.patch('/users/:uId/userinfo', controller.patchUser);
+router.patch('/users/:uId/userinfo', Cuser.patchUser);
 
 // 회원 탈퇴시 정보 삭제
-router.delete('/users/:uId', controller.deleteUser);
+router.delete('/users/:uId', Cuser.deleteUser);
 
+// 로그인 처리
 /**
  * @swagger
- * /:
- *   get:
- *     summary: 전체 질문 데이터 가져오기
- *     description: question 테이블의 모든 행을 가져온다.
+ * /login:
+ *   post:
+ *     summary: 사용자 로그인
+ *     description: 로그인 처리 진행
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               uId:
+ *                 type: string
+ *                 description: 사용자 아이디
+ *               pw:
+ *                 type: string
+ *                 description: 비밀번호
  *     responses:
- *       200:
- *         description: 성공적으로 전체 질문 리스트를 가져왔을 때 응답
- *       500:
- *         description: 서버 에러
- */
-
-// 메인 페이지 req.body.type의 값 === 'question' (default)
-// 전체 질문 조회
-router.get('/', Cquestion.getQuestions);
-
-// 메인 페이지 req.body.type의 값 === 'board'일 경우,
-// 전체 자유게시글 조회
-
-/**
- * @swagger
- * /board/list:
- *   get:
- *     summary: 전체 게시글 데이터 가져오기
- *     description: board 테이블의 모든 행을 가져온다.
- *     responses:
- *       200:
- *         description: 성공적으로 전체 게시글을 가져왔을 때 응답
- *       500:
- *         description: 서버 에러
- */
-router.get('/board/list', Cboard.getBoardList);
-
-/**
- * @swagger
- * /board/{bId}:
- *   get:
- *     summary: 특정 게시글 데이터 가져오기
- *     description: 특정 게시글의 데이터를 가져옵니다.
- *     parameters:
- *       - in: path
- *         name: bId
- *         required: true
- *         schema:
- *           type: integer
- *         description: 게시글의 고유 ID
- *     responses:
- *       200:
- *         description: 성공적으로 데이터를 가져온 경우
+ *       '200':
+ *         description: 로그인 성공
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 bId:
- *                   type: integer
- *                   description: 게시글의 고유 ID
- *       404:
- *         description: 플레이어를 찾을 수 없음
- *       500:
- *         description: 서버 에러
+ *                 isLogin:
+ *                   type: boolean
+ *                   description: 로그인 여부
+ *       '401':
+ *         description: 로그인 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: 오류 메시지
  */
-router.get('/board/:bId', Cboard.getBoard);
+router.post('/login', Cuser.userLogin);
+
+// 로그아웃 처리
+/**
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: 사용자 로그아웃
+ *     description: 로그인이 되어있다고 가정하고 session에 저장된 유저를 삭제하는 처리
+ *     tags: [User]
+ *     responses:
+ *       '302':
+ *         description: 로그아웃 성공 및 리다이렉트
+ *       '500':
+ *         description: 서버 오류 발생
+ */
+router.post('/logout', Cuser.userLogout);
 
 module.exports = router;
