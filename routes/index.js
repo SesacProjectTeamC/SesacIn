@@ -1,12 +1,13 @@
 // (시작) module
 // 경로 선언과 관련된 내용 기술
-const express = require("express");
-const Cpage = require("../controller/Cpage");
-const Cquestion = require("../controller/Cquestion");
+const express = require('express');
 const router = express.Router();
+const Cpage = require('../controller/Cpage');
+const Cquestion = require('../controller/Cquestion');
 const Cboard = require('../controller/Cboard');
 
-router.get("/", Cpage.main);
+router.get('/', Cpage.main);
+
 /**
  * @swagger
  * /:
@@ -19,21 +20,6 @@ router.get("/", Cpage.main);
  *       500:
  *         description: 서버 에러
  */
-
-// 전체 질문 조회
-router.get("/questions", Cquestion.getQuestions);
-
-// 특정 질문 조회
-router.get("/question/:qId", Cquestion.getQuestion);
-
-// 질문 추가
-router.post("/question", Cquestion.postQuestion);
-
-// 특정 질문 내용 수정
-router.patch("/questions/:qId/question", Cquestion.patchQuestion);
-
-// 특정 질문 삭제
-router.delete("/questions/:qId", Cquestion.deleteQuestion);
 
 const controller = require('../controller/Cuser');
 
@@ -113,9 +99,28 @@ router.get('/users/:uId', controller.getUser);
  */
 router.patch('/users/:uId/userinfo', controller.patchUser);
 
-
 // 회원 탈퇴시 정보 삭제
 router.delete('/users/:uId', controller.deleteUser);
+
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: 전체 질문 데이터 가져오기
+ *     description: question 테이블의 모든 행을 가져온다.
+ *     responses:
+ *       200:
+ *         description: 성공적으로 전체 질문 리스트를 가져왔을 때 응답
+ *       500:
+ *         description: 서버 에러
+ */
+
+// 메인 페이지 req.body.type의 값 === 'question' (default)
+// 전체 질문 조회
+router.get('/', Cquestion.getQuestions);
+
+// 메인 페이지 req.body.type의 값 === 'board'일 경우,
+// 전체 자유게시글 조회
 
 /**
  * @swagger

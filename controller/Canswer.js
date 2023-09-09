@@ -1,59 +1,40 @@
-const { Question } = require("../models");
-
-// ("req.params { uId }");
-
-// res.body
-// {
-//   ""uId"": ""hjj"",
-//   ""pw"": ""1"",
-//   ""uName"": ""hj"",
-//   ""email"": ""jin@gmail.com"",
-//   ""isSesac"": true,
-//   ""campus"": ""영등포"",
-//   ""createdAt"": ""2023-09-08T07:55:46.000Z"",
-//   ""updatedAt"": ""2023-09-08T07:55:46.000Z""
-//   ""answerData"": {
-//       {
-//           uName: ""ff"",
-//           content: ""에라모르겠다""
-//           createdAt: ""2023-09-08T07:55:46.000Z"",
-//           likeCount: 5
-//       },
-//       {
-//           uName: ""ff"",
-//           content: ""에라모르겠다""
-//           createdAt: ""2023-09-08T07:55:46.000Z"",
-//           likeCount: 5
-//       },
-//    }
-// }
+const { Answer } = require('../models');
 
 // 답변 목록 가져오기
 exports.getAnswers = async (req, res) => {
   try {
-    const answers = await Question.findAll();
+    const answers = await Answer.findAll();
     res.send(answers);
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
 // 답변 올리기
 exports.postAnswer = async (req, res) => {
   try {
-    const { aId, content, likeCount, uId, qId } = req.body;
+    const { aId, content, uId, qId } = req.body;
     const newAnswer = await Answer.create({
       aId,
       content,
-      likeCount,
       uId,
       qId,
     });
-    res.send(newAnswer);
+    // res.send(newAnswer);
+    // req.params {
+    //   content : " "
+    // }
+
+    if (newAnswer) {
+      return res.send({ result: true, content: newAnswer.content });
+    } else {
+      return res.send({ result: false });
+    }
+    // res.body {성공여부}
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -67,13 +48,17 @@ exports.patchAnswer = async (req, res) => {
       { content },
       {
         where: { aId },
-      },
+      }
     );
 
-    res.send(updatedAnswer);
+    if (updatedAnswer) {
+      return res.send({ result: true });
+    } else {
+      return res.send({ result: false });
+    }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -86,15 +71,15 @@ exports.deleteAnswer = async (req, res) => {
       where: { aId },
     });
 
-    console.log("isDeleted >>>", isDeleted); // 성공 시 1, 실패 시 0
+    console.log('isDeleted >>>', isDeleted); // 성공 시 1, 실패 시 0
 
     if (isDeleted) {
-      return res.send(true);
+      return res.send({ result: true, aId });
     } else {
-      return res.send(false);
+      return res.send({ result: false });
     }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };

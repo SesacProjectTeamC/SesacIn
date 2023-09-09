@@ -13,7 +13,11 @@ const Answer = (Sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      answer: {
+      title: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+      content: {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
