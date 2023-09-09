@@ -7,6 +7,7 @@ const router = express.Router();
 const Cboard = require('../controller/Cboard');
 
 router.get("/", Cpage.main);
+router.get("/login",Cpage.login);
 /**
  * @swagger
  * /:
