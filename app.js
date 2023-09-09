@@ -67,7 +67,7 @@ app.get('*', (req, res) => {
 });
 
 // force: false; 실제 데이터베이스에 테이블이 존재하지 않으면 모델에 정의한대로 생성
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => {
     console.log(`server open on port ${PORT}`);
   });
