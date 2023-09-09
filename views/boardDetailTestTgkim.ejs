@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div>자유게시판 게시글 섹션</div>
+    <hr />
+    <div>1. 게시글 제목: <%= boardData.title %></div>
+    <div>2. 게시글 내용: <%= boardData.content %></div>
+    <div>3. 조회수: <%= boardData.viewCount %></div>
+    <div>4. 좋아요: <%= boardData.likeCount %></div>
+    <div>5. 생성일: <%= boardData.createdAt %></div>
+    <div>6. 수정일: <%= boardData.updatedAt %></div>
+    <div>7. 작성자: <%= boardData.uId %></div>
+    <hr />
+    댓글내용<input type="text" /><button>댓글 달기</button>
+    <hr />
+
+    <div>자유게시판 댓글 섹션</div>
+    <div>1. 첫번째 댓글 작성자: <%= commentData[0].uId %></div>
+    <div>1. 첫번째 댓글 내용: <%= commentData[0].content %></div>
+    <div>1. 첫번째 댓글 작성일: <%= commentData[0].createdAt %></div>
+    <div>1. 첫번째 댓글 수정일: <%= commentData[0].updatedAt %></div>
+    <br />
+    <div>2. 두번째 댓글 작성자: <%= commentData[1].uId %></div>
+    <div>2. 두번째 댓글 내용: <%= commentData[1].content %></div>
+    <div>2. 두번째 댓글 작성일: <%= commentData[1].createdAt %></div>
+    <div>2. 두번째 댓글 수정일: <%= commentData[1].updatedAt %></div>
+  </body>
+</html>
