@@ -31,10 +31,14 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const indexRouter = require('./routes/index');
+const questionRouter = require('./routes/questionRouter');
 const boardRouter = require('./routes/boardRouter');
 
 // indexRouter에서는 localhost:PORT/ 기본 경로
 app.use('/', indexRouter);
+
+// question 라우터로 이동
+app.use('/question', questionRouter);
 
 // board 라우터로 이동
 app.use('/board', boardRouter);
