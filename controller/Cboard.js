@@ -22,10 +22,10 @@ exports.detailBoard = async (req, res) => {
 exports.getBoardList = async (req, res) => {
   try {
     const BoardList = await Board.findAll();
-    res.send(BoardList);
+    res.render("index", { type: "board", data: BoardList });
   } catch (error) {
     console.error(error);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 

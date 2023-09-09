@@ -2,7 +2,7 @@ const Question = (Sequelize, DataTypes) => {
   // Sequelize: models/index.js에서 sequelize
   // DataTypes: models/index.js에서 Sequelize
   const Question = Sequelize.define(
-    'Question',
+    "Question",
     {
       qId: {
         type: DataTypes.INTEGER,
@@ -28,16 +28,20 @@ const Question = (Sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 0,
       },
-      type: {
+      qType: {
         type: DataTypes.STRING(50),
+        allowNull: false,
+      },
+      createdAt: {
+        type: DataTypes.DATE,
         allowNull: false,
       },
     },
     {
-      tableName: 'question',
+      tableName: "question",
       freezeTableName: true,
       timestamps: true,
-    }
+    },
   );
   return Question;
 };
