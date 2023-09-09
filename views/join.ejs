@@ -4,39 +4,88 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-   
-    
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="views/styles/register.css">
+    <link rel="stylesheet" href="views/styles/globalstyle">
+    <link rel="stylesheet" href="views/componets/cdn.ejs">
   </head>
   <body>
-    <h1>회원가입</h1>
-    <form name="form_register">
-      <label for="uId">ID</label>
-      <input id="uId" type="text" name="uId" required /><br />
-      <label for="pw">Password</label>
-      <input id="pw" type="pw" name="pw" required /><br />
-      <label for="uName">Name </label>
-      <input id="uName" type="text" name="uName" required /><br />
-      <label for="email">email </label>
-      <input id="email" type="text" name="email" required /><br />
-      <fieldset>
-        <legend>isSesac</legend>
-        <input type="radio" name="isSesac" id="t" value="true" />
-        <label for="t">새싹다님</label>
-        <input type="radio" name="isSesac" id="f" value="false" />
-        <label for="f">아님</label>
-      </fieldset>
+    <header>
+      <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
+      <div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left">
+      <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
+      <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+    </svg>
+    </div>
+  </header>
+  <main>
 
-      <fieldset>
-        <legend>위치</legend>
-        <input type="radio" name="campus" id="1" value="1" />
-        <label for="1">영등포</label>
-        <input type="radio" name="campus" id="2" value="2" />
-        <label for="2">용산</label>
-      </fieldset>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">아이디</span>
+        <input type="text" class="form-control" placeholder="ID" aria-label="Username" aria-describedby="basic-addon1">
+      </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">비밀번호</span>
+        <input type="text" class="form-control" placeholder="PW" aria-label="Username" aria-describedby="basic-addon1">
+      </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">닉네임</span>
+        <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+      </div>
+      
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="@주소" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <span class="input-group-text" id="basic-addon2">@example.com</span>
+      </div>
+      
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Username" aria-label="Username">
+        <span class="input-group-text">@</span>
+        <input type="text" class="form-control" placeholder="Server" aria-label="Server">
+      </div>
+      
+      <fieldset class="row mb-3">
+        <legend class="col-form-label col-sm-2 pt-0">새싹 크루입니까?</legend>
+        <div class="col-sm-10">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+            <label class="form-check-label" for="gridRadios1">
+              First radio
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+            <label class="form-check-label" for="gridRadios2">
+              Second radio
+            </label>
+          </div>
+      <div class="input-group mb-3">
+        <label class="input-group-text" for="inputGroupSelect01">새싹 캠퍼스</label>
+        <select class="form-select" id="inputGroupSelect01">
+          <option selected>Choose...</option>
+          <option value="1">One</option>
+          <option value="2">Two</option>
+          <option value="3">Three</option>
+        </select>
+      </div>
 
-      <button type="button" onclick="register();">Register</button>
+      <div class="input-group mb-3">
+        <label class="input-group-text" for="inputGroupSelect01">Options</label>
+        <select class="form-select" id="inputGroupSelect01">
+          <option selected>Choose...</option>
+          <option value="1">One</option>
+          <option value="2">Two</option>
+          <option value="3">Three</option>
+        </select>
+      </div>
+      
+     
+    
+
+      <button type="button" onclick="register();">가입 완료</button>
     </form>
-
+  </main>
     <script>
       function register() {
         const form_register = document.forms['form_register'];
@@ -61,6 +110,11 @@
             alert('회원가입 성공');
           });
       }
+      
     </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
   </body>
 </html>
