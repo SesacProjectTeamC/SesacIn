@@ -12,7 +12,7 @@ const User = (Sequelize, DataTypes) => {
       },
       pw: {
         // id INT NOT NULL PRIMARY KEY auto_increment,
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(500),
         allowNull: false,
       },
       uName: {

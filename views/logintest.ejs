@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document <%= title %></title>
+      <!-- axios cdn -->
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <link rel="stylesheet" href="views/styles/login.css">
+      <link rel="stylesheet" href="views/styles/globalstyle.css">
+  </head>
+  <body>
+      <header>   
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+          <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
+      </header>
+      
+      <main>
+        <form name="login" id="form_login">
+            <div class="form-group-id">
+            <label for="uId">아이디</label>
+            <input type="id" class="form-group-id" id="uId" name="uId" placeholder="아이디" required >
+            </div>
+          <br>
+          <br>
+          <div class="form-group-pw">
+            <label for="pw">비밀번호</label>
+            <input type="pw" class="form-group-pw" id="pw" name="pw" placeholder="비밀번호" required >
+          </div>
+          <br>
+          <br>
+
+          <div>
+              <a href="/join">회원가입 /</a>
+              <a href="/id">아이디 /</a>
+              <a href="/pw">비밀번호 찾기</a>
+              
+          </div>
+          <br>
+          <button type="button" class="btn btn-primary" onclick="logintest()">로그인</button>
+
+        </form>
+      </main>
+  </div>
+    <script>
+      function logintest() {
+        const form_login = document.forms['login'];
+        
+        axios({
+          method: 'post',
+          url: '/login',
+          data: {
+            uId: form_login.uId.value,
+            pw: form_login.pw.value,
+          },
+        })
+          .then((res) => {
+            return res.data;
+          })
+          .then((data) => {
+            console.log(data);
+          });
+      }
+    </script>
+  </body>
+</html>
