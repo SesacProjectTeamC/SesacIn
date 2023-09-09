@@ -35,3 +35,35 @@ Content-Type: application/json; charset=utf-8
 
 ### 특정 질문 삭제
 DELETE {{server}}/questions/{{qId}}
+
+@uId = hj
+
+### 회원가입 시 db 저장
+POST {{server}}/users
+Content-Type: application/json; charset=UTF-8
+
+{
+    "uId": "hjj",
+    "pw" : "1",
+    "uName" : "hj",
+    "email" : "jin@gmail.com"
+}
+
+
+### 회원 조회
+GET {{server}}/users/{{uId}}
+
+### 특정 사용자의 정보 변경 - pw, uName 변경 가능
+PATCH {{server}}/users/{{uId}}/userInfo
+Content-Type: application/json; charset=UTF-8
+
+{
+    "pw" : "1111",
+    "uName" : "1111"
+}
+
+### 회원 탈퇴
+DELETE {{server}}/users/{{uId}}
+
+
+
