@@ -6,7 +6,9 @@ const Cpage = require('../controller/Cpage');
 const Cquestion = require('../controller/Cquestion');
 const Cboard = require('../controller/Cboard');
 
-router.get('/', Cpage.main);
+
+router.get("/", Cpage.main);
+router.get("/login",Cpage.login);
 
 /**
  * @swagger
