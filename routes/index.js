@@ -1,17 +1,24 @@
 // (시작) module
 // 경로 선언과 관련된 내용 기술
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Cmain = require('../controller/Cmain');
-const Cuser = require('../controller/Cuser');
+const Cmain = require("../controller/Cmain");
+const Cuser = require("../controller/Cuser");
+const Cquestion = require("../controller/Cquestion");
+const Cboard = require("../controller/Cboard");
 
 // 메인 페이지 관련
-router.get('/', Cmain.main);
+// router.get("/", Cmain.main);
+// QnA 전체 질문 리스트 가져오기
+router.get("/", Cquestion.getQuestions);
+// 자유게시판 전체 리스트 가져오기
+router.get("/", Cboard.getBoardList);
+//!!
 
-router.get('/join', Cuser.getJoin);
+router.get("/join", Cuser.getJoin);
 
 // 로그인 페이지 렌더링
-router.get('/login', Cuser.login);
+router.get("/login", Cuser.login);
 
 // 유저 관련
 /**
@@ -36,7 +43,7 @@ router.get('/login', Cuser.login);
  */
 // 회원 가입 관련 api
 // post /user 요청이 오면 선수 추가
-router.post('/users', Cuser.postUser);
+router.post("/users", Cuser.postUser);
 
 /**
  * @swagger
@@ -60,7 +67,7 @@ router.post('/users', Cuser.postUser);
  *       500:
  *         description: 서버 에러
  */
-router.get('/users/:uId', Cuser.getUser);
+router.get("/users/:uId", Cuser.getUser);
 
 /**
  * @swagger
@@ -97,10 +104,10 @@ router.get('/users/:uId', Cuser.getUser);
  *       500:
  *         description: 서버 에러
  */
-router.patch('/users/:uId/userinfo', Cuser.patchUser);
+router.patch("/users/:uId/userinfo", Cuser.patchUser);
 
 // 회원 탈퇴시 정보 삭제
-router.delete('/users/:uId', Cuser.deleteUser);
+router.delete("/users/:uId", Cuser.deleteUser);
 
 // 로그인 처리
 /**
@@ -145,7 +152,7 @@ router.delete('/users/:uId', Cuser.deleteUser);
  *                   type: string
  *                   description: 오류 메시지
  */
-router.post('/login', Cuser.userLogin);
+router.post("/login", Cuser.userLogin);
 
 // 로그아웃 처리
 /**
@@ -161,6 +168,6 @@ router.post('/login', Cuser.userLogin);
  *       '500':
  *         description: 서버 오류 발생
  */
-router.post('/logout', Cuser.userLogout);
+router.post("/logout", Cuser.userLogout);
 
 module.exports = router;

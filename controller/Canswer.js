@@ -1,13 +1,13 @@
-const { Answer } = require('../models');
+const { Answer } = require("../models");
 
 // 답변 목록 가져오기
 exports.getAnswers = async (req, res) => {
   try {
     const answers = await Answer.findAll();
-    res.send(answers);
+    res.render("question", { answerData: answers });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -34,7 +34,7 @@ exports.postAnswer = async (req, res) => {
     // res.body {성공여부}
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -48,7 +48,7 @@ exports.patchAnswer = async (req, res) => {
       { content },
       {
         where: { aId },
-      }
+      },
     );
 
     if (updatedAnswer) {
@@ -58,7 +58,7 @@ exports.patchAnswer = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -71,7 +71,7 @@ exports.deleteAnswer = async (req, res) => {
       where: { aId },
     });
 
-    console.log('isDeleted >>>', isDeleted); // 성공 시 1, 실패 시 0
+    console.log("isDeleted >>>", isDeleted); // 성공 시 1, 실패 시 0
 
     if (isDeleted) {
       return res.send({ result: true, aId });
@@ -80,6 +80,6 @@ exports.deleteAnswer = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };

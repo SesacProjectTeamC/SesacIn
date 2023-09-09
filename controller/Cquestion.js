@@ -1,35 +1,34 @@
-const { Question } = require('../models');
-const { Op } = require('sequelize');
+const { Question } = require("../models");
 
 // 질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
   try {
     const questions = await Question.findAll();
-    res.send(questions);
+    res.render("index", { type: "", data: questions });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
-// 질문 가져오기
-exports.getQuestion = async (req, res) => {
-  try {
-    const { qId } = req.params;
-    const question = await Question.findOne({
-      where: { qId },
-    });
-    res.send(question);
+//-- 특정 질문만 가져오기 (답변 제외)
+// exports.getQuestion = async (req, res) => {
+//   try {
+//     const { qId } = req.params;
 
-    console.log('question>>>', question);
+//     const question = await Question.findOne({
+//       where: { qId },
+//     });
 
-    //! 답변 목록 데이터도 함께 가져올 것
-  } catch (err) {
-    console.log(err);
-    res.send('Internet Server Error!!!');
-  }
-};
+//     res.render("question", { data: question });
+//     console.log("question>>>", question);
+//   } catch (err) {
+//     console.log(err);
+//     res.send("Internet Server Error!!!");
+//   }
+// };
 
+//-- 상우님이 원하시는 데이터
 // ("req.params { uId }");
 
 // res.body
@@ -74,7 +73,7 @@ exports.postQuestion = async (req, res) => {
     res.send(newQuestion);
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -89,13 +88,13 @@ exports.patchQuestion = async (req, res) => {
       {
         where: { qId },
         // params에 있는 Question_id를 Question_id로 바꾸겠다
-      }
+      },
     );
 
     res.send(updatedQuestion);
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -108,7 +107,7 @@ exports.deleteQuestion = async (req, res) => {
       where: { qId: qId },
     });
 
-    console.log('isDeleted >>>', isDeleted); // 성공 시 1, 실패 시 0
+    console.log("isDeleted >>>", isDeleted); // 성공 시 1, 실패 시 0
 
     if (isDeleted) {
       return res.send(true);
@@ -117,6 +116,6 @@ exports.deleteQuestion = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };

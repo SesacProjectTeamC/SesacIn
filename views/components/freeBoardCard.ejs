@@ -1,85 +1,83 @@
 <style>
-    #cardContainer {
-        display: flex;
-        flex-direction: column;
-        border: solid;
-        border-radius: 20px;
-        border-width: 2px;
-        border-color: lightgray;
-        /* align-items: center; */
-        justify-content: center;
-        width: 300px;
-        max-height: 500px;
-        padding-left: 20px;
-        padding-right: 20px;
-        padding-top: 20px;
-        margin-left: 10px;
-        margin-right: 10px;
-        margin-bottom: 20px;
-    }
-    type {
-        color: gray;
-        font-size: 14px;
-        font-weight: 550;
-        margin-top: 8px;
-        margin-bottom: 8px;
-    }
-    user {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 18px;
-        color: black;
-        margin-bottom: 18px;
-    }
-    .title {
-        font-weight: bold;
-        margin-bottom: 8px;
-        align-items: center;
-        display: flex;
-    }
-    content {
-        display: flex;
-        flex-wrap: wrap;
-        overflow: auto;
-    }
-    .like {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-    }
-    .svg {
-        margin-left: 5px;
-        margin-right: 5px;
-    }
+  #cardContainer {
+    display: flex;
+    flex-direction: column;
+    border: solid;
+    border-radius: 20px;
+    border-width: 2px;
+    border-color: lightgray;
+    /* align-items: center; */
+    justify-content: center;
+    width: 300px;
+    max-height: 500px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+  }
+  type {
+    color: gray;
+    font-size: 14px;
+    font-weight: 550;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    color: black;
+    margin-bottom: 18px;
+  }
+  .title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    align-items: center;
+    display: flex;
+  }
+  content {
+    display: flex;
+    flex-wrap: wrap;
+    overflow: auto;
+  }
+  .like {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  .svg {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
 </style>
 
-<a href="/board/<%= data.id%>">
-    <div id="cardContainer">
-        <type> <%= data.type%> | <%= data.time%> </type>
-        <div class="title"><%= data.title%></div>
-        <content><%= data.content%></content>
-        <hr />
-        <user>
-            <%= data.name%>
-            <div class="like">
-                <img
-                    src="../../static/svg/heart.svg"
-                    alt="좋아요"
-                    width="24px"
-                    class="svg"
-                />
-                <!-- <%= data.like%> -->
-                3
-                <img
-                    src="../../static/svg/message.svg"
-                    alt="좋아요"
-                    width="24px"
-                    class="svg"
-                />
-                <!-- <%= data.comment%> -->
-                3
-            </div>
-        </user>
-    </div>
+<a href="/question/<%= data.id%>">
+  <div id="cardContainer">
+    <type> <%= data.qType %> | <%= data.createdAt %> </type>
+    <div class="title"><%= data.title%></div>
+    <content><%= data.content%></content>
+    <hr />
+    <user>
+      <%= data.uName%>
+      <div class="like">
+        <img
+          src="../../static/svg/heart.svg"
+          alt="좋아요"
+          width="24px"
+          class="svg"
+        />
+        <%= data.like%> 3
+        <img
+          src="../../static/svg/message.svg"
+          alt="좋아요"
+          width="24px"
+          class="svg"
+        />
+        <%= data.comment%> 3
+      </div>
+    </user>
+  </div>
 </a>
