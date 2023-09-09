@@ -1,18 +1,17 @@
-const { Board } = require('../models/index');
-const { Op } = require('sequelize');
+const { Board } = require("../models/index");
 
-// 게시글 전체 조회
+// 자유게시판 전체 조회
 exports.getBoardList = async (req, res) => {
   try {
     const BoardList = await Board.findAll();
-    res.send(BoardList);
+    res.render("index", { type: "board", data: BoardList });
   } catch (error) {
     console.error(error);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
-// 게시글 개별 조회
+// 자유게시판 개별 조회
 exports.getBoard = async (req, res) => {
   try {
     const { bId } = req.params;
