@@ -4,6 +4,7 @@ const express = require("express");
 const Cpage = require("../controller/Cpage");
 const Cquestion = require("../controller/Cquestion");
 const router = express.Router();
+const Cboard = require('../controller/Cboard');
 
 router.get("/", Cpage.main);
 /**
@@ -115,5 +116,50 @@ router.patch('/users/:uId/userinfo', controller.patchUser);
 
 // 회원 탈퇴시 정보 삭제
 router.delete('/users/:uId', controller.deleteUser);
+
+/**
+ * @swagger
+ * /board/list:
+ *   get:
+ *     summary: 전체 게시글 데이터 가져오기
+ *     description: board 테이블의 모든 행을 가져온다.
+ *     responses:
+ *       200:
+ *         description: 성공적으로 전체 게시글을 가져왔을 때 응답
+ *       500:
+ *         description: 서버 에러
+ */
+router.get('/board/list', Cboard.getBoardList);
+
+/**
+ * @swagger
+ * /board/{bId}:
+ *   get:
+ *     summary: 특정 게시글 데이터 가져오기
+ *     description: 특정 게시글의 데이터를 가져옵니다.
+ *     parameters:
+ *       - in: path
+ *         name: bId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: 게시글의 고유 ID
+ *     responses:
+ *       200:
+ *         description: 성공적으로 데이터를 가져온 경우
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 bId:
+ *                   type: integer
+ *                   description: 게시글의 고유 ID
+ *       404:
+ *         description: 플레이어를 찾을 수 없음
+ *       500:
+ *         description: 서버 에러
+ */
+router.get('/board/:bId', Cboard.getBoard);
 
 module.exports = router;
