@@ -5,46 +5,67 @@ const router = express.Router();
 const Cmain = require('../controller/Cmain');
 const Cuser = require('../controller/Cuser');
 
-// 메인 페이지 관련
+// 메인 페이지 렌더링
 router.get('/', Cmain.main);
 
+// 회원 가입 페이지 렌더링
 router.get('/join', Cuser.getJoin);
 
 // 로그인 페이지 렌더링
 router.get('/login', Cuser.login);
 
-// 유저 관련
-/**
- * @swagger
- * tags:
- *   name: User
- *   description: 사용자 관리
- */
-
+// 회원 가입 처리
 /**
  * @swagger
  * /users:
  *   post:
- *     summary: 회원 가입
- *     tags: [User]
+ *     summary: 회원 가입 처리
+ *     tags:
+ *       - User
  *     description: 회원 가입 처리
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               uId:
+ *                 type: string
+ *                 description: 사용자 아이디
+ *               pw:
+ *                 type: string
+ *                 description: 비밀번호
+ *               uName:
+ *                 type: string
+ *                 description: 닉네임
+ *               email:
+ *                 type: string
+ *                 description: 이메일
+ *               isSesac:
+ *                 type: string
+ *                 description: 새싹인 여부
+ *               campus:
+ *                 type: string
+ *                 description: 소속 캠퍼스
+ *
  *     responses:
  *       200:
  *         description: 성공적으로 사용자 추가되었을 때 응답
  *       500:
  *         description: 서버 에러
  */
-// 회원 가입 관련 api
-// post /user 요청이 오면 선수 추가
 router.post('/users', Cuser.postUser);
 
+// 특정 회원 조회
 /**
  * @swagger
  * /users/{uId}:
  *   get:
- *     summary: 특정 플레이어 데이터 가져오기
- *     tags: [User]
- *     description: 특정 플레이어의 데이터를 가져옵니다.
+ *     summary: 특정 회원 데이터 조회
+ *     tags:
+ *       - User
+ *     description: 특정 회원 데이터를 조회 합니다.
  *     parameters:
  *       - in: path
  *         name: uId
@@ -62,12 +83,14 @@ router.post('/users', Cuser.postUser);
  */
 router.get('/users/:uId', Cuser.getUser);
 
+// 회원 정보 수정
 /**
  * @swagger
  * /users/{uId}/patch:
  *   patch:
  *     summary: 회원 정보 수정
- *     tags: [User]
+ *     tags:
+ *       - User
  *     description: 비밀번호, 이름을 수정하여 사용자 정보를 업데이트합니다.
  *     parameters:
  *       - in: path
@@ -109,7 +132,8 @@ router.delete('/users/:uId', Cuser.deleteUser);
  *   post:
  *     summary: 사용자 로그인
  *     description: 로그인 처리 진행
- *     tags: [User]
+ *     tags:
+ *       - User
  *     requestBody:
  *       required: true
  *       content:
@@ -154,7 +178,8 @@ router.post('/login', Cuser.userLogin);
  *   post:
  *     summary: 사용자 로그아웃
  *     description: 로그인이 되어있다고 가정하고 session에 저장된 유저를 삭제하는 처리
- *     tags: [User]
+ *     tags:
+ *       - User
  *     responses:
  *       '302':
  *         description: 로그아웃 성공 및 리다이렉트
