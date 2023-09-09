@@ -46,9 +46,7 @@ Content-Type: application/json; charset=UTF-8
     "uId": "hjj",
     "pw" : "1",
     "uName" : "hj",
-    "email" : "jin@gmail.com",
-    "isSesac" : true,
-    "campus" : "영등포"
+    "email" : "jin@gmail.com"
 }
 
 

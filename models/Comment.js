@@ -11,7 +11,7 @@ const Comment = (Sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      comment: {
+      content: {
         type: DataTypes.STRING(255),
         allowNull: false,
       },

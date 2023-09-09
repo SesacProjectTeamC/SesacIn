@@ -27,12 +27,14 @@ const User = (Sequelize, DataTypes) => {
       },
       isSesac: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: false,
       },
       campus: {
         // name VARCHAR(10) NOT NULL,
         type: DataTypes.STRING(50),
-        allowNull: false,
+        allowNull: true,
+        defaultValue: 'NULL',
       },
     },
     {
