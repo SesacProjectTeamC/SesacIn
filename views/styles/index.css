@@ -23,7 +23,6 @@ a {
     font-weight: 700;
     font-size: 38px;
     margin-top: 40px;
-    margin-bottom: 40px;
     justify-content: center;
 }
 
@@ -42,6 +41,7 @@ a {
     /* max-width: 1500px; */
     margin-left: 144px;
     margin-right: 144px;
+    margin-top: 40px;
     justify-content: center;
     flex-direction: row;
     flex-wrap: wrap;
