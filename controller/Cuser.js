@@ -9,7 +9,7 @@ exports.getJoin = (req, res) => {
 
 // 회원 가입 시 사용자 생성
 exports.postUser = async (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   try {
     let { uId, pw, uName, email, isSesac, campus } = req.body;
     // db에 넣기전 pw 암호화
@@ -30,18 +30,47 @@ exports.postUser = async (req, res) => {
   }
 };
 
+//////////////////////////////// 회원 정보 페이지
+
 /// 회원 조회
 exports.getUser = async (req, res) => {
   try {
     const { uId } = req.params; // 객체에서 꺼내온 유저 아이디 값
-    const user = await User.findOne({
-      where: { uId: uId },
-    });
-    res.send(user);
+
+    // 세션에서 로그인 된 사용자 id 가져오기
+    const loginUserId = req.session.user;
+
+    // 현재 로그인 된 사용자의 ID와 요청된 사용자 ID가 일치하는지 확인
+    if (loginUserId === uId) {
+      // 데이터베이스에서 해당 사용자 정보를 조회합니다.
+      const user = await User.findOne({
+        where: { uId: uId },
+      });
+
+      // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
+      res.render('profile', { userData: user });
+    } else {
+      // 현재 로그인한 사용자와 요청된 사용자가 다를 경우 권한 없음을 응답
+      res
+        .status(403)
+        .send('Forbidden: You do not have permission to access this page.');
+    }
   } catch (err) {
     console.error(err);
     res.send('Internal Server Error');
   }
+};
+
+/////////////////////////////////////////////////// 사용자 정보 수정 페이지
+// 정보 수정 창 렌더링
+exports.getUserInfo = (req, res) => {
+  // 이 부분에서 사용자 정보를 가져오는 로직 추가
+  // 예를 들어, req.session.user 를 사용하여 사용자 정보를 가져옵니다.
+  const userData = {
+    uId: req.session.user, // 세션에서 사용자 ID 가져오기
+  };
+  // ********** 추후에 어떤 화면으로 이동할 지 이름 수정 필요할수도 있음
+  res.render('userinfo', { userData });
 };
 
 // 회원 정보 수정 - 비밀번호, 이름 (이미지는 후순위)
@@ -58,6 +87,7 @@ exports.patchUser = async (req, res) => {
     );
 
     res.send(updatedUser); // 성공시 [1], 실패시 [0]
+    // res.redirect('/') // 추후 어떤 페이지로 이동시키려면 수정
   } catch (err) {
     console.error(err);
     res.send('Internal Server Error');
