@@ -9,12 +9,16 @@
     <script defer src="/static/js/index.js"></script>
   </head>
   <body>
-    <h1>질문 수정하기</h1>
-    <div>제목<input type="text" id="title" value="<%= data.title %>" /></div>
+    <h1>답변 수정하기</h1>
     <div>
-      내용<input type="text" id="content" value="<%= data.content %>" />
+      제목<input type="text" id="title" value="<%= answerData.title %>" />
     </div>
-    <button onclick="editQuestionDone('<%= data.qId%>')">수정완료</button>
-    <button onclick="editQuestionCancel('<%= data.qId%>')">취소</button>
+    <div>
+      내용<input type="text" id="content" value="<%= answerData.content %>" />
+    </div>
+    <button onclick="editAnswerDone('<%= data %>', '<%= answerData.aId%>')">
+      수정완료
+    </button>
+    <button onclick="editAnswerCancel('<%= data %>')">취소</button>
   </body>
 </html>
