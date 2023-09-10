@@ -14,7 +14,7 @@ header {
 }
 
 .bi-arrow-left:hover .hover-circle {
-  fill: var(--hover-color);
+  fill: var(--hover-color) ;
 }
 
 img {
