@@ -1,10 +1,36 @@
-const { Question } = require("../models");
+const { Question, Answer, Comment } = require("../models");
 
 // 질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
   try {
     const questions = await Question.findAll();
     res.render("index", { type: "", data: questions });
+  } catch (err) {
+    console.log(err);
+    res.send("Internet Server Error!!!");
+  }
+};
+
+//-- QnA 특정 질문 상세 페이지 GET
+// 특정 질문과 그 질문에 대한 답변 전체 리스트 가져오기
+// 특정 답변에 대한 전체 댓글 리스트 가져오기
+exports.getQuestion = async (req, res) => {
+  try {
+    const { qId } = req.params;
+
+    const question = await Question.findOne({
+      where: { qId },
+    });
+
+    const answers = await Answer.findAll();
+
+    const comments = await Comment.findAll();
+
+    res.render("question", {
+      data: question,
+      answerData: answers,
+      commentData: comments,
+    });
   } catch (err) {
     console.log(err);
     res.send("Internet Server Error!!!");
@@ -79,7 +105,15 @@ exports.patchQuestion = async (req, res) => {
       },
     );
 
-    res.render("question", { result: updatedQuestion });
+    //! 매치 여부 확인
+    const answers = await Answer.findOne({ where: { qId } });
+    const comments = await Comment.findOne({ where: { qId } });
+
+    res.render("question", {
+      data: updatedQuestion,
+      answerData: answers,
+      commentData: comments,
+    });
   } catch (err) {
     console.log(err);
     res.send("Internet Server Error!!!");
