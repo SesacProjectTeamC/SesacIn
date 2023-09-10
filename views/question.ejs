@@ -22,13 +22,15 @@
     <button onclick="deleteQuestion('<%= data.qId %>')">삭제</button>
 
     <% if (answerData && answerData.length > 0) { %>
-    <h3>답변</h3>
+    <h3>답변 리스트</h3>
     <button onclick="moveToCreateAnswer('<%= data.qId %>')">답변 등록</button>
 
     <div>답변 개수 <%= answerData.length %></div>
     <br />
 
     <% for(let i = 0; i < answerData.length; i++) { %>
+
+    <h4>답변 <%= i+1 %></h4>
     <button
       onclick="moveToEditAnswer('<%= data.qId %>', '<%= answerData[i].aId %>')"
     >
@@ -39,20 +41,39 @@
     >
       답변 삭제하기
     </button>
-    <div>답변 제목 <%= answerData[i].title || "" %></div>
-    <div>답변 내용 <%= answerData[i].content || "" %></div>
-    <div>답변 좋아요 <%= answerData[i].likeCount || "" %></div>
-    <div>답변 생성날짜 <%= answerData[i].createdAt || "" %></div>
-    <div>답변 수정날짜 <%= answerData[i].updatedAt || "" %></div>
+    <div>답변 제목 : <%= answerData[i].title %></div>
+    <div>답변 내용 :<%= answerData[i].content %></div>
+    <div>답변 좋아요 :<%= answerData[i].likeCount %></div>
+    <div>답변 생성날짜 : <%= answerData[i].createdAt %></div>
+    <div>답변 수정날짜 : <%= answerData[i].updatedAt %></div>
     <br />
-    <% } %> <% } else if (commentData && commentData.length > 0) { %> <% for(let
-    i = 0; i < commentData.length; i++) { %>
+    <h4>댓글 <%= i+1 %></h4>
+    <div>댓글 수 <%= commentData.length %></div>
+    <br />
+    <button onclick="moveToCreateComment('<%= data.qId %>')">댓글 등록</button>
+    <br />
 
-    <h3>댓글</h3>
-    <div>댓글 작성자 id <%= commentData[i].uId || "" %></div>
-    <div>댓글 내용 <%= commentData[i].content || "" %></div>
-    <div>댓글 생성날짜 <%= commentData[i].createdAt || "" %></div>
-    <div>댓글 수정날짜 <%= commentData[i].updatedAt || "" %></div>
+    <% if (commentData && commentData.length > 0) { %> <% for(let i = 0; i <
+    commentData.length; i++) { %>
+    <br />
+    <button
+      onclick="moveToEditComment('<%= data.qId %>', '<%= commentData[i].cId %>')"
+    >
+      댓글 수정하기
+    </button>
+    <button
+      onclick="deleteComment('<%= data.qId %>','<%= commentData[i].cId %>')"
+    >
+      댓글 삭제하기
+    </button>
+    <div>댓글 작성자 : <%= commentData[i].uId %></div>
+    <div>댓글 내용 : <%= commentData[i].content %></div>
+    <div>댓글 생성날짜 : <%= commentData[i].createdAt %></div>
+    <div>댓글 수정날짜 : <%= commentData[i].updatedAt %></div>
+
+    <% } %> <% } %>
+    <br />
+
     <% } %> <% } else { %>
     <div>답변이 없습니다.</div>
     <% } %>

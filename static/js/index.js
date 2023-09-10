@@ -17,13 +17,18 @@ const moveToCreateAnswer = (qId) => {
 };
 
 const moveToEditAnswer = (qId, aId) => {
-  console.log(qId, aId);
   window.location.href = `/question/${qId}/answer/${aId}/edit`;
 };
 
-const deleteQuestion = (qId) => {
-  console.log(qId);
+const moveToCreateComment = (qId) => {
+  window.location.href = `/question/${qId}/comment`;
+};
 
+const moveToEditComment = (qId, cId) => {
+  window.location.href = `/question/${qId}/comment/${cId}/edit`;
+};
+
+const deleteQuestion = (qId) => {
   if (!confirm("삭제하시겠습니까?")) return;
 
   axios({
@@ -49,7 +54,6 @@ const createQuestionDone = () => {
   }).then((res) => {
     if (res) {
       alert("작성 완료되었습니다 !");
-      console.log(res.data.result.qId);
       document.location.href = `/question/${res.data.result.qId}`;
     }
   });
@@ -117,7 +121,6 @@ const editAnswerDone = (qId, aId) => {
       content: content.value,
     },
   }).then((res) => {
-    console.log(res);
     if (res.data) {
       alert("답변이 수정되었습니다 !");
       document.location.href = `/question/${qId}`;
@@ -136,6 +139,63 @@ const deleteAnswer = (qId, aId) => {
   axios({
     method: "DELETE",
     url: `/question/${qId}/answer/${aId}/delete`,
+  }).then((res) => {
+    if (res.data.result) {
+      alert("삭제되었습니다");
+    }
+    window.location.href = `/question/${qId}`;
+  });
+};
+
+//=== Comment ===
+const createCommentDone = (qId) => {
+  const content = document.querySelector("#content");
+
+  axios({
+    method: "POST",
+    url: `/question/${qId}/comment`,
+    data: { content: content.value },
+  }).then((res) => {
+    if (res) {
+      alert("댓글이 등록되었습니다 !");
+      document.location.href = `/question/${qId}`;
+    }
+  });
+};
+
+const createCommentCancel = (qId) => {
+  alert("취소되었습니다.");
+  window.location.href = `/question/${qId}`;
+};
+
+const editCommentDone = (qId, cId) => {
+  const content = document.querySelector("#content");
+
+  axios({
+    method: "PATCH",
+    url: `/question/${qId}/comment/${cId}/edit`,
+    data: {
+      content: content.value,
+    },
+  }).then((res) => {
+    if (res.data) {
+      alert("댓글이 수정되었습니다 !");
+      document.location.href = `/question/${qId}`;
+    }
+  });
+};
+
+const editCommentCancel = (qId) => {
+  alert("취소되었습니다.");
+  window.location.href = `/question/${qId}`;
+};
+
+const deleteComment = (qId, cId) => {
+  if (!confirm("삭제하시겠습니까?")) return;
+
+  axios({
+    method: "DELETE",
+    url: `/question/${qId}/comment/${cId}/delete`,
   }).then((res) => {
     if (res.data.result) {
       alert("삭제되었습니다");

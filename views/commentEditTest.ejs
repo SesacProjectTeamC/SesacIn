@@ -9,16 +9,13 @@
     <script defer src="/static/js/index.js"></script>
   </head>
   <body>
-    <h1>답변 수정하기</h1>
+    <h1>댓글 수정하기</h1>
     <div>
-      제목<input type="text" id="title" value="<%= answerData.title %>" />
+      내용<input type="text" id="content" value="<%= commentData.content %>" />
     </div>
-    <div>
-      내용<input type="text" id="content" value="<%= answerData.content %>" />
-    </div>
-    <button onclick="editAnswerDone('<%= data %>', '<%= answerData.aId%>')">
+    <button onclick="editCommentDone('<%= data %>', '<%= commentData.cId%>')">
       수정완료
     </button>
-    <button onclick="editAnswerCancel('<%= data %>')">취소</button>
+    <button onclick="editCommentCancel('<%= data %>')">취소</button>
   </body>
 </html>
