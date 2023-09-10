@@ -24,15 +24,3 @@ exports.getQuestion = async (req, res) => {
     res.send("Internet Server Error!!!");
   }
 };
-
-//=== JOIN 진행할 경우 추가 예정 ===
-// const answers = await Question.findAll({
-//   where : {
-//     uId === uId,
-//   },
-//   include: [
-//     {model: Answer,
-//       required: false,
-//     }
-//   ]
-// });
