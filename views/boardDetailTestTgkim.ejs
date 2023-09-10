@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <h1>자유게시판 개별 게시글 페이지</h1>
+    <hr />
+    <div>게시글 섹션</div>
+    <hr />
+    <form id="boardInfoForm">
+      <!-- 숨겨진 input 요소로 bId 저장 -->
+      <input type="hidden" id="bId" name="bId" value="<%= boardData.bId %>" />
+      <div>
+        <label for="title">1. 게시글 제목:</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value="<%= boardData.title %>"
+        />
+      </div>
+      <div>
+        <label for="content">2. 게시글 내용:</label>
+        <textarea id="content" name="content">
+<%= boardData.content %></textarea
+        >
+      </div>
+      <div>
+        <label for="viewCount">3. 조회수:</label>
+        <input
+          type="number"
+          id="viewCount"
+          name="viewCount"
+          value="<%= boardData.viewCount %>"
+        />
+      </div>
+      <div>
+        <label for="likeCount">4. 좋아요:</label>
+        <input
+          type="number"
+          id="likeCount"
+          name="likeCount"
+          value="<%= boardData.likeCount %>"
+        />
+      </div>
+      <div>
+        <label for="createdAt">5. 생성일:</label>
+        <input
+          type="text"
+          id="createdAt"
+          name="createdAt"
+          value="<%= boardData.createdAt %>"
+          disabled
+        />
+      </div>
+      <div>
+        <label for="updatedAt">6. 수정일:</label>
+        <input
+          type="text"
+          id="updatedAt"
+          name="updatedAt"
+          value="<%= boardData.updatedAt %>"
+          disabled
+        />
+      </div>
+      <div>
+        <label for="uId">7. 작성자:</label>
+        <input
+          type="text"
+          id="uId"
+          name="uId"
+          value="<%= boardData.uId %>"
+          disabled
+        />
+      </div>
+    </form>
+    <hr />
+    <form id="inputCommentForm">
+      <div>
+        <label for="commentContent">댓글내용:</label>
+        <input type="text" id="commentContent" name="commentContent" />
+      </div>
+    </form>
+    <button type="button" onclick="addComment()">댓글 달기</button>
+
+    <hr />
+
+    <div>자유게시판 댓글 섹션</div>
+    <% for (let i = 0; i < commentData.length; i++) { %>
+    <div><%= i + 1 %>. 댓글 작성자: <%= commentData[i].uId %></div>
+    <div><%= i + 1 %>. 댓글 내용: <%= commentData[i].content %></div>
+    <div><%= i + 1 %>. 댓글 작성일: <%= commentData[i].createdAt %></div>
+    <div><%= i + 1 %>. 댓글 수정일: <%= commentData[i].updatedAt %></div>
+    <br />
+    <% } %>
+  </body>
+  <script>
+    const board = document.forms['boardInfoForm'];
+    const comment = document.forms['inputCommentForm'];
+
+    function addComment() {
+      axios({
+        method: 'post',
+        url: `/board/comment/create/${board.bId.value}`, //bId가 params로 넘어갑니다.
+        data: {
+          bId: board.bId.value,
+          content: comment.commentContent.value,
+        },
+      })
+        .then((response) => {
+          // 성공했을때 처리.
+          // response.status에 의해서 판단한다.
+          console.log(response.data.msg);
+        })
+        .catch((error) => {
+          // 실패했을때 처리
+          // response.status에 의해서 판단되어 catch 문에서 실행된다.
+
+          // 에러 객체 전체
+          console.log(error.message);
+          // 백엔드에서 작성한 메세지
+          console.log(error.response.data.msg);
+        });
+    }
+  </script>
+</html>

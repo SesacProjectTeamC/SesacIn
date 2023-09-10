@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <h1>자유게시판 새 글 작성 페이지</h1>
+    <form name="infoForm">
+      <div>제목<input type="text" name="title" /></div>
+      <div>내용<input type="text" name="content" /></div>
+      <button type="button" onclick="createBoard()">등록하기</button>
+      <button type="button" onclick="initForm()">취소</button>
+    </form>
+  </body>
+  <script>
+    function createBoard() {
+      const inputInfo = document.forms['infoForm'];
+
+      axios({
+        method: 'post',
+        url: '/board/create',
+        data: {
+          title: inputInfo.title.value,
+          content: inputInfo.content.value,
+        },
+      })
+        .then((response) => {
+          // 성공했을때 처리.
+          // response.status에 의해서 판단한다.
+          console.log(response.data.msg);
+        })
+        .catch((error) => {
+          // 실패했을때 처리
+          // response.status에 의해서 판단되어 catch 문에서 실행된다.
+
+          // 에러 객체 전체
+          console.log(error.message);
+          // 백엔드에서 작성한 메세지
+          console.log(error.response.data.msg);
+        });
+    }
+
+    function initForm() {
+      const inputInfo = document.forms['infoForm'];
+      inputInfo.title.value = '';
+      inputInfo.content.value = '';
+    }
+  </script>
+</html>
