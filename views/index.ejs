@@ -1,57 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <%- include('./components/cdn', { title: '메인' }) %>
-    <link rel="stylesheet" href="/views/styles/globalstyle.css" />
-    <link rel="stylesheet" href="/views/styles/index.css" />
-    <script defer src="../static/js/index.js"></script>
-  </head>
-  <body>
-    <header>
-      <a href="/">
-        <img
-          src="../static/img/logo.png"
-          alt="logo"
-          class="logo"
-          height="45px"
-        />
-      </a>
-      <div>
-        <a href="/login">로그인</a>
-      </div>
-    </header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <%- include('./components/cdn', { title: '메인' }) %>
+        <link rel="stylesheet" href="/views/styles/globalstyle.css" />
+        <link rel="stylesheet" href="/views/styles/index.css" />
+        <script defer src="../static/js/index.js"></script>
+    </head>
+    <body>
+        <%- include('./components/header') %> <%-
+        include('./components/carousel') %>
 
-    <%- include('./components/carousel') %>
-
-    <div class="menuContainer">
-      <!-- <div class="menu" onclick="changeType('all')">전체</div> -->
-      <div class="menu activeM" onclick="changeType(this, 'qa')">Q&A</div>
-      <div
-        class="menu"
-        onclick="
+        <div class="menuContainer">
+            <!-- <div class="menu" onclick="changeType('all')">전체</div> -->
+            <div class="menu activeM" onclick="changeType(this, 'qa')">Q&A</div>
+            <div
+                class="menu"
+                onclick="
         changeType(this, 'board');
         showBoardList();
         "
-      >
-        자유게시판
-      </div>
-    </div>
+            >
+                자유게시판
+            </div>
+        </div>
 
-    <!-- BE : test용 추가 생성 버튼 -->
-    <div style="display: flex; justify-content: center; margin: 20px">
-      <button onclick="moveToCreateQuestion()">추가</button>
-    </div>
+        <!-- BE : test용 추가 생성 버튼 -->
+        <div style="display: flex; justify-content: center; margin: 20px">
+            <button onclick="moveToCreateQuestion()">추가</button>
+        </div>
 
-    <div class="index_container">
-      <%for(let i = 0; i < data.length; i++){%> <%-include(type === 'board' ?
-      './components/freeBoardCard' : './components/questionBoardCard', { data:
-      data[i] })%> <%}%>
-    </div>
+        <div class="index_container">
+            <%for(let i = 0; i < data.length; i++){%> <%-include(type ===
+            'board' ? './components/freeBoardCard' :
+            './components/questionBoardCard', { data: data[i] })%> <%}%>
+        </div>
 
-    <footer>
-      <div>대충 사이트정보 표시</div>
-    </footer>
-  </body>
+        <footer>
+            <div>대충 사이트정보 표시</div>
+        </footer>
+    </body>
 </html>
