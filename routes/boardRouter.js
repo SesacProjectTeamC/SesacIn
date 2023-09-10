@@ -3,7 +3,22 @@ const router = express.Router();
 const Cboard = require('../controller/Cboard');
 
 // 개별 게시글 페이지 렌더링
-router.get('/:bId', Cboard.detailBoard);
+/**
+ * @swagger
+ * /board/detail/:bId:
+ *   get:
+ *     summary: 개별 게시글 페이지 렌더링
+ *     description: 개별 게시글 페이지 렌더링 완료
+ *     tags:
+ *       - 자유게시판
+ *     responses:
+ *       '200':
+ *         description: 개별 게시글 페이지 렌더링 완료
+ *         content:
+ *           text/html:
+ *             example: HTML 페이지를 렌더링합니다.
+ */
+router.get('/detail/:bId', Cboard.detailBoard);
 
 // 새 게시글 생성 페이지 렌더링
 /**
