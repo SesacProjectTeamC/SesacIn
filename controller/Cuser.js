@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 // 회원가입 창 렌더링
 exports.getJoin = (req, res) => {
-  res.render('jointest');
+  res.render('join');
 };
 
 // 회원 가입 시 사용자 생성

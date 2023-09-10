@@ -6,15 +6,14 @@ body {
 }
 
 header {
-  margin: 20px;
   width: 100%;
   text-align: start;
   margin: 0 30px;
   cursor: pointer;
 }
 
-.bi-arrow-left:hover .hover-circle {
-  fill: var(--hover-color) ;
+.bi-arrow-left:hover > .hover-circle {
+  fill: var(--hover-color);
 }
 
 img {
@@ -27,80 +26,88 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 350px;
-  height: 450px;
+  width: 500px;
+  height: 650px;
   border: 5px solid var(--border-color);
   border-radius: 20px;
   padding: 30px;
+  flex-wrap: wrap;
 }
 
-form#login_form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+h1 {
+  color: var(--border-color);
 }
 
-.login_form_id,
-.login_form_pw {
-  display: flex;
-  flex-direction: column;
-}
-label[for="login_form_id"]:hover,
-label[for="login_form_pw"]:hover {
-  color: var(--hover-color2);
+.input-group-text {
+  background-color: var(--main-color);
+  border: none;
+  margin-top: 1rem;
+  margin-right: 0.3rem;
 }
 
-input[class="login_form_id"],
-input[class="login_form_pw"] {
+option {
+  border: none;
+  outline: none;
+}
+
+input.form-control {
   border: none;
   outline: none;
   box-shadow: 0px 2px 0px 0px var(--main-color);
   padding: 5px 10px;
   transition: box-shadow 0.3s ease-in-out;
+  margin-top: 0.3rem;
 }
-input[class="login_form_id"]:hover,
-input[class="login_form_pw"]:hover {
-  border: none;
-  outline: none;
+
+input.form-control:hover {
   box-shadow: 0px 0px 0px 1px var(--hover-color);
-  padding: 5px 10px;
 }
 
-form#login_form a {
+label {
   display: inline-block;
+  margin-bottom: 2.5rem;
+  margin-right: 1rem;
 }
 
-form#login_form a:last-of-type {
-  margin-right: 0;
+label.isSesac {
+  margin-right: 0.5rem;
+  background-color: var(--main-color);
+  border-radius: 5px;
+  margin-top: 0.3rem;
 }
-.login_links {
-  margin: -2px;
+
+.input-group.mb-3 .form-control {
+  margin-top: 0.8rem;
+}
+
+.form-select {
+  margin-top: 1rem;
+  width: 13rem;
+}
+
+.form-check-inline {
+  margin-top: 1rem;
+}
+.form-check-inline .form-check-label {
+  margin-left: 0.5rem;
+}
+
+.btn-primary {
   display: flex;
   justify-content: center;
-}
-
-.id-link,
-.pw-link {
-  color: var(--border-color);
-  text-decoration: none;
-}
-
-.id-link:hover,
-.pw-link:hover {
-  color: var(--hover-color);
-}
-.btn-primary {
+  align-items: center;
   margin: auto;
   width: 96px;
   height: 40px;
   border-radius: 10px;
   background-color: var(--main-color);
-  color: var(--border-color);
+  color: black;
   border: none;
   outline: none;
   align-self: center;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
+  margin-top: 3rem;
 }
 
 .btn-primary:hover {
