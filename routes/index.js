@@ -15,12 +15,17 @@ router.get("/", Cquestion.getQuestions);
 router.get("/", Cboard.getBoardList);
 //!!
 
-router.get("/join", Cuser.getJoin);
+// 유저 관련
+/**
+ * @swagger
+ * tags:
+ *   name: User
+ *   description: 사용자 관리
+ */
 
-// 로그인 페이지 렌더링
-router.get("/login", Cuser.login);
-
-// 회원 가입 처리
+///////////////////////////////////// 회원가입 페이지
+// 회원 가입 페이지 렌더링
+router.get('/join', Cuser.getJoin);
 /**
  * @swagger
  * /users:
@@ -61,34 +66,44 @@ router.get("/login", Cuser.login);
  *       500:
  *         description: 서버 에러
  */
+// 회원 가입 관련 api
+// post /user 요청이 오면 사용자 추가
 router.post('/users', Cuser.postUser);
 
+//////////////////////////////////// 마이페이지
 
-// 특정 회원 조회
 /**
  * @swagger
- * /users/{uId}:
+ * /users/{uId}/profile:
  *   get:
- *     summary: 특정 회원 데이터 조회
- *     tags:
- *       - User
- *     description: 특정 회원 데이터를 조회 합니다.
+ *     summary: 특정 플레이어 데이터 가져오기
+ *     tags: [User]
+ *     description: 로그인 된 사용자의 데이터를 가져옵니다.
  *     parameters:
  *       - in: path
  *         name: uId
  *         required: true
  *         schema:
  *           type: string
- *         description: 플레이어의 고유 ID
+ *         description: 로그인 된 사용자의 고유 ID
+ *     security:
+ *       - session: []  # 세션을 사용한 인증을 요구합니다.
  *     responses:
  *       200:
  *         description: 성공적으로 데이터를 가져온 경우
- *       404:
- *         description: 플레이어를 찾을 수 없음
+ *       401:
+ *         description: 로그인 되어 있지 않음
+ *       403:
+ *         description: 다른 사용자의 데이터를 조회할 권한이 없음
  *       500:
  *         description: 서버 에러
  */
-router.get("/users/:uId", Cuser.getUser);
+// 회원 정보 창에서 사용자 정보 확인
+router.get('/users/:uId/profile', Cuser.getUser);
+
+/////////////////////////////////////////////////// 사용자 정보 수정 페이지
+// 회원 정보 수정 페이지 렌더링
+router.get('/users/:uId/userinfo', Cuser.getUserInfo);
 
 // 회원 정보 수정
 /**
@@ -131,6 +146,11 @@ router.patch("/users/:uId/userinfo", Cuser.patchUser);
 
 // 회원 탈퇴시 정보 삭제
 router.delete("/users/:uId", Cuser.deleteUser);
+
+//////////////////////////////////////// 로그인 페이지
+
+// 로그인 페이지 렌더링
+router.get('/login', Cuser.login);
 
 // 로그인 처리
 /**
