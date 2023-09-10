@@ -3,6 +3,18 @@ const { Op } = require('sequelize');
 
 // 새 게시글 생성 페이지 렌더링
 exports.newBoardPage = (req, res) => {
+  // 테스트를 위해 로그인 된상태로 세팅
+  req.session.user = 'tgkim';
+
+  // 로그인 여부 검사
+  // 결과값을 isLogin 값으로 보낸다.
+  if (!req.session.user) {
+    res.send({
+      isLogin: false,
+      msg: '로그인 되어있지 않습니다.',
+    });
+  }
+
   res.render('boardTestTgkim');
 };
 
@@ -22,10 +34,10 @@ exports.detailBoard = async (req, res) => {
 exports.getBoardList = async (req, res) => {
   try {
     const BoardList = await Board.findAll();
-    res.render("index", { type: "board", data: BoardList });
+    res.render('index', { type: 'board', data: BoardList });
   } catch (error) {
     console.error(error);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -90,26 +102,49 @@ exports.createBoard = async (req, res) => {
   // 테스트를 위해 로그인 된것으로 처리
   req.session.user = 'tgkim';
 
+  // 로그인 여부 검사
   if (!req.session.user) {
-    // 로그인 상태가 아니면 홈으로 리다이렉트
-    res.redirect('/');
+    res.send.status(401)({
+      OK: false,
+      msg: '접근 권한이 없음. 로그인되어 있지 않습니다.',
+    });
+    return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
   }
   let loginUser = req.session.user;
 
-  const { title, content } = req.body;
+  // Req 데이터 Null 검사
+  if (!req.body.title || !req.body.content) {
+    res.status(400).send({
+      OK: false,
+      msg: '데이터에 빈값이 있습니다.',
+    });
+    return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
+  }
 
+  // 게시글 제목과 내용에 부적절한 단어 사용에 대한 처리
+  // ~~~~
+
+  // DB작업
   try {
     const newBoard = await Board.create({
-      title: title,
-      content: content,
+      title: req.body.title,
+      content: req.body.content,
       uId: loginUser,
     });
-
-    res.send({
-      msg: '새 게시글 생성 완료',
+    res.status(200).send({
+      OK: true,
+      msg: '작업 성공',
+      isLogin: true,
     });
+    return;
   } catch (error) {
-    //에러처리
+    // 기타 데이터베이스 오류
+    console.log(error);
+    res.status(500).send({
+      OK: false,
+      msg: '데이터베이스 오류 발생',
+    });
+    return;
   }
 };
 
@@ -184,29 +219,52 @@ exports.deleteBoard = async (req, res) => {
 // 게시글 댓글 생성 처리
 exports.createComment = async (req, res) => {
   // 테스트를 위해 로그인 된것으로 처리
-  // 게시글의 주인이 아닌 경우로
-  req.session.user = 'SomeCommentWriter';
+  req.session.user = 'tgkim';
 
+  // 로그인 여부 검사
   if (!req.session.user) {
-    // 로그인 상태가 아니면 홈으로 리다이렉트
-    // 로그인을 유도 하는 것으로 변경하면됨
-    res.redirect('/');
+    res.send.status(401)({
+      OK: false,
+      msg: '접근 권한이 없음. 로그인되어 있지 않습니다.',
+    });
+    return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
   }
-
-  // 댓글 작성자 = uId
   let loginUser = req.session.user;
 
+  // Req 데이터 Null 검사
+  if (!req.body.content || !req.params.bId) {
+    res.status(400).send({
+      OK: false,
+      msg: '데이터에 빈값이 있습니다.',
+    });
+    return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
+  }
   // 댓글이 달릴 게시판 = bId
   const currentBid = req.params.bId;
   const commentContent = req.body.content;
 
-  const newComment = await Comment.create({
-    uId: loginUser,
-    bId: currentBid,
-    content: commentContent,
-  });
+  try {
+    const newComment = await Comment.create({
+      uId: loginUser,
+      bId: currentBid,
+      content: commentContent,
+    });
 
-  res.send(newComment);
+    res.status(200).send({
+      OK: true,
+      msg: '작업 성공',
+      isLogin: true,
+    });
+    return;
+  } catch (error) {
+    // 기타 데이터베이스 오류
+    console.log(error);
+    res.status(500).send({
+      OK: false,
+      msg: '데이터베이스 오류 발생',
+    });
+    return;
+  }
 };
 
 // 게시글 댓글 수정 처리
