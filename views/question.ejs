@@ -5,9 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script defer src="../static/js/index.js"></script>
   </head>
   <body>
     <h1>질문 상세 페이지</h1>
+    <h3>질문</h3>
     <div>제목 <%= data.title %></div>
     <div>분야 <%= data.qType %></div>
     <div>내용 <%= data.content %></div>
@@ -15,12 +18,19 @@
     <div>좋아요 <%= data.likeCount %></div>
     <div>생성날짜 <%= data.createdAt %></div>
     <div>수정날짜 <%= data.updatedAt %></div>
+    <button onclick="moveToEditQuestion('<%= data.qId %>')">수정</button>
+    <button onclick="deleteQuestion('<%= data.qId %>')">삭제</button>
+    <h3>답변</h3>
     <div>답변 개수 <%= answerData.length %></div>
     <div>답변 제목 <%= answerData[0].title %></div>
     <div>답변 내용 <%= answerData[0].content %></div>
     <div>답변 좋아요 <%= answerData[0].likeCount %></div>
     <div>답변 생성날짜 <%= answerData[0].createdAt %></div>
     <div>답변 수정날짜 <%= answerData[0].updatedAt %></div>
-    <div>답변 댓글 <%= commentData[0].content %></div>
+    <h3>댓글</h3>
+    <div>댓글 작성자 id <%= commentData[0].uId %></div>
+    <div>댓글 내용 <%= commentData[0].content %></div>
+    <div>댓글 생성날짜 <%= commentData[0].createdAt %></div>
+    <div>댓글 수정날짜 <%= commentData[0].updatedAt %></div>
   </body>
 </html>
