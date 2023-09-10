@@ -39,6 +39,11 @@
       </div>
     </div>
 
+    <!-- BE : test용 추가 생성 버튼 -->
+    <div style="display: flex; justify-content: center; margin: 20px">
+      <button onclick="moveToCreateQuestion()">추가</button>
+    </div>
+
     <div class="index_container">
       <%for(let i = 0; i < data.length; i++){%> <%-include(type === 'board' ?
       './components/freeBoardCard' : './components/questionBoardCard', { data:
