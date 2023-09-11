@@ -1,46 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document <%= title %></title>
-    <link rel="stylesheet" href="views/styles/login.css">
-    <link rel="stylesheet" href="views/styles/globalstyle.css">
-</head>
-<body>
-    <header>   
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-          </svg>
-        <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
-    </header>
-    
-    <main>
-<form name="login" id="form_login">
-    <div class="form-group-id">
-    <label for="login-ID">아이디</label>
-    <input type="id" class="form-group-id" id="id" placeholder="아이디" required >
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document <%= title %></title>
+      <!-- axios cdn -->
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <link rel="stylesheet" href="views/styles/login.css">
+      <link rel="stylesheet" href="views/styles/globalstyle.css">
+  </head>
+  <body>
+      <header>
+          <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
+          <div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left">
+          <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
+          <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+      </svg>
     </div>
-  <br>
-  <br>
-  <div class="form-group-pw">
-    <label for="login-PW">비밀번호</label>
-    <input type="pw" class="form-group-pw" id="pw" placeholder="비밀번호" required >
-  </div>
-  <br>
-  <br>
-
-  <div>
-      <a href="/sign">회원가입 /</a>
-      <a href="/id">아이디 /</a>
-      <a href="/pw">비밀번호 찾기</a>
+      </header>
       
-  </div>
-  <br>
-  <button type="submit" class="btn btn-primary">로그인</button>
+      <main>
+        <form name="login" id="login_form">
+            <div class="login_form_id">
+            <input type="id" class="login_form_id" id="uId" name="uId" placeholder="아이디" required >
+            <div class="caution"></div>
+            </div>
+          <br>
+          <br>
+          <div class="login_form_pw">
+            <input type="pw" class="login_form_pw" id="pw" name="pw" placeholder="비밀번호" required >
+          </div>
+          <br>
+          <br>
 
-</form>
-</main>
-</div>
-</body>
+          <div>
+              <a href="/id" class="id-link">아이디 /</a>
+              <a href="/pw" class="pw-link">비밀번호 찾기</a>
+              
+          </div>
+          <br>
+          <button type="button" class="btn btn-primary" onclick="join()">회원가입</button>
+          <br>
+          <button type="submit" class="btn btn-primary" onclick="logintest()">로그인</button>
+
+        </form>
+      </main>
+  </div>
+    <script>
+      function join(){
+        window.location.href = "/join";
+      }
+      function logintest() {
+      const cautionBox = document.querySelector('div.caution');
+      const form_login = document.forms['login'];
+      
+      try {
+        if(!form_login.uId.checkValidity()){
+          caution.textContent = `id를 입력해 주세요`;
+        } else if(!form_login.pw.checkValidity()){
+          caution.textContent = `pw를 입력해 주세요`;
+        } else {
+          axios({
+            method: 'post',
+            url: '/login',
+            data: {
+              uId: form_login.uId.value,
+              pw: form_login.pw.value,
+            },
+          })
+          .then((res) => {
+            return res.data;
+          })
+          .then((data) => {
+            console.log(data);
+          });
+        }
+      } catch(err){
+        caution.textContent = `알 수 없는 에러 발생`;
+      }
+          }
+
+    </script>
+  </body>
 </html>
