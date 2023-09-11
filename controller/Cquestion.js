@@ -44,7 +44,7 @@ exports.getQuestion = async (req, res) => {
 // 질문 생성 GET
 exports.getCreateQuestion = async (req, res) => {
   try {
-    res.render("questionCreateTest", { data: { type: "자유" } }); // 임시
+    res.render("post", { data: { type: "qna" } }); // 임시
   } catch (err) {
     console.error(err);
     res.send("Internal Server Error");

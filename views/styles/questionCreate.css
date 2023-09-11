@@ -1,10 +1,10 @@
 .ck-editor__editable {
-  min-height: 500px;
+  min-height: 400px;
 }
 
 .qcTitleContainer {
   display: flex;
-  margin-top: 20px;
+  margin-top: 5px;
   align-items: center;
 }
 
