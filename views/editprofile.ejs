@@ -18,18 +18,19 @@
     </form>
 
     <script>
+      //
       // TODO: [Login] 버튼 클릭시 서버에 회원 정보 수정 요청하기
       // POST /user/profile/edit
       function profileEdit() {
-        const form = document.forms['form_profile'];
+        const form = document.forms["form_profile"];
 
         if (!form.pw.value) {
-          alert('비밀번호를 입력헤주세요');
+          alert("비밀번호를 입력헤주세요");
         } else if (!form.uName.value) {
-          alert('이름을 입력헤주세요');
+          alert("이름을 입력헤주세요");
         } else {
           axios({
-            method: 'PATCH',
+            method: "PATCH",
             url: `/editprofile`,
             data: {
               pw: form.pw.value,
@@ -37,7 +38,7 @@
             },
           })
             .then((result) => {
-              alert('회원 정보 수정 성공');
+              alert("회원 정보 수정 성공");
             })
             .catch((err) => {
               console.log(err);
@@ -46,13 +47,13 @@
       }
 
       function profileDelete() {
-        if (confirm('정말 삭제 하시겠습니까?')) {
+        if (confirm("정말 삭제 하시겠습니까?")) {
           axios({
-            method: 'DELETE',
-            url: '/deleteprofile',
+            method: "DELETE",
+            url: "/deleteprofile",
           })
             .then((result) => {
-              alert('삭제되었습니다.');
+              alert("삭제되었습니다.");
               // document.location.href = '/';
             })
             .catch((err) => {
