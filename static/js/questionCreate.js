@@ -27,7 +27,6 @@ const changeType = (t) => {
 const postBoard = (t) => {
   const title = document.querySelector("#title");
   const content = editor.getData();
-  const dpLabel = document.querySelector("#dpLabel").value;
   if (title.value === "" || !title.value) {
     appendAlert("제목을 입력해 주세요");
   } else if (content === "" || !content) {
@@ -45,6 +44,7 @@ const postBoard = (t) => {
         }
       });
     } else {
+      const dpLabel = document.querySelector("#dpLabel").value();
       axios({
         method: "POST",
         url: "/create",
