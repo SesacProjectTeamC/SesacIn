@@ -4,15 +4,76 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script defer src="../static/js/index.js"></script>
+    <%- include('./components/cdn', { title: '메인' }) %>
+    <link rel="stylesheet" href="/views/styles/globalstyle.css" />
+    <link rel="stylesheet" href="/views/styles/questionCreate.css" />
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.2/classic/ckeditor.js"></script>
+    <script defer src="/static/js/questionCreate.js"></script>
   </head>
   <body>
-    <h1>질문 등록하기</h1>
-    <div>제목<input type="text" id="title" /></div>
-    <div>내용<input type="text" id="content" /></div>
-    <button onclick="createQuestionDone()">등록하기</button>
-    <button onclick="createQuestionCancel('<%= data.qId %>')">취소</button>
+    <!-- <div>제목<input type="text" id="title" /></div>
+        <div>내용<input type="text" id="content" /></div>
+        <button onclick="createDone()">등록하기</button>
+        <button onclick="createCancel()">취소</button> -->
+    <%- include('./components/header') %>
+
+    <div class="container" style="margin-bottom: 50px">
+      <div id="alertC"></div>
+      <div class="input-group mb-4 qcTitleContainer">
+        <div class="qcTitle">제목</div>
+        <input
+          id="title"
+          type="text"
+          class="form-control"
+          placeholder="제목을 입력해 주세요"
+          aria-label="title"
+          aria-describedby="basic-addon1"
+        />
+      </div>
+      <%if(data?.type !== '자유'){%>
+      <div style="display: flex; margin-bottom: 30px; align-items: center">
+        <div class="qcTitle">카테고리</div>
+        <div class="dropdown">
+          <button
+            id="dpLabel"
+            class="btn dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            앱 / 웹
+          </button>
+          <ul class="dropdown-menu">
+            <%for(d of ['앱/웹', 'AI', '빅데이터', '클라우드', '핀테크',
+            '블록체인', '개임개발', '기타']){%>
+            <li class="dropdown-item" onclick="changeType('<%= d%>')">
+              <%= d%>
+            </li>
+            <%}%>
+          </ul>
+        </div>
+      </div>
+      <%}%>
+
+      <div id="editor"></div>
+
+      <div class="qcWrite">
+        <button
+          type="button"
+          class="btn btn-outline-danger"
+          style="margin-right: 15px"
+          onclick="history.back()"
+        >
+          취소
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-success"
+          onclick="postBoard('<%= data.type%>')"
+        >
+          작성
+        </button>
+      </div>
+    </div>
   </body>
 </html>
