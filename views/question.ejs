@@ -21,7 +21,7 @@
     <button onclick="moveToEditQuestion('<%= data.qId %>')">수정</button>
     <button onclick="deleteQuestion('<%= data.qId %>')">삭제</button>
 
-    <% if (answerData && answerData.length > 0) { %>
+    <% if (answerData) { %>
     <h3>답변 리스트</h3>
     <button onclick="moveToCreateAnswer('<%= data.qId %>')">답변 등록</button>
 
@@ -48,8 +48,9 @@
     <div>답변 수정날짜 : <%= answerData[i].updatedAt %></div>
     <br />
 
-    <% if (commentData) { %> <% const answerCommentList = [] %> <% for(const
-    comment of commentData ) { %> <% if(comment.aId === 2) { %> <%
+    <% if (commentData) { %> <% console.log("####", commentData[0]) %> <% const
+    answerCommentList = [] %> <% for(const comment of commentData ) { %> <%
+    if(comment.aId === answerData[i].aId) { %> <%
     answerCommentList.push(comment); %> <% } %> <% } %> <%
     console.log("!!!!!!!!!!!!!!", answerCommentList) %>
     <!-- && -->
