@@ -14,7 +14,7 @@ exports.getQuestions = async (req, res) => {
 // 질문 생성 GET
 exports.getCreateQuestion = async (req, res) => {
   try {
-    res.render("questionCreateTest");
+    res.render("questionCreateTest", { data: { type: "자유" } }); // 임시
   } catch (err) {
     console.error(err);
     res.send("Internal Server Error");
@@ -76,7 +76,7 @@ exports.patchQuestion = async (req, res) => {
       { title, content },
       {
         where: { qId },
-      },
+      }
     );
 
     res.render("question", { result: updatedQuestion });
