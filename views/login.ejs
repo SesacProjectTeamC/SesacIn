@@ -42,7 +42,7 @@
           <br>
           <button type="button" class="btn btn-primary" onclick="join()">회원가입</button>
           <br>
-          <button type="submit" class="btn btn-primary" onclick="login()">로그인</button>
+          <button type="button" class="btn btn-primary" onclick="logintest()">로그인</button>
 
         </form>
       </main>
@@ -51,7 +51,7 @@
       function join(){
         window.location.href = "/join";
       }
-      function login() {
+      function logintest() {
         window.location.href = "/";
       const cautionBox = document.querySelector('div.caution');
       const login_form = document.forms['login'];
@@ -71,6 +71,7 @@
             },
           })
           .then((res) => {
+            console.log('아무거나');
             return res.data;
           })
           .then((data) => {
