@@ -1,18 +1,18 @@
 // (시작) module
 // 경로 선언과 관련된 내용 기술
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const Cmain = require("../controller/Cmain");
-const Cuser = require("../controller/Cuser");
-const Cquestion = require("../controller/Cquestion");
-const Cboard = require("../controller/Cboard");
+const Cmain = require('../controller/Cmain');
+const Cuser = require('../controller/Cuser');
+const Cquestion = require('../controller/Cquestion');
+const Cboard = require('../controller/Cboard');
 
 // 메인 페이지 관련
 // router.get("/", Cmain.main);
 // QnA 전체 질문 리스트 가져오기
-router.get("/", Cquestion.getQuestions);
+router.get('/', Cquestion.getQuestions);
 // 자유게시판 전체 리스트 가져오기
-router.get("/", Cboard.getBoardList);
+router.get('/', Cboard.getBoardList);
 //!!
 
 // 유저 관련
@@ -103,7 +103,7 @@ router.get('/users/:uId/profile', Cuser.getUser);
 
 /////////////////////////////////////////////////// 사용자 정보 수정 페이지
 // 회원 정보 수정 페이지 렌더링
-router.get('/users/:uId/userinfo', Cuser.getUserInfo);
+router.get('/editprofile', Cuser.getUserInfo);
 
 // 회원 정보 수정
 /**
@@ -142,10 +142,10 @@ router.get('/users/:uId/userinfo', Cuser.getUserInfo);
  *       500:
  *         description: 서버 에러
  */
-router.patch("/users/:uId/userinfo", Cuser.patchUser);
+router.patch('/editprofile', Cuser.patchUser);
 
 // 회원 탈퇴시 정보 삭제
-router.delete("/users/:uId", Cuser.deleteUser);
+router.delete('/deleteprofile', Cuser.deleteUser);
 
 //////////////////////////////////////// 로그인 페이지
 
@@ -196,7 +196,7 @@ router.get('/login', Cuser.login);
  *                   type: string
  *                   description: 오류 메시지
  */
-router.post("/login", Cuser.userLogin);
+router.post('/login', Cuser.userLogin);
 
 // 로그아웃 처리
 /**
@@ -213,6 +213,6 @@ router.post("/login", Cuser.userLogin);
  *       '500':
  *         description: 서버 오류 발생
  */
-router.post("/logout", Cuser.userLogout);
+router.post('/logout', Cuser.userLogout);
 
 module.exports = router;

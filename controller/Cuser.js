@@ -15,6 +15,8 @@ exports.postUser = async (req, res) => {
     // db에 넣기전 pw 암호화
     pw = hashPassword(pw);
 
+    // null 값이거나 비속어 등이 섞여있으면 처리하기
+
     const newUser = await User.create({
       uId: uId,
       pw: pw,
@@ -70,14 +72,20 @@ exports.getUserInfo = (req, res) => {
     uId: req.session.user, // 세션에서 사용자 ID 가져오기
   };
   // ********** 추후에 어떤 화면으로 이동할 지 이름 수정 필요할수도 있음
-  res.render('userinfo', { userData });
+  res.render('editprofile', { userData });
 };
 
 // 회원 정보 수정 - 비밀번호, 이름 (이미지는 후순위)
 exports.patchUser = async (req, res) => {
   try {
-    const { uId } = req.params;
-    const { pw, uName } = req.body;
+    const uId = req.session.user;
+    console.log(uId);
+
+    const userData = { uId: uId };
+    let { pw, uName } = req.body;
+    console.log(req.body);
+
+    pw = hashPassword(pw);
     // update는 바꿔야하는 인자, 어디에 있는 건지 where 인자
     const updatedUser = await User.update(
       { pw: pw, uName: uName },
@@ -97,15 +105,23 @@ exports.patchUser = async (req, res) => {
 // 회원 삭제 - 회원 탈퇴할 경우
 exports.deleteUser = async (req, res) => {
   try {
-    const { uId } = req.params;
+    const uId = req.session.user;
     const isDeleted = await User.destroy({
       where: { uId },
     });
     // console.log(isDeleted); // 성공시 1, 실패시 0
     if (isDeleted) {
-      return res.send(true);
+      // 성공적으로 삭제된 경우
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send('Internal Server Error');
+        }
+        res.send(true);
+      });
     } else {
-      return res.send(false);
+      // 삭제 실패
+      res.send(false);
     }
   } catch (err) {
     console.error(err);
