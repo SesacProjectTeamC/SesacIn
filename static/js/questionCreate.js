@@ -53,7 +53,7 @@ const postBoard = (t) => {
       }).then((res) => {
         if (res) {
           console.log(res.data);
-          document.location.href = `/board/${res.data.result.qId}`;
+          document.location.href = `/question/${res.data.result.qId}`;
         }
       });
     }
