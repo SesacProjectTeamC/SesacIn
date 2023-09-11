@@ -1,4 +1,4 @@
-const { Question } = require("../models");
+const { Question, Answer, Comment } = require("../models");
 
 // 질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
@@ -11,10 +11,40 @@ exports.getQuestions = async (req, res) => {
   }
 };
 
+//-- QnA 특정 질문 상세 페이지 GET
+// 특정 질문과 그 질문에 대한 답변 전체 리스트 가져오기 (Cquestion)
+// 특정 답변에 대한 전체 댓글 리스트 가져오기 (Ccomment)
+exports.getQuestion = async (req, res) => {
+  try {
+    const { qId } = req.params;
+
+    const question = await Question.findOne({
+      where: { qId },
+    });
+
+    const answers = await Answer.findAll({
+      where: { qId },
+    });
+
+    const comments = await Comment.findAll({
+      where: { qId },
+    });
+
+    res.render("question", {
+      data: question,
+      answerData: answers,
+      commentData: comments,
+    });
+  } catch (err) {
+    console.log(err);
+    res.send("Internet Server Error!!!");
+  }
+};
+
 // 질문 생성 GET
 exports.getCreateQuestion = async (req, res) => {
   try {
-    res.render("questionCreateTest");
+    res.render("questionCreateTest", { data: { type: "자유" } }); // 임시
   } catch (err) {
     console.error(err);
     res.send("Internal Server Error");
@@ -76,10 +106,18 @@ exports.patchQuestion = async (req, res) => {
       { title, content },
       {
         where: { qId },
-      },
+      }
     );
 
-    res.render("question", { result: updatedQuestion });
+    //! 매치 여부 확인
+    const answers = await Answer.findOne({ where: { qId } });
+    const comments = await Comment.findOne({ where: { qId } });
+
+    res.render("question", {
+      data: updatedQuestion,
+      answerData: answers,
+      commentData: comments,
+    });
   } catch (err) {
     console.log(err);
     res.send("Internet Server Error!!!");
