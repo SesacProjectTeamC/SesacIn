@@ -11,7 +11,9 @@
   <body>
     <h1>댓글 등록하기</h1>
     <div>내용<input type="text" id="content" /></div>
-    <button onclick="createCommentDone('<%= data%>')">등록하기</button>
+    <button onclick="createCommentDone('<%= data%>', '<%= answerData %>')">
+      등록하기
+    </button>
     <button onclick="createCommentCancel('<%= data%>')">취소</button>
   </body>
 </html>

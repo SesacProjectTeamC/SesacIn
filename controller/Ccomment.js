@@ -49,9 +49,9 @@ exports.getAnswerComments = async (req, res) => {
 // 댓글 등록 GET
 exports.getCreateComment = async (req, res) => {
   try {
-    const { qId } = req.params;
+    const { qId, aId } = req.params;
 
-    res.render('commentCreateTest', { data: qId });
+    res.render('commentCreateTest', { data: qId, answerData: aId });
   } catch (err) {
     console.error(err);
     res.send('Internal Server Error');
@@ -69,22 +69,28 @@ exports.postComment = async (req, res) => {
     }
     let loginUser = req.session.user;
 
+    const { qId, aId } = req.params;
+    const question = await Question.findOne({
+      where: { qId },
+    });
+
+    const answers = await Question.findAll({
+      where: { qId },
+    });
+
     const { content, uId } = req.body;
     const newComment = await Comment.create({
       content,
       uId: loginUser,
-    });
-
-    // 특정 질문 가져오기
-    const { qId } = req.params;
-    const question = await Question.findOne({
-      where: { qId },
+      qId: qId,
+      aId: aId,
     });
 
     if (newComment) {
       return res.send({
         result: true,
         data: question,
+        answerData: answers,
         commentData: newComment,
       });
     } else {
@@ -99,7 +105,7 @@ exports.postComment = async (req, res) => {
 // 댓글 수정 GET
 exports.getEditComment = async (req, res) => {
   try {
-    const { qId, cId } = req.params;
+    const { qId, aId, cId } = req.params;
 
     const comment = await Comment.findOne({
       where: { cId },
@@ -114,12 +120,11 @@ exports.getEditComment = async (req, res) => {
 
 exports.patchComment = async (req, res) => {
   try {
-    const { qId, cId } = req.params;
+    const { qId, aId, cId } = req.params;
 
     const question = await Question.findOne({ where: { qId } });
     const answers = await Answer.findAll({});
 
-    console.log('cId>>>>>>>>>>', cId);
     const { content } = req.body;
     const updatedComment = await Comment.update(
       { content },
@@ -147,7 +152,7 @@ exports.patchComment = async (req, res) => {
 // 댓글 삭제하기
 exports.deleteComment = async (req, res) => {
   try {
-    const { qId, cId } = req.params;
+    const { qId, aId, cId } = req.params;
 
     const isDeleted = await Comment.destroy({
       where: { cId },

@@ -24,12 +24,12 @@ const moveToEditAnswer = (qId, aId) => {
 };
 
 // 3) 댓글
-const moveToCreateComment = (qId) => {
-  window.location.href = `/question/${qId}/comment`;
+const moveToCreateComment = (qId, aId) => {
+  window.location.href = `/question/${qId}/${aId}/comment/create`;
 };
 
-const moveToEditComment = (qId, cId) => {
-  window.location.href = `/question/${qId}/comment/${cId}/edit`;
+const moveToEditComment = (qId, aId, cId) => {
+  window.location.href = `/question/${qId}/${aId}/comment/${cId}/edit`;
 };
 
 //=== 1. Question ===
@@ -159,14 +159,15 @@ const deleteAnswer = (qId, aId) => {
 };
 
 //=== 3. Comment ===
+// 1) 조회
 
 // 2) 생성
-const createCommentDone = (qId) => {
+const createCommentDone = (qId, aId) => {
   const content = document.querySelector('#content');
 
   axios({
     method: 'POST',
-    url: `/question/${qId}/comment`,
+    url: `/question/${qId}/${aId}/comment/create`,
     data: { content: content.value },
   }).then((res) => {
     if (res) {
@@ -182,12 +183,12 @@ const createCommentCancel = (qId) => {
 };
 
 // 3) 수정
-const editCommentDone = (qId, cId) => {
+const editCommentDone = (qId, aId, cId) => {
   const content = document.querySelector('#content');
 
   axios({
     method: 'PATCH',
-    url: `/question/${qId}/comment/${cId}/edit`,
+    url: `/question/${qId}/${aId}/comment/${cId}/edit`,
     data: {
       content: content.value,
     },
@@ -205,12 +206,12 @@ const editCommentCancel = (qId) => {
 };
 
 // 4) 삭제
-const deleteComment = (qId, cId) => {
+const deleteComment = (qId, aId, cId) => {
   if (!confirm('삭제하시겠습니까?')) return;
 
   axios({
     method: 'DELETE',
-    url: `/question/${qId}/comment/${cId}/delete`,
+    url: `/question/${qId}/${aId}/comment/${cId}/delete`,
   }).then((res) => {
     if (res.data.result) {
       alert('삭제되었습니다');

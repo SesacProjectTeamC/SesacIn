@@ -42,14 +42,14 @@ router.delete('/:qId/answer/:aId/delete', Canswer.deleteAnswer);
 router.get('/:qId/comment', Ccomment.getAnswerComments);
 
 // 생성
-router.get('/:qId/comment/create', Ccomment.getCreateComment);
-router.post('/:qId/comment/create', Ccomment.postComment);
+router.get('/:qId/:aId/comment/create', Ccomment.getCreateComment);
+router.post('/:qId/:aId/comment/create', Ccomment.postComment);
 
 // 수정
-router.get('/:qId/comment/:cId/edit', Ccomment.getEditComment);
-router.patch('/:qId/comment/:cId/edit', Ccomment.patchComment);
+router.get('/:qId/:aId/comment/:cId/edit', Ccomment.getEditComment);
+router.patch('/:qId/:aId/comment/:cId/edit', Ccomment.patchComment);
 
 // 삭제
-router.delete('/:qId/comment/:cId/delete', Ccomment.deleteComment);
+router.delete('/:qId/:aId/comment/:cId/delete', Ccomment.deleteComment);
 
 module.exports = router;
