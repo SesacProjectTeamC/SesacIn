@@ -1,13 +1,13 @@
-const { Question, Answer } = require("../models");
+const { Question, Answer } = require('../models');
 
 // 답변 목록 가져오기
 exports.getAnswers = async (req, res) => {
   try {
     const answers = await Answer.findAll();
-    res.render("question", { answerData: answers });
+    res.render('question', { answerData: answers });
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -16,10 +16,10 @@ exports.getCreateAnswer = async (req, res) => {
   try {
     const { qId } = req.params;
 
-    res.render("answerCreateTest", { data: qId });
+    res.render('answerCreateTest', { data: qId });
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -30,7 +30,7 @@ exports.postAnswer = async (req, res) => {
     req.session.user = 1;
 
     if (!req.session.user) {
-      res.redirect("/");
+      res.redirect('/');
     }
     let loginUser = req.session.user;
 
@@ -50,13 +50,18 @@ exports.postAnswer = async (req, res) => {
     });
 
     if (newAnswer) {
-      return res.send({ result: true, data: question, answerData: newAnswer });
+      return res.send({
+        result: true,
+        data: question,
+        answerData: newAnswer,
+        commentData: null,
+      });
     } else {
       return res.send({ result: false });
     }
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -69,10 +74,10 @@ exports.getEditAnswer = async (req, res) => {
       where: { aId },
     });
 
-    res.render("answerEditTest", { data: qId, answerData: answer });
+    res.render('answerEditTest', { data: qId, answerData: answer });
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -87,22 +92,22 @@ exports.patchAnswer = async (req, res) => {
       { title, content },
       {
         where: { aId },
-      },
+      }
     );
 
     if (updatedAnswer) {
-      return res.render("question", {
+      return res.render('question', {
         result: true,
         data: question,
         answerData: updatedAnswer,
         commentData: null,
       });
     } else {
-      return res.render("question", { result: false });
+      return res.render('question', { result: false });
     }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -118,10 +123,10 @@ exports.deleteAnswer = async (req, res) => {
     const question = await Question.findOne({ where: { qId } });
     const answers = await Answer.findAll();
 
-    console.log("isDeleted >>>", isDeleted); // 성공 시 1, 실패 시 0
+    console.log('isDeleted >>>', isDeleted); // 성공 시 1, 실패 시 0
 
     if (isDeleted) {
-      return res.render("question", {
+      return res.render('question', {
         result: true,
         data: question,
         answerData: answers,
@@ -132,6 +137,6 @@ exports.deleteAnswer = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
