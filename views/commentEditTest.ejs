@@ -13,7 +13,9 @@
     <div>
       내용<input type="text" id="content" value="<%= commentData.content %>" />
     </div>
-    <button onclick="editCommentDone('<%= data %>', '<%= commentData.cId%>')">
+    <button
+      onclick="editCommentDone('<%= data %>', '<%= answerData.aId%>', '<%= commentData.cId%>')"
+    >
       수정완료
     </button>
     <button onclick="editCommentCancel('<%= data %>')">취소</button>

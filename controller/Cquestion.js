@@ -12,8 +12,8 @@ exports.getQuestions = async (req, res) => {
 };
 
 //-- QnA 특정 질문 상세 페이지 GET
-// 특정 질문과 그 질문에 대한 답변 전체 리스트 가져오기
-// 특정 답변에 대한 전체 댓글 리스트 가져오기
+// 특정 질문과 그 질문에 대한 답변 전체 리스트 가져오기 (Cquestion)
+// 특정 답변에 대한 전체 댓글 리스트 가져오기 (Ccomment)
 exports.getQuestion = async (req, res) => {
   try {
     const { qId } = req.params;
@@ -22,9 +22,13 @@ exports.getQuestion = async (req, res) => {
       where: { qId },
     });
 
-    const answers = await Answer.findAll();
+    const answers = await Answer.findAll({
+      where: { qId },
+    });
 
-    const comments = await Comment.findAll();
+    const comments = await Comment.findAll({
+      where: { qId },
+    });
 
     res.render("question", {
       data: question,
