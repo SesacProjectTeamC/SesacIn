@@ -11,10 +11,18 @@
       <p>UserID: <%= userData.uId %></p>
       <label for="pw">Password</label>
       <input id="pw" type="password" name="pw" value="" required /><br />
+      <label for="pwConfirm">Password</label>
+      <input
+        id="pwConfirm"
+        type="password"
+        name="pwConfirm"
+        value=""
+        required
+      /><br />
       <label for="uName">Name</label>
       <input id="uName" type="text" name="uName" value="" required /><br />
-      <button type="button" onclick="profileEdit();">Edit</button>
-      <button type="button" onclick="profileDelete();">Delete</button>
+      <button type="button" onclick="profileEdit();">수정 완료</button>
+      <button type="button" onclick="profileDelete();">회원 탈퇴</button>
     </form>
 
     <script>
@@ -27,10 +35,12 @@
           alert('비밀번호를 입력헤주세요');
         } else if (!form.uName.value) {
           alert('이름을 입력헤주세요');
+        } else if (form.pw.value != form.pwConfirm.value) {
+          alert('비밀번호를 확인해주세요');
         } else {
           axios({
             method: 'PATCH',
-            url: `/editprofile`,
+            url: '/users/editprofile',
             data: {
               pw: form.pw.value,
               uName: form.uName.value,
@@ -49,7 +59,7 @@
         if (confirm('정말 삭제 하시겠습니까?')) {
           axios({
             method: 'DELETE',
-            url: '/deleteprofile',
+            url: '/users/deleteprofile',
           })
             .then((result) => {
               alert('삭제되었습니다.');

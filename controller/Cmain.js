@@ -1,4 +1,7 @@
 exports.main = (req, res) => {
+
+    const isLogin = req.session.user ? true : false;
+
     const sampleData = [
         {
             type: "자유",
@@ -148,5 +151,6 @@ exports.main = (req, res) => {
             content: "가나다라마바사아자차카타파하",
         },
     ];
-    res.render("index", { type: "Q&A", data: sampleData });
+
+    res.render("index", { type: "Q&A", data: sampleData, isLogin });
 };

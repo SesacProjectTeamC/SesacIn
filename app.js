@@ -1,8 +1,8 @@
 const express = require('express');
+const session = require('express-session');
 const app = express();
 const PORT = 8000;
 const { sequelize } = require('./models');
-const session = require('express-session');
 
 // Swagger
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -50,7 +50,7 @@ app.use(
 const indexRouter = require('./routes/index');
 const questionRouter = require('./routes/questionRouter');
 const boardRouter = require('./routes/boardRouter');
-const profileRouter = require('./routes/profileRouter');
+ const profileRouter = require('./routes/profileRouter');
 
 // indexRouter 로 이동
 // 메인페이지, 유저 관련
@@ -63,7 +63,7 @@ app.use('/question', questionRouter);
 app.use('/board', boardRouter);
 
 // profile 라우터로 이동
-app.use('/profile', profileRouter);
+app.use('/users', profileRouter);
 
 // 404 처리
 app.get('*', (req, res) => {
