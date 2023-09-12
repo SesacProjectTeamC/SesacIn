@@ -11,6 +11,14 @@
   <body>
     <h1>질문 상세 페이지</h1>
     <h3>질문</h3>
+
+    <button onclick="qLikeHandler('<%= data.qId %>')" id="qLike">
+      좋아요 👍🏻
+    </button>
+
+    <div>좋아요 개수 <%= data.likeCount %></div>
+    <div>조회수 <%= data.viewCount %></div>
+
     <div>제목 <%= data.title %></div>
     <div>분야 <%= data.qType %></div>
     <div>내용 <%= data.content %></div>
@@ -31,6 +39,10 @@
     <% for(let i = 0; i < answerData.length; i++) { %>
 
     <h4>답변 <%= i+1 %></h4>
+    <button onclick="aLikeHandler('<%= answerData[i].aId %>')" id="aLike">
+      좋아요 👍🏻
+    </button>
+    <br />
     <button
       onclick="moveToEditAnswer('<%= data.qId %>', '<%= answerData[i].aId %>')"
     >
@@ -69,6 +81,7 @@
     <br />
 
     <% for(let j = 0; j < answerCommentList.length; j++) { %>
+
     <br />
     <button
       onclick="moveToEditComment('<%= data.qId %>', '<%= answerData[i].aId %>', '<%= answerCommentList[j].cId %>')"

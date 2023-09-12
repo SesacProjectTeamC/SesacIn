@@ -1,4 +1,5 @@
 const { Question, Answer, Comment } = require('../models');
+const viewCount = 0;
 
 // 질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
@@ -30,10 +31,13 @@ exports.getQuestion = async (req, res) => {
       where: { qId },
     });
 
+    // viewCount += 1;
+
     res.render('question', {
       data: question,
       answerData: answers,
       commentData: comments,
+      // viewCount,
     });
   } catch (err) {
     console.log(err);
@@ -138,6 +142,67 @@ exports.deleteQuestion = async (req, res) => {
       return res.send({ result: true });
     } else {
       return res.send({ result: false });
+    }
+  } catch (err) {
+    console.log(err);
+    res.send('Internet Server Error!!!');
+  }
+};
+
+//-- 좋아요 누르기
+exports.likeQuestion = async (req, res) => {
+  try {
+    const { qId } = req.params;
+    const { isLike } = req.body;
+
+    if (isLike) {
+      // 1) 좋아요
+      // (1) 좋아요 히스토리 생성
+      const createLike = await Like.create({
+        // uId
+        uId: 1, // 임의 유저 1
+        qId,
+      });
+
+      console.log('!!!!!!!', createLike);
+
+      // (2) 좋아요 개수 업데이트
+      const updatedLike = await Question.update(
+        { likeCount: likeCount + 1 },
+        { where: { qId } }
+      );
+
+      const answers = await Answer.findOne({ where: { qId } });
+      const comments = await Comment.findOne({ where: { qId } });
+
+      res.render('question', {
+        data: updatedLike,
+        answerData: answers,
+        commentData: comments,
+      });
+    } else {
+      // 2) 좋아요 취소
+      // (1) 좋아요 히스토리 삭제
+      const deleteLike = await Like.destroy({
+        where: { qId },
+      });
+
+      console.log('xxxxxxxx', deleteLike);
+
+      // (2) 좋아요 개수 업데이트
+      const updatedLike = await Question.update(
+        { likeCount: likeCount - 1 },
+        { where: { qId } }
+      );
+
+      const answers = await Answer.findOne({ where: { qId } });
+      const comments = await Comment.findOne({ where: { qId } });
+
+      res.render('question', {
+        data: updatedLike,
+        answerData: answers,
+        commentData: comments,
+      });
     }
   } catch (err) {
     console.log(err);
