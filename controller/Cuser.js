@@ -39,24 +39,34 @@ exports.getUser = async (req, res) => {
   try {
     const { uId } = req.params; // 객체에서 꺼내온 유저 아이디 값
 
-    // 세션에서 로그인 된 사용자 id 가져오기
-    const loginUserId = req.session.user;
+    //!! (START) test 위해 잠시 주석처리합니다.
+    // // 세션에서 로그인 된 사용자 id 가져오기
+    // const loginUserId = req.session.user;
 
-    // 현재 로그인 된 사용자의 ID와 요청된 사용자 ID가 일치하는지 확인
-    if (loginUserId === uId) {
-      // 데이터베이스에서 해당 사용자 정보를 조회합니다.
-      const user = await User.findOne({
-        where: { uId: uId },
-      });
+    // // 현재 로그인 된 사용자의 ID와 요청된 사용자 ID가 일치하는지 확인
+    // if (loginUserId === uId) {
+    //   // 데이터베이스에서 해당 사용자 정보를 조회합니다.
+    //   const user = await User.findOne({
+    //     where: { uId: uId },
+    //   });
+    //   // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
+    //   res.render('profileTest', { userData: user });
+    // } else {
+    //   // 현재 로그인한 사용자와 요청된 사용자가 다를 경우 권한 없음을 응답
+    //   res
+    //     .status(403)
+    //     .send('Forbidden: You do not have permission to access this page.');
+    // }
+    //!! (END) test 위해 잠시 주석처리합니다.
 
-      // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      res.render('profile', { userData: user });
-    } else {
-      // 현재 로그인한 사용자와 요청된 사용자가 다를 경우 권한 없음을 응답
-      res
-        .status(403)
-        .send('Forbidden: You do not have permission to access this page.');
-    }
+    // !! (START) test용 1번 유저 가져오기
+    const user = await User.findOne({
+      where: { uId: 1 },
+    });
+    console.log('User>>>>', user);
+
+    res.render('profileTest', { userData: user });
+    // !! (END) test용 1번 유저 가져오기
   } catch (err) {
     console.error(err);
     res.send('Internal Server Error');

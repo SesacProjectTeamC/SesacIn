@@ -48,12 +48,9 @@
     <div>답변 수정날짜 : <%= answerData[i].updatedAt %></div>
     <br />
 
-    <% if (commentData) { %> <% console.log("####", commentData[0]) %> <% const
-    answerCommentList = [] %> <% for(const comment of commentData ) { %> <%
-    if(comment.aId === answerData[i].aId) { %> <%
-    answerCommentList.push(comment); %> <% } %> <% } %> <%
-    console.log("!!!!!!!!!!!!!!", answerCommentList) %>
-    <!-- && -->
+    <% if (commentData) { %> <% const answerCommentList = [] %> <% for(const
+    comment of commentData ) { %> <% if(comment.aId === answerData[i].aId) { %>
+    <% answerCommentList.push(comment); %> <% } %> <% } %>
     <h4>댓글 <%= i+1 %></h4>
     <!-- <button
       onclick="getAnswerComments()"

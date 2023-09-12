@@ -41,6 +41,11 @@ const moveToEditComment = (qId, aId, cId) => {
   window.location.href = `/question/${qId}/${aId}/comment/${cId}/edit`;
 };
 
+// 4) 프로필
+const moveToEditProfile = (uId) => {
+  window.location.href = `/profile/${uId}/edit`;
+};
+
 //=== 1. Question ===
 // 1) 생성
 const createQuestionDone = () => {
@@ -226,5 +231,57 @@ const deleteComment = (qId, aId, cId) => {
       alert('삭제되었습니다');
     }
     window.location.href = `/question/${qId}`;
+  });
+};
+
+//=== 4. Profile ===
+// 1) 조회
+
+// 2) 수정
+function profileEditDone(uId) {
+  const form = document.forms['form_profile'];
+
+  if (!form.uName.value) {
+    alert('이름을 입력해주세요');
+  } else if (!form.email.value) {
+    alert('이메일을 입력해주세요');
+  } else if (!form.pw.value) {
+    alert('비밀번호을 입력해주세요');
+  } else if (!form.pwConfirm.value) {
+    alert('비밀번호 재확인 입력해주세요');
+  } else {
+    axios({
+      method: 'PATCH',
+      url: `/profile/:uId/edit`,
+      data: {
+        uName: form.uName.value,
+        email: form.email.value,
+        pw: form.pw.value,
+      },
+    })
+      .then((res) => {
+        if (res.data) {
+          alert('회원 정보가 수정되었습니다 !');
+          document.location.href = `/profile/${uId}`;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+}
+
+// 3) 삭제
+const profileDelete = (uId) => {
+  if (!confirm('삭제하시겠습니까?')) return;
+
+  axios({
+    method: 'DELETE',
+    url: `/profile/${uId}/edit`,
+  }).then((res) => {
+    if (res.data.result) {
+      alert('삭제되었습니다');
+    }
+    window.location.href = `/`;
   });
 };
