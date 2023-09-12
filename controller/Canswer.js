@@ -50,7 +50,12 @@ exports.postAnswer = async (req, res) => {
     });
 
     if (newAnswer) {
-      return res.send({ result: true, data: question, answerData: newAnswer });
+      return res.send({
+        result: true,
+        data: question,
+        answerData: newAnswer,
+        commentData: null,
+      });
     } else {
       return res.send({ result: false });
     }
@@ -78,6 +83,8 @@ exports.getEditAnswer = async (req, res) => {
 
 exports.patchAnswer = async (req, res) => {
   try {
+    const { qId, aId } = req.params;
+
     const question = await Question.findOne({ where: { qId } });
 
     const { title, content } = req.body;
@@ -93,6 +100,7 @@ exports.patchAnswer = async (req, res) => {
         result: true,
         data: question,
         answerData: updatedAnswer,
+        commentData: null,
       });
     } else {
       return res.render('question', { result: false });
@@ -122,6 +130,7 @@ exports.deleteAnswer = async (req, res) => {
         result: true,
         data: question,
         answerData: answers,
+        commentData: null,
       });
     } else {
       return res.send({ result: false });
