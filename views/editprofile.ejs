@@ -54,7 +54,7 @@
       <label for="pw_check">비밀번호 재확인</label>
       <input id="pw_check" type="password" name="pw_check" value="" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required /><br />
     </div>
-      <button type="button" class="profileEdit" onclick="editProfile();">수정하기</button><br>
+      <button type="button" class="profileEdit" onclick="profileEdit();">수정하기</button><br>
 
       <button type="button" class="profileDelete" onclick="profileDelete();">회원탈퇴</button>
     </form>
@@ -81,7 +81,7 @@
   </main>
     <script>
  
-   function editProfile() {
+   function profileEdit() {
             const form_profile = document.forms['form_profile'];
             
             if (!form_profile.email.checkValidity()) {
@@ -99,8 +99,8 @@
             } else {
       
     axios({
-        method: "PATCH",
-        url: `/editprofile`,
+        method: 'PATCH',
+        url: `/users/editprofile`,
         data: {
             email: form_profile.email.value,
             pw: form_profile.pw.value,
@@ -123,8 +123,8 @@
       function profileDelete() {
         if (confirm("정말 삭제 하시겠습니까?")) {
           axios({
-            method: "DELETE",
-            url: "/deleteprofile",
+            method: 'DELETE',
+            url: '/users/deleteprofile',
           })
             .then((result) => {
               alert("삭제되었습니다.");
