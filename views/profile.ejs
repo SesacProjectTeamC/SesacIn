@@ -8,9 +8,19 @@
     <script defer src="/static/js/index.js"></script>
   </head>
   <body>
-    <h1>My Page</h1>
-    <h3>회원 정보</h3>
+    <header>
+      <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
+      <div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left">
+      <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
+      <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+    </svg>
+  </div>
+  </header>
+  <main>
 
+    <img src="../static/img/leaf-svgrepo-com.svg" alt="">
+    <h1>User Profile</h1>
     <% if (userData) { %>
     <p>UserID: <%= userData.uId %></p>
     <p>UserName: <%= userData.uName %></p>
@@ -20,33 +30,7 @@
     <% } else { %>
     <p>User data not available.</p>
     <% } %>
-
-    <button type="button" onclick="editProfile()">회원정보 수정</button>
-    <a href=/users/editprofile>회원 정보 수정</a>
-
-    <p>QnA</p>
-    <p>자유</p>
-    <br />
-    <h4>좋아요</h4>
-
-    <h4>작성 게시글</h4>
-    <div class="index_container">
-      <%for(let i = 0; i < postData.length; i++){%> <%-include(
-      './components/questionBoardCard', { data: postData[i] })%> <%}%>
-    </div>
-
-    <h4>댓글</h4>
-    <div class="index_container">
-      <%for(let i = 0; i < commentData.length; i++){%> <%-include(
-      './components/questionBoardCard', { data: commentData[i] })%> <%}%>
-    </div>
-
-    <h4>답변</h4>
-    <div class="index_container">
-      <%for(let i = 0; i < answerData.length; i++){%> <%-include(
-      './components/questionBoardCard', { data: answerData[i] })%> <%}%>
-
-
+  </main>
   </body>
   <script>
     function editProfile() {
