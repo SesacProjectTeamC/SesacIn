@@ -29,6 +29,11 @@ const User = (Sequelize, DataTypes) => {
         allowNull: true,
         defaultValue: 'NULL',
       },
+      isLike: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        defaultValue: 'NULL',
+      },
     },
     {
       tableName: 'user', // 실제 db 테이블명

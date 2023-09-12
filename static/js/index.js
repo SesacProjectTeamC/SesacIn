@@ -47,6 +47,7 @@ const moveToEditProfile = (uId) => {
 };
 
 //=== 1. Question ===
+
 // 1) 생성
 const createQuestionDone = () => {
   const title = document.querySelector('#title');
@@ -106,6 +107,23 @@ const deleteQuestion = (qId) => {
       alert('삭제되었습니다');
       document.location.href = '/';
     }
+  });
+};
+
+let isLike = false;
+// 4) 좋아요
+const qLikeHandler = (qId) => {
+  const qLike = document.querySelector('#qLike');
+
+  // boolean
+  isLike = !isLike;
+
+  console.log(isLike);
+
+  axios({
+    method: 'PATCH',
+    url: `/question/${qId}`,
+    data: isLike,
   });
 };
 

@@ -21,6 +21,7 @@ const Answer = require('./Answer')(sequelize, Sequelize);
 const Board = require('./Board')(sequelize, Sequelize);
 const Comment = require('./Comment')(sequelize, Sequelize);
 const Question = require('./Question')(sequelize, Sequelize);
+const Like = require('./Like')(sequelize, Sequelize);
 
 //=== Relation 설정 ===
 // 전체 1:다 관계
@@ -64,6 +65,26 @@ Comment.belongsTo(Question, { foreignKey: 'qId', onDelete: 'CASCADE' });
 // 하나의 게시글에는 여러개의 댓글 가능 / 댓글은 게시글에 속해있음
 Board.hasMany(Comment, { foreignKey: 'bId', onDelete: 'CASCADE' });
 Comment.belongsTo(Board, { foreignKey: 'bId', onDelete: 'CASCADE' });
+
+// 9. Like - User
+// 한 명의 유저는 여러개의 좋아요 가능 / 좋아요는 한 명의 유저에 속해있음
+User.hasMany(Like, { foreignKey: 'uId', onDelete: 'CASCADE' });
+Like.belongsTo(User, { foreignKey: 'uId', onDelete: 'CASCADE' });
+
+// 10. Like - Question
+// 하나의 질문은 여러개의 좋아요 가능 / 좋아요는 한 질문에 속해있음
+Question.hasMany(Like, { foreignKey: 'qId', onDelete: 'CASCADE' });
+Like.belongsTo(Question, { foreignKey: 'qId', onDelete: 'CASCADE' });
+
+// 11. Like - Answer
+// 하나의 답변은 여러개의 좋아요 가능 / 좋아요는 한 답변에 속해있음
+Answer.hasMany(Like, { foreignKey: 'aId', onDelete: 'CASCADE' });
+Like.belongsTo(Answer, { foreignKey: 'aId', onDelete: 'CASCADE' });
+
+// 12. Like - Board
+// 하나의 댓글은 여러개의 좋아요 가능 / 좋아요는 한 댓글에 속해있음
+Board.hasMany(Like, { foreignKey: 'bId', onDelete: 'CASCADE' });
+Like.belongsTo(Board, { foreignKey: 'bId', onDelete: 'CASCADE' });
 
 db.sequelize = sequelize; // DB연결정보를 가진 시퀄라이저
 db.Sequelize = Sequelize; // 시퀄라이저 모듈
