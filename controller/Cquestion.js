@@ -1,5 +1,4 @@
 const { Question, Answer, Comment } = require("../models");
-const { Board } = require("../models/index");
 
 // 질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
@@ -116,7 +115,6 @@ exports.patchQuestion = async (req, res) => {
       }
     );
 
-    //! 매치 여부 확인
     const answers = await Answer.findOne({ where: { qId } });
     const comments = await Comment.findOne({ where: { qId } });
 

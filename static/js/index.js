@@ -114,7 +114,7 @@ const moveToEditQuestion = (qId) => {
 
 // 2) 답변
 const moveToCreateAnswer = (qId) => {
-  window.location.href = `/question/${qId}/answer`;
+  window.location.href = `/question/${qId}/answer/create`;
 };
 
 const moveToEditAnswer = (qId, aId) => {
@@ -142,10 +142,7 @@ const createQuestionDone = () => {
     url: "/question/create",
     data: { title: title.value, content: content.value, qType: type },
   }).then((res) => {
-    if (res) {
-      alert("작성 완료되었습니다 !");
-      document.location.href = `/question/${res.data.result.qId}`;
-    }
+    console.log("sdsd");
   });
 };
 
@@ -201,7 +198,7 @@ const createAnswerDone = (qId) => {
 
   axios({
     method: "POST",
-    url: `/question/${qId}/answer`,
+    url: `/question/${qId}/answer/create`,
     data: { title: title.value, content: content.value },
   }).then((res) => {
     if (res) {

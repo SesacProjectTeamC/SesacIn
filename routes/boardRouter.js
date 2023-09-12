@@ -18,7 +18,7 @@ const Cboard = require('../controller/Cboard');
  *           text/html:
  *             example: HTML 페이지를 렌더링합니다.
  */
-router.get('/detail/:bId', Cboard.detailBoard);
+router.get('/:bId', Cboard.detailBoard);
 
 // 새 게시글 생성 페이지 렌더링
 /**

@@ -1,65 +1,159 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <!-- axios cdn -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  </head>
+<head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        
+        <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="views/componets/cdn.ejs">
+        <link rel="stylesheet" href="views/styles/editProfile.css">
+        <link rel="stylesheet" href="views/styles/globalstyle.css">
+        
+        
+    </head>
   <body>
-    <p>ID 수정 불가능, Password, Name 수정 가능</p>
+    <header>
+      <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
+      <div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goToLogin()">
+      <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
+      <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+    </svg>
+    </div>
+  </header>
+<main>
+    <form class="form_profile" name="form_profile">
 
-    <form name="form_profile">
-      <p>UserID: <%= userData.uId %></p>
-      <label for="pw">Password</label>
-      <input id="pw" type="password" name="pw" value="" required /><br />
-      <label for="uName">Name</label>
+      <h1>회원 정보 수정</h1>
+      <br>
+      <div class="input-wrapper">
+      <label class="uId">ID</label><br>
+      <label class="userId"> <%= userData.uId %></label><br>
+    </div>
+    <div class="input-wrapper">
+      <label for="email">이메일</label>
+      <input id="email" type="text" name="email" value=""pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" title="올바른 이메일 형식을 입력해주세요."><br>
+    </div>
+    <div class="input-wrapper">
+      <label for="uName">닉네임</label>
       <input id="uName" type="text" name="uName" value="" required /><br />
-      <button type="button" onclick="profileEdit();">Edit</button>
-      <button type="button" onclick="profileDelete();">Delete</button>
+    </div>
+    <div class="input-wrapper">
+      <label for="pw">비밀번호</label>
+      <input id="pw" type="password" name="pw" value="" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required /><br />
+    </div>
+
+    <div class="input-wrapper">
+      <label for="pw_check">비밀번호 재확인</label>
+      <input id="pw_check" type="password" name="pw_check" value="" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required /><br />
+    </div>
+      <button type="button" class="profileEdit" onclick="profileEdit();">수정하기</button><br>
+
+      <button type="button" class="profileDelete" onclick="profileDelete();">회원탈퇴</button>
     </form>
 
+      <!-- Modal -->
+      <div class="modal fade" id="cautionModal" tabindex="-1" aria-labelledby="cautionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="cautionModalLabel">경고</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            <p id="cautionText"></p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+            </div>
+        </div>
+        </div>
+    </div>
+  </main>
     <script>
-      // TODO: [Login] 버튼 클릭시 서버에 회원 정보 수정 요청하기
-      // POST /user/profile/edit
-      function profileEdit() {
-        const form = document.forms['form_profile'];
-
-        if (!form.pw.value) {
-          alert('비밀번호를 입력헤주세요');
-        } else if (!form.uName.value) {
-          alert('이름을 입력헤주세요');
-        } else {
-          axios({
-            method: 'PATCH',
-            url: `/editprofile`,
-            data: {
-              pw: form.pw.value,
-              uName: form.uName.value,
-            },
-          })
-            .then((result) => {
-              alert('회원 정보 수정 성공');
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        }
-      }
+ 
+   function profileEdit() {
+            const form_profile = document.forms['form_profile'];
+            
+            if (!form_profile.email.checkValidity()) {
+                setModalTextAndShow('올바른 이메일 형식을 입력해주세요');
+                return;
+            } else if (!form_profile.uName.checkValidity()) {
+                setModalTextAndShow('닉네임을 다시 입력해 주세요!');
+                return;
+            } else if (!form_profile.pw.checkValidity()) {
+                setModalTextAndShow('비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다.!');
+                return;
+            } else if (!form_profile.pw_check.checkValidity()) {
+                setModalTextAndShow('비밀번호가 일치 하지 않습니다!');
+                return;
+            } else {
+      
+    axios({
+        method: 'PATCH',
+        url: `/users/editprofile`,
+        data: {
+            email: form_profile.email.value,
+            pw: form_profile.pw.value,
+            uName: form_profile.uName.value,
+        },
+    })
+    .then((result) => {
+        alert("회원 정보 수정 성공");
+        // 입력 항목 초기화
+        resetFormInputs();
+        // 로그인 창으로 이동
+        document.location.href = '/login';
+    })
+    .catch((err) => {
+        setModalTextAndShow('서버에서 오류가 발생했습니다.');
+    });
+  }
+   }
 
       function profileDelete() {
-        if (confirm('정말 삭제 하시겠습니까?')) {
+        if (confirm("정말 삭제 하시겠습니까?")) {
           axios({
             method: 'DELETE',
-            url: '/deleteprofile',
+            url: '/users/deleteprofile',
           })
             .then((result) => {
-              alert('삭제되었습니다.');
-              // document.location.href = '/';
+              alert("삭제되었습니다.");
+              // 메인 화면으로 이동
+              document.location.href = '/';
+              resetFormInputs();
+
             })
             .catch((err) => {
               console.log(err);
             });
         }
-      }
+      } 
+       // 모달창
+       function setModalTextAndShow(message) {
+            $('#cautionText').text(message);
+            $('#cautionModal').modal('show');
+        }
+
+        //입력 항목 초기화 
+        function resetFormInputs() {
+        const form_profile = document.forms["form_profile"];
+        form_profile.uName.value = '';
+        form_profile.email.value = '';
+        form_profile.pw.value = '';
+        form_profile.pw_check.value = '';
+    }
+       
+      
     </script>
   </body>
 </html>

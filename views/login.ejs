@@ -42,7 +42,7 @@
           <br>
           <button type="button" class="btn btn-primary" onclick="join()">회원가입</button>
           <br>
-          <button type="submit" class="btn btn-primary" onclick="logintest()">로그인</button>
+          <button type="button" class="btn btn-primary" onclick="logintest()">로그인</button>
 
         </form>
       </main>
@@ -52,24 +52,26 @@
         window.location.href = "/join";
       }
       function logintest() {
+        window.location.href = "/";
       const cautionBox = document.querySelector('div.caution');
-      const form_login = document.forms['login'];
+      const login_form = document.forms['login'];
       
       try {
-        if(!form_login.uId.checkValidity()){
+        if(!login_form.uId.checkValidity()){
           caution.textContent = `id를 입력해 주세요`;
-        } else if(!form_login.pw.checkValidity()){
+        } else if(!login_form.pw.checkValidity()){
           caution.textContent = `pw를 입력해 주세요`;
         } else {
           axios({
             method: 'post',
             url: '/login',
             data: {
-              uId: form_login.uId.value,
-              pw: form_login.pw.value,
+              uId: login_form.uId.value,
+              pw: login_form.pw.value,
             },
           })
           .then((res) => {
+            console.log('아무거나');
             return res.data;
           })
           .then((data) => {
