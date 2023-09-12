@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script defer src="/static/js/index.js"></script>
+  </head>
+  <body>
+    <h1>회원정보 수정</h1>
+    <% if (userData) { %>
+
+    <form name="form_profile">
+      <p>UserID: <%= userData.uId %></p>
+
+      <label for="uName">Name</label>
+      <input
+        id="uName"
+        type="text"
+        name="uName"
+        value="<%= userData.uName %>"
+        required
+      /><br />
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        name="email"
+        value="<%= userData.email %>"
+        required
+      />
+      <br />
+      <label for="pw">Password</label>
+      <input
+        id="pw"
+        type="password"
+        name="pw"
+        value="<%= userData.pw %>"
+        required
+      />
+      <br />
+      <!-- 비밀번호 재확인 -->
+      <label for="pwConfirm">Password Confirm</label>
+      <input
+        id="pwConfirm"
+        type="password"
+        name="pwConfirm"
+        value="<%= userData.pw %>"
+        required
+      />
+      <br />
+      <button type="button" onclick="profileEditDone('<%= userData.uId %>')">
+        수정 완료
+      </button>
+      <button type="button" onclick="profileDelete('<%= userData.uId %>')">
+        회원 탈퇴
+      </button>
+    </form>
+
+    <% } else { %>
+    <p>User data not available.</p>
+    <% } %>
+
+    <br />
+  </body>
+</html>
