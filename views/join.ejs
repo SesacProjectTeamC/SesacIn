@@ -48,7 +48,7 @@
       </div>
       
       <div class="input-group mb-3">
-        <input type="text" class="form-control" name="email" aria-describedby="basic-addon2" required>
+        <input type="text" class="form-control" name="email" aria-describedby="basic-addon2" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" title="올바른 이메일 형식을 입력해주세요." required>
         <span class="input-group-text" id="basic-addon2">@example.com</span>
       </div>
       
@@ -123,6 +123,7 @@
             if (!input.validity.valid) {
                 if (input.validity.patternMismatch || input.validity.valueMissing) {
                     setModalTextAndShow(input.title);
+                    register("형식에 맞게 다시 입력해 주세요");
                     return false;
                 }
             }
