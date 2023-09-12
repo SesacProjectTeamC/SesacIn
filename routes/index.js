@@ -12,9 +12,9 @@ const Cboard = require('../controller/Cboard');
 // QnA 전체 질문 리스트 가져오기
 router.get('/', Cquestion.getQuestions);
 // 자유게시판 전체 리스트 가져오기
-router.get('/', Cboard.getBoardList);
+// router.get('/', Cboard.getBoardList);
 // 유저 id 가져오기 (uId)
-router.get('/', Cuser.getUser);
+// router.get('/', Cuser.getUser);
 
 // 유저 관련
 /**
