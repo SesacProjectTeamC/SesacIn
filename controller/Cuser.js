@@ -180,14 +180,46 @@ exports.userLogin = async (req, res) => {
 };
 
 // 로그아웃
-exports.userLogout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.log(err);
+exports.userLogout = async (req, res) => {
+  // 테스트용으로 로그인 된것으로 처리
+  req.session.user = 'tgkim';
+
+  // 로그인 여부 검사
+  if (!req.session.user) {
+    res.status(401).send({
+      OK: false,
+      msg: '로그인 되어있지 않은 상태에서 로그아웃을 요청함',
+    });
+    return;
+  }
+
+  try {
+    await req.session.destroy((err) => {
+      if (err) {
+        res.status(301).send({
+          OK: false,
+          isLogin: true,
+          msg: '세션 처리중 에러',
+        });
+        return;
+      }
+
+      // 정상 로그아웃 처리가 된것을 프론트로 알림
+      res.status(200).send({
+        OK: true,
+        isLogin: false,
+        msg: '로그아웃 처리 완료',
+      });
       return;
-    }
-    res.redirect('/');
-  });
+    });
+  } catch (error) {
+    res.status(301).send({
+      OK: false,
+      isLogin: true,
+      msg: '로그아웃 처리중 에러',
+    });
+    return;
+  }
 };
 
 // password 해싱 함수. hash된 패스워드를 리턴함
