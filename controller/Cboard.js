@@ -8,46 +8,78 @@ exports.newBoardPage = (req, res) => {
   req.session.user = 'tgkim';
 
   try {
-    let isLogin = true;
-
     // 로그인 여부 검사
     if (!req.session.user) {
-      isLogin = false;
-    }
-
-    if (!isLogin) {
-      // 로그인 상태가 아닐때. 로그인 페이지로 리다이렉트
-      res.redirect(302, '/login');
-    } else {
-      // 정상 처리
-      res.status(200).render('boardAddNewTest', {
-        OK: true,
-        isLogin,
-        currentUserId: req.session.user,
+      res.status(401).send({
+        success: false,
+        isLogin: false, // 결과값을 isLogin 값으로 보낸다.
+        msg: '로그인 되어있지 않습니다.',
       });
     }
+    let loginUser = req.session.user;
+
+    res.status(200).render('post', {
+      success: true,
+      isLogin: true,
+      currentLoginUser: loginUser,
+      msg: '페이지 렌더링 정상 처리',
+      data: {
+        type: '자유',
+      },
+    });
   } catch (error) {
-    res.status(301).send({
+    console.log(error);
+    res.status(500).send({
+      success: false,
       isLogin: false,
-      OK: false,
-      msg: '서버 에러', // 에러 메시지를 응답으로 보냅니다.
+      msg: '서버에러 발생',
     });
   }
-
-  res.render('post', { data: { type: '자유' } });
 };
 
 // 개별 게시글 페이지 렌더링
 // board/detail/:bId
 exports.detailBoard = async (req, res) => {
-  const { bId } = req.params;
-  const eachBoard = await getBoard(bId);
-  const allComment = await getComment(bId);
+  // 테스트를 위해 로그인 된상태로 세팅
+  req.session.user = 'tgkim';
 
-  res.render('boardDetailTest', {
-    boardData: eachBoard,
-    commentData: allComment,
-  });
+  try {
+    // 로그인 여부 검사
+    if (!req.session.user) {
+      res.status(401).send({
+        success: false,
+        isLogin: false, // 결과값을 isLogin 값으로 보낸다.
+        msg: '로그인 되어있지 않습니다.',
+      });
+    }
+    let loginUser = req.session.user;
+
+    // req 데이터 검사
+    if (!req.params.bId) {
+      console.log('프론트로부터 전달받은 bId 가 없음');
+      res.status(404).send({
+        success: false,
+        isLogin: true,
+        msg: '전달받은 bId 값이 없음',
+      });
+    }
+    const { bId } = req.params;
+
+    const eachBoard = await getBoard(bId);
+    const allComment = await getComment(bId);
+
+    res.status(200).render('boardDetailTest', {
+      boardData: eachBoard,
+      commentData: allComment,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      isLogin: false,
+      msg: '서버에러 발생',
+    });
+  }
 };
 
 // 게시글 전체 조회
@@ -70,7 +102,7 @@ const getBoard = async (bId) => {
     return board;
   } catch (error) {
     console.error(error);
-    return error;
+    throw error;
   }
 };
 
@@ -83,13 +115,13 @@ const getComment = async (bId) => {
     return comment;
   } catch (error) {
     console.error(error);
-    return error;
+    throw error;
   }
 };
 
 // 게시글 페이지별 호출시 처리
 exports.paginateBoard = async (req, res) => {
-  let page = parseInt(req.params.page);
+  let page = parseInt(req.params.page) || 1;
   // const pageSize = parseInt(req.query.pageSize);
   let pageSize = 21;
 
@@ -125,19 +157,22 @@ exports.createBoard = async (req, res) => {
 
   try {
     // 로그인 여부 검사
+    // 결과값을 isLogin 값으로 보낸다.
     if (!req.session.user) {
       res.status(401).send({
-        OK: false,
-        msg: '접근 권한이 없음. 로그인되어 있지 않습니다.',
+        success: false,
+        isLogin: false,
+        msg: '로그인 되어있지 않습니다.',
       });
-      return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
     }
     let loginUser = req.session.user;
 
     // Req 데이터 Null 검사
     if (!req.body.title || !req.body.content) {
       res.status(400).send({
-        OK: false,
+        success: false,
+        isLogin: true,
+        currentLoginUser: loginUser,
         msg: '데이터에 빈값이 있습니다.',
       });
       return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
@@ -152,11 +187,16 @@ exports.createBoard = async (req, res) => {
       content: req.body.content,
       uId: loginUser,
     });
+
     res.status(200).send({
-      OK: true,
-      msg: '작업 성공',
+      success: false,
       isLogin: true,
-      bId: newBoard.bId,
+      currentLoginUser: loginUser,
+      msg: '자유게시글 생성 처리 성공',
+      bId: newBoard.dataValues.bId,
+      data: {
+        bId: newBoard.dataValues.bId,
+      },
     });
     return;
   } catch (error) {
@@ -164,7 +204,7 @@ exports.createBoard = async (req, res) => {
     console.log(error);
     res.status(500).send({
       OK: false,
-      msg: '데이터베이스 오류 발생',
+      msg: '서버에러 발생',
     });
     return;
   }
@@ -244,29 +284,31 @@ exports.createComment = async (req, res) => {
   // 테스트를 위해 로그인 된것으로 처리
   req.session.user = 'tgkim';
 
-  // 로그인 여부 검사
-  if (!req.session.user) {
-    res.status(401).send({
-      OK: false,
-      msg: '접근 권한이 없음. 로그인되어 있지 않습니다.',
-    });
-    return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
-  }
-  let loginUser = req.session.user;
-
-  // Req 데이터 Null 검사
-  if (!req.body.content || !req.params.bId) {
-    res.status(400).send({
-      OK: false,
-      msg: '데이터에 빈값이 있습니다.',
-    });
-    return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
-  }
-  // 댓글이 달릴 게시판 = bId
-  const currentBid = req.params.bId;
-  const commentContent = req.body.content;
-
   try {
+    // 로그인 여부 검사
+    // 결과값을 isLogin 값으로 보낸다.
+    if (!req.session.user) {
+      res.status(401).send({
+        success: false,
+        isLogin: false,
+        msg: '로그인 되어있지 않습니다.',
+      });
+    } else {
+      let loginUser = req.session.user;
+    }
+
+    // Req 데이터 Null 검사
+    if (!req.body.content || !req.params.bId) {
+      res.status(400).send({
+        OK: false,
+        msg: '데이터에 빈값이 있습니다.',
+      });
+      return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
+    }
+    // 댓글이 달릴 게시판 = bId
+    const currentBid = req.params.bId;
+    const commentContent = req.body.content;
+
     const newComment = await Comment.create({
       uId: loginUser,
       bId: currentBid,
