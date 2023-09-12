@@ -1,27 +1,21 @@
 const User = (Sequelize, DataTypes) => {
-  // Sequelize: models/index.js에서 sequelize
-  // DataTypes: models/index.js에서 Sequelize
   const User = Sequelize.define(
     'User',
     {
       uId: {
-        // id INT NOT NULL PRIMARY KEY auto_increment,
         type: DataTypes.STRING(50),
         allowNull: false,
         primaryKey: true,
       },
       pw: {
-        // id INT NOT NULL PRIMARY KEY auto_increment,
         type: DataTypes.STRING(500),
         allowNull: false,
       },
       uName: {
-        // name VARCHAR(10) NOT NULL,
         type: DataTypes.STRING(50),
         allowNull: false,
       },
       email: {
-        // name VARCHAR(10) NOT NULL,
         type: DataTypes.STRING(50),
         allowNull: false,
       },
@@ -31,8 +25,12 @@ const User = (Sequelize, DataTypes) => {
         defaultValue: false,
       },
       campus: {
-        // name VARCHAR(10) NOT NULL,
         type: DataTypes.STRING(50),
+        allowNull: true,
+        defaultValue: 'NULL',
+      },
+      isLike: {
+        type: DataTypes.JSON,
         allowNull: true,
         defaultValue: 'NULL',
       },

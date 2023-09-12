@@ -24,9 +24,9 @@ router.delete('/:qId/delete', Cquestion.deleteQuestion);
 // 답변 전체 조회
 // router.get("/:qId", Canswer.getAnswers);
 
-// 답변 추가
-router.get('/:qId/answer', Canswer.getCreateAnswer);
-router.post('/:qId/answer', Canswer.postAnswer);
+// 답변 생성
+router.get('/:qId/answer/create', Canswer.getCreateAnswer);
+router.post('/:qId/answer/create', Canswer.postAnswer);
 
 // 특정 답변 내용 수정
 router.get('/:qId/answer/:aId/edit', Canswer.getEditAnswer);

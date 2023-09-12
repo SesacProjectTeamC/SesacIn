@@ -1,4 +1,4 @@
-const { Question, Answer, Comment } = require('../models');
+const { Question, Answer, Comment } = require("../models");
 
 //=== 1. QnA의 Comment - comment ===
 // 1) 생성
@@ -24,14 +24,14 @@ exports.getAnswerComments = async (req, res) => {
       where: { qId },
     });
 
-    res.render('question', {
+    res.render("question", {
       data: question,
       answerData: answers,
       commentData: comments,
     });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -51,10 +51,10 @@ exports.getCreateComment = async (req, res) => {
   try {
     const { qId, aId } = req.params;
 
-    res.render('commentCreateTest', { data: qId, answerData: aId });
+    res.render("commentCreateTest", { data: qId, answerData: aId });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -65,7 +65,7 @@ exports.postComment = async (req, res) => {
     req.session.user = 1;
 
     if (!req.session.user) {
-      res.redirect('/');
+      res.redirect("/");
     }
     let loginUser = req.session.user;
 
@@ -98,7 +98,7 @@ exports.postComment = async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -107,14 +107,22 @@ exports.getEditComment = async (req, res) => {
   try {
     const { qId, aId, cId } = req.params;
 
+    const answer = await Comment.findOne({
+      where: { aId },
+    });
+
     const comment = await Comment.findOne({
       where: { cId },
     });
 
-    res.render('commentEditTest', { data: qId, commentData: comment });
+    res.render("commentEditTest", {
+      data: qId,
+      answerData: answer,
+      commentData: comment,
+    });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -130,22 +138,22 @@ exports.patchComment = async (req, res) => {
       { content },
       {
         where: { cId },
-      }
+      },
     );
 
     if (updatedComment) {
-      return res.render('question', {
+      return res.render("question", {
         result: true,
         data: question,
         answerData: answers,
         commentData: updatedComment,
       });
     } else {
-      return res.render('question', { result: false });
+      return res.render("question", { result: false });
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -162,10 +170,10 @@ exports.deleteComment = async (req, res) => {
     const answers = await Answer.findAll();
     const comments = await Comment.findAll();
 
-    console.log('isDeleted >>>', isDeleted); // 성공 시 1, 실패 시 0
+    console.log("isDeleted >>>", isDeleted); // 성공 시 1, 실패 시 0
 
     if (isDeleted) {
-      return res.render('question', {
+      return res.render("question", {
         result: true,
         data: question,
         answerData: answers,
@@ -176,7 +184,7 @@ exports.deleteComment = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
