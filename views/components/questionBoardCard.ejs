@@ -1,105 +1,45 @@
-<style>
-    #cardContainer {
-        display: flex;
-        flex-direction: column;
-        border: solid;
-        border-radius: 20px;
-        border-width: 2px;
-        border-color: lightgray;
-        /* align-items: center; */
-        justify-content: center;
-        width: 300px;
-        max-height: 500px;
-        padding-left: 20px;
-        padding-right: 20px;
-        padding-top: 20px;
-        margin-left: 10px;
-        margin-right: 10px;
-        margin-bottom: 20px;
-    }
-    type {
-        color: gray;
-        font-size: 14px;
-        font-weight: 550;
-        margin-top: 8px;
-        margin-bottom: 8px;
-    }
-    user {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 18px;
-        color: black;
-        margin-bottom: 18px;
-    }
-    .title {
-        font-weight: bold;
-        margin-bottom: 8px;
-        align-items: center;
-        display: flex;
-    }
-    content {
-        display: flex;
-        flex-wrap: wrap;
-        overflow: auto;
-    }
-    .ques {
-        margin-right: 5px;
-        font-size: 24px;
-        font-weight: bold;
-        color: lightpink;
-    }
-    .like {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-    }
-    .svg {
-        margin-left: 5px;
-        margin-right: 5px;
-    }
-</style>
-
 <a href="/question/<%= data.qId%>">
-    <div id="cardContainer">
-        <type> <%= data.qType %> | <%= data.createdAt %> </type>
-        <div class="title">
-            <div class="ques">Q.</div>
-            <%= data.title%>
-        </div>
-        <content><%= data.content%></content>
-        <hr />
-        <user>
-            <!-- <%= data.uName %> -->
-            <!-- 
+  <div id="cardContainer">
+    <type>
+      <%= data.qType %> | <%= data.createdAt.toString().slice(0, 5) %>
+    </type>
+    <div class="ques">
+      Q.
+      <div class="viewImg">
+        <img
+          src="../../static/svg/eye.svg"
+          alt="조회수"
+          width="24px"
+          class="svg"
+        />
+        <%= data.viewCount%>
+      </div>
+    </div>
+    <div class="ellipsis">동해물과 백두산이 마르고 닳도록</div>
+    <user>
+      <%= data.uName ? data.uName : "이름없음" %>
+      <!-- 
         닉네임에 대한 항목은 user 테이블 칼럼명에 존재하여 외래키인 uId를 타고 올라가야 하기 때문에,
         LEFT OUTER JOIN 수행하는 것을 고려하고 있습니다.
         추후 JOIN을 진행하게 된다면 말씀 드리겠습니다.  
       -->
-            <div class="like">
-                <!-- 조회수 추가 여부 -->
-                <img
-                    src="../../static/svg/eye.svg"
-                    alt="조회수"
-                    width="24px"
-                    class="svg"
-                />
-                <%= data.viewCount%>
-                <img
-                    src="../../static/svg/heart.svg"
-                    alt="좋아요"
-                    width="24px"
-                    class="svg"
-                />
-                <%= data.likeCount%>
-                <img
-                    src="../../static/svg/message.svg"
-                    alt="좋아요"
-                    width="24px"
-                    class="svg"
-                />
-                <!-- 답변갯수 -->
-            </div>
-        </user>
-    </div>
+      <div class="like">
+        <!-- 조회수 추가 여부 -->
+        <img
+          src="../../static/svg/heart.svg"
+          alt="좋아요"
+          width="24px"
+          class="svg"
+        />
+        <%= data.likeCount%>
+        <img
+          src="../../static/svg/message.svg"
+          alt="좋아요"
+          width="24px"
+          class="svg"
+        />
+        <!-- 답변갯수 -->
+      </div>
+    </user>
+  </div>
 </a>

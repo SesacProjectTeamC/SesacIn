@@ -1,10 +1,17 @@
 const { Question, Answer, Comment } = require("../models");
+const { Board } = require("../models/index");
 
 // 질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
   try {
-    const questions = await Question.findAll();
-    res.render("index", { type: "", data: questions });
+    const { type } = req.query;
+    if (type) {
+      const questions = await Question.findAll();
+      res.send({ type: "qna", data: questions });
+    } else {
+      const questions = await Question.findAll();
+      res.render("index", { type: "qna", data: questions });
+    }
   } catch (err) {
     console.log(err);
     res.send("Internet Server Error!!!");

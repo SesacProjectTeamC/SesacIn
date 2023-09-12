@@ -1,7 +1,96 @@
-const changeType = (component, type) => {
+let bPage = 1;
+let qPage = 1;
+
+const changeType = (component, type, p = 1) => {
   const active = document.querySelector(".activeM");
   active.classList.remove("activeM");
   component.classList.add("activeM");
+  axios({
+    method: "GET",
+    url: component.innerHTML.trim() === "자유게시판" ? `/board/list/${p}` : "/",
+    params: {
+      type: component.innerHTML.trim() === "자유게시판" ? undefined : "qna",
+    },
+  }).then((res) => {
+    if (res) {
+      const arrayData =
+        component.innerHTML.trim() === "자유게시판"
+          ? res.data.boards
+          : res.data.data;
+      const container = document.querySelector(".index_container");
+      container.innerHTML = "";
+      for (let d of arrayData) {
+        let include;
+        if (component.innerHTML.trim() === "자유게시판") {
+          bPage = p;
+          include = freeboardcard(d);
+        } else {
+          qPage = p;
+          include = qnaCard(d);
+        }
+        container.innerHTML += include;
+      }
+    }
+  });
+};
+
+const freeboardcard = (data) => {
+  console.log(data);
+  const result = [
+    `<a href="/question/${data.bId}">`,
+    `<div id="cardContainer">`,
+    `<type> 자유 | ${data.createdAt} </type>`,
+    '<div class="ques  boards">자유.',
+    '<div class="viewImg">',
+    '<img src="../../static/svg/eye.svg" alt="조회수" width="24px" class="svg"/>',
+    `<div>${data.viewCount}</div>`,
+    "</div>",
+    "</div>",
+    `<div class="ellipsis">`,
+    `${data.title}`,
+    "</div>",
+    "<user>",
+    `${data.uName ? data.uName : "이름없음"}`,
+    '<div class="like">',
+    ' <img src="../../static/svg/heart.svg" alt="좋아요" width="24px" class="svg"/>',
+    `${data.likeCount}`,
+    '<img src="../../static/svg/message.svg" alt="답변개수" width="24px" class="svg"/>',
+    `${data.commentCount}`,
+    "</div>",
+    "</user>",
+    "</div>",
+    "</a>",
+  ].join("");
+  return result;
+};
+
+const qnaCard = (data) => {
+  const result = [
+    `<a href="/question/${data.qId}">`,
+    `<div id="cardContainer">`,
+    `<type> ${data.qType} | ${data.createdAt} </type>`,
+    '<div class="ques">Q.',
+    '<div class="viewImg">',
+    '<img src="../../static/svg/eye.svg" alt="조회수" width="24px" class="svg"/>',
+    `<div>${data.viewCount}</div>`,
+    "</div>",
+    "</div>",
+    `<div class="ellipsis">`,
+    `${data.title}`,
+    "</div>",
+    "<user>",
+    `${data.uName ? data.uName : "이름없음"}`,
+    '<div class="like">',
+    ' <img src="../../static/svg/heart.svg" alt="좋아요" width="24px" class="svg"/>',
+    `${data.likeCount}`,
+    '<img src="../../static/svg/message.svg" alt="답변개수" width="24px" class="svg"/>',
+    "</div>",
+    `${data.commentCount}`,
+    "</user>",
+    "</div>",
+    "</a>",
+  ].join("");
+  return result;
 };
 
 const moveToMakePost = () => {

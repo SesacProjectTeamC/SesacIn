@@ -9,31 +9,34 @@
     <script defer src="../static/js/index.js"></script>
   </head>
   <body>
-    <%- include('./components/header') %> <%- include('./components/carousel')
-    %>
-
-    <div class="menuContainer">
-      <!-- <div class="menu" onclick="changeType('all')">전체</div> -->
-      <div style="display: flex">
-        <div class="menu activeM" onclick="changeType(this, 'qa')">Q&A</div>
-        <div class="menu" onclick="changeType(this, 'board');">자유게시판</div>
+    <div class="container"><%- include('./components/header') %></div>
+    <%- include('./components/carousel')%>
+    <div class="container">
+      <div class="menuContainer">
+        <!-- <div class="menu" onclick="changeType('all')">전체</div> -->
+        <div style="display: flex">
+          <div class="menu activeM" onclick="changeType(this, 'qa')">Q&A</div>
+          <div class="menu" onclick="changeType(this, 'board');">
+            자유게시판
+          </div>
+        </div>
+        <!-- BE : test용 추가 생성 버튼 -->
       </div>
-      <!-- BE : test용 추가 생성 버튼 -->
-    </div>
-    <div style="display: flex; justify-content: flex-end; margin-right: 144px">
-      <button
-        onclick="moveToMakePost()"
-        type="button"
-        class="btn btn-outline-primary"
-      >
-        글쓰기
-      </button>
-    </div>
+      <div style="display: flex; justify-content: flex-end">
+        <button
+          onclick="moveToMakePost()"
+          type="button"
+          class="btn btn-outline-primary"
+        >
+          글쓰기
+        </button>
+      </div>
 
-    <div class="index_container">
-      <%for(let i = 0; i < data.length; i++){%> <%-include(type === 'board' ?
-      './components/freeBoardCard' : './components/questionBoardCard', { data:
-      data[i] })%> <%}%>
+      <div class="index_container">
+        <%for(let i = 0; i < data.length; i++){%> <%-include(type === 'board' ?
+        './components/freeBoardCard' : './components/questionBoardCard', { data:
+        data[i] })%> <%}%>
+      </div>
     </div>
 
     <footer>
