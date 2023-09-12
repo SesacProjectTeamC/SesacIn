@@ -1,4 +1,5 @@
 body {
+  font-size: large;
   margin: 0;
   padding: 0;
   height: 100vh;
@@ -14,7 +15,7 @@ header {
 }
 
 .bi-arrow-left:hover .hover-circle {
-  fill: var(--hover-color) ;
+  fill: var(--hover-color);
 }
 
 img {
@@ -77,17 +78,20 @@ form#login_form a:last-of-type {
   margin: -2px;
   display: flex;
   justify-content: center;
+  cursor: pointer;
 }
 
 .id-link,
 .pw-link {
   color: var(--border-color);
   text-decoration: none;
+  cursor: pointer;
 }
 
 .id-link:hover,
 .pw-link:hover {
   color: var(--hover-color);
+  cursor: pointer;
 }
 .btn-primary {
   margin: auto;
@@ -95,14 +99,19 @@ form#login_form a:last-of-type {
   height: 40px;
   border-radius: 10px;
   background-color: var(--main-color);
-  color: var(--border-color);
+  color: black;
   border: none;
   outline: none;
   align-self: center;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
+  align-items: center;
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
 }
 
 .btn-primary:hover {
   background-color: var(--border-color);
+  cursor: pointer;
 }

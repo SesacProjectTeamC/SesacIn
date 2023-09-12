@@ -9,6 +9,12 @@
   </head>
   <body>
     <h1>자유게시판 새 글 작성 페이지</h1>
+    <% if(!isLogin) {%>
+    <a href="/login">로그인</a>
+    <% } else { %>
+    <button onclick="userLogout()">로그아웃</button><br />
+    <% } %>
+
     <form name="infoForm">
       <div>제목<input type="text" name="title" /></div>
       <div>내용<input type="text" name="content" /></div>
@@ -48,6 +54,21 @@
       const inputInfo = document.forms['infoForm'];
       inputInfo.title.value = '';
       inputInfo.content.value = '';
+    }
+
+    function userLogout() {
+      axios({
+        method: 'post',
+        url: '/logout',
+      })
+        .then((response) => {
+          window.location.href = '/';
+        })
+        .catch((error) => {
+          // 에러발생시 프론트에서 처리
+          console.log(error.response.data.message);
+          window.location.href = '/404';
+        });
     }
   </script>
 </html>

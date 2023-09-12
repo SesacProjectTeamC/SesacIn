@@ -2,6 +2,7 @@ const { Board, Comment } = require('../models/index');
 const { Op } = require('sequelize');
 
 // 새 게시글 생성 페이지 렌더링
+// /board/create
 exports.newBoardPage = (req, res) => {
   // 테스트를 위해 로그인 된상태로 세팅
   req.session.user = 'tgkim';
@@ -37,6 +38,7 @@ exports.newBoardPage = (req, res) => {
 };
 
 // 개별 게시글 페이지 렌더링
+// board/detail/:bId
 exports.detailBoard = async (req, res) => {
   // 테스트를 위해 로그인 된상태로 세팅
   req.session.user = 'tgkim';
@@ -66,7 +68,7 @@ exports.detailBoard = async (req, res) => {
     const eachBoard = await getBoard(bId);
     const allComment = await getComment(bId);
 
-    res.status(200).render('boardDetailTestTgkim', {
+    res.status(200).render('boardDetailTest', {
       boardData: eachBoard,
       commentData: allComment,
     });
@@ -148,6 +150,7 @@ exports.paginateBoard = async (req, res) => {
 };
 
 // 게시글 생성 처리
+// /board/create
 exports.createBoard = async (req, res) => {
   // 테스트를 위해 로그인 된것으로 처리
   req.session.user = 'tgkim';
@@ -208,6 +211,7 @@ exports.createBoard = async (req, res) => {
 };
 
 // 게시글 수정 처리
+// /edit/:bId
 exports.editBoard = async (req, res) => {
   // 테스트를 위해 로그인 된것으로 처리
   req.session.user = 'tgkim';
