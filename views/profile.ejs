@@ -18,18 +18,56 @@
   </div>
   </header>
   <main>
-
+    <a href="/editprofile">회원 정보 수정</a>
+    <!-- 프로필 -->
+    <p>하나의 인풋에 하나의 파일을 업로드</p>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="userfile"><br />
+        <input type="text" name="title"/> <br/><br/>
+        <button type="submit">변경</button>
+    </form>
     <img src="../static/img/leaf-svgrepo-com.svg" alt="">
+    <label for="profile">
+      <input type="file"
+             id="profile"
+             accept="image/png, image/jpeg">
+    </label>
+    <h2>동적 파일 업로드</h2>
+    <input type="file" name="dynamicUserfile" id="dynamic-file"></br>
+    <button type="button" onclick="fileUpload() ">업로드</button>
+    <br>
+
+    <!-- 업로드한 이미지를 보여줄 img 태그 요소 -->
+    <img src="" alt="" width="150">
+    
     <h1>User Profile</h1>
     <% if (userData) { %>
-    <p>UserID: <%= userData.uId %></p>
     <p>UserName: <%= userData.uName %></p>
+    <p>UserID: <%= userData.uId %></p>
     <p>Email: <%= userData.email %></p>
     <p>Is Sesac: <%= userData.isSesac ? 'Yes' : 'No' %></p>
     <p>Campus: <%= userData.campus %></p>
     <% } else { %>
     <p>User data not available.</p>
     <% } %>
+    <button onclick="gotoProfileEdit()">수정</button>
+    <button onclick="">Q&A 게시판</button>
+    <button onclick="">자유 게시판</button>
+
+    <div class="profile_likedPost">
+      <%for(let i = 0; i < data.length; i++){%> <%-include(type === 'board' ?
+      './components/freeBoardCard' : './components/questionBoardCard', { data:
+      data[i] })%> <%}%>
+    </div>
+    <div class="profile_writedPost">
+
+    </div>
+    <div class="profile_commentPost">
+
+    </div>
+    <div class="profile_answeredPost">
+
+    </div>
   </main>
   </body>
   <script>
@@ -42,5 +80,35 @@
     }
   });
     }
+
+    function gotoProfileEdit(){
+      document.location.href = '/users/editprofile'
+    }
+    function fileUpload() {
+          console.log('동적 파일 업로드');
+          // js파일만으로 폼을 전송 ( 파일 데이터를 서버로 전송해야 하는 케이스)
+          // FormData 객체를 활용하면 쉽게 전송 가능!
+          const formData = new FormData();
+          const file = document.querySelector('#dynamic-file');
+          console.dir(file);
+          console.dir(file.files);
+          console.dir(file.files[0]);
+
+          //append( key, value)
+          formData.append('dynamicUserfile', file.files[0]);
+
+          axios({
+              method: 'post',
+              url: '/dynamicFile',
+              data: formData,
+              header : {
+                  'Content-Type': 'multipart/form-data',
+              },
+          }).then ((res) => {
+              const {data} = res;
+              console.log(data);
+              document.querySelector('img').src = '/' + data.path;
+          });
+      }
   </script>
 </html>
