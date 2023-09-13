@@ -243,20 +243,41 @@ exports.createBoard = async (req, res) => {
 };
 
 // 게시글 수정 처리
-// /edit/:bId
+// /board/edit/:bId
 exports.editBoard = async (req, res) => {
   // 테스트를 위해 로그인 된것으로 처리
-  req.session.user = 'tgkim';
+  // req.session.user = 'tgkim';
+  // req.session.user = 'tgkim11';
 
+  // 로그인 여부 검사
+  // 결과값을 isLogin 값으로 보낸다.
   if (!req.session.user) {
-    // 로그인 상태가 아니면 홈으로 리다이렉트
-    res.redirect('/');
+    res.status(401).send({
+      success: false,
+      isLogin: false,
+      msg: '로그인 되어있지 않습니다.',
+    });
+    return;
   }
+
   const { bId } = req.params;
   const { title, content } = req.body;
 
   try {
-    const isUpdated = await Board.update(
+    // 업데이트 전 게시글 데이터 조회
+    const before = await Board.findByPk(bId);
+
+    // uid로 게시글 소유자 여부 확인(권한 확인)
+    if (before.dataValues.uId !== req.session.user) {
+      res.status(401).send({
+        success: false,
+        currentLoginUser: req.session.user,
+        msg: '게시글의 소유자가 아님',
+      });
+      return;
+    }
+
+    let isUpdated = await Board.update(
       {
         title: title,
         content: content,
@@ -265,19 +286,58 @@ exports.editBoard = async (req, res) => {
         where: { bId: bId },
       }
     );
+
+    // update 처리 성공시 isUpdated[0] = 0
+    // update 처리 실패시 isUpdated[0] = 1
+    // 하지만 실제로 같은 데이터로 업데이트를 수행해서 데이터변경이 없어도 update결과로 isUpdated가 1(성공)이 나와버린다.
+    if (!isUpdated[0]) {
+      isUpdated = false;
+      throw new Error('게시글 수정 실패'); // 에러를 던짐(catch에서 수행)
+      return;
+    }
+
+    // 업데이트 후 데이터 조회
+    const after = await Board.findByPk(bId);
+
+    // 업데이터 전과 후 실제 데이터 변경값 확인
+    const hasChangedResult = hasChanged(before.dataValues, after.dataValues);
+    isUpdated = hasChangedResult ? true : false;
+
     if (isUpdated) {
-      res.send({
-        isUpdated: true,
+      res.status(200).send({
+        success: true,
+        isLogin: true,
+        currentLoginUser: req.session.user,
+        isUpdated,
+        msg: '게시글 업데이트 처리 성공',
       });
+      return;
     } else {
-      res.send({
-        isUpdated: false,
+      res.status(200).send({
+        success: false,
+        isLogin: true,
+        currentLoginUser: req.session.user,
+        isUpdated,
+        msg: '게시글의 제목, 내용 모두 변경된게 없습니다.',
       });
+      return;
     }
   } catch (error) {
     // 에러 처리
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      isLogin: true,
+      currentLoginUser: req.session.user,
+      msg: '서버 에러 발생',
+      // isUpdated: false,
+    });
   }
 };
+
+// 자유게시판 게시글 내용/제목 변경여부 확인 함수
+const hasChanged = (before, after) =>
+  before.title !== after.title || before.content !== after.content;
 
 // 게시글 삭제 처리
 exports.deleteBoard = async (req, res) => {
@@ -379,6 +439,7 @@ exports.editComment = async (req, res) => {
         isLogin: false,
         msg: '로그인 되어있지 않습니다.',
       });
+      return;
     }
 
     //////
@@ -492,6 +553,48 @@ exports.deleteComment = async (req, res) => {
       success: false,
       isLogin: false,
       msg: '서버에러 발생',
+    });
+  }
+};
+
+// 게시글 수정 페이지 렌더링
+// /board/edit/:bId
+exports.editBoardPage = async (req, res) => {
+  // 테스트용
+  req.session.user = 'tgkim';
+
+  try {
+    // 예기치 않게 로그인 안되어 있는경우
+    if (!req.session.user) {
+      res.status(200).render('boardEditTest', {
+        success: false,
+        isLogin: false,
+        msg: '권한없는 유저 접근',
+      });
+      return;
+    }
+
+    // 게시글 데이터 선택
+    const board = await Board.findOne({
+      where: { bId: req.params.bId },
+    });
+
+    // 정상 처리
+    res.status(200).render('boardEditTest', {
+      success: true,
+      isLogin: true,
+      currentLoginUser: req.session.user,
+      boards: board.dataValues,
+      msg: '페이지 렌더링 정상 처리',
+    });
+    //
+  } catch (error) {
+    console.log(error);
+    // 에러 처리
+    res.status(200).render('boardEditTest', {
+      success: false,
+      isLogin: true,
+      msg: '서버 에러',
     });
   }
 };
