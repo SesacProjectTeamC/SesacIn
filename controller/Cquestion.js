@@ -1,15 +1,19 @@
 const { Question, Answer, Comment } = require("../models");
+const moment = require("moment");
 
 // 질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
   try {
     const { type } = req.query;
+    let questions = await Question.findAll();
+    const create = [];
+    for (q of questions) {
+      create.push(moment(q.createdAt).format("YYYY-MM-DD"));
+    }
     if (type) {
-      const questions = await Question.findAll();
-      res.send({ type: "qna", data: questions });
+      res.send({ type: "qna", data: questions, cDate: create });
     } else {
-      const questions = await Question.findAll();
-      res.render("index", { type: "qna", data: questions });
+      res.render("index", { type: "qna", data: questions, cDate: create });
     }
   } catch (err) {
     console.log(err);

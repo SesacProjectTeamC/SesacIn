@@ -8,12 +8,7 @@ const Cboard = require("../controller/Cboard");
 const Cprofile = require("../controller/Cprofile");
 
 // 메인 페이지 관련
-// router.get("/", Cmain.main);
-// QnA 전체 질문 리스트 가져오기
 router.get("/", Cquestion.getQuestions);
-// 자유게시판 전체 리스트 가져오기
-// router.get('/', Cboard.getBoardList);
-//!!
 
 // 유저 관련
 /**

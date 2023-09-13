@@ -1,8 +1,6 @@
 <a href="/question/<%= data.qId%>">
   <div id="cardContainer">
-    <type>
-      <%= data.qType %> | <%= data.createdAt.toString().slice(0, 5) %>
-    </type>
+    <type> <%= data.qType %> | <%= cDate%> </type>
     <div class="ques">
       Q.
       <div class="viewImg">
@@ -15,7 +13,7 @@
         <%= data.viewCount%>
       </div>
     </div>
-    <div class="ellipsis">동해물과 백두산이 마르고 닳도록</div>
+    <div class="ellipsis"><%= data.title%></div>
     <user>
       <%= data.uName ? data.uName : "이름없음" %>
       <!-- 
@@ -38,6 +36,7 @@
           width="24px"
           class="svg"
         />
+        <%= data.commentCount ? data.commentCount : 0 %>
         <!-- 답변갯수 -->
       </div>
     </user>

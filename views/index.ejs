@@ -35,8 +35,20 @@
       <div class="index_container">
         <%for(let i = 0; i < data.length; i++){%> <%-include(type === 'board' ?
         './components/freeBoardCard' : './components/questionBoardCard', { data:
-        data[i] })%> <%}%>
+        data[i], cDate: cDate[i] })%> <%}%>
       </div>
+      <nav
+        aria-label="Page navigation"
+        style="display: flex; justify-content: center; margin-top: 20px"
+      >
+        <ul class="pagination">
+          <li class="page-item"><a class="page-link" href="#">이전</a></li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">다음</a></li>
+        </ul>
+      </nav>
     </div>
 
     <footer>

@@ -19,14 +19,14 @@ const changeType = (component, type, p = 1) => {
           : res.data.data;
       const container = document.querySelector(".index_container");
       container.innerHTML = "";
-      for (let d of arrayData) {
+      for (let i = 0; i < arrayData.length; i++) {
         let include;
         if (component.innerHTML.trim() === "자유게시판") {
           bPage = p;
-          include = freeboardcard(d);
+          include = freeboardcard(arrayData[i]);
         } else {
           qPage = p;
-          include = qnaCard(d);
+          include = qnaCard(arrayData[i], res.data.cDate[i]);
         }
         container.innerHTML += include;
       }
@@ -39,7 +39,7 @@ const freeboardcard = (data) => {
   const result = [
     `<a href="/question/${data.bId}">`,
     `<div id="cardContainer">`,
-    `<type> 자유 | ${data.createdAt} </type>`,
+    `<type> 자유 | ${data.createdAt.slice(0, 10)} </type>`,
     '<div class="ques  boards">자유.',
     '<div class="viewImg">',
     '<img src="../../static/svg/eye.svg" alt="조회수" width="24px" class="svg"/>',
@@ -55,7 +55,7 @@ const freeboardcard = (data) => {
     ' <img src="../../static/svg/heart.svg" alt="좋아요" width="24px" class="svg"/>',
     `${data.likeCount}`,
     '<img src="../../static/svg/message.svg" alt="답변개수" width="24px" class="svg"/>',
-    `${data.commentCount}`,
+    `${data.commentCount ? data.commentCount : 0}`,
     "</div>",
     "</user>",
     "</div>",
@@ -64,11 +64,11 @@ const freeboardcard = (data) => {
   return result;
 };
 
-const qnaCard = (data) => {
+const qnaCard = (data, cDate) => {
   const result = [
     `<a href="/question/${data.qId}">`,
     `<div id="cardContainer">`,
-    `<type> ${data.qType} | ${data.createdAt} </type>`,
+    `<type> ${data.qType} | ${cDate} </type>`,
     '<div class="ques">Q.',
     '<div class="viewImg">',
     '<img src="../../static/svg/eye.svg" alt="조회수" width="24px" class="svg"/>',
@@ -84,8 +84,8 @@ const qnaCard = (data) => {
     ' <img src="../../static/svg/heart.svg" alt="좋아요" width="24px" class="svg"/>',
     `${data.likeCount}`,
     '<img src="../../static/svg/message.svg" alt="답변개수" width="24px" class="svg"/>',
+    `${data.commentCount ? data.commentCount : 0}`,
     "</div>",
-    `${data.commentCount}`,
     "</user>",
     "</div>",
     "</a>",
@@ -94,8 +94,8 @@ const qnaCard = (data) => {
 };
 
 const moveToMakePost = () => {
-  console.log(document.querySelector(".activeM").innerHTML);
-  if (document.querySelector(".activeM").innerHTML === "자유게시판") {
+  console.log(document.querySelector(".activeM").innerHTML.trim());
+  if (document.querySelector(".activeM").innerHTML.trim() === "자유게시판") {
     window.location.href = "/board/create";
   } else {
     window.location.href = "/question/create";

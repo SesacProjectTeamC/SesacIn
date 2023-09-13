@@ -40,7 +40,7 @@ const postBoard = (t) => {
       }).then((res) => {
         if (res) {
           console.log(res.data.bid);
-          document.location.href = `/board/${res.data.bId}`;
+          document.location.href = `/board/detail/${res.data.bId}`;
         }
       });
     } else {
