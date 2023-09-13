@@ -60,24 +60,22 @@
             caution.textContent = `id를 입력해 주세요`;
           } else if(!login_form.pw.checkValidity()){
             caution.textContent = `pw를 입력해 주세요`;
-          } 
-          else {
-            axios({
-              method: 'post',
-              url: '/login',
-              data: {
-                uId: login_form.uId.value,
-                pw: login_form.pw.value,
-              },
-            })
-            .then((res) => {
-              return res.data;
-            })
+          } else {
+          axios({ 
+            method: 'post',
+            url: '/login',
+            data: {
+              uId: login_form.uId.value,
+              pw: login_form.pw.value,
+            },
+          })
+          .then((res) => {
+            console.log('아무거나');
+            return res.data;
+          })
           .then((data) => {
             console.log(data);
-            alert('로그인 되셨습니다!')
-            //메인으로 이동
-            document.location.href = '/';
+            window.location.href = "/";
           });
         }
       } catch(err){

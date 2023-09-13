@@ -1,23 +1,86 @@
-const { Question, Answer, Comment } = require("../models");
+const { Question, Answer, Comment, uLike } = require("../models");
+const viewCount = 0;
 const moment = require("moment");
 
-// 질문 목록 가져오기
+// 메인페이지,질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
+  // 테스트를 위해 로그인한 유저를 정해놓음
+  // req.session.user = 'aassddff1';
+
   try {
+    console.log("사용자 >>>", req.session.user);
+
     const { type } = req.query;
     let questions = await Question.findAll();
     const create = [];
+
     for (q of questions) {
       create.push(moment(q.createdAt).format("YYYY-MM-DD"));
     }
-    if (type) {
-      res.send({ type: "qna", data: questions, cDate: create });
+
+    if (req.session.user) {
+      console.log("사용자 >>>", req.session.user);
+
+      res.status(200).render("index", {
+        type: "qna",
+        data: questions,
+        cDate: create,
+        isLogin: true,
+      });
     } else {
-      res.render("index", { type: "qna", data: questions, cDate: create });
+      console.log("로그인X");
+
+      res.render("index", {
+        type: "qna",
+        data: questions,
+        cDate: create,
+        isLogin: false,
+      });
     }
   } catch (err) {
     console.log(err);
     res.send("Internet Server Error!!!");
+  }
+};
+
+// 질문 목록 가져오기(페이지별)
+exports.paginateQuestion = async (req, res) => {
+  let page = parseInt(req.params.page) || 1;
+  let pageSize = parseInt(req.params.pageSize) || 20;
+
+  try {
+    // 전체 Question목록 개수 계산
+    const totalPage = await Question.count();
+
+    // 페이지에 해당하는 Question 데이터 조회
+    // limit = 가져올 데이터 양
+    // offset = 가져올 첫 데이터 위치
+    const paginatedQuestions = await Question.findAll({
+      //최신글 정렬
+      order: [["createdAt", "DESC"]],
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
+    });
+
+    // 날짜 데이터 포맷 변경
+    const create = [];
+    for (q of paginatedQuestions) {
+      create.push(moment(q.dataValues.createdAt).format("YYYY-MM-DD"));
+    }
+
+    res.send({
+      questions: paginatedQuestions,
+      paginatedCount: pageSize,
+      totalPage,
+      cDate: create,
+      msg: "페이지별 Question 호출 처리 완료",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      error: "서버 에러",
+    });
   }
 };
 
@@ -116,7 +179,7 @@ exports.patchQuestion = async (req, res) => {
       { title, content },
       {
         where: { qId },
-      }
+      },
     );
 
     const answers = await Answer.findOne({ where: { qId } });
@@ -148,6 +211,65 @@ exports.deleteQuestion = async (req, res) => {
       return res.send({ result: true });
     } else {
       return res.send({ result: false });
+    }
+  } catch (err) {
+    console.log(err);
+    res.send("Internet Server Error!!!");
+  }
+};
+//-- 좋아요 누르기
+exports.likeQuestion = async (req, res) => {
+  try {
+    const { qId } = req.params;
+
+    const uLikeFind = await uLike.findOne({ where: { qId } });
+
+    const getQuestion = await Question.findOne({
+      where: { qId },
+    });
+
+    // 1) uLike findOne -> qId 없으면,
+    if (!uLikeFind) {
+      //-- 좋아요 -> uLike 해당 qId 생성됨.
+      // (1) 좋아요 히스토리 생성
+      const createLike = await uLike.create({
+        // uId
+        uId: 1, // 임의 유저 1
+        qId,
+      });
+      // (2) 질문 likeCount 업데이트
+      const updatedLike = await Question.update(
+        { likeCount: getQuestion.likeCount + 1 },
+        { where: { qId } },
+      );
+      const answers = await Answer.findOne({ where: { qId } });
+      const comments = await Comment.findOne({ where: { qId } });
+      return res.render("question", {
+        data: updatedLike,
+        answerData: answers,
+        commentData: comments,
+      });
+    } else if (uLikeFind) {
+      // 2) uLike findOne -> qId 있으면,
+      // (1) 좋아요 -> uLike 해당 qId 삭제함
+      const deleteLike = await uLike.destroy({
+        where: { qId },
+      });
+
+      // (2) 질문 likeCount 업데이트
+      const updatedLike = await Question.update(
+        { likeCount: getQuestion.likeCount - 1 },
+        { where: { qId } },
+      );
+
+      const answers = await Answer.findOne({ where: { qId } });
+      const comments = await Comment.findOne({ where: { qId } });
+
+      res.render("question", {
+        data: updatedLike,
+        answerData: answers,
+        commentData: comments,
+      });
     }
   } catch (err) {
     console.log(err);

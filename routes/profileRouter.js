@@ -33,7 +33,7 @@ const Cprofile = require("../controller/Cprofile");
  *         description: 서버 에러
  */
 // 회원 정보 창에서 사용자 정보 확인
-router.get("/:uId/profile", Cprofile.getUser);
+router.get('/profile', Cprofile.getUser);
 
 // 회원 정보 수정 페이지 렌더링
 router.get("/editprofile", Cprofile.getUserInfo);

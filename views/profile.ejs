@@ -61,10 +61,7 @@
     
     <button onclick="gotoProfileEdit()">회원정보 수정</button>
 
-  <form action="/upload" method="POST" enctype="multipart/form-data">
-      <!-- <input type="file" name="userfile"><br /> -->
-      <button type="submit">변경</button>
-  </form>
+    <a href=/users/editprofile>회원 정보 수정</a>
 
     
     <button onclick="questionBoardCard()" class="questionBoardCard">Q&A 게시판</button>
@@ -121,7 +118,7 @@
   
   </main>
   </body>
-  <script>
+  <!-- <script>
     function editProfile() {
       axios({
         method: 'GET',
