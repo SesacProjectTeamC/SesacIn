@@ -193,10 +193,12 @@ exports.userLogin = async (req, res) => {
   if (passCheck) {
     // 로그인 성공처리. 세션에 uId 저장
     req.session.user = resultUser.uId;
+    console.log('login >>>', req.session.user);
+
     // 성공 응답 보내주기
     return res.status(200).json({
       message: '로그인 성공',
-      isLogin: true,
+      currentLoginUser: req.session.user,
     });
   } else {
     return res.status(401).json({ message: '비밀번호 불일치' });

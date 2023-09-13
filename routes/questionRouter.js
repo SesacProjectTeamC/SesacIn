@@ -13,6 +13,9 @@ router.get('/:qId', Cquestion.getQuestion);
 
 //==== Question ====
 
+// 페이지별 질문 조회
+router.get('/list/:page', Cquestion.paginateQuestion);
+
 // 특정 질문 내용 수정
 router.get('/:qId/edit', Cquestion.getEditQuestion);
 router.patch('/:qId/edit', Cquestion.patchQuestion);
