@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Cboard = require('../controller/Cboard');
+const Cboard = require("../controller/Cboard");
 
 // 개별 게시글 페이지 렌더링
 /**
@@ -18,7 +18,7 @@ const Cboard = require('../controller/Cboard');
  *           text/html:
  *             example: HTML 페이지를 렌더링합니다.
  */
-router.get('/detail/:bId', Cboard.detailBoard);
+router.get("/detail/:bId", Cboard.detailBoard);
 
 // 새 게시글 생성 페이지 렌더링
 /**
@@ -35,7 +35,7 @@ router.get('/detail/:bId', Cboard.detailBoard);
  *           text/html:
  *             example: HTML 페이지를 렌더링합니다.
  */
-router.get('/create', Cboard.newBoardPage);
+router.get("/create", Cboard.newBoardPage);
 
 // 새 게시글 생성 처리
 /**
@@ -68,7 +68,7 @@ router.get('/create', Cboard.newBoardPage);
  *             example:
  *               msg: 새 게시글 생성 완료
  */
-router.post('/create', Cboard.createBoard);
+router.post("/create", Cboard.createBoard);
 
 // 게시글 수정 처리
 /**
@@ -109,7 +109,7 @@ router.post('/create', Cboard.createBoard);
  *                 msg:
  *                   type: string
  */
-router.patch('/edit/:bId', Cboard.editBoard);
+router.patch("/edit/:bId", Cboard.editBoard);
 
 // 게시글 삭제 처리
 /**
@@ -131,7 +131,7 @@ router.patch('/edit/:bId', Cboard.editBoard);
  *       '200':
  *         description: 게시글 삭제 완료
  */
-router.delete('/delete/:bId', Cboard.deleteBoard);
+router.delete("/delete/:bId", Cboard.deleteBoard);
 
 // 게시글 페이지별 호출시 처리
 /**
@@ -167,7 +167,7 @@ router.delete('/delete/:bId', Cboard.deleteBoard);
  *                   type: integer
  *                   description: 전체 게시글 개수
  */
-router.get('/list/:page', Cboard.paginateBoard);
+router.get("/list/:page", Cboard.paginateBoard);
 
 // 게시글 댓글 생성 처리
 /**
@@ -199,7 +199,7 @@ router.get('/list/:page', Cboard.paginateBoard);
  *       '200':
  *         description: 댓글 생성 완료
  */
-router.post('/comment/create/:bId', Cboard.createComment);
+router.post("/comment/create/:bId", Cboard.createComment);
 
 // 게시글 댓글 수정 처리
 /**
@@ -236,7 +236,7 @@ router.post('/comment/create/:bId', Cboard.createComment);
  *       '404':
  *         description: 선택한 댓글이 존재하지 않음
  */
-router.patch('/comment/edit/:cId', Cboard.editComment);
+router.patch("/comment/edit/:cId", Cboard.editComment);
 
 // 게시글 댓글 삭제 처리
 /**
@@ -262,9 +262,9 @@ router.patch('/comment/edit/:cId', Cboard.editComment);
  *       '404':
  *         description: 해당 댓글이 이미 삭제되었거나 존재하지 않음
  */
-router.delete('/comment/delete/:cId', Cboard.deleteComment);
+router.delete("/comment/delete/:cId", Cboard.deleteComment);
 
 // 댓글 다 가져오기
-router.get('/comment/list/:bId', Cboard.getCommentList);
+router.get("/comment/list/:bId", Cboard.getCommentList);
 
 module.exports = router;
