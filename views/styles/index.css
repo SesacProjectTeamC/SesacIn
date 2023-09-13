@@ -1,58 +1,158 @@
 .carousel-inner > .carousel-item > img {
-    height: 380px;
+  height: 380px;
 }
 
 header {
-    display: flex;
-    padding-right: 48px;
-    padding-left: 48px;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
+  display: flex;
+  padding-right: 48px;
+  padding-left: 48px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 a {
-    text-decoration-line: none;
-    color: black;
-    font-weight: 700;
+  text-decoration-line: none;
+  color: black;
+  font-weight: 700;
 }
 
 .menuContainer {
-    display: flex;
-    font-weight: 700;
-    font-size: 38px;
-    margin-top: 40px;
-    justify-content: center;
+  display: flex;
+  font-weight: 700;
+  font-size: 20px;
+  margin-top: 40px;
+  justify-content: center;
 }
 
 .menu {
-    cursor: pointer;
-    color: lightgray;
-    margin-right: 16px;
+  cursor: pointer;
+  color: lightgray;
+  margin-right: 16px;
+  padding: 15px;
+  transition: 0.3s;
+  background-color: white;
+  border-radius: 30px;
+  /* border-width: 2px;
+  border: solid;
+  border-color: var(--border-color);
+  background-color: var(--main-color);
+  border-radius: 30px; */
+}
+
+.menu:hover {
+  background-color: var(--main-color);
 }
 
 .activeM {
-    color: black;
+  color: black;
 }
 
 .index_container {
-    display: flex;
-    /* max-width: 1500px; */
-    margin-left: 144px;
-    margin-right: 144px;
-    margin-top: 40px;
-    justify-content: center;
-    flex-direction: row;
-    flex-wrap: wrap;
+  display: flex;
+  /* max-width: 1500px; */
+  margin-top: 40px;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 footer {
-    display: flex;
-    margin-top: 20px;
-    width: 100%;
-    height: 150px;
-    background-color: #f9f9f9;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  margin-top: 20px;
+  width: 100%;
+  height: 150px;
+  background-color: #f9f9f9;
+  align-items: center;
+  justify-content: center;
+}
+
+#cardContainer {
+  display: flex;
+  flex-direction: column;
+  border: solid;
+  border-radius: 20px;
+  border-width: 2px;
+  border-color: lightgray;
+  justify-content: space-between;
+  width: 300px;
+  height: 220px;
+  padding: 15px 20px 15px 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  transition: box-shadow 200ms ease-in-out, transform 200ms ease-in-out;
+}
+
+#cardContainer:hover {
+  transform: scale(1.05);
+  box-shadow: 1px 1px 1px 1px lightgrey;
+}
+
+type {
+  color: gray;
+  font-size: 14px;
+  font-weight: 550;
+}
+user {
+  padding-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: black;
+  border: solid;
+  border-top-width: 1px;
+  border-color: white;
+  border-top-color: lightgrey;
+  /* margin-bottom: 18px; */
+}
+.title {
+  /* width: 100%; */
+  white-space: nowrap; /* 자동 줄바꿈을 방지 */
+  overflow: hidden; /* 반드시 "visible" 이외의 값이 지정되어 있어야 한다. */
+  text-overflow: ellipsis;
+  font-weight: bold;
+  font-size: 22px;
+}
+.ellipsis {
+  height: 65px;
+  overflow: hidden; /* 반드시 "visible" 이외의 값이 지정되어 있어야 한다. */
+  text-overflow: ellipsis;
+  font-weight: bold;
+  font-size: 21px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.ques {
+  margin-bottom: 5px;
+  font-size: 24px;
+  font-weight: bold;
+  color: lightpink;
+  display: flex;
+  justify-content: space-between;
+}
+.boards {
+  color: cornflowerblue;
+}
+.viewImg {
+  display: flex;
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+  align-items: center;
+}
+.like {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  /* padding-top: 30px; */
+}
+.svg {
+  margin-left: 5px;
+  margin-right: 5px;
 }
