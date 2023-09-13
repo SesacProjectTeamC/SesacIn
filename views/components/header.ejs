@@ -1,5 +1,5 @@
 <style>
-  header {
+  .cHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -13,9 +13,9 @@
   }
 </style>
 
-<header class="container">
+<div class="cHeader">
   <a href="/">
-    <img src="../static/img/logo.png" alt="logo" class="logo" height="45px" />
+    <img src="/static/img/logo.png" alt="logo" class="logo" height="45px" />
   </a>
   <div>
     <% if ( isLogin == true ) { %>
@@ -27,4 +27,4 @@
     <a href="/join">회원가입</a>
     <% } %>
   </div>
-</header>
+</div>

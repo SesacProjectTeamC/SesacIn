@@ -3,10 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- axios -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <%- include('./components/cdn', { title: 'SesacIn 자유게시글 상세' }) %>
+    <link rel="stylesheet" href="/views/styles/globalstyle.css" />
+    <link rel="stylesheet" href="/views/styles/boardDetail.css" />
+    <script defer src="../static/js/boardDetail.js"></script>
   </head>
-  <body>
+  <body class="container">
+    <%- include('./components/header') %>
+    <div id="bWrapper">
+      <div id="bTitle"><%= boardData.title %></div>
+
+      <div id="bUserC">
+        <div style="display: flex; align-items: center">
+          <div id="bUser">
+            <img src="../../static/svg/person.svg" alt="프로필" width="36px" />
+            <%= boardData.uId %>
+          </div>
+          |
+          <div class="viewImg">
+            <img
+              src="../../static/svg/heart.svg"
+              alt="좋아요수"
+              width="24px"
+              class="svg"
+            />
+            <%= boardData.likeCount%>
+          </div>
+          <div class="viewImg">
+            <img
+              src="../../static/svg/eye.svg"
+              alt="조회수"
+              width="24px"
+              class="svg"
+            />
+            <%= boardData.viewCount%>
+          </div>
+        </div>
+        <div id="bTime"><%= boardData.createdAt %></div>
+      </div>
+
+      <div class="bContent"><%- boardData.content %></div>
+
+      <div id="bCommentCount">댓글 <%= commentData.length%></div>
+    </div>
+
     <h1>자유게시판 개별 게시글 페이지</h1>
     <a href="/board/create">새 게시글 작성페이지로 이동</a>
     <hr />
@@ -129,11 +169,11 @@
   </body>
   <script>
     function addComment() {
-      const board = document.forms['boardInfoForm'];
-      const comment = document.forms['inputCommentForm'];
+      const board = document.forms["boardInfoForm"];
+      const comment = document.forms["inputCommentForm"];
 
       axios({
-        method: 'post',
+        method: "post",
         url: `/board/comment/create/${board.bId.value}`, //bId가 params로 넘어갑니다.
         data: {
           bId: board.bId.value,
@@ -147,10 +187,10 @@
 
           // 새로운 댓글 엘리먼트 생성 및 추가
           const commentsContainer =
-            document.getElementById('commentsContainer');
+            document.getElementById("commentsContainer");
           const newComment = response.data.commentData; // 새로운 댓글 데이터
 
-          const commentDiv = document.createElement('div');
+          const commentDiv = document.createElement("div");
           commentDiv.innerHTML = `
         ${newComment.cId}. 댓글 작성자: ${newComment.uId}
         <button
@@ -205,8 +245,8 @@
       const commentDiv = document.getElementById(`comment${cId}`);
       const editDiv = document.getElementById(`editComment${cId}`);
 
-      commentDiv.style.display = 'none';
-      editDiv.style.display = 'block';
+      commentDiv.style.display = "none";
+      editDiv.style.display = "block";
 
       const editedComment = document.getElementById(`editedComment${cId}`);
       editedComment.focus();
@@ -224,7 +264,7 @@
 
       // 서버로 수정 요청을 보내고, 성공하면 수정된 내용으로 업데이트
       axios({
-        method: 'patch',
+        method: "patch",
         url: `/board/comment/edit/${cId}`,
         data: {
           content: editedComment,
@@ -234,8 +274,8 @@
           console.log(response.data);
           // commentData[index].content = editedComment; // 클라이언트 데이터 업데이트
           commentDiv.innerHTML = `${cId}. 댓글 내용: ${editedComment}`;
-          commentDiv.style.display = 'block';
-          editDiv.style.display = 'none';
+          commentDiv.style.display = "block";
+          editDiv.style.display = "none";
           editingCommentIndex = null;
         })
         .catch((error) => {
@@ -246,15 +286,15 @@
     function cancelEdit(cId) {
       const commentDiv = document.getElementById(`comment${cId}`);
       const editDiv = document.getElementById(`editComment${cId}`);
-      commentDiv.style.display = 'block';
-      editDiv.style.display = 'none';
+      commentDiv.style.display = "block";
+      editDiv.style.display = "none";
       editingCommentIndex = null;
     }
 
     function deleteComment(cId) {
       // 댓글 삭제 요청을 서버로 보내고, 성공하면 화면에서 삭제
       axios({
-        method: 'delete',
+        method: "delete",
         url: `/board/comment/delete/${cId}`,
       })
         .then((response) => {
@@ -270,17 +310,17 @@
     // 댓글 목록을 다시 불러와서 화면 업데이트
     async function refreshComments() {
       const result = await axios({
-        method: 'get',
-        url: '/board/comment/list/<%= boardData.bId %>', // 서버에서 댓글 데이터를 가져오는 API 엔드포인트
+        method: "get",
+        url: "/board/comment/list/<%= boardData.bId %>", // 서버에서 댓글 데이터를 가져오는 API 엔드포인트
       });
       // 현재 모든 댓글 데이터 저장
       let commentData = result.data.comment;
 
-      const commentsContainer = document.getElementById('commentsContainer');
-      commentsContainer.innerHTML = ''; // 기존 댓글 삭제
+      const commentsContainer = document.getElementById("commentsContainer");
+      commentsContainer.innerHTML = ""; // 기존 댓글 삭제
 
       commentData.forEach((comment) => {
-        const commentDiv = document.createElement('div');
+        const commentDiv = document.createElement("div");
         commentDiv.innerHTML = `
       ${comment.cId}. 댓글 작성자: ${comment.uId}
       <button type="button" onclick="editComment('${comment.cId}')">수정하기</button>

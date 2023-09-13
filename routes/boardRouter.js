@@ -167,7 +167,7 @@ router.delete("/delete/:bId", Cboard.deleteBoard);
  *                   type: integer
  *                   description: 전체 게시글 개수
  */
-router.get("/list/:page", Cboard.paginateBoard);
+router.get("/list/:page&:pageSize", Cboard.paginateBoard);
 
 // 게시글 댓글 생성 처리
 /**
