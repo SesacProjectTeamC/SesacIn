@@ -11,25 +11,11 @@
   <body>
     <h1>질문 상세 페이지</h1>
     <h3>질문</h3>
-
-    <button
-      onclick="qLikeHandler('<%= data.qId %>', '<%= prevQuestionLikeCount %>')"
-      id="qLike"
-    >
-      좋아요 👍🏻
-    </button>
-
-    <div>질문 좋아요 개수 <%= data.likeCount %></div>
-    <div>조회수 <%= data.viewCount %></div>
-
-    <br />
-
-    <% console.log(prevAnswersLikeCount) %>
-
     <div>제목 <%= data.title %></div>
     <div>분야 <%= data.qType %></div>
     <div>내용 <%= data.content %></div>
     <div>조회수 <%= data.viewCount %></div>
+    <div>좋아요 <%= data.likeCount %></div>
     <div>생성날짜 <%= data.createdAt %></div>
     <div>수정날짜 <%= data.updatedAt %></div>
     <button onclick="moveToEditQuestion('<%= data.qId %>')">수정</button>
@@ -45,17 +31,6 @@
     <% for(let i = 0; i < answerData.length; i++) { %>
 
     <h4>답변 <%= i+1 %></h4>
-    <button
-      onclick="aLikeHandler('<%= data.qId %>', '<%= answerData[i].aId %>', '<%= prevAnswersLikeCount[i] %>')"
-      id="aLike"
-    >
-      좋아요 👍🏻
-    </button>
-    <div>
-      답변 <%= answerData[i].aId %> 좋아요 개수 <%= prevAnswersLikeCount[i] %>
-    </div>
-
-    <br />
     <button
       onclick="moveToEditAnswer('<%= data.qId %>', '<%= answerData[i].aId %>')"
     >
@@ -94,7 +69,6 @@
     <br />
 
     <% for(let j = 0; j < answerCommentList.length; j++) { %>
-
     <br />
     <button
       onclick="moveToEditComment('<%= data.qId %>', '<%= answerData[i].aId %>', '<%= answerCommentList[j].cId %>')"

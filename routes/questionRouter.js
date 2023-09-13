@@ -11,9 +11,6 @@ router.post('/create', Cquestion.postQuestion);
 // 특정 질문 조회
 router.get('/:qId', Cquestion.getQuestion);
 
-// 특정 질문 좋아요
-router.patch('/:qId', Cquestion.likeQuestion);
-
 //==== Question ====
 
 // 특정 질문 내용 수정
@@ -24,7 +21,8 @@ router.patch('/:qId/edit', Cquestion.patchQuestion);
 router.delete('/:qId/delete', Cquestion.deleteQuestion);
 
 // 좋아요
-// router.patch('/:qId', Cquestion.likeQuestion);
+router.patch('/:qId', Cquestion.likeQuestion);
+router.patch('/:qId/:aId', Canswer.likeAnswer);
 
 //==== Answer ====
 // 답변 전체 조회

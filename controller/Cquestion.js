@@ -6,7 +6,9 @@ const moment = require('moment');
 exports.getQuestions = async (req, res) => {
   try {
     const { type } = req.query;
+
     let questions = await Question.findAll();
+
     const create = [];
     for (q of questions) {
       create.push(moment(q.createdAt).format('YYYY-MM-DD'));
@@ -33,11 +35,17 @@ exports.getQuestion = async (req, res) => {
       where: { qId },
     });
 
-    prevLikeCount = question.likeCount;
+    prevQuestionLikeCount = question.likeCount;
 
     const answers = await Answer.findAll({
       where: { qId },
     });
+
+    prevAnswersLikeCount = [];
+
+    for (let i = 0; i < answers.length; i++) {
+      prevAnswersLikeCount.push(answers[i].likeCount);
+    }
 
     const comments = await Comment.findAll({
       where: { qId },
@@ -49,8 +57,9 @@ exports.getQuestion = async (req, res) => {
       data: question,
       answerData: answers,
       commentData: comments,
+      prevQuestionLikeCount,
+      prevAnswersLikeCount,
       // viewCount,
-      prevLikeCount,
     });
   } catch (err) {
     console.log(err);
@@ -166,177 +175,13 @@ exports.deleteQuestion = async (req, res) => {
 exports.likeQuestion = async (req, res) => {
   try {
     const { qId } = req.params;
-    // const { result } = req.body;
-
-    // console.log("???????", result);
-
-    // if (result) {
-
-    //   const createLike = await uLike.create({
-    //     // uId
-    //     uId: 1, // 임의 유저 1
-    //     qId,
-    //   });
-
-    //   console.log("!!!!!!!", { result: createLike });
-    //   console.log("!!!!!!!", createLike);
-
-    //   // (2) 좋아요 개수 업데이트
-    //   const getQuestion = await Question.findOne({
-    //     where: { qId },
-    //   });
-
-    //   const updatedLike = await Question.update(
-    //     { likeCount: getQuestion.likeCount + 1 },
-    //     { where: { qId } },
-    //   );
-
-    //   const answers = await Answer.findOne({ where: { qId } });
-    //   const comments = await Comment.findOne({ where: { qId } });
-
-    //   console.log("#####", getQuestion);
-
-    //   res.render("question", {
-    //     data: updatedLike,
-    //     answerData: answers,
-    //     commentData: comments,
-    //   });
-    // } else if (!result && uLike) {
-    //   // 2) 좋아요 취소
-    //   // (1) 좋아요 히스토리 삭제
-
-    //   const findLike = await uLike.findOne({
-    //     where: { qId },
-    //   });
-
-    //   if (findLike) {
-    //     const deleteLike = await uLike.destroy({
-    //       where: { qId },
-    //     });
-
-    //     console.log("xxxxxxxx", deleteLike);
-
-    //     const getQuestion = await Question.findOne({
-    //       where: { qId },
-    //     });
-    //     // (2) 좋아요 개수 업데이트
-    //     const updatedLike = await Question.update(
-    //       { likeCount: getQuestion.likeCount - 1 },
-    //       { where: { qId } },
-    //     );
-
-    //     const answers = await Answer.findOne({ where: { qId } });
-    //     const comments = await Comment.findOne({ where: { qId } });
-
-    //     res.render("question", {
-    //       data: updatedLike,
-    //       answerData: answers,
-    //       commentData: comments,
-    //     });
-    //   } else return;
-    // }
-
-    // 1) 좋아요
-    // (1) 좋아요 히스토리 생성
-    //=== LOGIC 2 ===
-    // 좋아요 클릭 -> X 토글
-    // => likeCount + 1
-    //    prevLikeCount = likeCount
-    // => if (prevLikeCount !== currLikeCount + 1) { prevLikeCount }
-
-    // 토글
-    // true --> + 1
-    // false --> 0
-    // result ? update :
-
-    // const { prevLikeCount } = req.body;
-
-    // console.log("prevLikeCount>>>>>", Number(prevLikeCount));
-
-    // const getQuestion = await Question.findOne({
-    //   where: { qId },
-    // });
-
-    // console.log("likeCount~~~~~", getQuestion.likeCount);
-
-    // if (Number(prevLikeCount) === getQuestion.likeCount) {
-    //   // (1) 좋아요 히스토리 생성
-    //   const createLike = await uLike.create({
-    //     // uId
-    //     uId: 1, // 임의 유저 1
-    //     qId,
-    //   });
-
-    //   // (2) 질문 likeCount 업데이트
-    //   const updatedLike = await Question.update(
-    //     { likeCount: getQuestion.likeCount + 1 },
-    //     { where: { qId } },
-    //   );
-
-    //   const answers = await Answer.findOne({ where: { qId } });
-    //   const comments = await Comment.findOne({ where: { qId } });
-
-    //   console.log("#####", getQuestion);
-
-    //   res.render("question", {
-    //     data: updatedLike,
-    //     answerData: answers,
-    //     commentData: comments,
-    //   });
-    // } else if (Number(prevLikeCount) !== getQuestion.likeCount) {
-    //   //   const findLike = await uLike.findOne({
-    //   //     where: { qId },
-    //   //   });
-
-    //   //   if (findLike) {
-
-    //   // (1) 좋아요 히스토리 삭제
-    //   const deleteLike = await uLike.destroy({
-    //     where: { qId },
-    //   });
-
-    //   console.log("prevLikeCount>>>>>", prevLikeCount);
-
-    //   console.log("likeCount~~~~~", getQuestion.likeCount);
-
-    //   console.log("xxxxxxxx", deleteLike);
-
-    //   // const getQuestion = await Question.findOne({
-    //   //   where: { qId },
-    //   // });
-
-    //   // (2) 좋아요 개수 업데이트
-    //   const updatedLike = await Question.update(
-    //     { likeCount: getQuestion.likeCount - 1 },
-    //     { where: { qId } },
-    //   );
-
-    //   const answers = await Answer.findOne({ where: { qId } });
-    //   const comments = await Comment.findOne({ where: { qId } });
-
-    //   res.render("question", {
-    //     data: updatedLike,
-    //     answerData: answers,
-    //     commentData: comments,
-    //   });
-    // }
-
-    //=== LOGIC 3 ===
-    // 1) uLike findOne -> qId 없으면,
-    // (1) 좋아요 -> uLike 해당 qId 생성됨.
-    // (2) 질문 likeCount 업데이트
-
-    // 2) uLike findOne -> qId 있으면,
-    // (1) 좋아요 -> uLike 해당 qId 삭제함
-    // (2) 질문 likeCount 업데이트
-
-    //-- START
 
     const uLikeFind = await uLike.findOne({ where: { qId } });
 
     const getQuestion = await Question.findOne({
       where: { qId },
     });
+
     // 1) uLike findOne -> qId 없으면,
     if (!uLikeFind) {
       //-- 좋아요 -> uLike 해당 qId 생성됨.
@@ -353,7 +198,7 @@ exports.likeQuestion = async (req, res) => {
       );
       const answers = await Answer.findOne({ where: { qId } });
       const comments = await Comment.findOne({ where: { qId } });
-      res.render('question', {
+      return res.render('question', {
         data: updatedLike,
         answerData: answers,
         commentData: comments,
@@ -364,10 +209,6 @@ exports.likeQuestion = async (req, res) => {
       const deleteLike = await uLike.destroy({
         where: { qId },
       });
-
-      console.log('prevLikeCount>>>>>', prevLikeCount);
-
-      console.log('xxxxxxxx', deleteLike);
 
       // (2) 질문 likeCount 업데이트
       const updatedLike = await Question.update(

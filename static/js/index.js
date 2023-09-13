@@ -191,22 +191,11 @@ const deleteQuestion = (qId) => {
   });
 };
 
-let isLike = false;
 // 4) 좋아요
-const qLikeHandler = (qId, prevLikeCount) => {
-  // const qLike = document.querySelector("#qLike");
-
-  // boolean
-  isLike = !isLike;
-
-  console.log(isLike);
-  console.log(prevLikeCount);
-
+const qLikeHandler = (qId) => {
   axios({
     method: 'PATCH',
     url: `/question/${qId}`,
-    // data: { result: isLike },
-    data: { prevLikeCount },
   }).then((res) => {
     if (res) {
       document.location.href = `/question/${qId}`;
@@ -274,6 +263,19 @@ const deleteAnswer = (qId, aId) => {
       alert('삭제되었습니다');
     }
     window.location.href = `/question/${qId}`;
+  });
+};
+
+// 4) 좋아요
+const aLikeHandler = (qId, aId) => {
+  axios({
+    method: 'PATCH',
+    url: `/question/${qId}/${aId}`,
+    data: { aId },
+  }).then((res) => {
+    if (res) {
+      document.location.href = `/question/${qId}`;
+    }
   });
 };
 

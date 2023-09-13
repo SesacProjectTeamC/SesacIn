@@ -1,4 +1,4 @@
-const { Question, Answer } = require('../models');
+const { Question, Answer, uLike } = require('../models');
 
 // 답변 목록 가져오기
 exports.getAnswers = async (req, res) => {
@@ -134,6 +134,87 @@ exports.deleteAnswer = async (req, res) => {
       });
     } else {
       return res.send({ result: false });
+    }
+  } catch (err) {
+    console.log(err);
+    res.send('Internet Server Error!!!');
+  }
+};
+
+// 답변 좋아요
+//!! 답변 좋아요 기능 수정
+exports.likeAnswer = async (req, res) => {
+  try {
+    const { qId, aId } = req.params;
+
+    const uLikeFind = await uLike.findOne({
+      where: {
+        aId,
+        // uId
+        uId: 1, // 임의 유저 1
+      },
+    });
+
+    const getAnswer = await Answer.findOne({
+      where: {
+        aId,
+      },
+    });
+
+    // console.log(getAnswer);
+    // const aId = getAnswer.aId;
+
+    // 1) uLike findOne -> 없으면,
+    if (!uLikeFind) {
+      // (1) 좋아요 히스토리 생성
+      const createLike = await uLike.create({
+        //! uId
+        uId: 1, // 임의 유저 1
+        aId,
+      });
+
+      // (2) 답변 likeCount 업데이트
+      const updatedLike = await Answer.update(
+        { likeCount: getAnswer.likeCount + 1 },
+        { where: { aId } }
+      );
+
+      const question = await Question.findOne({ where: { qId } });
+
+      const comments = await Comment.findOne({ where: { qId } });
+
+      res.render('question', {
+        data: question,
+        answerData: updatedLike,
+        commentData: comments,
+      });
+    } else if (uLikeFind) {
+      // 2) uLike findOne -> 있으면,
+      // (1) 좋아요 -> uLike 해당 aId 삭제함
+      const deleteLike = await uLike.destroy({
+        where: {
+          aId,
+          // uId
+          uId: 1, // 임의 유저 1
+        },
+      });
+
+      console.log('xxxxxxxx', deleteLike);
+
+      // (2) 답변 likeCount 업데이트
+      const updatedLike = await Answer.update(
+        { likeCount: getAnswer.likeCount - 1 },
+        { where: { aId } }
+      );
+
+      const question = await Question.findOne({ where: { qId } });
+      const comments = await Comment.findAll({ where: { qId } });
+
+      res.render('question', {
+        data: question,
+        answerData: updatedLike,
+        commentData: comments,
+      });
     }
   } catch (err) {
     console.log(err);
