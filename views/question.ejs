@@ -12,7 +12,11 @@
     <h1>질문 상세 페이지</h1>
     <h3>질문</h3>
 
-    <button onclick="qLikeHandler('<%= data.qId %>')" id="qLike">
+    <%= console.log(prevLikeCount) %>
+    <button
+      onclick="qLikeHandler('<%= data.qId %>', '<%= prevLikeCount %>')"
+      id="qLike"
+    >
       좋아요 👍🏻
     </button>
 

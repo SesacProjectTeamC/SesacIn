@@ -1,14 +1,14 @@
-const { Question, Answer, Comment } = require('../models');
+const { Question, Answer, Comment, uLike } = require("../models");
 const viewCount = 0;
 
 // 질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
   try {
     const questions = await Question.findAll();
-    res.render('index', { type: '', data: questions });
+    res.render("index", { type: "", data: questions });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -23,6 +23,8 @@ exports.getQuestion = async (req, res) => {
       where: { qId },
     });
 
+    prevLikeCount = question.likeCount;
+
     const answers = await Answer.findAll({
       where: { qId },
     });
@@ -33,25 +35,26 @@ exports.getQuestion = async (req, res) => {
 
     // viewCount += 1;
 
-    res.render('question', {
+    res.render("question", {
       data: question,
       answerData: answers,
       commentData: comments,
       // viewCount,
+      prevLikeCount,
     });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
 // 질문 생성 GET
 exports.getCreateQuestion = async (req, res) => {
   try {
-    res.render('post', { data: { type: 'qna' } }); // 임시
+    res.render("post", { data: { type: "qna" } }); // 임시
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -61,7 +64,7 @@ exports.postQuestion = async (req, res) => {
   req.session.user = 1;
 
   if (!req.session.user) {
-    res.redirect('/');
+    res.redirect("/");
   }
   let loginUser = req.session.user;
 
@@ -75,11 +78,11 @@ exports.postQuestion = async (req, res) => {
       qType,
       uId: loginUser,
     });
-    console.log('추가>>>', { result: newQuestion });
+    console.log("추가>>>", { result: newQuestion });
     res.send({ result: newQuestion });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -93,10 +96,10 @@ exports.getEditQuestion = async (req, res) => {
       where: { qId },
     });
 
-    res.render('questionEditTest', { data: question });
+    res.render("questionEditTest", { data: question });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -110,20 +113,20 @@ exports.patchQuestion = async (req, res) => {
       { title, content },
       {
         where: { qId },
-      }
+      },
     );
 
     const answers = await Answer.findOne({ where: { qId } });
     const comments = await Comment.findOne({ where: { qId } });
 
-    res.render('question', {
+    res.render("question", {
       data: updatedQuestion,
       answerData: answers,
       commentData: comments,
     });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -136,7 +139,7 @@ exports.deleteQuestion = async (req, res) => {
       where: { qId },
     });
 
-    console.log('isDeleted >>>', isDeleted); // 성공 시 1, 실패 시 0
+    console.log("isDeleted >>>", isDeleted); // 성공 시 1, 실패 시 0
 
     if (isDeleted) {
       return res.send({ result: true });
@@ -145,7 +148,7 @@ exports.deleteQuestion = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -153,52 +156,219 @@ exports.deleteQuestion = async (req, res) => {
 exports.likeQuestion = async (req, res) => {
   try {
     const { qId } = req.params;
-    const { isLike } = req.body;
+    // const { result } = req.body;
 
-    if (isLike) {
-      // 1) 좋아요
+    // console.log("???????", result);
+
+    // if (result) {
+
+    //   const createLike = await uLike.create({
+    //     // uId
+    //     uId: 1, // 임의 유저 1
+    //     qId,
+    //   });
+
+    //   console.log("!!!!!!!", { result: createLike });
+    //   console.log("!!!!!!!", createLike);
+
+    //   // (2) 좋아요 개수 업데이트
+    //   const getQuestion = await Question.findOne({
+    //     where: { qId },
+    //   });
+
+    //   const updatedLike = await Question.update(
+    //     { likeCount: getQuestion.likeCount + 1 },
+    //     { where: { qId } },
+    //   );
+
+    //   const answers = await Answer.findOne({ where: { qId } });
+    //   const comments = await Comment.findOne({ where: { qId } });
+
+    //   console.log("#####", getQuestion);
+
+    //   res.render("question", {
+    //     data: updatedLike,
+    //     answerData: answers,
+    //     commentData: comments,
+    //   });
+    // } else if (!result && uLike) {
+    //   // 2) 좋아요 취소
+    //   // (1) 좋아요 히스토리 삭제
+
+    //   const findLike = await uLike.findOne({
+    //     where: { qId },
+    //   });
+
+    //   if (findLike) {
+    //     const deleteLike = await uLike.destroy({
+    //       where: { qId },
+    //     });
+
+    //     console.log("xxxxxxxx", deleteLike);
+
+    //     const getQuestion = await Question.findOne({
+    //       where: { qId },
+    //     });
+    //     // (2) 좋아요 개수 업데이트
+    //     const updatedLike = await Question.update(
+    //       { likeCount: getQuestion.likeCount - 1 },
+    //       { where: { qId } },
+    //     );
+
+    //     const answers = await Answer.findOne({ where: { qId } });
+    //     const comments = await Comment.findOne({ where: { qId } });
+
+    //     res.render("question", {
+    //       data: updatedLike,
+    //       answerData: answers,
+    //       commentData: comments,
+    //     });
+    //   } else return;
+    // }
+
+    // 1) 좋아요
+    // (1) 좋아요 히스토리 생성
+    //=== LOGIC 2 ===
+    // 좋아요 클릭 -> X 토글
+    // => likeCount + 1
+    //    prevLikeCount = likeCount
+    // => if (prevLikeCount !== currLikeCount + 1) { prevLikeCount }
+
+    // 토글
+    // true --> + 1
+    // false --> 0
+    // result ? update :
+
+    // const { prevLikeCount } = req.body;
+
+    // console.log("prevLikeCount>>>>>", Number(prevLikeCount));
+
+    // const getQuestion = await Question.findOne({
+    //   where: { qId },
+    // });
+
+    // console.log("likeCount~~~~~", getQuestion.likeCount);
+
+    // if (Number(prevLikeCount) === getQuestion.likeCount) {
+    //   // (1) 좋아요 히스토리 생성
+    //   const createLike = await uLike.create({
+    //     // uId
+    //     uId: 1, // 임의 유저 1
+    //     qId,
+    //   });
+
+    //   // (2) 질문 likeCount 업데이트
+    //   const updatedLike = await Question.update(
+    //     { likeCount: getQuestion.likeCount + 1 },
+    //     { where: { qId } },
+    //   );
+
+    //   const answers = await Answer.findOne({ where: { qId } });
+    //   const comments = await Comment.findOne({ where: { qId } });
+
+    //   console.log("#####", getQuestion);
+
+    //   res.render("question", {
+    //     data: updatedLike,
+    //     answerData: answers,
+    //     commentData: comments,
+    //   });
+    // } else if (Number(prevLikeCount) !== getQuestion.likeCount) {
+    //   //   const findLike = await uLike.findOne({
+    //   //     where: { qId },
+    //   //   });
+
+    //   //   if (findLike) {
+
+    //   // (1) 좋아요 히스토리 삭제
+    //   const deleteLike = await uLike.destroy({
+    //     where: { qId },
+    //   });
+
+    //   console.log("prevLikeCount>>>>>", prevLikeCount);
+
+    //   console.log("likeCount~~~~~", getQuestion.likeCount);
+
+    //   console.log("xxxxxxxx", deleteLike);
+
+    //   // const getQuestion = await Question.findOne({
+    //   //   where: { qId },
+    //   // });
+
+    //   // (2) 좋아요 개수 업데이트
+    //   const updatedLike = await Question.update(
+    //     { likeCount: getQuestion.likeCount - 1 },
+    //     { where: { qId } },
+    //   );
+
+    //   const answers = await Answer.findOne({ where: { qId } });
+    //   const comments = await Comment.findOne({ where: { qId } });
+
+    //   res.render("question", {
+    //     data: updatedLike,
+    //     answerData: answers,
+    //     commentData: comments,
+    //   });
+    // }
+
+    //=== LOGIC 3 ===
+    // 1) uLike findOne -> qId 없으면,
+    // (1) 좋아요 -> uLike 해당 qId 생성됨.
+    // (2) 질문 likeCount 업데이트
+
+    // 2) uLike findOne -> qId 있으면,
+    // (1) 좋아요 -> uLike 해당 qId 삭제함
+    // (2) 질문 likeCount 업데이트
+
+    //-- START
+
+    const uLikeFind = await uLike.findOne({ where: { qId } });
+
+    const getQuestion = await Question.findOne({
+      where: { qId },
+    });
+    // 1) uLike findOne -> qId 없으면,
+    if (!uLikeFind) {
+      //-- 좋아요 -> uLike 해당 qId 생성됨.
       // (1) 좋아요 히스토리 생성
-      const createLike = await Like.create({
+      const createLike = await uLike.create({
         // uId
         uId: 1, // 임의 유저 1
         qId,
       });
-
-      console.log('!!!!!!!', createLike);
-
-      // (2) 좋아요 개수 업데이트
+      // (2) 질문 likeCount 업데이트
       const updatedLike = await Question.update(
-        { likeCount: likeCount + 1 },
-        { where: { qId } }
+        { likeCount: getQuestion.likeCount + 1 },
+        { where: { qId } },
       );
-
       const answers = await Answer.findOne({ where: { qId } });
       const comments = await Comment.findOne({ where: { qId } });
-
-      res.render('question', {
+      res.render("question", {
         data: updatedLike,
         answerData: answers,
         commentData: comments,
       });
-    } else {
-      // 2) 좋아요 취소
-      // (1) 좋아요 히스토리 삭제
-      const deleteLike = await Like.destroy({
+    } else if (uLikeFind) {
+      // 2) uLike findOne -> qId 있으면,
+      // (1) 좋아요 -> uLike 해당 qId 삭제함
+      const deleteLike = await uLike.destroy({
         where: { qId },
       });
 
-      console.log('xxxxxxxx', deleteLike);
+      console.log("prevLikeCount>>>>>", prevLikeCount);
 
-      // (2) 좋아요 개수 업데이트
+      console.log("xxxxxxxx", deleteLike);
+
+      // (2) 질문 likeCount 업데이트
       const updatedLike = await Question.update(
-        { likeCount: likeCount - 1 },
-        { where: { qId } }
+        { likeCount: getQuestion.likeCount - 1 },
+        { where: { qId } },
       );
 
       const answers = await Answer.findOne({ where: { qId } });
       const comments = await Comment.findOne({ where: { qId } });
 
-      res.render('question', {
+      res.render("question", {
         data: updatedLike,
         answerData: answers,
         commentData: comments,
@@ -206,6 +376,6 @@ exports.likeQuestion = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
