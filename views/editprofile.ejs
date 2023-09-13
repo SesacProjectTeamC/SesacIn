@@ -13,8 +13,8 @@
         <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="views/componets/cdn.ejs">
-        <link rel="stylesheet" href="views/styles/editProfile.css">
-        <link rel="stylesheet" href="views/styles/globalstyle.css">
+        <link rel="stylesheet" href="/views/styles/editProfile.css">
+        <link rel="stylesheet" href="/views/styles/globalstyle.css">
         
         
     </head>
@@ -39,20 +39,20 @@
     </div>
     <div class="input-wrapper">
       <label for="email">이메일</label>
-      <input id="email" type="text" name="email" value=""pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" title="올바른 이메일 형식을 입력해주세요."><br>
+      <input id="email" type="text" name="email" value=""pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" title="올바른 이메일 형식을 입력해주세요.">
     </div>
     <div class="input-wrapper">
       <label for="uName">닉네임</label>
-      <input id="uName" type="text" name="uName" value="" required /><br />
+      <input id="uName" type="text" name="uName" value="" required />
     </div>
     <div class="input-wrapper">
       <label for="pw">비밀번호</label>
-      <input id="pw" type="password" name="pw" value="" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required /><br />
+      <input id="pw" type="password" name="pw" value="" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required />
     </div>
 
     <div class="input-wrapper">
       <label for="pw_check">비밀번호 재확인</label>
-      <input id="pw_check" type="password" name="pw_check" value="" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required /><br />
+      <input id="pw_check" type="password" name="pw_check" value="" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required />
     </div>
       <button type="button" class="profileEdit" onclick="profileEdit();">수정하기</button><br>
 
