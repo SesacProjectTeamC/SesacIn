@@ -19,7 +19,7 @@ const changeType = (component, type, p = 1) => {
       const arrayData =
         component.innerHTML.trim() === '자유게시판'
           ? res.data.boards
-          : res.data.data;
+          : res.data.questions;
       const container = document.querySelector('.index_container');
       container.innerHTML = '';
       for (let i = 0; i < arrayData.length; i++) {
