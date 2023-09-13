@@ -1,6 +1,6 @@
 const User = (Sequelize, DataTypes) => {
   const User = Sequelize.define(
-    'User',
+    "User",
     {
       uId: {
         type: DataTypes.STRING(50),
@@ -27,19 +27,14 @@ const User = (Sequelize, DataTypes) => {
       campus: {
         type: DataTypes.STRING(50),
         allowNull: true,
-        defaultValue: 'NULL',
-      },
-      isLike: {
-        type: DataTypes.JSON,
-        allowNull: true,
-        defaultValue: 'NULL',
+        defaultValue: "NULL",
       },
     },
     {
-      tableName: 'user', // 실제 db 테이블명
+      tableName: "user", // 실제 db 테이블명
       freezeTableName: true, // 테이블명 고정 (모델 이름 테이블로 바꿀 때 복수형으로 바뀜)
       timestamps: true,
-    }
+    },
   );
   return User;
 };
