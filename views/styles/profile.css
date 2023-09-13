@@ -33,3 +33,11 @@ img {
   width: 150px;
   height: 150px;
 }
+
+.questionBoardCard_likedPost {
+  display: hidden;
+}
+
+.freeBoardCard {
+  display: hidden;
+}

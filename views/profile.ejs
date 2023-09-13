@@ -67,8 +67,8 @@
   </form>
 
     
-    <button onclick="questionBoardCard('<%= %>')" class="questionBoardCard">Q&A 게시판</button>
-    <button onclick="freeBoardCard('')" class="freeBoardCard">자유 게시판</button>
+    <button onclick="questionBoardCard()" class="questionBoardCard">Q&A 게시판</button>
+    <button onclick="freeBoardCard()" class="freeBoardCard">자유 게시판</button>
 <!-- 둘중 하나 클릭시 -->
     <div class="questionBoardCard_likedPost">
       <!-- questionBoardCard button 클릭시 글이 보이게  -->
@@ -135,7 +135,7 @@
   function questionBoardCard(){
     //type별로 보여줄지 말지
       // 모든 div들을 숨김
-    let allDivs = document.querySelectorAll('div >.questionBoardCard');
+    let allDivs = document.querySelectorAll('.questionBoardCard');
     for (let div of allDivs) {
         div.style.display = 'none';
     }
