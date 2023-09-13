@@ -18,7 +18,13 @@
     <img src="../static/img/logo.png" alt="logo" class="logo" height="45px" />
   </a>
   <div>
+    <% if ( isLogin == true ) { %>
+    <a href="/logout">로그아웃</a>
+    <a href="/users/profile">마이페이지</a>
+    <% } else { %>
+
     <a href="/login">로그인</a>
     <a href="/join">회원가입</a>
+    <% } %>
   </div>
 </header>
