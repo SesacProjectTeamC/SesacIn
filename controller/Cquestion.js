@@ -1,20 +1,34 @@
 const { Question, Answer, Comment } = require('../models');
 const moment = require('moment');
 
-// 질문 목록 가져오기
+// 메인페이지,질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
+  // 테스트를 위해 로그인한 유저를 정해놓음
+  req.session.user = 'aassddff1';
+
   try {
     const { type } = req.query;
     let questions = await Question.findAll();
     const create = [];
+
     for (q of questions) {
       create.push(moment(q.createdAt).format('YYYY-MM-DD'));
+    }
+
+    if (!req.session.user) {
+      res.status(200).render('index', {
+        type: 'qna',
+        data: questions,
+        cDate: create,
+        isLogin: false,
+      });
     }
 
     res.render('index', {
       type: 'qna',
       data: questions,
       cDate: create,
+      isLogin: true,
     });
   } catch (err) {
     console.log(err);
