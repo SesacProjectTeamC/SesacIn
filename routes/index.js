@@ -10,6 +10,8 @@ const Cprofile = require("../controller/Cprofile");
 // 메인 페이지 관련
 router.get("/", Cquestion.getQuestions);
 
+// router.get('/users/:uId/profile', Cprofile.getUser);
+
 // 유저 관련
 /**
  * @swagger

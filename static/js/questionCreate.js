@@ -39,7 +39,7 @@ const postBoard = (t) => {
         data: { title: title.value, content: content },
       }).then((res) => {
         if (res) {
-          console.log(res.data.bid);
+          console.log(res.data.bId);
           document.location.href = `/board/detail/${res.data.bId}`;
         }
       });

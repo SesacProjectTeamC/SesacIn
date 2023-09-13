@@ -264,4 +264,7 @@ router.patch("/comment/edit/:cId", Cboard.editComment);
  */
 router.delete("/comment/delete/:cId", Cboard.deleteComment);
 
+// 댓글 다 가져오기
+router.get("/comment/list/:bId", Cboard.getCommentList);
+
 module.exports = router;
