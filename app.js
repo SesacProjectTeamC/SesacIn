@@ -65,6 +65,11 @@ app.use('/board', boardRouter);
 // profile 라우터로 이동
 app.use('/users', profileRouter);
 
+// test
+app.get('/check', (req, res) => {
+  res.send(req.session);
+});
+
 // 404 처리
 app.get('*', (req, res) => {
   res.render('404.ejs');
