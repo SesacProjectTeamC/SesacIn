@@ -103,8 +103,16 @@ exports.getQuestion = async (req, res) => {
       where: { qId },
     });
 
+    // 조회수 업데이트
+    const updatedQuestion = await Question.update(
+      { viewCount: question.viewCount + 1 },
+      {
+        where: { qId },
+      },
+    );
+
     res.render("question", {
-      data: question,
+      data: updatedQuestion,
       answerData: answers,
       commentData: comments,
     });
