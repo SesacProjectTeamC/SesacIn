@@ -1,5 +1,4 @@
 const { User, Question, Answer, Comment, Board, uLike } = require('../models');
-const { Op } = require('sequelize');
 
 exports.getHistory = async (req, res) => {
   try {
@@ -13,7 +12,6 @@ exports.getHistory = async (req, res) => {
       },
     });
 
-    // 1. 좋아요 / 작성한 게시글 / 답변 / 댓글
     //-- 좋아요 클릭 게시글 가져오기
     const likes = await uLike.findAll({ where: { uId } });
 
@@ -27,7 +25,7 @@ exports.getHistory = async (req, res) => {
       where: { aId: likes.map((like) => like.aId) },
     });
 
-    //-- 작성한 게시글 가져오기
+    //-- 작성한 질문 가져오기
     const posts = await Question.findAll({ where: { uId } });
 
     //-- 작성한 답변 가져오기

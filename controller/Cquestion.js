@@ -1,5 +1,4 @@
 const { Question, Answer, Comment, uLike } = require('../models');
-const viewCount = 0;
 const moment = require('moment');
 
 // 메인페이지,질문 목록 가져오기
@@ -243,7 +242,13 @@ exports.likeQuestion = async (req, res) => {
   try {
     const { qId } = req.params;
 
-    const uLikeFind = await uLike.findOne({ where: { qId } });
+    const uLikeFind = await uLike.findOne({
+      where: {
+        qId,
+        //! uId
+        uId: 1, // 임의 유저 1
+      },
+    });
 
     const getQuestion = await Question.findOne({
       where: { qId },
