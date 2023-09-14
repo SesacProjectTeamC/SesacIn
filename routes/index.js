@@ -17,9 +17,6 @@ router.get('/join', Cuser.getJoin);
 // 중복 확인 처리 (아이디/패스워드)
 router.get('/checkDuplicate', Cuser.checkDuplicate);
 
-// 사용자 회원가입 처리
-router.post('/users', Cuser.postUser);
-
 // 로그인 페이지 렌더링
 router.get('/login', Cuser.login);
 

@@ -4,7 +4,7 @@
 // 3. 수정 버튼 -> 회원정보 PATCH, DELETE
 
 //////////////////////////////////////////////
-const { User, Question, Answer, Comment, Board } = require('../models');
+const { User, Question, Answer, Comment, Board, uLike } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 
@@ -35,17 +35,16 @@ exports.getUser = async (req, res) => {
         where: { aId: likes.map((like) => like.aId) },
       });
 
-      //-- 작성한 질문 가져오기
-      const posts = await Question.findAll({ where: { uId } });
+      //-- 작성한 게시글 가져오기
+      const posts = await Question.findAll({ where: { uId: uId } });
 
       //-- 작성한 답변 가져오기
-      const answers = await Answer.findAll({ where: { uId } });
+      const answers = await Answer.findAll({ where: { uId: uId } });
 
       //-- 작성한 댓글 가져오기
-      const comments = await Comment.findAll({ where: { uId } });
-
+      const comments = await Comment.findAll({ where: { uId: uId } });
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      res.render('profileTest', {
+      res.render('profile', {
         userData: user,
         likeQuestionData: likeQuestion,
         likeAnswerData: likeAnswer,
@@ -118,6 +117,9 @@ exports.getUserInfo = (req, res) => {
 
 // 회원 정보 수정 - 비밀번호, 이름 (이미지는 후순위)
 exports.patchUser = async (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
   try {
     const uId = req.session.user;
     console.log(uId);
@@ -139,32 +141,41 @@ exports.patchUser = async (req, res) => {
     const answers = await Answer.findAll({ where: { uId: uId } });
     const comments = await Comment.findAll({ where: { uId: uId } });
 
-    console.log('>>>>>>>', updatedUser);
-    req.session.destroy((err) => {
-      if (err) {
-        console.log('세션 삭제 에러 >>> ', err);
-      } else {
-        console.log('세션 삭제 완료');
-      }
-    });
+    // 세션 지우는 로직 (이로직을 수행하면 로그인이 풀려버린다.)
+    // console.log('>>>>>>>', updatedUser);
+    // req.session.destroy((err) => {
+    //   if (err) {
+    //     console.log('세션 삭제 에러 >>> ', err);
+    //   } else {
+    //     console.log('세션 삭제 완료');
+    //   }
+    // });
 
     res.render('profile', {
       userData: updatedUser,
       postData: posts,
       answerData: answers,
       commentData: comments,
+      isLogin,
+      currentUser: req.session.user,
+      success: true,
     });
   } catch (err) {
     console.log(err);
     res.status(500).send({
-      OK: false,
-      msg: '데이터베이스 오류 발생',
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '서버 오류 발생',
     });
   }
 };
 
 // 회원 삭제 - 회원 탈퇴할 경우
 exports.deleteUser = async (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
   try {
     const uId = req.session.user;
     const isDeleted = await User.destroy({
@@ -178,15 +189,24 @@ exports.deleteUser = async (req, res) => {
           console.log(err);
           res.status(500).send({
             OK: false,
-            msg: '데이터베이스 오류 발생',
+            msg: '세션 삭제 실패',
           });
           return;
         }
-        res.send(true);
+
+        res.status(200).send({
+          isLogin: false,
+          deletedUser: uId,
+          success: true,
+        });
       });
     } else {
       // 삭제 실패
-      res.send(false);
+      res.status(500).send({
+        isLogin,
+        currentUser: req.session.user,
+        success: false,
+      });
     }
   } catch (err) {
     console.log(err);
