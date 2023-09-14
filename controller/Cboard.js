@@ -197,27 +197,26 @@ exports.paginateBoard = async (req, res) => {
 // 게시글 생성 처리
 // /board/create
 exports.createBoard = async (req, res) => {
-  // 테스트를 위해 로그인 된것으로 처리
-  req.session.user = 'tgkim';
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
 
   try {
-    // 로그인 여부 검사
-    // 결과값을 isLogin 값으로 보낸다.
-    if (!req.session.user) {
+    if (!isLogin) {
       res.status(401).send({
         success: false,
-        isLogin: false,
+        isLogin,
+        currentLoginUser: req.session.user,
         msg: '로그인 되어있지 않습니다.',
       });
+      return;
     }
-    let loginUser = req.session.user;
 
     // Req 데이터 Null 검사
     if (!req.body.title || !req.body.content) {
       res.status(400).send({
         success: false,
-        isLogin: true,
-        currentLoginUser: loginUser,
+        isLogin,
+        currentLoginUser: req.session.user,
         msg: '데이터에 빈값이 있습니다.',
       });
       return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
@@ -230,28 +229,28 @@ exports.createBoard = async (req, res) => {
     const newBoard = await Board.create({
       title: req.body.title,
       content: req.body.content,
-      uId: loginUser,
+      uId: req.session.user,
     });
 
     res.status(200).send({
-      success: false,
-      isLogin: true,
-      currentLoginUser: loginUser,
+      success: true,
+      isLogin,
+      currentLoginUser: req.session.user,
       msg: '자유게시글 생성 처리 성공',
       bId: newBoard.dataValues.bId,
       data: {
         bId: newBoard.dataValues.bId,
       },
     });
-    return;
   } catch (error) {
     // 기타 데이터베이스 오류
     console.log(error);
     res.status(500).send({
-      OK: false,
+      success: false,
+      isLogin,
+      currentLoginUser: req.session.user,
       msg: '서버에러 발생',
     });
-    return;
   }
 };
 
@@ -385,26 +384,30 @@ exports.deleteBoard = async (req, res) => {
 };
 
 // 게시글 댓글 생성 처리
+// /board/comment/create/:bId
 exports.createComment = async (req, res) => {
-  // 테스트를 위해 로그인 된것으로 처리
-  req.session.user = '홍홍';
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
 
   try {
     // 로그인 여부 검사
     // 결과값을 isLogin 값으로 보낸다.
-    if (!req.session.user) {
+    if (!isLogin) {
       res.status(401).send({
         success: false,
-        isLogin: false,
+        isLogin,
+        currentLoginUser: req.session.user,
         msg: '로그인 되어있지 않습니다.',
       });
+      return;
     }
-    let loginUser = req.session.user;
 
     // Req 데이터 Null 검사
     if (!req.body.content || !req.params.bId) {
       res.status(400).send({
-        OK: false,
+        success: false,
+        isLogin,
+        currentLoginUser: req.session.user,
         msg: '데이터에 빈값이 있습니다.',
       });
       return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
@@ -414,24 +417,31 @@ exports.createComment = async (req, res) => {
     const commentContent = req.body.content;
 
     const newComment = await Comment.create({
-      uId: loginUser,
+      uId: req.session.user,
       bId: currentBid,
       content: commentContent,
     });
 
+    // 게시글의 총 댓글수 확인
+    const commentCount = await getCommentCount(currentBid);
+
+    // 정상 처리
     res.status(200).send({
-      OK: true,
-      isLogin: true,
+      success: true,
+      isLogin,
       currentLoginUser: req.session.user,
       msg: '게시글 댓글 생성 처리 성공',
       commentData: newComment.dataValues,
+      commentCount, // 게시글에 달린 총 댓글수
     });
     return;
   } catch (error) {
     // 기타 데이터베이스 오류
     console.log(error);
     res.status(500).send({
-      OK: false,
+      success: false,
+      isLogin,
+      currentLoginUser: req.session.user,
       msg: '데이터베이스 오류 발생',
     });
     return;
@@ -439,17 +449,18 @@ exports.createComment = async (req, res) => {
 };
 
 // 게시글 댓글 수정 처리
+// /board/comment/edit/:cId
 exports.editComment = async (req, res) => {
-  // 테스트를 위해 로그인 된것으로 처리
-  req.session.user = '홍홍';
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
 
   try {
     // 로그인 여부 검사
-    // 결과값을 isLogin 값으로 보낸다.
-    if (!req.session.user) {
+    if (!isLogin) {
       res.status(401).send({
         success: false,
-        isLogin: false,
+        isLogin,
+        currentLoginUser: req.session.user,
         msg: '로그인 되어있지 않습니다.',
       });
       return;
@@ -473,15 +484,25 @@ exports.editComment = async (req, res) => {
     // cid로 댓글 여부 먼저 확인
     if (result === null) {
       // 없는 댓글임
-      res
-        .status(401)
-        .send({ msg: '서버 오류 발생: 해당 cid의 댓글이 없습니다.' });
+      res.status(404).send({
+        success: false,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '서버 오류 발생: 해당 cid의 댓글이 없습니다.',
+      });
+      return;
     }
 
     // uid로 댓글 소유자 여부 확인(권한 확인)
     const commentWriter = result.uId;
     if (req.session.user !== commentWriter) {
-      res.status(401).send({ msg: '댓글의 소유자가 아님' });
+      res.status(401).send({
+        success: false,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '댓글의 소유자가 아님',
+      });
+      return;
     }
 
     // 댓글 수정
@@ -490,35 +511,46 @@ exports.editComment = async (req, res) => {
       { where: { cId: cId } }
     );
 
+    console.log(updatedComment);
+
+    // 게시글의 총 댓글수 확인
+    //const commentCount = await getCommentCount(currentBid);
+
     res.status(200).send({
       success: true,
-      isLogin: true,
+      isLogin,
       currentLoginUser: req.session.user,
       msg: '댓글 수정처리 완료',
       updatedcId: cId,
+      commentCount,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      isLogin: false,
+      isLogin,
+      currentLoginUser: req.session.user,
       msg: '서버에러 발생',
     });
   }
 };
 
 // 게시글 댓글 삭제 처리
+// /board/comment/delete/:cId
 exports.deleteComment = async (req, res) => {
-  // 테스트용으로 미리 박아놓음
-  req.session.user = '홍홍';
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
 
   try {
-    if (!req.session.user) {
+    // 로그인 여부 검사
+    if (!isLogin) {
       res.status(401).send({
         success: false,
-        isLogin: false,
+        isLogin,
+        currentLoginUser: req.session.user,
         msg: '로그인 되어있지 않습니다.',
       });
+      return;
     }
 
     // 요청에서 cId(댓글 ID) 받아오기
@@ -533,38 +565,54 @@ exports.deleteComment = async (req, res) => {
     // cId로 댓글 여부 먼저 확인
     if (result === null) {
       // 없는 댓글임
-      res
-        .status(401)
-        .send({ msg: '서버 오류 발생: 해당 cId의 댓글이 없습니다.' });
+      res.status(404).send({
+        success: false,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '서버 오류 발생: 해당 cid의 댓글이 없습니다.',
+      });
+      return;
     }
 
     // uId로 댓글 소유자 여부 확인(권한 확인)
     const commentWriter = result.uId;
     if (req.session.user !== commentWriter) {
-      res.status(401).send({ msg: '댓글의 소유자가 아님' });
+      res.status(401).send({
+        success: false,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '댓글의 소유자가 아님',
+      });
+      return;
     }
 
     // 댓글 삭제
-    const deletedComment = await Comment.destroy({
+    const isDeletedComment = await Comment.destroy({
       where: { cId: cId },
     });
 
-    if (deletedComment) {
-      res.send({
+    if (isDeletedComment) {
+      res.status(200).send({
         success: true,
-        isLogin: true,
+        isLogin,
         currentLoginUser: req.session.user,
         msg: '댓글 삭제 완료',
         deletedcId: cId,
       });
     } else {
-      res.status(401).send({ msg: '서버 오류 발생: 댓글 삭제 실패' });
+      res.status(404).send({
+        success: false,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '서버 오류 발생: 댓글 삭제 실패',
+      });
     }
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      isLogin: false,
+      isLogin,
+      currentLoginUser: req.session.user,
       msg: '서버에러 발생',
     });
   }
@@ -611,4 +659,10 @@ exports.editBoardPage = async (req, res) => {
       msg: '서버 에러',
     });
   }
+};
+
+// 공통 사용 함수
+// 자유게시판 게시물의 총 댓글수를 가진 프로미스 객체를 리턴한다
+const getCommentCount = async (bId) => {
+  return await Comment.count({ where: { bId: bId } });
 };
