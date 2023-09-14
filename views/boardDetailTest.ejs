@@ -9,7 +9,7 @@
     <script defer src="../static/js/boardDetail.js"></script>
   </head>
   <body class="container">
-    <%- include('./components/header') %>
+    <%- include('./components/header', { isLogin: isLogin }) %>
     <div id="bWrapper">
       <div id="bTitle"><%= boardData.title %></div>
 

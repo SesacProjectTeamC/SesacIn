@@ -13,6 +13,7 @@ header {
 }
 
 a {
+  cursor: pointer;
   text-decoration-line: none;
   color: black;
   font-weight: 700;

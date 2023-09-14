@@ -1,41 +1,63 @@
-let bPage = 1;
-let qPage = 1;
+let savedPage = 1;
 
-const changeType = (component, p = 1) => {
+const changeType = (component) => {
   const active = document.querySelector(".activeM");
   active.classList.remove("activeM");
   component.classList.add("activeM");
   const findType = component.innerHTML.trim();
   axios({
     method: "GET",
-    url: findType === "자유게시판" ? `/board/list/${p}&20` : "/question/list/",
-    // params: {
-    //   page: p,
-    //   pageSize: 20,
-    // },
+    url: findType === "자유게시판" ? `/board/list/1&20` : `/question/list/1&20`,
   }).then((res) => {
     if (res) {
-      const arrayData =
-        findType === "자유게시판" ? res.data.boards : res.data.questions;
-      const container = document.querySelector(".index_container");
-      container.innerHTML = "";
-      for (let i = 0; i < arrayData.length; i++) {
-        let include;
-        if (findType === "자유게시판") {
-          bPage = p;
-          include = freeboardcard(arrayData[i], res.data.cDate[i]);
-        } else {
-          qPage = p;
-          include = qnaCard(arrayData[i], res.data.cDate[i]);
-        }
-        container.innerHTML += include;
-      }
+      changeCard(res, findType);
+      savedPage = 1;
+      changePagination(res, 1);
     }
   });
 };
 
+const getPageData = (page) => {
+  const formattedPage =
+    page === "next" ? savedPage + 1 : page === "prev" ? savedPage - 1 : page;
+  savedPage = formattedPage;
+  const findType = document.querySelector(".activeM").innerHTML.trim();
+  axios({
+    method: "GET",
+    url:
+      findType === "자유게시판"
+        ? `/board/list/${formattedPage}&20`
+        : `/question/list/${formattedPage}&20`,
+  }).then((res) => {
+    changeCard(res, findType);
+    changePagination(res, formattedPage);
+    window.scrollTo(0, 0);
+  });
+};
+
+const changeCard = (res, findType) => {
+  const arrayData =
+    findType === "자유게시판" ? res.data.boards : res.data.questions;
+  const container = document.querySelector(".index_container");
+  container.innerHTML = "";
+  for (let i = 0; i < arrayData.length; i++) {
+    let include;
+    if (findType === "자유게시판") {
+      include = freeboardcard(arrayData[i], res.data.cDate[i]);
+    } else {
+      include = qnaCard(arrayData[i], res.data.cDate[i]);
+    }
+    container.innerHTML += include;
+  }
+};
+
+const changePagination = (res, page) => {
+  const container = document.querySelector(".pagination");
+  container.innerHTML = "";
+  container.innerHTML = pagination(Number(page), res.data.pageCount);
+};
+
 const freeboardcard = (data, cDate) => {
-  console.log(data);
   const result = [
     `<a href="/board/detail/${data.bId}">`,
     `<div id="cardContainer">`,
@@ -93,8 +115,39 @@ const qnaCard = (data, cDate) => {
   return result;
 };
 
+const pagination = (page, pageCount) => {
+  let result = "";
+  const prev = [
+    `<li id="prev" class="page-item ${page === 1 ? "disabled" : ""}">`,
+    `<a class="page-link" tabindex="-1" onclick="getPageData('prev')"><</a>`,
+    "</li>",
+  ].join("");
+
+  const next = [
+    `<li id="next" class="page-item ${page === pageCount ? "disabled" : ""}">`,
+    `<a class="page-link" onclick="getPageData('next')">></a>`,
+    "</li>",
+  ].join("");
+
+  let content = "";
+  const startNum = Number(String(Math.floor(page / 10)) + "1");
+  const endNum = pageCount - startNum > 10 ? startNum + 10 : pageCount;
+  for (let i = startNum; i <= endNum; i++) {
+    const result = [
+      `<li class="page-item ${i === page ? "active" : ""}">`,
+      `<a class="page-link" onclick="getPageData('${i}')">${i}</a>`,
+      "</li>",
+    ].join("");
+    content += result;
+  }
+
+  result += prev;
+  result += content;
+  result += next;
+  return result;
+};
+
 const moveToMakePost = () => {
-  console.log(document.querySelector(".activeM").innerHTML.trim());
   if (document.querySelector(".activeM").innerHTML.trim() === "자유게시판") {
     window.location.href = "/board/create";
   } else {

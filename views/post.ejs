@@ -15,7 +15,9 @@
         <div>내용<input type="text" id="content" /></div>
         <button onclick="createDone()">등록하기</button>
         <button onclick="createCancel()">취소</button> -->
-    <div class="container"><%- include('./components/header') %></div>
+    <div class="container">
+      <%- include('./components/header', { isLogin: isLogin }) %>
+    </div>
 
     <div class="container" style="margin-bottom: 50px">
       <div id="alertC"></div>
