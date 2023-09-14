@@ -21,9 +21,14 @@ exports.getUser = async (req, res) => {
       const user = await User.findOne({
         where: { uId: uId },
       });
-      // 1. 좋아요 / 작성한 게시글 / 답변 / 댓글
+
       //-- 좋아요 클릭 게시글 가져오기
-      // isLike
+      const likes = await uLike.findAll({ where: { uId } });
+
+      // 좋아요 누른 질문
+      const likeQuestion = await Question.findAll({
+        where: { qId: likes.map((like) => like.qId) },
+      });
 
       //-- 작성한 게시글 가져오기
       const posts = await Question.findAll({ where: { uId: uId } });
@@ -36,6 +41,8 @@ exports.getUser = async (req, res) => {
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
       res.render('profile', {
         userData: user,
+        likeQuestionData: likeQuestion,
+        likeAnswerData: likeAnswer,
         postData: posts,
         answerData: answers,
         commentData: comments,
