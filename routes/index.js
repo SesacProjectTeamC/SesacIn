@@ -6,11 +6,10 @@ const Cuser = require("../controller/Cuser");
 const Cquestion = require("../controller/Cquestion");
 const Cboard = require("../controller/Cboard");
 const Cprofile = require("../controller/Cprofile");
-const CmyPage = require("../controller/CmyPage");
+// const CprofileTest = require("../controller/CprofileTest");
 
 // 메인 페이지 관련
 router.get("/", Cquestion.getQuestions);
-router.get("/myPage", CmyPage.getHistory);
 
 router.get("/users/:uId/profile", Cprofile.getUser);
 
@@ -27,9 +26,7 @@ router.get("/users/:uId/profile", Cprofile.getUser);
 router.get("/join", Cuser.getJoin);
 
 // 중복 확인
-router.get('/checkDuplicate', Cuser.checkDuplicate);
-
-
+router.get("/checkDuplicate", Cuser.checkDuplicate);
 
 /**
  * @swagger
@@ -74,7 +71,6 @@ router.get('/checkDuplicate', Cuser.checkDuplicate);
 // 회원 가입 관련 api
 // post /user 요청이 오면 사용자 추가
 router.post("/users", Cuser.postUser);
-
 
 //////////////////////////////////////// 로그인 페이지
 
