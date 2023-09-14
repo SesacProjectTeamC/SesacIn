@@ -1,11 +1,9 @@
-const { Question, Answer, Comment, uLike } = require('../models');
-const moment = require('moment');
+const { Question, Answer, Comment, uLike } = require("../models");
+const moment = require("moment");
 
 // 메인페이지,질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
   try {
-    const { type } = req.query;
-
     // 세션 검사
     let isLogin = req.session.user ? true : false;
 
@@ -21,39 +19,42 @@ exports.getQuestions = async (req, res) => {
 
     // 페이지별 Question호출
     const paginatedQuestions = await Question.findAll({
-      order: [['createdAt', 'DESC']], // 정렬 기준
+      order: [["createdAt", "DESC"]], // 정렬 기준
       limit: pageSize,
       offset: (page - 1) * pageSize,
     });
 
     // 날짜 데이터 포맷 변경
     const create = [];
+
     for (q of paginatedQuestions) {
-      create.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
+      create.push(moment(q.createdAt).format("YYYY-MM-DD"));
     }
 
-    // 페이지 렌더링
-    res.status(200).render('index', {
-      success: true,
-      type: 'qna',
-      data: paginatedQuestions,
-      cDate: create,
-      pageCount,
-      isLogin,
-      msg: '메인페이지 정상 렌더링',
-    });
-  } catch (error) {
-    // 에러시 페이지 렌더링 필요함..
-    // res.status(200).render('index', {
-    //   success: false,
-    //   type: 'qna',
-    //   data: paginatedQuestions,
-    //   cDate: create,
-    //   totalPage,
-    //   isLogin, // isLogin 값을 못가져올 것 같음
-    //   msg: '메인페이지 렌더링 중 서버 에러 발생',
-    // });
-    console.log(error);
+    if (isLogin) {
+      console.log("사용자 >>>", req.session.user);
+
+      res.status(200).render("index", {
+        type: "qna",
+        data: paginatedQuestions,
+        pageCount: pageCount,
+        cDate: create,
+        isLogin: true,
+      });
+    } else {
+      console.log("로그인X");
+
+      res.render("index", {
+        type: "qna",
+        data: paginatedQuestions,
+        pageCount: pageCount,
+        cDate: create,
+        isLogin: false,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -72,7 +73,7 @@ exports.paginateQuestion = async (req, res) => {
     // 페이지에 해당하는 Question 데이터 조회
     const paginatedQuestions = await Question.findAll({
       //최신글 정렬
-      order: [['createdAt', 'DESC']],
+      order: [["createdAt", "DESC"]],
       limit: pageSize,
       offset: (page - 1) * pageSize,
     });
@@ -80,20 +81,20 @@ exports.paginateQuestion = async (req, res) => {
     // 날짜 데이터 포맷 변경
     const create = [];
     for (q of paginatedQuestions) {
-      create.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
+      create.push(moment(q.dataValues.createdAt).format("YYYY-MM-DD"));
     }
 
     res.send({
       questions: paginatedQuestions,
       pageCount,
       cDate: create,
-      msg: '페이지별 Question 호출 처리 완료',
+      msg: "페이지별 Question 호출 처리 완료",
     });
   } catch (error) {
     console.error(error);
     res.status(500).send({
       success: false,
-      error: '서버 에러',
+      error: "서버 에러",
     });
   }
 };
@@ -134,7 +135,7 @@ exports.getQuestion = async (req, res) => {
         where: { qId },
       });
 
-      res.render('question', {
+      res.render("question", {
         data: updatedQuestion,
         answerData: answers,
         commentData: comments,
@@ -142,7 +143,7 @@ exports.getQuestion = async (req, res) => {
         currentUser: req.session.user,
       });
     } else {
-      res.render('question', {
+      res.render("question", {
         data: question,
         answerData: answers,
         commentData: comments,
@@ -152,7 +153,7 @@ exports.getQuestion = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -164,14 +165,14 @@ exports.getCreateQuestion = async (req, res) => {
   try {
     if (!isLogin) {
       // 로그인 안한상태에서 QnA 글쓰기 페이지를 요청하면 로그인 페이지로 리다이렉트
-      res.status(301).redirect('/login');
+      res.status(301).redirect("/login");
     } else {
       // 로그인 되어있을때 페이지 렌더링
-      res.status(200).render('post', {
+      res.status(200).render("post", {
         isLogin,
         currentUser: req.session.user,
         data: {
-          type: 'qna',
+          type: "qna",
         },
       });
     }
@@ -187,7 +188,7 @@ exports.postQuestion = async (req, res) => {
   req.session.user = 1;
 
   if (!req.session.user) {
-    res.redirect('/');
+    res.redirect("/");
   }
   let loginUser = req.session.user;
 
@@ -201,11 +202,11 @@ exports.postQuestion = async (req, res) => {
       qType,
       uId: loginUser,
     });
-    console.log('추가>>>', { result: newQuestion });
+    console.log("추가>>>", { result: newQuestion });
     res.send({ result: newQuestion });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -222,7 +223,7 @@ exports.getEditQuestion = async (req, res) => {
       where: { qId },
     });
 
-    res.status(200).render('questionEditTest', {
+    res.status(200).render("questionEditTest", {
       data: question,
       isLogin,
       success: true,
@@ -233,7 +234,7 @@ exports.getEditQuestion = async (req, res) => {
     res.status(500).send({
       isLogin,
       success: false,
-      msg: 'Internal Server Error',
+      msg: "Internal Server Error",
     });
   }
 };
@@ -254,14 +255,14 @@ exports.patchQuestion = async (req, res) => {
     const answers = await Answer.findOne({ where: { qId } });
     const comments = await Comment.findOne({ where: { qId } });
 
-    res.render('question', {
+    res.render("question", {
       data: updatedQuestion,
       answerData: answers,
       commentData: comments,
     });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -274,7 +275,7 @@ exports.deleteQuestion = async (req, res) => {
       where: { qId },
     });
 
-    console.log('isDeleted >>>', isDeleted); // 성공 시 1, 실패 시 0
+    console.log("isDeleted >>>", isDeleted); // 성공 시 1, 실패 시 0
 
     if (isDeleted) {
       return res.send({ result: true });
@@ -283,7 +284,7 @@ exports.deleteQuestion = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 //-- 좋아요 누르기
@@ -319,7 +320,7 @@ exports.likeQuestion = async (req, res) => {
       );
       const answers = await Answer.findOne({ where: { qId } });
       const comments = await Comment.findOne({ where: { qId } });
-      return res.render('question', {
+      return res.render("question", {
         data: updatedLike,
         answerData: answers,
         commentData: comments,
@@ -340,7 +341,7 @@ exports.likeQuestion = async (req, res) => {
       const answers = await Answer.findOne({ where: { qId } });
       const comments = await Comment.findOne({ where: { qId } });
 
-      res.render('question', {
+      res.render("question", {
         data: updatedLike,
         answerData: answers,
         commentData: comments,
@@ -348,6 +349,6 @@ exports.likeQuestion = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
