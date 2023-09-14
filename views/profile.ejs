@@ -78,42 +78,41 @@
     <div id="content"></div>
   </main>
     <script>
-          function change(type) {
-      const content = document.getElementById("content");
-      const options = document.querySelectorAll('.option'); // 옵션 버튼을 선택
-      const answeredButton = document.querySelector('.answered'); // '내가 답변한 게시글' 버튼을 선택
+     function change(type) {
+        const content = document.getElementById("content");
+        const options = document.querySelectorAll('.option'); // 옵션 버튼을 선택
+        const answeredButton = document.querySelector('.answered'); // '내가 답변한 게시글' 버튼을 선택
 
-      let boardTitle;
-      let divContent = "";
+        let boardTitle;
+        let divContent = "";
 
-      if (type === "qna") {
-        boardTitle = "QnA 게시판";
+        if (type === "qna") {
+          boardTitle = "QnA 게시판";
 
-        divContent = `
-          <div>
-              <h2>${boardTitle}</h2>
-          </div>
-        `;
+          options.forEach(opt => opt.classList.remove('hidden')); // 옵션 버튼들을 보여줍니다.
+          change('liked'); // 기본값으로 '좋아요 누른 게시글'의 이벤트를 실행
+          return; // '좋아요 누른 게시글'의 이벤트가 실행된 후, 현재 함수의 나머지 부분을 실행하지 않도록 합니다.
+        } else if (type === "free") {
+          boardTitle = "자유 게시판";
 
-        options.forEach(opt => opt.classList.remove('hidden')); // 옵션 버튼들을 보여줍니다.
-      } else if (type === "free") {
-        boardTitle = "자유 게시판";
+          options.forEach(opt => opt.classList.remove('hidden')); // 옵션 버튼들을 보여줍니다.
+          answeredButton.classList.add('hidden'); // '내가 답변한 게시글' 버튼을 숨깁니다.
+          change('liked'); // 기본값으로 '좋아요 누른 게시글'의 이벤트를 실행
+          return; // '좋아요 누른 게시글'의 이벤트가 실행된 후, 현재 함수의 나머지 부분을 실행하지 않도록 합니다.
+        } else {
+          boardTitle = type.charAt(0).toUpperCase() + type.slice(1); // type의 첫 글자만 대문자로 바꿉니다.
+          divContent = `
+            <div>
+                <h2>${boardTitle} 게시판</h2>
+                <div>1. ${boardTitle} 글 1</div>
+                <div>2. ${boardTitle} 글 2</div>
+            </div>
+          `;
+        }
 
-        options.forEach(opt => opt.classList.remove('hidden')); // 옵션 버튼들을 보여줍니다.
-        answeredButton.classList.add('hidden'); // '내가 답변한 게시글' 버튼을 숨깁니다.
-      } else {
-        boardTitle = type.charAt(0).toUpperCase() + type.slice(1); // type의 첫 글자만 대문자로 바꿉니다.
-        divContent = `
-          <div>
-              <h2>${boardTitle} 게시판</h2>
-              <div>1. ${boardTitle} 글 1</div>
-              <div>2. ${boardTitle} 글 2</div>
-          </div>
-        `;
+        content.innerHTML = divContent;
       }
 
-      content.innerHTML = divContent;
-    }
 
 
  
