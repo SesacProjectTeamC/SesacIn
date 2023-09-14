@@ -9,20 +9,14 @@ const {Op} = require("sequelize");
 const bcrypt = require("bcrypt");
 
 exports.getUser = async (req, res) => {
-  // 테스트 용도로 로그인된것으로 처리함 (채림)
-  req.session.user = "aaaa1111";
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
 
   try {
-    // const { uId } = req.params;
-
-    // 테스트를 위해 로그인한 유저를 정해놓음
-    // req.session.user = 'aassddff1';
-
     // 세션에서 로그인 된 사용자 id 가져오기
     const uId = req.session.user;
 
-    // 현재 로그인 된 사용자의 ID와 요청된 사용자 ID가 일치하는지 확인
-    if (req.session.user) {
+    if (isLogin) {
       // 데이터베이스에서 해당 사용자 정보를 조회합니다.
       const user = await User.findOne({
         where: {uId: uId},
@@ -45,30 +39,68 @@ exports.getUser = async (req, res) => {
         postData: posts,
         answerData: answers,
         commentData: comments,
+        isLogin,
+        currentUser: req.session.user,
+        success: true,
+        msg: '마이페이지 렌더링 정상 처리',
       });
     } else {
-      // 현재 로그인한 사용자와 요청된 사용자가 다를 경우 권한 없음을 응답
-      res.status(401).send("로그인 정보 다름. 권한 없음.");
+      // 로그인 되어있지 않은 상태에서의 요청시
+      res.status(401).send({
+        isLogin,
+        currentUser: req.session.user,
+        success: false,
+        mgs: '로그인 정보 다름. 권한 없음.',
+      });
     }
   } catch (err) {
-    // 기타 데이터베이스 오류
     console.log(err);
     res.status(500).send({
-      OK: false,
-      msg: "데이터베이스 오류 발생",
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '마이페이지 렌더링 중 서버에러 발생',
     });
-    return;
   }
 };
 
 /////////////////////////////////////////////////// 사용자 정보 수정 페이지
 // 정보 수정 창 렌더링
 exports.getUserInfo = (req, res) => {
-  const userData = {
-    uId: req.session.user, // 세션에서 사용자 ID 가져오기
-  };
-  // ********** 추후에 어떤 화면으로 이동할 지 이름 수정 필요할수도 있음
-  res.render("editprofile", {userData});
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
+  try {
+    if (isLogin) {
+      const userData = {
+        uId: req.session.user, // 세션에서 사용자 ID 가져오기
+      };
+
+      // ********** 추후에 어떤 화면으로 이동할 지 이름 수정 필요할수도 있음
+      res.status(200).render('editprofile', {
+        userData,
+      });
+      return;
+    } else {
+      // 로그인 되어있지 않은 상태에서의 요청시
+      res.status(401).send({
+        isLogin,
+        currentUser: req.session.user,
+        success: false,
+        mgs: '로그인 정보 다름. 권한 없음.',
+      });
+      return;
+    }
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).send({
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '회원정보 수정 페이지 렌더링 중 서버에러 발생',
+    });
+  }
 };
 
 // 회원 정보 수정 - 비밀번호, 이름 (이미지는 후순위)

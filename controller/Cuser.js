@@ -6,11 +6,37 @@ const bcrypt = require('bcrypt');
 
 // 회원가입 창 렌더링
 exports.getJoin = (req, res) => {
-  res.render('join');
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
+  try {
+    if (isLogin) {
+      res.status(301).send({
+        isLogin,
+        currentUser: req.session.user,
+        success: false,
+        msg: '이미 로그인되어있어서 회원가입 페이지로 이동시키면 안됨',
+      });
+      return;
+    }
+
+    res.render('join', {
+      isLogin,
+      currentUser: req.session.user,
+      success: true,
+      msg: '회원가입창 페이지 렌더링 처리 성공',
+    });
+  } catch (error) {
+    res.status(500).send({
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '서버 에러 발생',
+    });
+  }
 };
 
-
-// 중복 확인 
+// 중복 확인
 exports.checkDuplicate = async (req, res) => {
   const { field, value } = req.query;
 
@@ -44,8 +70,6 @@ async function checkIfValueIsDuplicate(field, value) {
     return !!existingUser;
   }
 }
-
-
 
 // 회원 가입 시 사용자 생성
 exports.postUser = async (req, res) => {
@@ -95,11 +119,38 @@ exports.postUser = async (req, res) => {
 
 // 로그인 페이지 렌더링
 exports.login = (req, res) => {
-  res.render('login', {
-    title: 'test',
-    uId: req.body,
-    pw: req.body,
-  });
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
+  try {
+    if (isLogin) {
+      res.status(301).send({
+        isLogin,
+        currentUser: req.session.user,
+        success: false,
+        msg: '이미 로그인 되어 있습니다.',
+      });
+      return;
+    }
+
+    res.render('login', {
+      title: 'test',
+      uId: req.body,
+      pw: req.body,
+      isLogin,
+      currentUser: req.session.user,
+      success: true,
+      msg: '로그인 페이지 렌더링 정상 처리',
+    });
+  } catch (error) {
+    res.status(500).send({
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '로그인 페이지 렌더링 중 서버 에러 발생',
+      error,
+    });
+  }
 };
 
 // 로그인 처리

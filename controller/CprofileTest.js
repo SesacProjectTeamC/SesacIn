@@ -1,6 +1,9 @@
 const { User, Question, Answer, Comment, Board, uLike } = require('../models');
 
 exports.getHistory = async (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
   try {
     // 임의 유저 1
     const uId = 1;
@@ -42,14 +45,18 @@ exports.getHistory = async (req, res) => {
       postData: posts,
       answerData: answers,
       commentData: comments,
+      isLogin,
+      currentUser: req.session.user,
+      success: true,
     });
   } catch (err) {
     // 기타 데이터베이스 오류
     console.log(err);
     res.status(500).send({
-      OK: false,
-      msg: '데이터베이스 오류 발생',
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '서버 에러',
     });
-    return;
   }
 };
