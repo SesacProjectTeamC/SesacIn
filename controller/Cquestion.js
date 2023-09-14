@@ -103,6 +103,9 @@ exports.paginateQuestion = async (req, res) => {
 // 특정 질문과 그 질문에 대한 답변 전체 리스트 가져오기 (Cquestion)
 // 특정 답변에 대한 전체 댓글 리스트 가져오기 (Ccomment)
 exports.getQuestion = async (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
   try {
     const { qId } = req.params;
 
@@ -136,12 +139,16 @@ exports.getQuestion = async (req, res) => {
         data: updatedQuestion,
         answerData: answers,
         commentData: comments,
+        isLogin,
+        currentUser: req.session.user,
       });
     } else {
       res.render("question", {
         data: question,
         answerData: answers,
         commentData: comments,
+        isLogin,
+        currentUser: req.session.user,
       });
     }
   } catch (err) {
@@ -156,19 +163,22 @@ exports.getCreateQuestion = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    console.log("사용자 >>>", req.session.user);
-
-    // 페이지 렌더링
-    res.status(200).render("post", {
-      isLogin,
-      currentUser: req.session.user,
-      data: {
-        type: "qna",
-      },
-    });
+    if (!isLogin) {
+      // 로그인 안한상태에서 QnA 글쓰기 페이지를 요청하면 로그인 페이지로 리다이렉트
+      res.status(301).redirect("/login");
+    } else {
+      // 로그인 되어있을때 페이지 렌더링
+      res.status(200).render("post", {
+        isLogin,
+        currentUser: req.session.user,
+        data: {
+          type: "qna",
+        },
+      });
+    }
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send(err); // 상태 코드가 500이면 프론트의 catch에서 처리된다.
   }
 };
 
@@ -202,6 +212,9 @@ exports.postQuestion = async (req, res) => {
 
 // 질문 수정 GET
 exports.getEditQuestion = async (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
   try {
     const { qId } = req.params;
 
@@ -210,10 +223,19 @@ exports.getEditQuestion = async (req, res) => {
       where: { qId },
     });
 
-    res.render("questionEditTest", { data: question });
+    res.status(200).render("questionEditTest", {
+      data: question,
+      isLogin,
+      success: true,
+      currentUser: req.session.user,
+    });
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.status(500).send({
+      isLogin,
+      success: false,
+      msg: "Internal Server Error",
+    });
   }
 };
 
