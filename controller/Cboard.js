@@ -5,22 +5,23 @@ const moment = require('moment');
 // 새 게시글 생성 페이지 렌더링
 // /board/create
 exports.newBoardPage = (req, res) => {
-  // 테스트를 위해 로그인 된상태로 세팅
-  req.session.user = 'tgkim';
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
 
   try {
     // 로그인 여부 검사
-    if (!req.session.user) {
+    if (!isLogin) {
       res.status(401).send({
         success: false,
-        isLogin: false, // 결과값을 isLogin 값으로 보낸다.
+        isLogin,
         msg: '로그인 되어있지 않습니다.',
       });
+      return;
     }
 
     res.status(200).render('post', {
       success: true,
-      isLogin: true,
+      isLogin,
       currentLoginUser: req.session.user,
       msg: '페이지 렌더링 정상 처리',
       data: {
@@ -31,7 +32,8 @@ exports.newBoardPage = (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      isLogin: false,
+      isLogin,
+      currentLoginUser: req.session.user,
       msg: '서버에러 발생',
     });
   }
@@ -40,36 +42,38 @@ exports.newBoardPage = (req, res) => {
 // 개별 게시글 페이지 렌더링
 // board/detail/:bId
 exports.detailBoard = async (req, res) => {
-  // 테스트를 위해 로그인 된상태로 세팅
-  req.session.user = 'tgkim';
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
 
   try {
-    // 로그인 여부 검사
-    if (!req.session.user) {
+    // 세션 검사
+    if (!isLogin) {
       res.status(401).send({
         success: false,
-        isLogin: false, // 결과값을 isLogin 값으로 보낸다.
+        isLogin, // 결과값을 isLogin 값으로 보낸다.
         msg: '로그인 되어있지 않습니다.',
       });
+      return;
     }
 
     // req 데이터 검사
+    const { bId } = req.params;
     if (!req.params.bId) {
       console.log('프론트로부터 전달받은 bId 가 없음');
       res.status(404).send({
         success: false,
-        isLogin: true,
+        isLogin,
         msg: '전달받은 bId 값이 없음',
       });
+      return;
     }
-    const { bId } = req.params;
 
     const eachBoard = await getBoard(bId);
     const allComment = await getComment(bId);
 
     res.status(200).render('boardDetailTest', {
       success: true,
-      isLogin: true,
+      isLogin,
       currentLoginUser: req.session.user,
       msg: '페이지 렌더링 정상 처리',
       boardData: eachBoard,
@@ -79,7 +83,8 @@ exports.detailBoard = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      isLogin: false,
+      isLogin,
+      currentLoginUser: req.session.user,
       msg: '서버에러 발생',
     });
   }
@@ -128,7 +133,7 @@ exports.getCommentList = async (req, res) => {
 };
 
 // Board-댓글. 게시글의 모든 댓글 조회 함수
-getComment = async (bId) => {
+const getComment = async (bId) => {
   try {
     const comment = await Comment.findAll({
       where: { bId: bId },
@@ -149,6 +154,9 @@ exports.paginateBoard = async (req, res) => {
     // 전체 게시글 개수 계산
     const totalPage = await Board.count();
 
+    // 페이지 수 (올림처리)
+    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+
     // 페이지에 해당하는 게시글 데이터 조회
     // limit = 가져올 데이터 양
     // offset = 가져올 첫 데이터 위치
@@ -167,8 +175,8 @@ exports.paginateBoard = async (req, res) => {
 
     res.send({
       boards: paginatedBoards,
-      paginatedCount: pageSize,
-      totalPage,
+      // paginatedCount: pageSize,
+      pageCount,
       cDate: create,
       msg: '페이지별 게시글 호출 처리 완료',
     });
@@ -243,20 +251,41 @@ exports.createBoard = async (req, res) => {
 };
 
 // 게시글 수정 처리
-// /edit/:bId
+// /board/edit/:bId
 exports.editBoard = async (req, res) => {
   // 테스트를 위해 로그인 된것으로 처리
-  req.session.user = 'tgkim';
+  // req.session.user = 'tgkim';
+  // req.session.user = 'tgkim11';
 
+  // 로그인 여부 검사
+  // 결과값을 isLogin 값으로 보낸다.
   if (!req.session.user) {
-    // 로그인 상태가 아니면 홈으로 리다이렉트
-    res.redirect('/');
+    res.status(401).send({
+      success: false,
+      isLogin: false,
+      msg: '로그인 되어있지 않습니다.',
+    });
+    return;
   }
+
   const { bId } = req.params;
   const { title, content } = req.body;
 
   try {
-    const isUpdated = await Board.update(
+    // 업데이트 전 게시글 데이터 조회
+    const before = await Board.findByPk(bId);
+
+    // uid로 게시글 소유자 여부 확인(권한 확인)
+    if (before.dataValues.uId !== req.session.user) {
+      res.status(401).send({
+        success: false,
+        currentLoginUser: req.session.user,
+        msg: '게시글의 소유자가 아님',
+      });
+      return;
+    }
+
+    let isUpdated = await Board.update(
       {
         title: title,
         content: content,
@@ -265,19 +294,58 @@ exports.editBoard = async (req, res) => {
         where: { bId: bId },
       }
     );
+
+    // update 처리 성공시 isUpdated[0] = 0
+    // update 처리 실패시 isUpdated[0] = 1
+    // 하지만 실제로 같은 데이터로 업데이트를 수행해서 데이터변경이 없어도 update결과로 isUpdated가 1(성공)이 나와버린다.
+    if (!isUpdated[0]) {
+      isUpdated = false;
+      throw new Error('게시글 수정 실패'); // 에러를 던짐(catch에서 수행)
+      return;
+    }
+
+    // 업데이트 후 데이터 조회
+    const after = await Board.findByPk(bId);
+
+    // 업데이터 전과 후 실제 데이터 변경값 확인
+    const hasChangedResult = hasChanged(before.dataValues, after.dataValues);
+    isUpdated = hasChangedResult ? true : false;
+
     if (isUpdated) {
-      res.send({
-        isUpdated: true,
+      res.status(200).send({
+        success: true,
+        isLogin: true,
+        currentLoginUser: req.session.user,
+        isUpdated,
+        msg: '게시글 업데이트 처리 성공',
       });
+      return;
     } else {
-      res.send({
-        isUpdated: false,
+      res.status(200).send({
+        success: false,
+        isLogin: true,
+        currentLoginUser: req.session.user,
+        isUpdated,
+        msg: '게시글의 제목, 내용 모두 변경된게 없습니다.',
       });
+      return;
     }
   } catch (error) {
     // 에러 처리
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      isLogin: true,
+      currentLoginUser: req.session.user,
+      msg: '서버 에러 발생',
+      // isUpdated: false,
+    });
   }
 };
+
+// 자유게시판 게시글 내용/제목 변경여부 확인 함수
+const hasChanged = (before, after) =>
+  before.title !== after.title || before.content !== after.content;
 
 // 게시글 삭제 처리
 exports.deleteBoard = async (req, res) => {
@@ -379,6 +447,7 @@ exports.editComment = async (req, res) => {
         isLogin: false,
         msg: '로그인 되어있지 않습니다.',
       });
+      return;
     }
 
     //////
@@ -492,6 +561,49 @@ exports.deleteComment = async (req, res) => {
       success: false,
       isLogin: false,
       msg: '서버에러 발생',
+    });
+  }
+};
+
+// 게시글 수정 페이지 렌더링
+// /board/edit/:bId
+exports.editBoardPage = async (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
+  try {
+    // 세션 검사
+    if (!isLogin) {
+      res.status(200).render('boardEditTest', {
+        success: false,
+        isLogin,
+        msg: '권한없는 유저 접근',
+      });
+      return;
+    }
+
+    // 게시글 데이터 선택
+    const board = await Board.findOne({
+      where: { bId: req.params.bId },
+    });
+
+    // 정상 처리
+    res.status(200).render('boardEditTest', {
+      success: true,
+      isLogin,
+      currentLoginUser: req.session.user,
+      boards: board.dataValues,
+      msg: '페이지 렌더링 정상 처리',
+    });
+    //
+  } catch (error) {
+    console.log(error);
+    // 에러 처리
+    res.status(200).render('boardEditTest', {
+      success: false,
+      isLogin,
+      currentLoginUser: req.session.user,
+      msg: '서버 에러',
     });
   }
 };
