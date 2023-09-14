@@ -121,6 +121,42 @@ exports.getQuestion = async (req, res) => {
       where: { qId },
     });
 
+    // 1) uLike findOne -> qId 없으면,
+    // if (!uLikeFind) {
+
+    //   const answers = await Answer.findOne({ where: { qId } });
+    //   const comments = await Comment.findOne({ where: { qId } });
+    //   return res.render('question', {
+    //     data: updatedLike,
+    //     answerData: answers,
+    //     commentData: comments,
+    //     result: true,
+    //   });
+    // } else if (uLikeFind) {
+
+    //   const answers = await Answer.findOne({ where: { qId } });
+    //   const comments = await Comment.findOne({ where: { qId } });
+
+    //   res.render('question', {
+    //     data: updatedLike,
+    //     answerData: answers,
+    //     commentData: comments,
+    //     result: false,
+    //   });
+
+    // 좋아요
+    const uLikeFind = await uLike.findOne({
+      where: {
+        qId,
+        //! uId
+        uId: 1, // 임의 유저 1
+      },
+    });
+
+    const resultLike = !!uLikeFind; // uLikeFind가 존재하면 true, 아니면 false
+
+    console.log(resultLike);
+
     // 조회수 업데이트
     const updatedQuestion = await Question.update(
       { viewCount: question.viewCount + 1 },
@@ -129,8 +165,8 @@ exports.getQuestion = async (req, res) => {
       }
     );
 
+    // 조회수 업데이트 성공
     if (updatedQuestion) {
-      // 업데이트가 성공했을 때만 해당 질문을 조회합니다.
       const updatedQuestion = await Question.findOne({
         where: { qId },
       });
@@ -141,7 +177,11 @@ exports.getQuestion = async (req, res) => {
         commentData: comments,
         isLogin,
         currentUser: req.session.user,
+        qResult: resultLike,
+        aResult: null,
       });
+
+      //~ 수정 여부 재확인
     } else {
       res.render('questionTest', {
         data: question,
@@ -149,6 +189,8 @@ exports.getQuestion = async (req, res) => {
         commentData: comments,
         isLogin,
         currentUser: req.session.user,
+        qResult: resultLike,
+        aResult: null,
       });
     }
   } catch (err) {
@@ -308,6 +350,7 @@ exports.deleteQuestion = async (req, res) => {
     res.send('Internet Server Error!!!');
   }
 };
+
 //-- 좋아요 누르기
 exports.likeQuestion = async (req, res) => {
   try {
@@ -321,9 +364,17 @@ exports.likeQuestion = async (req, res) => {
       },
     });
 
+    const resultLike = !!uLikeFind; // uLikeFind가 존재하면 true, 아니면 false
+
     const getQuestion = await Question.findOne({
       where: { qId },
     });
+
+    //~~~
+    // 조회수 업데이트
+    // const getQuestion = await Question.findOne({
+    //   where: { qId },
+    // });
 
     // 1) uLike findOne -> qId 없으면,
     if (!uLikeFind) {
@@ -334,17 +385,21 @@ exports.likeQuestion = async (req, res) => {
         uId: 1, // 임의 유저 1
         qId,
       });
+
       // (2) 질문 likeCount 업데이트
       const updatedLike = await Question.update(
         { likeCount: getQuestion.likeCount + 1 },
         { where: { qId } }
       );
+
       const answers = await Answer.findOne({ where: { qId } });
       const comments = await Comment.findOne({ where: { qId } });
       return res.render('question', {
         data: updatedLike,
         answerData: answers,
         commentData: comments,
+        qResult: resultLike,
+        aResult: null,
       });
     } else if (uLikeFind) {
       // 2) uLike findOne -> qId 있으면,
@@ -359,13 +414,20 @@ exports.likeQuestion = async (req, res) => {
         { where: { qId } }
       );
 
+      const updatedQuestion = await Question.update(
+        { likeCount: updatedLike.viewCount - 1 },
+        { where: { qId } }
+      );
+
       const answers = await Answer.findOne({ where: { qId } });
       const comments = await Comment.findOne({ where: { qId } });
 
       res.render('question', {
-        data: updatedLike,
+        data: updatedQuestion,
         answerData: answers,
         commentData: comments,
+        qResult: resultLike,
+        aResult: null,
       });
     }
   } catch (err) {
