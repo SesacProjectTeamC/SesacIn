@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script defer src="/static/js/index.js"></script>
+  </head>
+  <body>
+    <h1>My Page</h1>
+    <h3>회원 정보</h3>
+
+    <% if (userData) { %>
+    <p>UserID: <%= userData.uId %></p>
+    <p>UserName: <%= userData.uName %></p>
+    <p>Email: <%= userData.email %></p>
+    <p>Is Sesac: <%= userData.isSesac ? 'Yes' : 'No' %></p>
+    <p>Campus: <%= userData.campus %></p>
+    <% } else { %>
+    <p>User data not available.</p>
+    <% } %>
+
+    <a href=/users/editprofile>회원 정보 수정</a>
+
+    <p>QnA</p>
+    <p>자유</p>
+    <br />
+    <h4>좋아요</h4>
+    <div class="index_container">
+      <%for(let i = 0; i < postData.length; i++){%> <%-include(
+      './components/testCard', { data: postData[i] })%> <%}%>
+    </div>
+
+    <h4>작성 게시글</h4>
+    <div class="index_container">
+      <%for(let i = 0; i < postData.length; i++){%> <%-include(
+      './components/testCard', { data: postData[i] })%> <%}%>
+    </div>
+
+    <h4>댓글</h4>
+    <div class="index_container">
+      <%for(let i = 0; i < commentData.length; i++){%> <%-include(
+      './components/testCard', { data: commentData[i] })%> <%}%>
+    </div>
+
+    <h4>답변</h4>
+    <div class="index_container">
+      <%for(let i = 0; i < answerData.length; i++){%> <%-include(
+      './components/testCard', { data: answerData[i] })%> <%}%>
+
+
+  </body>
+  
+</html>
