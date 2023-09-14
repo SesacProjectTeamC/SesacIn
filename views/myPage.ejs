@@ -26,28 +26,39 @@
     <p>QnA</p>
     <p>자유</p>
     <br />
-    <h4>좋아요</h4>
+    <h2>좋아요</h2>
+
+    <h4>1) 좋아요한 질문</h4>
     <div class="index_container">
-      <%for(let i = 0; i < postData.length; i++){%> <%-include(
-      './components/testCard', { data: postData[i] })%> <%}%>
+      <%for(let i = 0; i < likeQuestionData.length; i++){%> <%-include(
+    './components/testQuestionCard', { data: likeQuestionData[i] })%> <%}%>
     </div>
+
+    <h4>2) 좋아요한 답변</h4>
+    <div class="index_container">
+      <%for(let i = 0; i < likeAnswerData.length; i++){%> <%-include(
+      './components/testAnswerCard', { data: likeAnswerData[i] })%> <%}%>
+    </div>
+
+    <h4>3) 좋아요한 게시물</h4>
+<!-- 추가 예정 -->
 
     <h4>작성 게시글</h4>
     <div class="index_container">
       <%for(let i = 0; i < postData.length; i++){%> <%-include(
-      './components/testCard', { data: postData[i] })%> <%}%>
+      './components/testQuestionCard', { data: postData[i] })%> <%}%>
     </div>
 
     <h4>댓글</h4>
     <div class="index_container">
       <%for(let i = 0; i < commentData.length; i++){%> <%-include(
-      './components/testCard', { data: commentData[i] })%> <%}%>
+      './components/testCommentCard', { data: commentData[i] })%> <%}%>
     </div>
 
     <h4>답변</h4>
     <div class="index_container">
       <%for(let i = 0; i < answerData.length; i++){%> <%-include(
-      './components/testCard', { data: answerData[i] })%> <%}%>
+      './components/testAnswerCard', { data: answerData[i] })%> <%}%>
 
 
   </body>
