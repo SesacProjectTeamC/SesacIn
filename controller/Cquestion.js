@@ -3,42 +3,57 @@ const moment = require('moment');
 
 // 메인페이지,질문 목록 가져오기
 exports.getQuestions = async (req, res) => {
-  // 테스트를 위해 로그인한 유저를 정해놓음
-  // req.session.user = 'aassddff1';
-
   try {
-    console.log('사용자 >>>', req.session.user);
-
     const { type } = req.query;
-    let questions = await Question.findAll();
+
+    // 세션 검사
+    let isLogin = req.session.user ? true : false;
+
+    // 한페이지 만큼 데이터 조회
+    let page = parseInt(req.params.page) || 1;
+    let pageSize = parseInt(req.params.pageSize) || 20;
+
+    // 전체 Question목록 개수 계산
+    const totalPage = await Question.count();
+
+    // 페이지 수 (올림처리)
+    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+
+    // 페이지별 Question호출
+    const paginatedQuestions = await Question.findAll({
+      order: [['createdAt', 'DESC']], // 정렬 기준
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
+    });
+
+    // 날짜 데이터 포맷 변경
     const create = [];
-
-    for (q of questions) {
-      create.push(moment(q.createdAt).format('YYYY-MM-DD'));
+    for (q of paginatedQuestions) {
+      create.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
     }
 
-    if (req.session.user) {
-      console.log('사용자 >>>', req.session.user);
-
-      res.status(200).render('index', {
-        type: 'qna',
-        data: questions,
-        cDate: create,
-        isLogin: true,
-      });
-    } else {
-      console.log('로그인X');
-
-      res.render('index', {
-        type: 'qna',
-        data: questions,
-        cDate: create,
-        isLogin: false,
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    res.send('Internet Server Error!!!');
+    // 페이지 렌더링
+    res.status(200).render('index', {
+      success: true,
+      type: 'qna',
+      data: paginatedQuestions,
+      cDate: create,
+      pageCount,
+      isLogin,
+      msg: '메인페이지 정상 렌더링',
+    });
+  } catch (error) {
+    // 에러시 페이지 렌더링 필요함..
+    // res.status(200).render('index', {
+    //   success: false,
+    //   type: 'qna',
+    //   data: paginatedQuestions,
+    //   cDate: create,
+    //   totalPage,
+    //   isLogin, // isLogin 값을 못가져올 것 같음
+    //   msg: '메인페이지 렌더링 중 서버 에러 발생',
+    // });
+    console.log(error);
   }
 };
 
@@ -51,9 +66,10 @@ exports.paginateQuestion = async (req, res) => {
     // 전체 Question목록 개수 계산
     const totalPage = await Question.count();
 
+    // 페이지 수 (올림처리)
+    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+
     // 페이지에 해당하는 Question 데이터 조회
-    // limit = 가져올 데이터 양
-    // offset = 가져올 첫 데이터 위치
     const paginatedQuestions = await Question.findAll({
       //최신글 정렬
       order: [['createdAt', 'DESC']],
@@ -69,8 +85,7 @@ exports.paginateQuestion = async (req, res) => {
 
     res.send({
       questions: paginatedQuestions,
-      paginatedCount: pageSize,
-      totalPage,
+      pageCount,
       cDate: create,
       msg: '페이지별 Question 호출 처리 완료',
     });
@@ -101,7 +116,7 @@ exports.getQuestion = async (req, res) => {
     const comments = await Comment.findAll({
       where: { qId },
     });
-
+    
     // 조회수 업데이트
     const updatedQuestion = await Question.update(
       { viewCount: question.viewCount + 1 },
@@ -136,11 +151,23 @@ exports.getQuestion = async (req, res) => {
 
 // 질문 생성 GET
 exports.getCreateQuestion = async (req, res) => {
-  try {
-    res.render('post', { data: { type: 'qna' } }); // 임시
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+  
+try {
+    console.log('사용자 >>>', req.session.user);
+
+    // 페이지 렌더링
+    res.status(200).render('post', {
+      isLogin,
+      currentUser: req.session.user,
+      data: {
+        type: 'qna',
+      },
+    });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.status(500).send('Internal Server Error');
   }
 };
 

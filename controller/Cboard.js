@@ -5,22 +5,23 @@ const moment = require('moment');
 // 새 게시글 생성 페이지 렌더링
 // /board/create
 exports.newBoardPage = (req, res) => {
-  // 테스트를 위해 로그인 된상태로 세팅
-  // req.session.user = 'tgkim';
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
 
   try {
     // 로그인 여부 검사
-    if (!req.session.user) {
+    if (!isLogin) {
       res.status(401).send({
         success: false,
-        isLogin: false, // 결과값을 isLogin 값으로 보낸다.
+        isLogin,
         msg: '로그인 되어있지 않습니다.',
       });
+      return;
     }
 
     res.status(200).render('post', {
       success: true,
-      isLogin: true,
+      isLogin,
       currentLoginUser: req.session.user,
       msg: '페이지 렌더링 정상 처리',
       data: {
@@ -31,7 +32,8 @@ exports.newBoardPage = (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      isLogin: false,
+      isLogin,
+      currentLoginUser: req.session.user,
       msg: '서버에러 발생',
     });
   }
@@ -40,36 +42,38 @@ exports.newBoardPage = (req, res) => {
 // 개별 게시글 페이지 렌더링
 // board/detail/:bId
 exports.detailBoard = async (req, res) => {
-  // 테스트를 위해 로그인 된상태로 세팅
-  req.session.user = 'tgkim';
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
 
   try {
-    // 로그인 여부 검사
-    if (!req.session.user) {
+    // 세션 검사
+    if (!isLogin) {
       res.status(401).send({
         success: false,
-        isLogin: false, // 결과값을 isLogin 값으로 보낸다.
+        isLogin, // 결과값을 isLogin 값으로 보낸다.
         msg: '로그인 되어있지 않습니다.',
       });
+      return;
     }
 
     // req 데이터 검사
+    const { bId } = req.params;
     if (!req.params.bId) {
       console.log('프론트로부터 전달받은 bId 가 없음');
       res.status(404).send({
         success: false,
-        isLogin: true,
+        isLogin,
         msg: '전달받은 bId 값이 없음',
       });
+      return;
     }
-    const { bId } = req.params;
 
     const eachBoard = await getBoard(bId);
     const allComment = await getComment(bId);
 
     res.status(200).render('boardDetailTest', {
       success: true,
-      isLogin: true,
+      isLogin,
       currentLoginUser: req.session.user,
       msg: '페이지 렌더링 정상 처리',
       boardData: eachBoard,
@@ -79,7 +83,8 @@ exports.detailBoard = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      isLogin: false,
+      isLogin,
+      currentLoginUser: req.session.user,
       msg: '서버에러 발생',
     });
   }
@@ -128,7 +133,7 @@ exports.getCommentList = async (req, res) => {
 };
 
 // Board-댓글. 게시글의 모든 댓글 조회 함수
-getComment = async (bId) => {
+const getComment = async (bId) => {
   try {
     const comment = await Comment.findAll({
       where: { bId: bId },
@@ -149,6 +154,9 @@ exports.paginateBoard = async (req, res) => {
     // 전체 게시글 개수 계산
     const totalPage = await Board.count();
 
+    // 페이지 수 (올림처리)
+    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+
     // 페이지에 해당하는 게시글 데이터 조회
     // limit = 가져올 데이터 양
     // offset = 가져올 첫 데이터 위치
@@ -167,8 +175,8 @@ exports.paginateBoard = async (req, res) => {
 
     res.send({
       boards: paginatedBoards,
-      paginatedCount: pageSize,
-      totalPage,
+      // paginatedCount: pageSize,
+      pageCount,
       cDate: create,
       msg: '페이지별 게시글 호출 처리 완료',
     });
@@ -560,15 +568,15 @@ exports.deleteComment = async (req, res) => {
 // 게시글 수정 페이지 렌더링
 // /board/edit/:bId
 exports.editBoardPage = async (req, res) => {
-  // 테스트용
-  req.session.user = 'tgkim';
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
 
   try {
-    // 예기치 않게 로그인 안되어 있는경우
-    if (!req.session.user) {
+    // 세션 검사
+    if (!isLogin) {
       res.status(200).render('boardEditTest', {
         success: false,
-        isLogin: false,
+        isLogin,
         msg: '권한없는 유저 접근',
       });
       return;
@@ -582,7 +590,7 @@ exports.editBoardPage = async (req, res) => {
     // 정상 처리
     res.status(200).render('boardEditTest', {
       success: true,
-      isLogin: true,
+      isLogin,
       currentLoginUser: req.session.user,
       boards: board.dataValues,
       msg: '페이지 렌더링 정상 처리',
@@ -593,7 +601,8 @@ exports.editBoardPage = async (req, res) => {
     // 에러 처리
     res.status(200).render('boardEditTest', {
       success: false,
-      isLogin: true,
+      isLogin,
+      currentLoginUser: req.session.user,
       msg: '서버 에러',
     });
   }
