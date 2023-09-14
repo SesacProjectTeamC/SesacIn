@@ -92,6 +92,13 @@ exports.patchUser = async (req, res) => {
     const comments = await Comment.findAll({ where: { uId: uId } });
 
     console.log('>>>>>>>', updatedUser);
+    req.session.destroy((err) => {
+      if (err) {
+        console.log('세션 삭제 에러 >>> ', err);
+      } else {
+        console.log('세션 삭제 완료');
+      }
+    });
 
     res.render('profile', {
       userData: updatedUser,

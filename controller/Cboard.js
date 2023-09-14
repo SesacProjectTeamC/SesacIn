@@ -6,7 +6,7 @@ const moment = require('moment');
 // /board/create
 exports.newBoardPage = (req, res) => {
   // 테스트를 위해 로그인 된상태로 세팅
-  req.session.user = 'tgkim';
+  // req.session.user = 'tgkim';
 
   try {
     // 로그인 여부 검사
