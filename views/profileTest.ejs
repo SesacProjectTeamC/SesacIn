@@ -31,13 +31,13 @@
     <h4>1) 좋아요한 질문</h4>
     <div class="index_container">
       <%for(let i = 0; i < likeQuestionData.length; i++){%> <%-include(
-    './components/testQuestionCard', { data: likeQuestionData[i] })%> <%}%>
+    './components/QuestionCardTest', { data: likeQuestionData[i] })%> <%}%>
     </div>
 
     <h4>2) 좋아요한 답변</h4>
     <div class="index_container">
       <%for(let i = 0; i < likeAnswerData.length; i++){%> <%-include(
-      './components/testAnswerCard', { data: likeAnswerData[i] })%> <%}%>
+      './components/AnswerCardTest', { data: likeAnswerData[i] })%> <%}%>
     </div>
 
     <h4>3) 좋아요한 게시물</h4>
@@ -46,19 +46,19 @@
     <h4>작성 게시글</h4>
     <div class="index_container">
       <%for(let i = 0; i < postData.length; i++){%> <%-include(
-      './components/testQuestionCard', { data: postData[i] })%> <%}%>
+      './components/QuestionCardTest', { data: postData[i] })%> <%}%>
     </div>
 
     <h4>댓글</h4>
     <div class="index_container">
       <%for(let i = 0; i < commentData.length; i++){%> <%-include(
-      './components/testCommentCard', { data: commentData[i] })%> <%}%>
+      './components/CommentCardTest', { data: commentData[i] })%> <%}%>
     </div>
 
     <h4>답변</h4>
     <div class="index_container">
       <%for(let i = 0; i < answerData.length; i++){%> <%-include(
-      './components/testAnswerCard', { data: answerData[i] })%> <%}%>
+      './components/AnswerCardTest', { data: answerData[i] })%> <%}%>
 
 
   </body>
