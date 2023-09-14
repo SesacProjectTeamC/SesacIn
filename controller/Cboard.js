@@ -50,16 +50,6 @@ exports.detailBoard = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    // 세션 검사
-    if (!isLogin) {
-      res.status(401).send({
-        success: false,
-        isLogin, // 결과값을 isLogin 값으로 보낸다.
-        msg: '로그인 되어있지 않습니다.',
-      });
-      return;
-    }
-
     // req 데이터 검사
     const { bId } = req.params;
     if (!req.params.bId) {
@@ -75,12 +65,16 @@ exports.detailBoard = async (req, res) => {
     const eachBoard = await getBoard(bId);
     const allComment = await getComment(bId);
 
+    // 날짜 데이터 포맷 변경
+    const create = moment(eachBoard.dataValues.createdAt).format('YYYY-MM-DD');
+
     res.status(200).render('boardDetailTest', {
       success: true,
       isLogin,
       currentLoginUser: req.session.user,
       msg: '페이지 렌더링 정상 처리',
       boardData: eachBoard,
+      cDate: create,
       commentData: allComment,
     });
   } catch (error) {
@@ -257,25 +251,23 @@ exports.createBoard = async (req, res) => {
 // 게시글 수정 처리
 // /board/edit/:bId
 exports.editBoard = async (req, res) => {
-  // 테스트를 위해 로그인 된것으로 처리
-  // req.session.user = 'tgkim';
-  // req.session.user = 'tgkim11';
-
-  // 로그인 여부 검사
-  // 결과값을 isLogin 값으로 보낸다.
-  if (!req.session.user) {
-    res.status(401).send({
-      success: false,
-      isLogin: false,
-      msg: '로그인 되어있지 않습니다.',
-    });
-    return;
-  }
-
-  const { bId } = req.params;
-  const { title, content } = req.body;
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
 
   try {
+    if (!isLogin) {
+      res.status(401).send({
+        success: false,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '로그인 되어있지 않습니다.',
+      });
+      return;
+    }
+
+    const { bId } = req.params;
+    const { title, content } = req.body;
+
     // 업데이트 전 게시글 데이터 조회
     const before = await Board.findByPk(bId);
 
@@ -283,6 +275,7 @@ exports.editBoard = async (req, res) => {
     if (before.dataValues.uId !== req.session.user) {
       res.status(401).send({
         success: false,
+        isLogin,
         currentLoginUser: req.session.user,
         msg: '게시글의 소유자가 아님',
       });
@@ -318,7 +311,7 @@ exports.editBoard = async (req, res) => {
     if (isUpdated) {
       res.status(200).send({
         success: true,
-        isLogin: true,
+        isLogin,
         currentLoginUser: req.session.user,
         isUpdated,
         msg: '게시글 업데이트 처리 성공',
@@ -326,8 +319,8 @@ exports.editBoard = async (req, res) => {
       return;
     } else {
       res.status(200).send({
-        success: false,
-        isLogin: true,
+        success: true,
+        isLogin,
         currentLoginUser: req.session.user,
         isUpdated,
         msg: '게시글의 제목, 내용 모두 변경된게 없습니다.',
@@ -506,15 +499,13 @@ exports.editComment = async (req, res) => {
     }
 
     // 댓글 수정
-    const updatedComment = await Comment.update(
+    const isUpdatedComment = await Comment.update(
       { content: content },
       { where: { cId: cId } }
     );
 
-    console.log(updatedComment);
-
-    // 게시글의 총 댓글수 확인
-    //const commentCount = await getCommentCount(currentBid);
+    // 댓글이 달린 게시글의 총 댓글수 확인
+    const commentCount = await getCommentCount(cId);
 
     res.status(200).send({
       success: true,
@@ -661,8 +652,11 @@ exports.editBoardPage = async (req, res) => {
   }
 };
 
-// 공통 사용 함수
-// 자유게시판 게시물의 총 댓글수를 가진 프로미스 객체를 리턴한다
-const getCommentCount = async (bId) => {
-  return await Comment.count({ where: { bId: bId } });
+// 댓글이 달린 게시글의 총 댓글수를 확인하기 위한 함수
+const getCommentCount = async (cId) => {
+  const cIdRow = await Comment.findOne({ where: { cId: cId } });
+  const bId = cIdRow.dataValues.bId;
+
+  const boardCommentCount = await Comment.count({ where: { bId: bId } });
+  return boardCommentCount;
 };
