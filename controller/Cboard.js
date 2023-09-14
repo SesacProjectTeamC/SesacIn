@@ -149,7 +149,8 @@ const getComment = async (bId) => {
 exports.paginateBoard = async (req, res) => {
   console.log(req.params);
   let page = parseInt(req.params.page) || 1;
-  let pageSize = parseInt(req.params.pageSize) || 20;
+  // let pageSize = parseInt(req.params.pageSize) || 20;
+  let pageSize = 3;
   try {
     // 전체 게시글 개수 계산
     const totalPage = await Board.count();

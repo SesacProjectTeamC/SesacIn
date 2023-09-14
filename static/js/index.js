@@ -20,7 +20,7 @@ const changeType = (component) => {
 const getPageData = (page) => {
   const formattedPage =
     page === "next" ? savedPage + 1 : page === "prev" ? savedPage - 1 : page;
-  savedPage = formattedPage;
+  savedPage = Number(formattedPage);
   const findType = document.querySelector(".activeM").innerHTML.trim();
   axios({
     method: "GET",
@@ -130,8 +130,8 @@ const pagination = (page, pageCount) => {
   ].join("");
 
   let content = "";
-  const startNum = Number(String(Math.floor(page / 10)) + "1");
-  const endNum = pageCount - startNum > 10 ? startNum + 10 : pageCount;
+  const startNum = Number(String(Math.ceil(page / 10) - 1) + "1");
+  const endNum = pageCount - startNum > 10 ? startNum + 9 : pageCount;
   for (let i = startNum; i <= endNum; i++) {
     const result = [
       `<li class="page-item ${i === page ? "active" : ""}">`,
