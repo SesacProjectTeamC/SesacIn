@@ -190,6 +190,18 @@ const deleteQuestion = (qId) => {
   });
 };
 
+// 4) 좋아요
+const qLikeHandler = (qId) => {
+  axios({
+    method: "PATCH",
+    url: `/question/${qId}`,
+  }).then((res) => {
+    if (res) {
+      document.location.href = `/question/${qId}`;
+    }
+  });
+};
+
 //=== 2. Answer ===
 // 1) 생성
 const createAnswerDone = (qId) => {
@@ -250,6 +262,19 @@ const deleteAnswer = (qId, aId) => {
       alert("삭제되었습니다");
     }
     window.location.href = `/question/${qId}`;
+  });
+};
+
+// 4) 좋아요
+const aLikeHandler = (qId, aId) => {
+  axios({
+    method: "PATCH",
+    url: `/question/${qId}/${aId}`,
+    data: { aId },
+  }).then((res) => {
+    if (res) {
+      document.location.href = `/question/${qId}`;
+    }
   });
 };
 

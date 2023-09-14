@@ -70,6 +70,10 @@ router.get("/create", Cboard.newBoardPage);
  */
 router.post("/create", Cboard.createBoard);
 
+// 게시글 수정 페이지 렌더링
+// /board/edit/:bId
+router.get("/edit/:bId", Cboard.editBoardPage);
+
 // 게시글 수정 처리
 /**
  * @swagger

@@ -51,6 +51,9 @@
     <a href="/board/create">새 게시글 작성페이지로 이동</a>
     <hr />
     <div>게시글 섹션</div>
+    <a href=/board/edit/<%= boardData.bId %>>수정하기</a>
+    /
+    <button type="button" onclick="deleteThisBoard()">삭제하기</button>
     <hr />
     <form id="boardInfoForm">
       <!-- 숨겨진 input 요소로 bId 저장 -->
@@ -237,6 +240,7 @@
 
     let editingCommentcId = null;
 
+    // 현재화면에서 댓글 수정하기 눌렀을때 수정하는 칸 나오기
     function editComment(cId) {
       if (editingCommentcId !== null) {
         cancelEdit(editingCommentcId);
@@ -255,6 +259,7 @@
       editingCommentcId = cId;
     }
 
+    // 댓글 수정하는 칸에서 적용 버튼 눌렀을때 실제 댓글 수정 처리
     function applyEdit(cId) {
       const editedComment = document.getElementById(
         `editedComment${cId}`
@@ -283,6 +288,7 @@
         });
     }
 
+    // 댓글 수정하는 칸에 적은 글들 지우그
     function cancelEdit(cId) {
       const commentDiv = document.getElementById(`comment${cId}`);
       const editDiv = document.getElementById(`editComment${cId}`);
@@ -291,6 +297,7 @@
       editingCommentIndex = null;
     }
 
+    // 현재 페이지에 댓글 삭제하기
     function deleteComment(cId) {
       // 댓글 삭제 요청을 서버로 보내고, 성공하면 화면에서 삭제
       axios({
@@ -337,8 +344,5 @@
       });
     }
 
-    // 초기 댓글 데이터 로딩
-
-    // refreshComments();
   </script>
 </html>
