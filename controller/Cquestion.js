@@ -1,6 +1,4 @@
-const { BOOLEAN } = require('sequelize');
 const { Question, Answer, Comment, uLike } = require('../models');
-const viewCount = 0;
 const moment = require('moment');
 
 // 메인페이지,질문 목록 가져오기
@@ -118,12 +116,33 @@ exports.getQuestion = async (req, res) => {
     const comments = await Comment.findAll({
       where: { qId },
     });
+    
+    // 조회수 업데이트
+    const updatedQuestion = await Question.update(
+      { viewCount: question.viewCount + 1 },
+      {
+        where: { qId },
+      }
+    );
 
-    res.render('question', {
-      data: question,
-      answerData: answers,
-      commentData: comments,
-    });
+    if (updatedQuestion) {
+      // 업데이트가 성공했을 때만 해당 질문을 조회합니다.
+      const updatedQuestion = await Question.findOne({
+        where: { qId },
+      });
+
+      res.render('question', {
+        data: updatedQuestion,
+        answerData: answers,
+        commentData: comments,
+      });
+    } else {
+      res.render('question', {
+        data: question,
+        answerData: answers,
+        commentData: comments,
+      });
+    }
   } catch (err) {
     console.log(err);
     res.send('Internet Server Error!!!');
@@ -132,11 +151,11 @@ exports.getQuestion = async (req, res) => {
 
 // 질문 생성 GET
 exports.getCreateQuestion = async (req, res) => {
-  try {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+  
+try {
     console.log('사용자 >>>', req.session.user);
-
-    // 세션 검사
-    let isLogin = req.session.user ? true : false;
 
     // 페이지 렌더링
     res.status(200).render('post', {
@@ -250,7 +269,13 @@ exports.likeQuestion = async (req, res) => {
   try {
     const { qId } = req.params;
 
-    const uLikeFind = await uLike.findOne({ where: { qId } });
+    const uLikeFind = await uLike.findOne({
+      where: {
+        qId,
+        //! uId
+        uId: 1, // 임의 유저 1
+      },
+    });
 
     const getQuestion = await Question.findOne({
       where: { qId },

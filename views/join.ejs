@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        
-        <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="views/componets/cdn.ejs">
-        <link rel="stylesheet" href="views/styles/register.css">
-        <link rel="stylesheet" href="views/styles/globalstyle.css">
-        
-        
-    </head>
+  <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      
+      <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="views/componets/cdn.ejs">
+      <link rel="stylesheet" href="views/styles/register.css">
+      <link rel="stylesheet" href="views/styles/globalstyle.css">
+      
+      
+  </head>
     
   <body>
     <header>
@@ -28,173 +28,224 @@
       <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
     </svg>
     </div>
-  </header>
+    </header>
   <main>
     <!-- 회원가입 form -->
     <form name="form_register" onsubmit="return register();">
-        <h1>회원 가입</h1>
+        <h1>회원가입</h1>
     <div class="input-group mb-3">
         <span class="input-group-text" id="basic-addon1">아이디</span>
         <input type="text" class="form-control"  id="uId" name="uId" pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,12}$" title="ID는 영문과 숫자의 조합으로 6자 이상 12자 이하로 구성되어야 합니다." required>
+        <button type="button" class="btn btn-primary" onclick="checkDuplicate('uId')">중복확인</button>
       </div>
     <div class="input-group mb-3">
         <span class="input-group-text" id="basic-addon1">비밀번호</span>
-        <input type="text" class="form-control" id="pw" name="pw" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required>
+        <input type="password" class="form-control" id="pw" name="pw" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required>
       </div>
     <div class="input-group mb-3">
         <span class="input-group-text" id="basic-addon1">닉네임</span>
         <input type="text" class="form-control" id="uName" name="uName" pattern="^[a-zA-Z0-9가-힣]{2,12}$" title="닉네임은 한글, 영문, 숫자로 2자 이상 12자 이하로 구성되어야 합니다."required>
-
-      </div>
+        <button type="button" class="btn btn-primary" onclick="checkDuplicate('uName')">중복확인</button>
+    </div>
       
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" name="email" aria-describedby="basic-addon2" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" title="올바른 이메일 형식을 입력해주세요." required>
-        <span class="input-group-text" id="basic-addon2">@example.com</span>
-      </div>
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" name="email" aria-describedby="basic-addon2" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" title="올바른 이메일 형식을 입력해주세요." required>
+      <span class="input-group-text" id="basic-addon2">@example.com</span>
+    </div>
       
 
       <!-- 새싹 크루인지 확인 -->
 
-      <div class="input-group-text" id="basic-addon2">새싹 크루입니까?</div>
-      <div class="form-check-inline">
-            <input class="form-check-input" type="radio" name="isSesac" id="gridRadios1" value="true" checked required>
-            <label class="form-check-label" for="gridRadios1">
-              네
-            </label>
-            </div>
-       
-          <div class="form-check-inline">
-            <input class="form-check-input" type="radio" name="isSesac" id="gridRadios2" value="false">
-            <label class="form-check-label" for="gridRadios2">
-              아니요
-            </label>
-          </div>
+    <div class="input-group-text" id="basic-addon2">새싹 크루입니까?</div>
+    <div class="form-check-inline">
+      <input class="form-check-input" type="radio" name="isSesac" id="gridRadios1" value="true" checked required>
+      <label class="form-check-label" for="gridRadios1">
+        네
+      </label>
+    </div>
+      
+    <div class="form-check-inline">
+      <input class="form-check-input" type="radio" name="isSesac" id="gridRadios2" value="false">
+      <label class="form-check-label" for="gridRadios2">
+        아니요
+      </label>
+    </div>
 
-        <!-- 새싹 캠퍼스 선택 -->
-      <div class="input-group mb-3">
-        <label class="input-group-text" for="inputGroupSelect01">새싹 캠퍼스 </label>
-        <select class="form-select" id="inputGroupSelect01" name="campus">
-          <option selected>선택</option>
-          <option id="1" value="영등포">영등포</option>
-          <option id="2" value="금천">금천</option>
-          <option id="3" value="마포">마포</option>
-          <option id="4" value="용산">용산</option>
-          <option id="5" value="강동">강동</option>
-          <option id="6" value="동작">동작</option>
-          <option id="7" value="서대문">서대문</option>
-          <option id="8" value="광진">광진</option>
-          <option id="9" value="중구">중구</option>
-          <option id="10" value="종로">종로</option>
-          <option id="11" value="성동">성동</option>
-          <option id="12" value="성북">성북</option>
-          <option id="13" value="동대문">동대문</option>
-        </select>
-      </div>
+      <!-- 새싹 캠퍼스 선택 -->
+    <div id='campusDiv' class="input-group mb-3">
+      <label class="input-group-text" id="campusLabel" for="inputGroupSelect01">새싹 캠퍼스 </label>
+      <select class="form-select" id="inputGroupSelect01" name="campus">
+        <option selected>선택</option>
+        <option id="1" value="영등포">영등포</option>
+        <option id="2" value="금천">금천</option>
+        <option id="3" value="마포">마포</option>
+        <option id="4" value="용산">용산</option>
+        <option id="5" value="강동">강동</option>
+        <option id="6" value="동작">동작</option>
+        <option id="7" value="서대문">서대문</option>
+        <option id="8" value="광진">광진</option>
+        <option id="9" value="중구">중구</option>
+        <option id="10" value="종로">종로</option>
+        <option id="11" value="성동">성동</option>
+        <option id="12" value="성북">성북</option>
+        <option id="13" value="동대문">동대문</option>
+      </select>
+    </div>
 
-        <!-- Modal -->
-        <div class="modal fade" id="cautionModal" tabindex="-1" aria-labelledby="cautionModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="cautionModalLabel">경고</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-                <div class="modal-body">
-                <p id="cautionText"></p>
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                </div>
+    <!-- Modal -->
+    <div class="modal fade" id="cautionModal" tabindex="-1" aria-labelledby="cautionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="cautionModalLabel">경고</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
             </div>
+            <div class="modal-body">
+            <p id="cautionText"></p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
             </div>
         </div>
-  
-
-
-      <button type="button" class="btn-primary" onclick="register();" >가입 하기</button>
-
+        </div>
+     </div>
+      <button type="button" class="btn-primary" onclick="register();" >가입하기</button>
     </form>
   </main>
-    <script>
-        //input 유효성 검사
-       function validateInput(input) {
-            if (!input.validity.valid) {
-                if (input.validity.patternMismatch || input.validity.valueMissing) {
-                    setModalTextAndShow(input.title);
-                    register("형식에 맞게 다시 입력해 주세요");
-                    return false;
-                }
-            }
-            return true;
+  <script>
+      //input 유효성 검사
+      function validateInput(input) {
+          if (!input.validity.valid) {
+              if (input.validity.patternMismatch || input.validity.valueMissing) {
+                return input.title;
+              }
+          }
+          return '';
+      }
+      
+      // 새싹 크루 -> 아니오
+      function onNoSelected() {
+        const campusDiv = document.getElementById("campusDiv");
+        campusDiv.style.display = "none"; // 숨김
+      }
+
+      // 새싹 크루 -> 예
+      function onYesSelected() {
+        const campusDiv = document.getElementById("campusDiv");
+        campusDiv.style.display = "block"; // 보이게 함
+      }
+
+      // 라디오 버튼의 변경 이벤트-> 이벤트 핸들러
+      document.querySelector('input[name="isSesac"][value="false"]').addEventListener("change", onNoSelected);
+      document.querySelector('input[name="isSesac"][value="true"]').addEventListener("change", onYesSelected);
+
+      // 페이지 로드했을 때 초기 상태 설정
+      if (document.querySelector('input[name="isSesac"][value="false"]').checked) {
+        onNoSelected();
+      } else {
+        onYesSelected();
+      }
+
+      // 중복 확인
+      function checkDuplicate(field) {
+        const value = document.getElementById(field).value;
+
+        // 필드가 비어 있는지 확인
+        if (!value) {
+            setModalTextAndShow(`${field === 'uId' ? '아이디' : '닉네임'}를 입력하세요.`);
+            return;
         }
 
-        // validateInput에 대한 유효성 검사
-        function register() {
-            const form_register = document.forms['form_register'];
+        fetch(`/checkDuplicate?field=${field}&value=${value}`, {
+          method: 'GET', 
+        })
+          .then((response) => response.json())
+          .then((data) => {
+              let message = '';
+              if (data.isDuplicate) {
+                  message = `해당 ${field === 'uId' ? '아이디는' : '닉네임은'} 이미 사용 중입니다.`;
+              } else {
+                  message = `해당 ${field === 'uId' ? '아이디는' : '닉네임은'} 사용 가능합니다.`;
+              }
 
-            if (!validateInput(form_register.uId)) {
-                setModalTextAndShow('ID를 입력해주세요');
-                return;
-            } else if (!validateInput(form_register.pw)) {
-                setModalTextAndShow('pw를 입력해 주세요');
-                return;
-            } else if (!validateInput(form_register.uName)) {
-                setModalTextAndShow('닉네임을 입력해 주세요');
-                return;
-            } else if (!validateInput(form_register.email)) {
-                setModalTextAndShow('@ 형식에 맞게 email을 입력해 주세요');
-                return;
-            } else {
-                axios({
-                        method: 'post',
-                        url: '/users',
-                        data: {
-                            uId: form_register.uId.value,
-                            pw: form_register.pw.value,
-                            uName: form_register.uName.value,
-                            email: form_register.email.value,
-                            isSesac: form_register.isSesac.value,
-                            campus: form_register.campus.value,
-                        },
-                    })
-                    .then((res) => {
-                        console.log(res.data);
-                        alert('회원가입 성공');
-                        
-                        //입력 항목 초기화
-                        resetFormInputs();
-                        window.location.href = '/login';
-                    })
-                    .catch((err) => {
-                        setModalTextAndShow('서버에서 오류가 발생했습니다.');
-                    });
-            }
-        }
-        // 모달창
-        function setModalTextAndShow(message) {
-            $('#cautionText').text(message);
+              setModalTextAndShow(message);
+          })
+          .catch((error) => {
+            console.error('중복 확인 요청 중 오류 발생:', error);
+          });
+      }
+
+
+      // validateInput에 대한 유효성 검사
+      function register() {
+          const form_register = document.forms['form_register'];
+
+          const idErrorMessage = validateInput(form_register.uId);
+          const pwErrorMessage = validateInput(form_register.pw);
+          const uNameErrorMessage = validateInput(form_register.uName);
+          const emailErrorMessage = validateInput(form_register.email);
+
+          const errorMessage = [idErrorMessage, pwErrorMessage, uNameErrorMessage, emailErrorMessage].filter(msg => msg).join('<br>');
+
+          if (errorMessage) {
+
+            $('#cautionText').html(errorMessage);
             $('#cautionModal').modal('show');
-        }
-        //입력 항목 초기화 
-        function resetFormInputs() {
-        const form_register = document.forms['form_register'];
-        form_register.uId.value = '';
-        form_register.pw.value = '';
-        form_register.uName.value = '';
-        form_register.email.value = '';
-        form_register.isSesac[0].checked = true; // "네" 선택
-        form_register.campus.selectedIndex = 0; // "선택" 선택
-    }
+            return false; 
+          } else {
+              axios({
+              method: 'post',
+              url: '/users',
+              data: {
+                  uId: form_register.uId.value,
+                  pw: form_register.pw.value,
+                  uName: form_register.uName.value,
+                  email: form_register.email.value,
+                  isSesac: form_register.isSesac.value,
+                  campus: form_register.campus.value,
+              },
+            })
+                .then((res) => {
+                  console.log(res.data);
+                  alert('회원가입 성공');
+                  
+                  //입력 항목 초기화
+                  resetFormInputs();
+                  window.location.href = '/login';
+                })
+                .catch((err) => {
+                    setModalTextAndShow('서버에서 오류가 발생했습니다.');
+                });
+          }
+      }
+      // 모달창
+      function setModalTextAndShow(message) {
+          $('#cautionText').text(message);
+          $('#cautionModal').modal('show');
+      }
+      //입력 항목 초기화 
+      function resetFormInputs() {
+      const form_register = document.forms['form_register'];
+      form_register.uId.value = '';
+      form_register.pw.value = '';
+      form_register.uName.value = '';
+      form_register.email.value = '';
+      form_register.isSesac[0].checked = true; // "네" 선택
+      form_register.campus.selectedIndex = 0; // "선택" 선택
+  }
 
-    //뒤로가기 버튼 클릭시 로그인 창으로 돌아감
-    function goToLogin() {
-    window.location.href = '/login';
-    }
+  // //뒤로가기 버튼 클릭시 로그인 창으로 돌아감
+  // function goToLogin() {
+  // window.location.href = '/login';
+  // }
 
-
-    </script>
+  //뒤로가기 버튼 클릭시 사용자가 전에 머물렀던 창으로 돌아감
+  function goToLogin() {
+    window.history.back();
+  }
+  </script>
 </body>
 
 </html>
