@@ -153,6 +153,8 @@ exports.likeAnswer = async (req, res) => {
       },
     });
 
+    const resultLike = !!uLikeFind; // uLikeFind가 존재하면 true, 아니면 false
+
     const getAnswer = await Answer.findOne({
       where: {
         aId,
@@ -182,6 +184,8 @@ exports.likeAnswer = async (req, res) => {
         data: question,
         answerData: updatedLike,
         commentData: comments,
+        qResult: null,
+        aResult: resultLike,
       });
     } else if (uLikeFind) {
       // 2) uLike findOne -> 있으면,
@@ -207,6 +211,8 @@ exports.likeAnswer = async (req, res) => {
         data: question,
         answerData: updatedLike,
         commentData: comments,
+        qResult: null,
+        aResult: resultLike,
       });
     }
   } catch (err) {
