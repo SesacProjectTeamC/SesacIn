@@ -13,7 +13,11 @@
       <header>
           <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
           <div>
+<<<<<<< Updated upstream
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goBack()">
+=======
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goTohome()">
+>>>>>>> Stashed changes
           <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
           <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
       </svg>
@@ -60,6 +64,7 @@
             caution.textContent = `id를 입력해 주세요`;
           } else if(!login_form.pw.checkValidity()){
             caution.textContent = `pw를 입력해 주세요`;
+<<<<<<< Updated upstream
           } else {
           axios({ 
             method: 'post',
@@ -76,17 +81,41 @@
           .then((data) => {
             console.log(data);
             window.location.href = "/";
+=======
+          } 
+          else {
+            axios({
+              method: 'post',
+              url: '/login',
+              data: {
+                uId: login_form.uId.value,
+                pw: login_form.pw.value,
+              },
+            })
+            .then((res) => {
+              return res.data;
+            })
+          .then((data) => {
+            console.log(data);
+            alert('로그인 되셨습니다!')
+            //메인으로 이동
+            document.location.href = '/';
+>>>>>>> Stashed changes
           });
         }
       } catch(err){
-        caution.textContent = `알 수 없는 에러 발생`;
+        alert('로그인 해주세요!');
       }
     }
+<<<<<<< Updated upstream
 
     function goBack() {
       window.history.back();
     }
 
+=======
+    
+>>>>>>> Stashed changes
     </script>
   </body>
 </html>

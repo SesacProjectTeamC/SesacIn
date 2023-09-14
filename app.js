@@ -47,10 +47,10 @@ app.use(
 );
 
 // routers
-const indexRouter = require('./routes/index');
-const questionRouter = require('./routes/questionRouter');
-const boardRouter = require('./routes/boardRouter');
-const profileRouter = require('./routes/profileRouter');
+const indexRouter = require("./routes/index");
+const questionRouter = require("./routes/questionRouter");
+const boardRouter = require("./routes/boardRouter");
+const profileRouter = require("./routes/profileRouter");
 
 // indexRouter 로 이동
 // 메인페이지, 유저 관련
@@ -63,7 +63,7 @@ app.use('/question', questionRouter);
 app.use('/board', boardRouter);
 
 // profile 라우터로 이동
-app.use('/users', profileRouter);
+// app.use("/users", profileRouter);
 
 // test
 app.get('/check', (req, res) => {
