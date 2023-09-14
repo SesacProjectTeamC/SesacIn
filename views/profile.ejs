@@ -59,66 +59,64 @@
       <% }  %>
     </form>
     
-    <button onclick="gotoProfileEdit()">회원정보 수정</button>
+    <!-- <button onclick="gotoProfileEdit()">회원정보 수정</button> -->
 
-    <a href=/users/editprofile>회원 정보 수정</a>
-
-    
-    <button onclick="questionBoardCard()" class="questionBoardCard">Q&A 게시판</button>
-    <button onclick="freeBoardCard()" class="freeBoardCard">자유 게시판</button>
-<!-- 둘중 하나 클릭시 -->
-    <div class="questionBoardCard_likedPost">
-      <!-- questionBoardCard button 클릭시 글이 보이게  -->
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-    </div>
-    <div class="questionBoardCard_writedPost">
-      <!-- questionBoardCard button 클릭시 글이 보이게  -->
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-    </div>
-    <div class="questionBoardCard_commentPost">
-      <!-- questionBoardCard button 클릭시 글이 보이게  -->
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-    </div>
-    <div class="questionBoardCard_answeredPost">
-      <!-- questionBoardCard button 클릭시 글이 보이게  -->
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-    </div>
-
-
-    <div class="freeBoardCard_likedPost">
-      <!-- questionBoardCard button 클릭시 글이 보이게  -->
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-    </div>
-    <div class="freeBoardCard_writedPost">
-      <!-- questionBoardCard button 클릭시 글이 보이게  -->
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-    </div>
-    <div class="freeBoardCard_commentPost">
-      <!-- questionBoardCard button 클릭시 글이 보이게  -->
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-    </div>
-  
+    <a href=/users/editprofile>회원 정보 수정</a><br>
+      <!-- 여기서 type 값은 qna과 free를 보냄 -->
+      <button class="qna" onclick="change('qna')">Q&A 게시판</button>
+      <button class="free" onclick="change('free')">자유 게시판</button><br>
+      
+      <!-- 숨겨진 버튼들 -->
+      <button class="option hidden liked" onclick="change('liked')">좋아요 누른 게시글</button>
+      <button class="option hidden writed" onclick="change('writed')">내가 작성한 게시글</button>
+      <button class="option hidden commented" onclick="change('commented')">내가 댓글단 게시글</button>
+      <button class="option hidden answered" onclick="change('answered')">내가 답변한 게시글</button>
+      
+      <div id="content"></div>
+      
+   
+    <div id="content"></div>
   </main>
-  </body>
-  <!-- <script>
+    <script>
+          function change(type) {
+      const content = document.getElementById("content");
+      const options = document.querySelectorAll('.option'); // 옵션 버튼을 선택
+      const answeredButton = document.querySelector('.answered'); // '내가 답변한 게시글' 버튼을 선택
+
+      let boardTitle;
+      let divContent = "";
+
+      if (type === "qna") {
+        boardTitle = "QnA 게시판";
+
+        divContent = `
+          <div>
+              <h2>${boardTitle}</h2>
+          </div>
+        `;
+
+        options.forEach(opt => opt.classList.remove('hidden')); // 옵션 버튼들을 보여줍니다.
+      } else if (type === "free") {
+        boardTitle = "자유 게시판";
+
+        options.forEach(opt => opt.classList.remove('hidden')); // 옵션 버튼들을 보여줍니다.
+        answeredButton.classList.add('hidden'); // '내가 답변한 게시글' 버튼을 숨깁니다.
+      } else {
+        boardTitle = type.charAt(0).toUpperCase() + type.slice(1); // type의 첫 글자만 대문자로 바꿉니다.
+        divContent = `
+          <div>
+              <h2>${boardTitle} 게시판</h2>
+              <div>1. ${boardTitle} 글 1</div>
+              <div>2. ${boardTitle} 글 2</div>
+          </div>
+        `;
+      }
+
+      content.innerHTML = divContent;
+    }
+
+
+ 
     function editProfile() {
       axios({
         method: 'GET',
@@ -129,24 +127,7 @@
   });
     }
 
-  function questionBoardCard(){
-    //type별로 보여줄지 말지
-      // 모든 div들을 숨김
-    let allDivs = document.querySelectorAll('.questionBoardCard');
-    for (let div of allDivs) {
-        div.style.display = 'none';
-    }
-
-    // questionBoard 클래스를 가진 div들만 보여줌
-    let questionBoardDivs = document.querySelectorAll('.questionBoardCard_likedPost, .questionBoardCard_writedPost, .questionBoardCard_commentPost, .questionBoardCard_answeredPost');
-    for (let div of questionBoardDivs) {
-        div.style.display = 'block';
-    }
-  }
-  function freeBoardCard(){
-
-
-  }
+  
     function fileUpload() {
           console.log('동적 파일 업로드');
           // js파일만으로 폼을 전송 ( 파일 데이터를 서버로 전송해야 하는 케이스)

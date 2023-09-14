@@ -41,3 +41,8 @@ img {
 .freeBoardCard {
   display: hidden;
 }
+
+.hidden {
+    display: none;
+  }
+  
