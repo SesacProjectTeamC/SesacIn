@@ -121,7 +121,7 @@ exports.postUser = async (req, res) => {
 exports.login = (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
-
+  console.log(req.session.user);
   try {
     if (isLogin) {
       res.status(301).send({
