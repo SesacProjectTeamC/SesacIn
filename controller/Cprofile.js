@@ -4,7 +4,7 @@
 // 3. 수정 버튼 -> 회원정보 PATCH, DELETE
 
 //////////////////////////////////////////////
-const { User, Question, Answer, Comment, Board } = require('../models');
+const { User, Question, Answer, Comment, Board, uLike } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 
@@ -28,6 +28,11 @@ exports.getUser = async (req, res) => {
       // 좋아요 누른 질문
       const likeQuestion = await Question.findAll({
         where: { qId: likes.map((like) => like.qId) },
+      });
+
+      // 좋아요 누른 답변
+      const likeAnswer = await Answer.findAll({
+        where: { aId: likes.map((like) => like.aId) },
       });
 
       //-- 작성한 게시글 가져오기
