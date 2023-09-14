@@ -2,17 +2,14 @@
 // 경로 선언과 관련된 내용 기술
 const express = require('express');
 const router = express.Router();
-const Cuser = require('../controller/Cuser');
-const Cquestion = require('../controller/Cquestion');
-const Cboard = require('../controller/Cboard');
-const Cprofile = require('../controller/Cprofile');
-const CmyPage = require('../controller/CmyPage');
+const Cuser = require("../controller/Cuser");
+const Cquestion = require("../controller/Cquestion");
+const Cboard = require("../controller/Cboard");
+const Cprofile = require("../controller/Cprofile");
+// const CprofileTest = require("../controller/CprofileTest");
 
 // 메인 페이지 렌더링
-router.get('/', Cquestion.getQuestions);
-
-// 마이페이지 렌더링 (사용 안하는 것 같음)
-router.get('/myPage', CmyPage.getHistory);
+router.get("/", Cquestion.getQuestions);
 
 // 회원 가입 페이지 렌더링
 router.get('/join', Cuser.getJoin);
