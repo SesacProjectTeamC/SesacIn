@@ -4,7 +4,7 @@
 // 3. 수정 버튼 -> 회원정보 PATCH, DELETE
 
 //////////////////////////////////////////////
-const { User, Question, Answer, Comment, Board } = require('../models');
+const { User, Question, Answer, Comment, Board, uLike } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 
@@ -13,7 +13,7 @@ exports.getUser = async (req, res) => {
     // const { uId } = req.params;
 
     // 테스트를 위해 로그인한 유저를 정해놓음
-    // req.session.user = 'aassddff1';
+    // req.session.user = 1;
 
     // 세션에서 로그인 된 사용자 id 가져오기
     const uId = req.session.user;
@@ -24,21 +24,34 @@ exports.getUser = async (req, res) => {
       const user = await User.findOne({
         where: { uId: uId },
       });
-      // 1. 좋아요 / 작성한 게시글 / 답변 / 댓글
-      //-- 좋아요 클릭 게시글 가져오기
-      // isLike
 
-      //-- 작성한 게시글 가져오기
-      const posts = await Question.findAll({ where: { uId: uId } });
+      //-- 좋아요 클릭 게시글 가져오기
+      const likes = await uLike.findAll({ where: { uId } });
+
+      // 좋아요 누른 질문
+      const likeQuestion = await Question.findAll({
+        where: { qId: likes.map((like) => like.qId) },
+      });
+
+      // 좋아요 누른 답변
+      const likeAnswer = await Answer.findAll({
+        where: { aId: likes.map((like) => like.aId) },
+      });
+
+      //-- 작성한 질문 가져오기
+      const posts = await Question.findAll({ where: { uId } });
 
       //-- 작성한 답변 가져오기
-      const answers = await Answer.findAll({ where: { uId: uId } });
+      const answers = await Answer.findAll({ where: { uId } });
 
       //-- 작성한 댓글 가져오기
-      const comments = await Comment.findAll({ where: { uId: uId } });
+      const comments = await Comment.findAll({ where: { uId } });
+
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      res.render('profile', {
+      res.render('profileTest', {
         userData: user,
+        likeQuestionData: likeQuestion,
+        likeAnswerData: likeAnswer,
         postData: posts,
         answerData: answers,
         commentData: comments,
