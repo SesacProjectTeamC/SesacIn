@@ -13,6 +13,7 @@ router.get("/", Cquestion.getQuestions);
 
 // profileTest용 라우터입니다.
 // router.get("/myPage", CprofileTest.getHistory);
+//
 
 router.get("/users/:uId/profile", Cprofile.getUser);
 
