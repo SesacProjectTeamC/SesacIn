@@ -13,7 +13,7 @@ exports.getUser = async (req, res) => {
     // const { uId } = req.params;
 
     // 테스트를 위해 로그인한 유저를 정해놓음
-    req.session.user = 'aassddff1';
+    // req.session.user = 'aassddff1';
 
     // 세션에서 로그인 된 사용자 id 가져오기
     const uId = req.session.user;

@@ -52,17 +52,16 @@
         window.location.href = "/join";
       }
       function logintest() {
-        window.location.href = "/";
-      const cautionBox = document.querySelector('div.caution');
-      const login_form = document.forms['login'];
-      
-      try {
-        if(!login_form.uId.checkValidity()){
-          caution.textContent = `id를 입력해 주세요`;
-        } else if(!login_form.pw.checkValidity()){
-          caution.textContent = `pw를 입력해 주세요`;
-        } else {
-          axios({
+        const cautionBox = document.querySelector('div.caution');
+        const login_form = document.forms['login'];
+        
+        try {
+          if(!login_form.uId.checkValidity()){
+            caution.textContent = `id를 입력해 주세요`;
+          } else if(!login_form.pw.checkValidity()){
+            caution.textContent = `pw를 입력해 주세요`;
+          } else {
+          axios({ 
             method: 'post',
             url: '/login',
             data: {
@@ -76,6 +75,7 @@
           })
           .then((data) => {
             console.log(data);
+            window.location.href = "/";
           });
         }
       } catch(err){
