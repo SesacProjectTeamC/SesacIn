@@ -4,9 +4,9 @@
 // 3. 수정 버튼 -> 회원정보 PATCH, DELETE
 
 //////////////////////////////////////////////
-const { User, Question, Answer, Comment, Board } = require('../models');
-const { Op } = require('sequelize');
-const bcrypt = require('bcrypt');
+const {User, Question, Answer, Comment, Board} = require("../models");
+const {Op} = require("sequelize");
+const bcrypt = require("bcrypt");
 
 exports.getUser = async (req, res) => {
   // 세션 검사
@@ -19,22 +19,22 @@ exports.getUser = async (req, res) => {
     if (isLogin) {
       // 데이터베이스에서 해당 사용자 정보를 조회합니다.
       const user = await User.findOne({
-        where: { uId: uId },
+        where: {uId: uId},
       });
       // 1. 좋아요 / 작성한 게시글 / 답변 / 댓글
       //-- 좋아요 클릭 게시글 가져오기
       // isLike
 
       //-- 작성한 게시글 가져오기
-      const posts = await Question.findAll({ where: { uId: uId } });
+      const posts = await Question.findAll({where: {uId: uId}});
 
       //-- 작성한 답변 가져오기
-      const answers = await Answer.findAll({ where: { uId: uId } });
+      const answers = await Answer.findAll({where: {uId: uId}});
 
       //-- 작성한 댓글 가져오기
-      const comments = await Comment.findAll({ where: { uId: uId } });
+      const comments = await Comment.findAll({where: {uId: uId}});
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      res.render('profile', {
+      res.render("profile", {
         userData: user,
         postData: posts,
         answerData: answers,
@@ -109,22 +109,22 @@ exports.patchUser = async (req, res) => {
     const uId = req.session.user;
     console.log(uId);
 
-    const userData = { uId: uId };
-    let { email, pw, uName } = req.body;
+    const userData = {uId: uId};
+    let {email, pw, uName} = req.body;
     console.log(req.body);
 
     pw = hashPassword(pw);
 
     const updatedUser = await User.update(
-      { email: email, pw: pw, uName: uName },
+      {email: email, pw: pw, uName: uName},
       {
-        where: { uId: uId },
+        where: {uId: uId},
       }
     );
 
-    const posts = await Question.findAll({ where: { uId: uId } });
-    const answers = await Answer.findAll({ where: { uId: uId } });
-    const comments = await Comment.findAll({ where: { uId: uId } });
+    const posts = await Question.findAll({where: {uId: uId}});
+    const answers = await Answer.findAll({where: {uId: uId}});
+    const comments = await Comment.findAll({where: {uId: uId}});
 
     console.log('>>>>>>>', updatedUser);
     req.session.destroy((err) => {
@@ -135,7 +135,7 @@ exports.patchUser = async (req, res) => {
       }
     });
 
-    res.render('profile', {
+    res.render("profile", {
       userData: updatedUser,
       postData: posts,
       answerData: answers,
@@ -145,7 +145,7 @@ exports.patchUser = async (req, res) => {
     console.log(err);
     res.status(500).send({
       OK: false,
-      msg: '데이터베이스 오류 발생',
+      msg: "데이터베이스 오류 발생",
     });
   }
 };
@@ -155,7 +155,7 @@ exports.deleteUser = async (req, res) => {
   try {
     const uId = req.session.user;
     const isDeleted = await User.destroy({
-      where: { uId: uId },
+      where: {uId: uId},
     });
     // console.log(isDeleted); // 성공시 1, 실패시 0
     if (isDeleted) {
@@ -165,7 +165,7 @@ exports.deleteUser = async (req, res) => {
           console.log(err);
           res.status(500).send({
             OK: false,
-            msg: '데이터베이스 오류 발생',
+            msg: "데이터베이스 오류 발생",
           });
           return;
         }
@@ -179,7 +179,7 @@ exports.deleteUser = async (req, res) => {
     console.log(err);
     res.status(500).send({
       OK: false,
-      msg: '데이터베이스 오류 발생',
+      msg: "데이터베이스 오류 발생",
     });
   }
 };
