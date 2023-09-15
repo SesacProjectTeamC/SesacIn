@@ -79,7 +79,7 @@ exports.postUser = async (req, res) => {
 
     // null 값 있는지 검사
     if (!uId || !pw || !uName || !email || !isSesac || !campus) {
-      return res.status(400).send({
+      return res.status(400).json({
         OK: false,
         msg: '입력 필드 중 하나 이상이 누락되었습니다.',
       });
@@ -99,13 +99,17 @@ exports.postUser = async (req, res) => {
     const uNameIsDuplicate = await User.count({ where: { uName } });
 
     if (uIdIsDuplicate || uNameIsDuplicate) {
-      res.status(409).send({
+      return res.status(409).json({
         OK: false,
         uIdIsDuplicate,
         uNameIsDuplicate,
         msg: 'uId 또는 uNname 가 이미 존재합니다.',
       });
-      return;
+    }
+
+    // 새싹 크루 아니라고 선택했을 때 캠퍼스 값 없이 db 저장
+    if (isSesac === 'false') {
+      campus = null;
     }
 
     // db에 넣기전 pw 암호화
@@ -116,7 +120,7 @@ exports.postUser = async (req, res) => {
       pw: pw,
       uName: uName,
       email: email,
-      isSesac: isSesac,
+      isSesac: isSesac === 'true',
       campus: campus,
     });
     res.status(200).send(newUser);
@@ -195,7 +199,7 @@ exports.userLogin = async (req, res) => {
       currentLoginUser: req.session.user,
     });
   } else {
-    return res.status(401).json({ message: '비밀번호 불일치' });
+    return res.status(402).json({ message: '비밀번호가 일치하지 않습니다. ' });
     // 비밀번호 불일치
   }
 };

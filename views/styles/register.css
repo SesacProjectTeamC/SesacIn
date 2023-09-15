@@ -33,7 +33,7 @@ main {
   border: 5px solid var(--border-color);
   background-color: rgb(255, 255, 255);
   border-radius: 20px;
-  padding: 30px;
+  padding: 50px 30px;
   flex-wrap: wrap;
 }
 
@@ -111,7 +111,7 @@ label.isSesac {
 
 .form-select {
   margin-top: 1rem;
-  width: 13rem;
+  width: 16rem;
 }
 
 .form-check-inline {
@@ -161,7 +161,7 @@ label.isSesac {
 }
 
 #basic-addon1 {
-  width: 5.5rem;
+  width: 7.5rem;
 }
 
 #campusLabel {
@@ -193,7 +193,7 @@ label.isSesac {
 }
 
 .btn-primary:hover {
-  background-color: var(--hover-color);
+  background-color: var(--border-color);
   border: 2px solid var(--main-color);
   cursor: pointer;
 }

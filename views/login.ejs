@@ -4,8 +4,15 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Document <%= title %></title>
-      <!-- axios cdn -->
+      <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+      <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="views/componets/cdn.ejs">
       <link rel="stylesheet" href="views/styles/login.css">
       <link rel="stylesheet" href="views/styles/globalstyle.css">
   </head>
@@ -24,13 +31,14 @@
         <form name="login" id="form_login">
             <div class="login_form_id">
             <input type="id" class="login_form_id" id="uId" name="uId" placeholder="아이디" required >
-            <div class="caution"></div>
             </div>
+            <div class="caution" id="cautionId"></div>
           <br>
           <br>
           <div class="login_form_pw">
             <input type="password" class="login_form_pw" id="pw" name="pw" placeholder="비밀번호" required >
           </div>
+          <div class="caution" id="cautionPw"></div>
           <br>
           <br>
 
@@ -44,6 +52,25 @@
           <br>
           <button type="button" class="btn btn-primary" onclick="logintest()">로그인</button>
 
+          <!-- Modal -->
+          <div class="modal fade" id="cautionModal" tabindex="-1" aria-labelledby="cautionModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="cautionModalLabel">경고</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                <p id="cautionText"></p>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </form>
       </main>
   </div>
@@ -51,17 +78,39 @@
       function join(){
         window.location.href = "/join";
       }
+      function setModalTextAndShow(message) {
+        const modalText = document.getElementById('cautionText');
+        modalText.textContent = message;
+
+        // 모달 창 표시
+        $('#cautionModal').modal('show');
+      }
+
+      function hideCaution() {
+        const cautionId = document.getElementById('cautionId');
+        const cautionPw = document.getElementById('cautionPw');
+
+        cautionId.textContent = '';
+        cautionPw.textContent = '';
+      }
+
       function logintest() {
-        const cautionBox = document.querySelector('div.caution');
+        const cautionId = document.getElementById('cautionId');
+        const cautionPw = document.getElementById('cautionPw');
         const login_form = document.forms['login'];
         
         try {
-          if(!login_form.uId.checkValidity()){
-            caution.textContent = `id를 입력해 주세요`;
-          } else if(!login_form.pw.checkValidity()){
-            caution.textContent = `pw를 입력해 주세요`;
+          cautionId.textContent = ''; 
+          cautionPw.textContent = ''; 
+
+          if ( !login_form.uId.checkValidity ()) {
+            cautionId.textContent = `아이디를 입력해 주세요`;
+            setTimeout(hideCaution, 3000);
+            return;
+          } else if ( !login_form.pw.checkValidity ()) {
+            cautionPw.textContent = `비밀번호를 입력해 주세요`;
+            setTimeout(hideCaution, 3000);
           } 
-          else {
             axios({
               method: 'post',
               url: '/login',
@@ -71,23 +120,29 @@
               },
             })
             .then((res) => {
-              return res.data;
+              setModalTextAndShow(res.message);
+                // 로그인이 성공한 경우 메인 페이지로 이동
+                window.location.href = '/';
             })
-          .then((data) => {
-            console.log(data);
-            alert('로그인 되셨습니다!')
-            //메인으로 이동
-            document.location.href = '/';
-          });
-        }
-      } catch(err){
-        alert('로그인 해주세요!');
+            .catch((error) => {
+              const status = error.response.request.status;
+              if (status === 401) {
+                setModalTextAndShow('사용자를 찾을 수 없습니다.');
+
+              } else if (status === 402) {
+                setModalTextAndShow('비밀번호가 일치하지 않습니다.');
+              }
+            });
+            } catch (err) {
+              console.log(err);
+              setModalTextAndShow('로그인 중 오류가 발생했습니다.');
+
+            }
+          }
+      //뒤로가기 버튼 클릭시 홈으로 이동
+      function goTohome() {
+          window.location.href = '/';
       }
-    }
-    function goTohome() {
-      window.location.href = '/';
-    }
-    
     
     </script>
   </body>
