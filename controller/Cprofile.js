@@ -58,12 +58,13 @@ exports.getUser = async (req, res) => {
       });
     } else {
       // 로그인 되어있지 않은 상태에서의 요청시
-      res.status(401).send({
-        isLogin,
-        currentUser: req.session.user,
-        success: false,
-        mgs: '로그인 정보 다름. 권한 없음.',
-      });
+      // res.status(401).send({
+      //   isLogin,
+      //   currentUser: req.session.user,
+      //   success: false,
+      //   mgs: '로그인 정보 다름. 권한 없음.',
+      // });
+      res.redirect('/');
     }
   } catch (err) {
     console.log(err);
@@ -95,13 +96,14 @@ exports.getUserInfo = (req, res) => {
       return;
     } else {
       // 로그인 되어있지 않은 상태에서의 요청시
-      res.status(401).send({
-        isLogin,
-        currentUser: req.session.user,
-        success: false,
-        mgs: '로그인 정보 다름. 권한 없음.',
-      });
-      return;
+      // res.status(401).send({
+      //   isLogin,
+      //   currentUser: req.session.user,
+      //   success: false,
+      //   mgs: '로그인 정보 다름. 권한 없음.',
+      // });
+      // return;
+      res.redirect('/404');
     }
   } catch (error) {
     console.log(error);
