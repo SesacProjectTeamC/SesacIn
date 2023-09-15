@@ -51,13 +51,34 @@ function renderContent(type, data) {
   }
 }
 
-function displayPosts(category) {
+function likeQuestionData(type,data) {
   const content = document.getElementById("content");
   let posts = [];
 
   // 이 부분은 AJAX 요청을 사용하여 데이터를 서버에서 불러온 후 처리해야 합니다.
   // 아래는 간단한 예시입니다.
-  fetchData(category);
+  likeAnswerData(type, data);
+  postData(type, data);
+  likeAnswerData(type, data);
+  likeAnswerData(type, data);
+  likeAnswerData(type, data);
+}
+
+
+function likeAnswerData(type, data){
+  const like
+}
+
+function postData(type,data){
+
+}
+
+function answerData(type,data){
+
+}
+
+function commentData(type,data){
+
 }
 
 // 이벤트 리스너들
