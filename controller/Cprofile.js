@@ -172,6 +172,7 @@ exports.patchUser = async (req, res) => {
 };
 
 // 회원 삭제 - 회원 탈퇴할 경우
+// /users/deleteprofile
 exports.deleteUser = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -181,19 +182,22 @@ exports.deleteUser = async (req, res) => {
     const isDeleted = await User.destroy({
       where: { uId: uId },
     });
-    // console.log(isDeleted); // 성공시 1, 실패시 0
+
     if (isDeleted) {
       // 성공적으로 삭제된 경우
       req.session.destroy((err) => {
+        // 세션 삭제 실패
         if (err) {
           console.log(err);
-          res.status(500).send({
-            OK: false,
+          res.status(301).send({
+            isLogin,
+            success: false,
             msg: '세션 삭제 실패',
           });
           return;
         }
 
+        // 정상 처리
         res.status(200).send({
           isLogin: false,
           deletedUser: uId,
@@ -201,18 +205,21 @@ exports.deleteUser = async (req, res) => {
         });
       });
     } else {
-      // 삭제 실패
+      // 서버 에러
       res.status(500).send({
         isLogin,
         currentUser: req.session.user,
         success: false,
+        msg: '서버 에러 발생',
       });
     }
   } catch (err) {
     console.log(err);
     res.status(500).send({
-      OK: false,
-      msg: '데이터베이스 오류 발생',
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '서버 오류 발생',
     });
   }
 };
