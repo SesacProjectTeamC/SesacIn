@@ -1,3 +1,8 @@
+<!-- 
+  [ BE ] 변경 사항 : a 태그 > button 태그 
+-->
+
+<!-- <a href="/question/<%= data.qId%>"> -->
 <button onclick="moveToDetailQuestion('<%= data.qId %>')">
   <div id="cardContainer">
     <type> <%= data.qType %> | <%= cDate%> </type>
@@ -41,4 +46,5 @@
       </div>
     </user>
   </div>
+  <!-- </a> -->
 </button>

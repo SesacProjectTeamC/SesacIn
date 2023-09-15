@@ -161,11 +161,13 @@ const moveToDetailQuestion = (qId) => {
   axios({
     method: 'PATCH',
     url: `/question/${qId}/view`,
-  }).then((res) => {
-    if (res) {
-      document.location.href = `/question/${qId}`;
-    }
-  });
+  })
+    .then((res) => {
+      if (res) {
+        document.location.href = `/question/${qId}`;
+      }
+    })
+    .catch((err) => console.log(err));
 };
 
 const moveToCreateQuestion = () => {
@@ -405,18 +407,5 @@ const deleteComment = (qId, aId, cId) => {
       alert('삭제되었습니다');
     }
     window.location.href = `/question/${qId}`;
-  });
-};
-
-//=== Board ===
-// 좋아요
-const bLikeHandler = (bId) => {
-  axios({
-    method: 'PATCH',
-    url: `/board/like/${bId}`,
-  }).then((res) => {
-    if (res) {
-      document.location.href = `/board/detail/${bId}`;
-    }
   });
 };
