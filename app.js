@@ -1,9 +1,11 @@
 const express = require('express');
 const session = require('express-session');
 const app = express();
-const PORT = 8000;
 const { sequelize } = require('./models');
 const { swaggerUi, swaggerSpec } = require('./swagger');
+const dotenv = require('dotenv');
+dotenv.config();
+const { PORT, SESSION_KEY } = process.env; // env 폴더에 정의한 걸 구조분해
 
 // ejs
 app.set('view engine', 'ejs');
@@ -16,7 +18,7 @@ app.use(express.json());
 // 세션
 app.use(
   session({
-    secret: 'MySessionSecretKey',
+    secret: SESSION_KEY,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -57,7 +59,6 @@ app.get('*', (req, res) => {
   res.render('404.ejs');
 });
 
-// force: false; 실제 데이터베이스에 테이블이 존재하지 않으면 모델에 정의한대로 생성
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => {
     console.log(`server open on port ${PORT}`);
