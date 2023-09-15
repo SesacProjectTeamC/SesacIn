@@ -12,12 +12,15 @@ router.get('/profile', Cprofile.getUser);
 router.get('/editprofile', Cprofile.getUserInfo);
 
 // 사용자 회원가입 처리
+// /users
 router.post('/', Cuser.postUser);
 
-// 회원 정보 수정
+// 회원 정보 수정 처리
+// /users/editprofile
 router.patch('/editprofile', Cprofile.patchUser);
 
-// 회원 탈퇴시 정보 삭제
+// 회원 탈퇴 처리
+// /users/deleteprofile
 router.delete('/deleteprofile', Cprofile.deleteUser);
 
 module.exports = router;
