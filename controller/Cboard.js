@@ -347,7 +347,7 @@ const hasChanged = (before, after) =>
 // 게시글 삭제 처리
 exports.deleteBoard = async (req, res) => {
   // 테스트를 위해 로그인 된것으로 처리
-  req.session.user = 'tgkim';
+  // req.session.user = 'tgkim';
 
   if (!req.session.user) {
     // 로그인 상태가 아니면 홈으로 리다이렉트
