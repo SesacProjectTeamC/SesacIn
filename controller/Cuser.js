@@ -94,6 +94,20 @@ exports.postUser = async (req, res) => {
     //   });
     // }
 
+    // 중복 검사 (uId, uNname)
+    const uIdIsDuplicate = await User.count({ where: { uId } });
+    const uNameIsDuplicate = await User.count({ where: { uName } });
+
+    if (uIdIsDuplicate || uNameIsDuplicate) {
+      res.status(409).send({
+        OK: false,
+        uIdIsDuplicate,
+        uNameIsDuplicate,
+        msg: 'uId 또는 uNname 가 이미 존재합니다.',
+      });
+      return;
+    }
+
     // db에 넣기전 pw 암호화
     pw = hashPassword(pw);
 
@@ -105,7 +119,7 @@ exports.postUser = async (req, res) => {
       isSesac: isSesac,
       campus: campus,
     });
-    res.send(newUser);
+    res.status(200).send(newUser);
   } catch (err) {
     // 기타 데이터베이스 오류
     console.log(err);
