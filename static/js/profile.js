@@ -1,26 +1,12 @@
+const { likeQuestion } = require("../../controller/Cquestion");
+
 function change(type) {
   const content = document.getElementById("content");
-  const options = document.querySelectorAll(".option");
-  const answeredButton = document.querySelector(".answered");
 
-  // Reset content area first
+  //처음에 초기화
   content.innerHTML = "";
 
-  if (type === "qna") {
-    showOptions(options);
-    // 이 부분은 수정해야 합니다. 아래와 같이 변경합니다.
-    displayPosts("liked");
-  } else if (type === "free") {
-    showOptions(options);
-    answeredButton.classList.add("hidden");
-    displayPosts("writed");
-  } else {
-    fetchData(type);
-  }
-}
-
-function showOptions(options) {
-  options.forEach((option) => option.classList.remove("hidden"));
+  fetchData(type);
 }
 
 function fetchData(type) {
@@ -29,6 +15,7 @@ function fetchData(type) {
   axios
     .get(url)
     .then((response) => {
+      //div태그로 렌더
       renderContent(type, response.data);
     })
     .catch((error) => {
@@ -40,44 +27,68 @@ function renderContent(type, data) {
   const content = document.getElementById("content");
   if (Array.isArray(data)) {
     let divContent = [
-      `<h2>${type + type.slice(1)} 게시판</h2>`,
+      //여기서 보여줄 거 : 제목, 내용 한줄
+      `<h2> ${type.likeQuestionData} </h2>`,
     ];
     data.forEach((item) => {
-      divContent += freeboardcard(item, item.cDate); // 예제로 cDate를 item에서 가져왔습니다.
+      divContent += change(item, item.type); 
     });
+    console.log(divContent);
     content.innerHTML = divContent;
   } else {
     console.error("데이터 형식이 배열이 아닙니다:", data);
   }
 }
 
-function likeQuestionData(type,data) {
+function qnaPost (type, data){
   const content = document.getElementById("content");
   let posts = [];
 
-  // 이 부분은 AJAX 요청을 사용하여 데이터를 서버에서 불러온 후 처리해야 합니다.
-  // 아래는 간단한 예시입니다.
-  likeAnswerData(type, data);
-  postData(type, data);
-  likeAnswerData(type, data);
-  likeAnswerData(type, data);
-  likeAnswerData(type, data);
+  let divContent = [
+    `<h2> ${type.likeQuestionData} </h2>`,
+  ];
+  data.forEach((item) => {
+    divContent += change(item, item.type); // 예제로 cDate를 item에서 가져왔습니다.
+  });
+  divContent.push(posts);
+  console.log(posts);
+  content.innerHTML = divContent;
+}else {
+  console.error("데이터 형식이 배열이 아닙니다:", data);
 }
 
+function freeboardPost(type, data){
 
-function likeAnswerData(type, data){
-  const like
-}
+  let divContent = [
+    `<h2> ${type.likeQuestionData} </h2>`,
+    `<h2> ${type.answerData.slice(5)} </h2>`,
 
-function postData(type,data){
-
-}
-
-function answerData(type,data){
+  ];
 
 }
+function likePost(type,data) {
+  const content = document.getElementById("content");
+  let posts = [];
+  console.log(likeQuestion.likeQuestionData[0]);
 
-function commentData(type,data){
+  axios({
+    method: 'POST',
+    url: '/question/create',
+    data: { title: title.value, content: content.value, qType: type },
+  }).then((res) => {
+    console.log('sdsd');
+  });
+}
+
+function commentedPost(type, data){
+  const content = document.getElementById("content");
+  let posts = [];
+
+}
+
+function answeredPost(type, data){
+  const content = document.getElementById("content");
+  let posts = [];
 
 }
 
