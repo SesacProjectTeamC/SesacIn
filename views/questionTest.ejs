@@ -11,9 +11,24 @@
   <body>
     <h1>질문 상세 페이지</h1>
     <h3>질문</h3>
-    <button onclick="qLikeHandler('<%= data.qId %>')" id="qLike">
-      좋아요 👍🏻
+
+    <% if (!qResult) { %>
+    <button
+      style="background-color: lightgray; border: none"
+      onclick="qLikeHandler('<%= data.qId %>')"
+      id="qLike"
+    >
+      좋아요
     </button>
+    <% } else if (qResult) { %>
+    <button
+      style="background-color: pink; border: none"
+      onclick="qLikeHandler('<%= data.qId %>')"
+      id="qLike"
+    >
+      좋아요
+    </button>
+    <% } %>
 
     <div>질문 좋아요 개수 <%= data.likeCount %></div>
     <div>조회수 <%= data.viewCount %></div>
@@ -37,12 +52,28 @@
     <% for(let i = 0; i < answerData.length; i++) { %>
 
     <h4>답변 <%= i+1 %></h4>
+
+    <!-- 답변 수정 -->
+
+    <% if (!aResult) { %>
     <button
+      style="background-color: lightgray; border: none"
+      onclick="aLikeHandler('<%= data.qId %>', '<%= answerData[i].aId %>')"
+      id="qLike"
+    >
+      좋아요
+    </button>
+
+    <% } else if (aResult) { %>
+    <button
+      style="background-color: sandybrown; border: none"
       onclick="aLikeHandler('<%= data.qId %>', '<%= answerData[i].aId %>')"
       id="aLike"
     >
-      좋아요 👍🏻
+      좋아요
     </button>
+    <% } %>
+
     <div>
       답변 <%= answerData[i].aId %> 좋아요 개수 <%= answerData[i].likeCount %>
     </div>

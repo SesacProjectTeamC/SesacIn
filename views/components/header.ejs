@@ -26,21 +26,21 @@
     <a href="/login">로그인</a>
     <a href="/join">회원가입</a>
     <!-- profileTest용 링크입니다 -->
-    <!-- <a href="/myPage">마이페이지</a> -->
+    <a href="/myPage" style="color: lightgray">마이페이지</a>
     <% } %>
   </div>
   <script>
     function logout() {
       axios({
-        method: "POST",
-        url: "/logout",
+        method: 'POST',
+        url: '/logout',
       })
         .then((res) => {
-          console.log("로그아웃 요청 성공");
+          console.log('로그아웃 요청 성공');
           window.location.reload();
         })
         .catch((err) => {
-          console.log("로그인 요청 실패", err);
+          console.log('로그인 요청 실패', err);
         });
     }
   </script>
