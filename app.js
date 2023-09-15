@@ -1,29 +1,11 @@
 const express = require("express");
 const session = require("express-session");
 const app = express();
-const PORT = 8000;
-const {sequelize} = require("./models");
-
-// Swagger
-const swaggerJsdoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
-
-// Swagger 정의 옵션 설정
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0", // 또는 '2.0' 사용 가능
-    info: {
-      title: "API 문서",
-      version: "1.0.0",
-      description: "API 문서를 위한 Swagger",
-    },
-  },
-  // API 파일 경로 설정 (자신의 애플리케이션 경로에 맞게 설정)
-  apis: ["./routes/*.js"], // 예시: './routes/*.js'
-};
-const swaggerSpec = swaggerJsdoc(swaggerOptions);
-
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+const { sequelize } = require('./models');
+const { swaggerUi, swaggerSpec } = require('./swagger');
+const dotenv = require('dotenv');
+dotenv.config();
+const { PORT, SESSION_KEY } = process.env; // env 폴더에 정의한 걸 구조분해
 
 // ejs
 app.set("view engine", "ejs");
@@ -36,7 +18,7 @@ app.use(express.json());
 // 세션
 app.use(
   session({
-    secret: "MySessionSecretKey",
+    secret: SESSION_KEY,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -47,15 +29,20 @@ app.use(
 );
 
 // routers
-const indexRouter = require("./routes/index");
-const questionRouter = require("./routes/questionRouter");
-const boardRouter = require("./routes/boardRouter");
-// const profileRouter = require('./routes/profileRouter');
-const usersRouter = require("./routes/usersRouter");
+const indexRouter = require('./routes/index');
+const questionRouter = require('./routes/questionRouter');
+const boardRouter = require('./routes/boardRouter');
+const usersRouter = require('./routes/usersRouter');
+const uploadRouter = require('./routes/uploadRouter'); // uploadRouter 불러오기
 
-// indexRouter 로 이동
-// 메인페이지, 유저 관련
-app.use("/", indexRouter);
+// swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// 파일 업로드 라우터 사용
+app.use('/upload', uploadRouter);
+
+// users 라우터로 이동 // 마이페이지, 회원 관련
+app.use('/users', usersRouter);
 
 // question 라우터로 이동
 app.use("/question", questionRouter);
@@ -63,8 +50,8 @@ app.use("/question", questionRouter);
 // board 라우터로 이동
 app.use("/board", boardRouter);
 
-// users 라우터로 이동 // 마이페이지, 회원 관련
-app.use("/users", usersRouter);
+// indexRouter 로 이동 // 메인페이지, 유저 관련
+app.use('/', indexRouter);
 
 // test
 app.get("/check", (req, res) => {
@@ -76,8 +63,7 @@ app.get("*", (req, res) => {
   res.render("404.ejs");
 });
 
-// force: false; 실제 데이터베이스에 테이블이 존재하지 않으면 모델에 정의한대로 생성
-sequelize.sync({force: false}).then(() => {
+sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => {
     console.log(`server open on port ${PORT}`);
   });
