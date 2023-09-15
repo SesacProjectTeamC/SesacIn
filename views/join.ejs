@@ -23,39 +23,60 @@
     <header>
       <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
       <div>
-    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goToLogin()">
-      <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
-      <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-    </svg>
-    </div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goTohome()">
+        <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
+        <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+      </svg>
+      </div>
     </header>
   <main>
     <!-- 회원가입 form -->
     <form name="form_register" onsubmit="return register();">
-        <h1>회원가입</h1>
+    <h2>회원가입</h2>
     <div class="input-group mb-3">
         <span class="input-group-text" id="basic-addon1">아이디</span>
-        <input type="text" class="form-control"  id="uId" name="uId" pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,12}$" title="ID는 영문과 숫자의 조합으로 6자 이상 12자 이하로 구성되어야 합니다." required>
-        <button type="button" class="btn btn-primary" onclick="checkDuplicate('uId')">중복확인</button>
-      </div>
+        <input type="text" class="form-control"  id="uId" name="uId" 
+          pattern="^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,12}$" 
+          title="ID는 영문으로 6자 이상 12자 이하로 구성되어야 합니다." required oninput="checkIdFormat()">
+        <button type="button" class="btn btn-primary" id="duplicateCheckButtonId" onclick="checkDuplicate('uId')" disabled>중복확인</button>
+    </div>
+    <div id="idErrorMessage" class="alert alert-danger" style="display: none;"></div>
+    <div id="idDuplicateMessage" class="alert alert-info" style="display: none;"></div>
     <div class="input-group mb-3">
         <span class="input-group-text" id="basic-addon1">비밀번호</span>
-        <input type="password" class="form-control" id="pw" name="pw" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required>
-      </div>
+        <input type="password" class="form-control" id="pw" name="pw" 
+        pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" 
+        title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required oninput="checkPwFormat()">
+    </div>
+    <div id="pwErrorMessage" class="alert alert-danger" style="display: none;"></div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">비밀번호 재확인</span>
+      <input type="password" class="form-control" id="pwCheck" name="pwCheck" 
+      pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$"  required>
+      <br>
+    </div>
+    <div id="pwCheckErrorMessage" class="alert alert-danger" style="display: none;"></div>
     <div class="input-group mb-3">
         <span class="input-group-text" id="basic-addon1">닉네임</span>
-        <input type="text" class="form-control" id="uName" name="uName" pattern="^[a-zA-Z0-9가-힣]{2,12}$" title="닉네임은 한글, 영문, 숫자로 2자 이상 12자 이하로 구성되어야 합니다."required>
-        <button type="button" class="btn btn-primary" onclick="checkDuplicate('uName')">중복확인</button>
+        <input type="text" class="form-control" id="uName" name="uName" pattern="^[a-zA-Z0-9가-힣]{2,12}$" title="닉네임은 한글, 영문, 숫자로 2자 이상 12자 이하로 구성되어야 합니다." required oninput="checkNameFormat()">
+        <button type="button" class="btn btn-primary"  id="duplicateCheckButtonName" onclick="checkDuplicate('uName')" disabled>중복확인</button>
     </div>
-      
+    <div id="nameErrorMessage" class="alert alert-danger" style="display: none;"></div>
+    <div id="nameDuplicateMessage" class="alert alert-info" style="display: none;"></div>
     <div class="input-group mb-3">
-      <input type="text" class="form-control" name="email" aria-describedby="basic-addon2" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" title="올바른 이메일 형식을 입력해주세요." required>
+      <input type="text" class="form-control" name="email" id="email" aria-describedby="basic-addon2" 
+        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" 
+        title="올바른 이메일 형식을 입력해주세요." required oninput="checkEmailFormat()">
       <span class="input-group-text" id="basic-addon2">@example.com</span>
+      <!-- <select class="form-select" id="emailDropdown" name="emailDropdown" onchange="updateEmail()">
+        <option value="" selected>직접 입력</option>
+        <option value="@naver.com">@naver.com</option>
+        <option value="">@gmail.com</option> -->
+      </select>
     </div>
-      
+    <div id="emailErrorMessage" class="alert alert-danger" style="display: none;"></div>
 
-      <!-- 새싹 크루인지 확인 -->
-
+    <!-- 새싹 크루인지 확인 -->
     <div class="input-group-text" id="basic-addon2">새싹 크루입니까?</div>
     <div class="form-check-inline">
       <input class="form-check-input" type="radio" name="isSesac" id="gridRadios1" value="true" checked required>
@@ -147,16 +168,107 @@
       } else {
         onYesSelected();
       }
+      // ID 중복 확인 버튼 활성화/비활성화 함수
+      function toggleDuplicateCheckButtonId(disabled) {
+        const duplicateCheckButtonId = document.getElementById("duplicateCheckButtonId");
+        duplicateCheckButtonId.disabled = disabled;
+      }
+      // 닉네임 중복 확인 버튼 활성화/비활성화 함수
+      function toggleDuplicateCheckButtonName(disabled) {
+        const duplicateCheckButtonName = document.getElementById("duplicateCheckButtonName");
+        duplicateCheckButtonName.disabled = disabled;
+      }
+      // 아이디 필드 포커스가 벗어났을 때 
+      function checkIdFormat() {
+          const idInput = document.getElementById("uId");
+          const idErrorMessage = document.getElementById("idErrorMessage");
+
+          if (!idInput.validity.valid) {
+              // 형식이 올바르지 않은 경우 알림을 표시
+              const errorMessage = "ID는 영문으로 6자 이상 12자 이하로 구성되어야 합니다.";
+              idErrorMessage.textContent = errorMessage;
+              idErrorMessage.style.display = "block";
+              toggleDuplicateCheckButtonId(true); // 버튼 비활성화
+          } else {
+              // 형식이 올바른 경우 알림을 숨김
+              idErrorMessage.style.display = "none";
+              toggleDuplicateCheckButtonId(false); // 버튼 활성화
+          }
+      }
+      // pw 필드 포커스가 벗어났을 때 
+      function checkPwFormat() {
+          const pwInput = document.getElementById("pw");
+          const pwErrorMessage = document.getElementById("pwErrorMessage");
+
+          if (!pwInput.validity.valid) {
+              // 형식이 올바르지 않은 경우 알림을 표시
+              const errorMessage = "비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다.";
+              pwErrorMessage.textContent = errorMessage;
+              pwErrorMessage.style.display = "block";
+          } else {
+              // 형식이 올바른 경우 알림을 숨김
+              pwErrorMessage.style.display = "none";
+          }
+      }
+      // 닉네임 필드 포커스가 벗어났을 때 
+      function checkNameFormat() {
+          const nameInput = document.getElementById("uName");
+          const nameErrorMessage = document.getElementById("nameErrorMessage");
+
+          if (!nameInput.validity.valid) {
+              // 형식이 올바르지 않은 경우 알림을 표시
+              const errorMessage = "닉네임은 한글, 영문, 숫자로 2자 이상 12자 이하로 구성되어야 합니다.";
+              nameErrorMessage.textContent = errorMessage;
+              nameErrorMessage.style.display = "block";
+              toggleDuplicateCheckButtonName(true); // 버튼 비활성화
+
+          } else {
+              // 형식이 올바른 경우 알림을 숨김
+              nameErrorMessage.style.display = "none";
+              toggleDuplicateCheckButtonName(false); // 버튼 활성화
+
+          }
+      }
+      // 이메일 필드 포커스가 벗어났을 때 
+      function checkEmailFormat() {
+          const emailInput = document.getElementById("email");
+          const emailErrorMessage = document.getElementById("emailErrorMessage");
+
+          if (!emailInput.validity.valid) {
+              // 형식이 올바르지 않은 경우 알림을 표시
+              const errorMessage = "올바른 이메일 형식을 입력해주세요.";
+              emailErrorMessage.textContent = errorMessage;
+              emailErrorMessage.style.display = "block";
+          } else {
+              // 형식이 올바른 경우 알림을 숨김
+              emailErrorMessage.style.display = "none";
+          }
+      }
+
+      // 비밀번호 일치 여부
+      const pwInput = document.getElementById("pw");
+      const pwCheckInput = document.getElementById("pwCheck");
+      const pwCheckErrorMessage = document.getElementById("pwCheckErrorMessage");
+      
+      function checkPasswordMatch() {
+        
+
+          if (pwInput.value !== pwCheckInput.value) {
+              // 비밀번호가 일치하지 않는 경우 에러 메시지를 표시합니다.
+              pwCheckErrorMessage.textContent = "비밀번호가 일치하지 않습니다.";
+              pwCheckErrorMessage.style.display = "block";
+          } else {
+              // 비밀번호가 일치하는 경우 에러 메시지를 숨깁니다.
+              pwCheckErrorMessage.style.display = "none";
+          }
+      }
+      pwCheckInput.addEventListener("input", checkPasswordMatch);
 
       // 중복 확인
       function checkDuplicate(field) {
         const value = document.getElementById(field).value;
+        hideAllDuplicateMessages();
 
-        // 필드가 비어 있는지 확인
-        if (!value) {
-            setModalTextAndShow(`${field === 'uId' ? '아이디' : '닉네임'}를 입력하세요.`);
-            return;
-        }
 
         fetch(`/checkDuplicate?field=${field}&value=${value}`, {
           method: 'GET', 
@@ -169,16 +281,38 @@
               } else {
                   message = `해당 ${field === 'uId' ? '아이디는' : '닉네임은'} 사용 가능합니다.`;
               }
-
-              setModalTextAndShow(message);
+              setDuplicateMessage(field, message);
           })
           .catch((error) => {
             console.error('중복 확인 요청 중 오류 발생:', error);
           });
       }
+      // // 중복 메시지 표시
+      function setDuplicateMessage(field, message) {
+        const duplicateMessage = document.getElementById(`${field === 'uId' ? 'id' : 'name'}DuplicateMessage`);
+        duplicateMessage.textContent = message;
+        duplicateMessage.style.display = "block";
+      }
+      // 중복 확인 필드 목록
+      const fields = ['uId', 'uName'];
+
+      // 다른 데 클릭하면 중복 확인 메시지를 없앰
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!fields.includes(target.id)) {
+          hideAllDuplicateMessages();
+        }
+      });
+      // 중복 확인 메시지를 숨기는 함수
+      function hideAllDuplicateMessages() {
+        for (const field of fields) {
+          const duplicateMessage = document.getElementById(`${field === 'uId' ? 'id' : 'name'}DuplicateMessage`);
+          duplicateMessage.style.display = "none";
+        }
+      }
 
 
-      // validateInput에 대한 유효성 검사
+      // 회원가입 요청
       function register() {
           const form_register = document.forms['form_register'];
 
@@ -195,6 +329,7 @@
             $('#cautionModal').modal('show');
             return false; 
           } else {
+
               axios({
               method: 'post',
               url: '/users',
@@ -241,10 +376,10 @@
   // window.location.href = '/login';
   // }
 
-  //뒤로가기 버튼 클릭시 사용자가 전에 머물렀던 창으로 돌아감
-  function goToLogin() {
-    window.history.back();
-  }
+  //뒤로가기 버튼 클릭시 홈으로 이동
+  function goTohome() {
+      window.location.href = '/';
+    }
   </script>
 </body>
 
