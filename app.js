@@ -35,14 +35,14 @@ const boardRouter = require('./routes/boardRouter');
 const usersRouter = require('./routes/usersRouter');
 const uploadRouter = require('./routes/uploadRouter'); // uploadRouter 불러오기
 
+// users 라우터로 이동 // 마이페이지, 회원 관련
+app.use('/users', usersRouter);
+
 // swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // 파일 업로드 라우터 사용
 app.use('/upload', uploadRouter);
-
-// users 라우터로 이동 // 마이페이지, 회원 관련
-app.use('/users', usersRouter);
 
 // question 라우터로 이동
 app.use('/question', questionRouter);
