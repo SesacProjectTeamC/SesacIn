@@ -20,7 +20,23 @@
             <%= boardData.uId %>
           </div>
           |
-          <div class="viewImg">
+          
+          <% if(boardData.likeCount) { %>
+
+            <div class="viewImg" onclick="bLikeHandler()">
+              <img
+                src="../../static/svg/heart.svg"
+                alt="좋아요수"
+                width="24px"
+                class="svg"
+              />
+              좋아요 눌렀습니다.
+              <%= boardData.likeCount%>
+            </div>
+
+          <% } else { %>
+
+          <div class="viewImg" onclick="bLikeHandler()">
             <img
               src="../../static/svg/heart.svg"
               alt="좋아요수"
@@ -29,6 +45,9 @@
             />
             <%= boardData.likeCount%>
           </div>
+
+          <% } %>
+
           <div class="viewImg">
             <img
               src="../../static/svg/eye.svg"

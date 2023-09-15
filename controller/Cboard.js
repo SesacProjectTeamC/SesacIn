@@ -105,6 +105,8 @@ const getBoard = async (bId) => {
     const board = await Board.findOne({
       where: { bId: bId },
     });
+
+    // 좋아요 누르기
     return board;
   } catch (error) {
     console.error(error);
