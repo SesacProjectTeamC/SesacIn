@@ -60,6 +60,8 @@ const changePagination = (res, page) => {
 const freeboardcard = (data, cDate) => {
   const result = [
     `<a href="/board/detail/${data.bId}">`,
+    // `<button onclick="moveToDetailBoard('<%= data.bId %>')">`,
+    // [ BE ] 변경 부탁드립니다 !
     `<div id="cardContainer">`,
     `<type> 자유 | ${cDate} </type>`,
     '<div class="ques  boards">자유.',
@@ -81,7 +83,7 @@ const freeboardcard = (data, cDate) => {
     '</div>',
     '</user>',
     '</div>',
-    '</a>',
+    '<a>',
   ].join('');
   return result;
 };
@@ -165,6 +167,20 @@ const moveToDetailQuestion = (qId) => {
     .then((res) => {
       if (res) {
         document.location.href = `/question/${qId}`;
+      }
+    })
+    .catch((err) => console.log(err));
+};
+
+// 2) 자유 게시판
+const moveToDetailBoard = (bId) => {
+  axios({
+    method: 'PATCH',
+    url: `/board/view/${bId}`,
+  })
+    .then((res) => {
+      if (res) {
+        document.location.href = `/board/detail/${bId}`;
       }
     })
     .catch((err) => console.log(err));
