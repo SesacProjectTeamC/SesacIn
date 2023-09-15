@@ -1,4 +1,9 @@
-<a href="/question/<%= data.qId%>">
+<!-- 
+  BE 테스트용 메인 페이지에 렌더링되는 Question Card 입니다. 
+  추후 삭제하시면 됩니다. 
+-->
+
+<button onclick="moveToDetailQuestion('<%= data.qId %>')">
   <div id="cardContainer">
     <div class="ques">
       Q.
@@ -40,4 +45,4 @@
       </div>
     </user>
   </div>
-</a>
+</button>
