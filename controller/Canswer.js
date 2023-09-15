@@ -1,12 +1,12 @@
-const { Question, Answer, uLike } = require("../models");
+const { Question, Answer, uLike, Comment } = require('../models');
 // 답변 목록 가져오기
 exports.getAnswers = async (req, res) => {
   try {
     const answers = await Answer.findAll();
-    res.render("questionTest", { answerData: answers });
+    res.render('questionTest', { answerData: answers });
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -15,10 +15,10 @@ exports.getCreateAnswer = async (req, res) => {
   try {
     const { qId } = req.params;
 
-    res.render("answerCreateTest", { data: qId });
+    res.render('answerCreateTest', { data: qId });
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -29,7 +29,7 @@ exports.postAnswer = async (req, res) => {
     req.session.user = 1;
 
     if (!req.session.user) {
-      res.redirect("/");
+      res.redirect('/');
     }
     let loginUser = req.session.user;
 
@@ -60,7 +60,7 @@ exports.postAnswer = async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -73,10 +73,10 @@ exports.getEditAnswer = async (req, res) => {
       where: { aId },
     });
 
-    res.render("answerEditTest", { data: qId, answerData: answer });
+    res.render('answerEditTest', { data: qId, answerData: answer });
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -91,11 +91,11 @@ exports.patchAnswer = async (req, res) => {
       { title, content },
       {
         where: { aId },
-      },
+      }
     );
 
     if (updatedAnswer) {
-      return res.render("questionTest", {
+      return res.render('questionTest', {
         data: question,
         answerData: updatedAnswer,
         commentData: null,
@@ -103,11 +103,11 @@ exports.patchAnswer = async (req, res) => {
         aResult: null,
       });
     } else {
-      return res.render("questionTest", { result: false });
+      return res.render('questionTest', { result: false });
     }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -123,10 +123,10 @@ exports.deleteAnswer = async (req, res) => {
     const question = await Question.findOne({ where: { qId } });
     const answers = await Answer.findAll();
 
-    console.log("isDeleted >>>", isDeleted); // 성공 시 1, 실패 시 0
+    console.log('isDeleted >>>', isDeleted); // 성공 시 1, 실패 시 0
 
     if (isDeleted) {
-      return res.render("questionTest", {
+      return res.render('questionTest', {
         result: true,
         data: question,
         answerData: answers,
@@ -137,7 +137,7 @@ exports.deleteAnswer = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -155,6 +155,8 @@ exports.likeAnswer = async (req, res) => {
     });
 
     const resultLike = !!uLikeFind; // uLikeFind가 존재하면 true, 아니면 false
+
+    console.log('답변 좋아요!!!!!!', resultLike);
 
     const getAnswer = await Answer.findOne({
       where: {
@@ -174,14 +176,14 @@ exports.likeAnswer = async (req, res) => {
       // (2) 답변 likeCount 업데이트
       const updatedLike = await Answer.update(
         { likeCount: getAnswer.likeCount + 1 },
-        { where: { aId } },
+        { where: { aId } }
       );
 
       const question = await Question.findOne({ where: { qId } });
 
       const comments = await Comment.findAll({ where: { qId } });
 
-      res.render("questionTest", {
+      res.render('questionTest', {
         data: question,
         answerData: updatedLike,
         commentData: comments,
@@ -202,13 +204,13 @@ exports.likeAnswer = async (req, res) => {
       // (2) 답변 likeCount 업데이트
       const updatedLike = await Answer.update(
         { likeCount: getAnswer.likeCount - 1 },
-        { where: { aId } },
+        { where: { aId } }
       );
 
       const question = await Question.findOne({ where: { qId } });
       const comments = await Comment.findAll({ where: { qId } });
 
-      res.render("questionTest", {
+      res.render('questionTest', {
         data: question,
         answerData: updatedLike,
         commentData: comments,
@@ -218,6 +220,6 @@ exports.likeAnswer = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };

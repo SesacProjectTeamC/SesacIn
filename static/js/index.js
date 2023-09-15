@@ -157,6 +157,17 @@ const moveToMakePost = () => {
 
 //=== 0. 버튼 클릭 시 url 이동 ===
 // 1) 질문
+const moveToDetailQuestion = (qId) => {
+  axios({
+    method: 'PATCH',
+    url: `/question/${qId}/view`,
+  }).then((res) => {
+    if (res) {
+      document.location.href = `/question/${qId}`;
+    }
+  });
+};
+
 const moveToCreateQuestion = () => {
   window.location.href = '/question/create';
 };
@@ -326,7 +337,7 @@ const deleteAnswer = (qId, aId) => {
 const aLikeHandler = (qId, aId) => {
   axios({
     method: 'PATCH',
-    url: `/question/${qId}/${aId}`,
+    url: `/question/${qId}/like/${aId}`,
     data: { aId },
   }).then((res) => {
     if (res) {
@@ -394,5 +405,18 @@ const deleteComment = (qId, aId, cId) => {
       alert('삭제되었습니다');
     }
     window.location.href = `/question/${qId}`;
+  });
+};
+
+//=== Board ===
+// 좋아요
+const bLikeHandler = (bId) => {
+  axios({
+    method: 'PATCH',
+    url: `/board/like/${bId}`,
+  }).then((res) => {
+    if (res) {
+      document.location.href = `/board/detail/${bId}`;
+    }
   });
 };

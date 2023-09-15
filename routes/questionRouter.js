@@ -14,8 +14,11 @@ router.get('/:qId', Cquestion.getQuestion);
 // 특정 질문 좋아요
 router.patch('/:qId', Cquestion.likeQuestion);
 
+// 조회수
+router.patch('/:qId/view', Cquestion.viewQuestion);
+
 // 특정 답변 좋아요
-router.patch('/:qId/:aId', Canswer.likeAnswer);
+router.patch('/:qId/like/:aId', Canswer.likeAnswer);
 
 //==== Question ====
 
