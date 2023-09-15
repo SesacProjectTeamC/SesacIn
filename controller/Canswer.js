@@ -1,5 +1,6 @@
 const { Question, Answer, uLike, Comment } = require('../models');
-// 답변 목록 가져오기
+
+//=== 답변 목록 가져오기 ===
 exports.getAnswers = async (req, res) => {
   try {
     const answers = await Answer.findAll();
@@ -10,7 +11,7 @@ exports.getAnswers = async (req, res) => {
   }
 };
 
-// 답변 등록 GET
+//=== 답변 등록 GET ===
 exports.getCreateAnswer = async (req, res) => {
   try {
     const { qId } = req.params;
@@ -22,7 +23,7 @@ exports.getCreateAnswer = async (req, res) => {
   }
 };
 
-// 답변 등록 POST
+//=== 답변 등록 POST ===
 exports.postAnswer = async (req, res) => {
   try {
     // test login
@@ -36,6 +37,7 @@ exports.postAnswer = async (req, res) => {
     const { qId } = req.params;
 
     const { title, content, uId } = req.body;
+
     const newAnswer = await Answer.create({
       title,
       content,
@@ -43,7 +45,6 @@ exports.postAnswer = async (req, res) => {
       qId: qId,
     });
 
-    // 특정 질문 가져오기
     const question = await Question.findOne({
       where: { qId },
     });
@@ -64,7 +65,7 @@ exports.postAnswer = async (req, res) => {
   }
 };
 
-// 답변 수정 GET
+//=== 답변 수정 GET ===
 exports.getEditAnswer = async (req, res) => {
   try {
     const { qId, aId } = req.params;
@@ -80,11 +81,10 @@ exports.getEditAnswer = async (req, res) => {
   }
 };
 
+//=== 답변 수정 PATCH ===
 exports.patchAnswer = async (req, res) => {
   try {
     const { qId, aId } = req.params;
-
-    const question = await Question.findOne({ where: { qId } });
 
     const { title, content } = req.body;
     const updatedAnswer = await Answer.update(
@@ -94,24 +94,16 @@ exports.patchAnswer = async (req, res) => {
       }
     );
 
-    if (updatedAnswer) {
-      return res.render('questionTest', {
-        data: question,
-        answerData: updatedAnswer,
-        commentData: null,
-        qResult: null,
-        aResult: null,
-      });
-    } else {
-      return res.render('questionTest', { result: false });
-    }
+    res.send({
+      answerData: updatedAnswer,
+    });
   } catch (err) {
     console.log(err);
     res.send('Internet Server Error!!!');
   }
 };
 
-// 답변 삭제하기
+//=== 답변 삭제하기 ===
 exports.deleteAnswer = async (req, res) => {
   try {
     const { qId, aId } = req.params;
@@ -123,10 +115,8 @@ exports.deleteAnswer = async (req, res) => {
     const question = await Question.findOne({ where: { qId } });
     const answers = await Answer.findAll();
 
-    console.log('isDeleted >>>', isDeleted); // 성공 시 1, 실패 시 0
-
     if (isDeleted) {
-      return res.render('questionTest', {
+      return res.send({
         result: true,
         data: question,
         answerData: answers,
@@ -141,7 +131,7 @@ exports.deleteAnswer = async (req, res) => {
   }
 };
 
-// 답변 좋아요
+//=== 답변 좋아요 누르기 ===
 exports.likeAnswer = async (req, res) => {
   try {
     const { qId, aId } = req.params;
@@ -154,7 +144,7 @@ exports.likeAnswer = async (req, res) => {
       },
     });
 
-    const resultLike = !!uLikeFind; // uLikeFind가 존재하면 true, 아니면 false
+    const resultLike = !!uLikeFind;
 
     console.log('답변 좋아요!!!!!!', resultLike);
 
@@ -173,27 +163,20 @@ exports.likeAnswer = async (req, res) => {
         aId,
       });
 
-      // (2) 답변 likeCount 업데이트
+      // (2) 답변 likeCount 업데이트 +1
       const updatedLike = await Answer.update(
         { likeCount: getAnswer.likeCount + 1 },
         { where: { aId } }
       );
 
-      const question = await Question.findOne({ where: { qId } });
-
-      const comments = await Comment.findAll({ where: { qId } });
-
-      res.render('questionTest', {
-        data: question,
+      res.send({
         answerData: updatedLike,
-        commentData: comments,
-        qResult: null,
         aResult: resultLike,
       });
     } else if (uLikeFind) {
       // 2) uLike findOne -> 있으면,
       // (1) 좋아요 -> uLike 해당 aId 삭제함
-      const deleteLike = await uLike.destroy({
+      await uLike.destroy({
         where: {
           aId,
           // uId
@@ -201,20 +184,14 @@ exports.likeAnswer = async (req, res) => {
         },
       });
 
-      // (2) 답변 likeCount 업데이트
+      // (2) 답변 likeCount 업데이트 -1
       const updatedLike = await Answer.update(
         { likeCount: getAnswer.likeCount - 1 },
         { where: { aId } }
       );
 
-      const question = await Question.findOne({ where: { qId } });
-      const comments = await Comment.findAll({ where: { qId } });
-
-      res.render('questionTest', {
-        data: question,
+      res.send({
         answerData: updatedLike,
-        commentData: comments,
-        qResult: null,
         aResult: resultLike,
       });
     }
