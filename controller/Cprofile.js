@@ -316,6 +316,8 @@ exports.deleteUser = async (req, res) => {
 exports.patchProfileImg = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
+
+  // 미구현
 };
 
 // password 해싱 함수. hash된 패스워드를 리턴함
