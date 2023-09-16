@@ -10,18 +10,19 @@ function change(type) {
 }
 
 function change(buttonType) {
-  const contentDiv = document.getElementById('content');
+  const contentDiv = document.getElementById("content");
 
   // 서버에서 데이터 가져오기
-  axios.get('/users/profile')
-      .then(response => {
-          const data = response.data;
+  axios
+    .get(`/users/profile/yes`)
+    .then((response) => {
+      const data = response.data;
 
-          switch (buttonType) {
-              case 'likedQuestion':
-                  let likedQuestionsHtml = '';
-                  for (let question of data.likeQuestionData) {
-                      likedQuestionsHtml += `
+      switch (buttonType) {
+        case "likedQuestion":
+          let likedQuestionsHtml = "";
+          for (let question of data.likeQuestionData) {
+            likedQuestionsHtml += `
                           <div class="question">
                               <h3>${question.title}</h3>
                               <p>질문 유형: ${question.qType}</p>
@@ -32,14 +33,14 @@ function change(buttonType) {
                               <p>수정일: ${question.updatedAt}</p>
                           </div>
                       `;
-                  }
-                  contentDiv.innerHTML = likedQuestionsHtml;
-                  break;
+          }
+          contentDiv.innerHTML = likedQuestionsHtml;
+          break;
 
-              case 'likedAnswer':
-                  let likedAnswersHtml = '';
-                  for (let answer of data.likeAnswerData) {
-                      likedAnswersHtml += `
+        case "likedAnswer":
+          let likedAnswersHtml = "";
+          for (let answer of data.likeAnswerData) {
+            likedAnswersHtml += `
                           <div class="answer">
                               <h3>${answer.title}</h3>
                               <p>${answer.content}</p>
@@ -48,14 +49,14 @@ function change(buttonType) {
                               <p>수정일: ${answer.updatedAt}</p>
                           </div>
                       `;
-                  }
-                  contentDiv.innerHTML = likedAnswersHtml;
-                  break;
+          }
+          contentDiv.innerHTML = likedAnswersHtml;
+          break;
 
-              case 'postedQuestion':
-                  let postedQuestionsHtml = '';
-                  for (let post of data.postData) {
-                      postedQuestionsHtml += `
+        case "postedQuestion":
+          let postedQuestionsHtml = "";
+          for (let post of data.postData) {
+            postedQuestionsHtml += `
                           <div class="postedQuestion">
                               <h3>${post.title}</h3>
                               <p>질문 유형: ${post.qType}</p>
@@ -66,14 +67,14 @@ function change(buttonType) {
                               <p>수정일: ${post.updatedAt}</p>
                           </div>
                       `;
-                  }
-                  contentDiv.innerHTML = postedQuestionsHtml;
-                  break;
+          }
+          contentDiv.innerHTML = postedQuestionsHtml;
+          break;
 
-              case 'postedAnswer':
-                  let postedAnswersHtml = '';
-                  for (let answer of data.answerData) {
-                      postedAnswersHtml += `
+        case "postedAnswer":
+          let postedAnswersHtml = "";
+          for (let answer of data.answerData) {
+            postedAnswersHtml += `
                           <div class="postedAnswer">
                               <h3>${answer.title}</h3>
                               <p>${answer.content}</p>
@@ -82,14 +83,14 @@ function change(buttonType) {
                               <p>수정일: ${answer.updatedAt}</p>
                           </div>
                       `;
-                  }
-                  contentDiv.innerHTML = postedAnswersHtml;
-                  break;
+          }
+          contentDiv.innerHTML = postedAnswersHtml;
+          break;
 
-              case 'commented':
-                  let commentHtml = '';
-                  for (let comment of data.commentData) {
-                      commentHtml += `
+        case "commented":
+          let commentHtml = "";
+          for (let comment of data.commentData) {
+            commentHtml += `
                           <div class="comment">
                               <h3>댓글 ID: ${comment.cId}</h3>
                               <p>질문 ID: ${comment.qId}</p>
@@ -98,20 +99,19 @@ function change(buttonType) {
                               <p>${comment.content}</p>
                           </div>
                       `;
-                  }
-                  contentDiv.innerHTML = commentHtml;
-                  break;
-
-              default:
-                  contentDiv.innerHTML = '선택된 내용이 없습니다.';
           }
-      })
-      .catch(error => {
-          console.error('Error fetching data:', error);
-          contentDiv.innerHTML = '데이터를 가져오는데 오류가 발생했습니다.';
-      });
-}
+          contentDiv.innerHTML = commentHtml;
+          break;
 
+        default:
+          contentDiv.innerHTML = "선택된 내용이 없습니다.";
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      contentDiv.innerHTML = "데이터를 가져오는데 오류가 발생했습니다.";
+    });
+}
 
 // 이벤트 리스너들
 document.querySelector(".liked").addEventListener("click", () => {
@@ -147,7 +147,7 @@ function fileUpload() {
       "Content-Type": "multipart/form-data",
     },
   }).then((res) => {
-    const {data} = res;
+    const { data } = res;
     console.log(data);
     document.querySelector("img").src = "/" + data.path;
   });
