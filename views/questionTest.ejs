@@ -55,16 +55,16 @@
 
     <!-- 답변 수정 -->
 
-    <% if (!aResult) { %>
+    <% if (!aResult[i]) { %>
     <button
       style="background-color: lightgray; border: none"
       onclick="aLikeHandler('<%= data.qId %>', '<%= answerData[i].aId %>')"
-      id="qLike"
+      id="aLike"
     >
       좋아요
     </button>
 
-    <% } else if (aResult) { %>
+    <% } else if (aResult[i]) { %>
     <button
       style="background-color: sandybrown; border: none"
       onclick="aLikeHandler('<%= data.qId %>', '<%= answerData[i].aId %>')"
