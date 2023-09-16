@@ -1,4 +1,4 @@
-const { Question, Answer, Comment, uLike } = require('../models');
+const { Question, Answer, Comment, uLike, User } = require('../models');
 const moment = require('moment');
 
 //=== 메인페이지,질문 목록 가져오기 ===
@@ -118,35 +118,57 @@ exports.getQuestionsMain = async (req, res) => {
 //=== 질문 목록 가져오기(페이지별) ===
 // /question/list/:page&:pageSize
 exports.paginateQuestion = async (req, res) => {
-  let page = parseInt(req.params.page) || 1;
-  let pageSize = parseInt(req.params.pageSize) || 20;
+  // 세션 확인
+  let isLogin = req.session.user ? true : false;
 
   try {
-    // 전체 Question목록 개수 계산
-    const totalPage = await Question.count();
+    let page = parseInt(req.params.page) || 1;
+    let pageSize = parseInt(req.params.pageSize) || 20;
 
-    // 페이지 수 (올림처리)
-    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+    const questionTotalCount = await Question.count();
+    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
-    // 페이지에 해당하는 Question 데이터 조회
-    const paginatedQuestions = await Question.findAll({
-      //최신글 정렬
-      order: [['createdAt', 'DESC']],
+    // 페이지별 Question 데이터 조회
+    const paginatedQuestion = await Question.findAll({
+      order: [['createdAt', 'DESC']], // 정렬 기준
       limit: pageSize,
       offset: (page - 1) * pageSize,
     });
 
-    // 날짜 데이터 포맷 변경
-    const create = [];
-    for (q of paginatedQuestions) {
-      create.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
+    // Question createdAt 포맷 변경 후 배열에 저장
+    const questionCreateAt = [];
+    for (q of paginatedQuestion) {
+      questionCreateAt.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
     }
-    console.log(paginatedQuestions[0]);
+
+    // Question uNname 배열에 저장
+    const questionUserName = [];
+    for (q of paginatedQuestion) {
+      // User 모델로 uid가지고 uName 가져오기
+      const user = await User.findByPk(q.uId);
+      questionUserName.push(user.uName);
+    }
+
+    // Question Comment 배열에 저장 후 총 갯수 계산
+    const questionCommentCount = [];
+    for (q of paginatedQuestion) {
+      // Comment 모델로 qid가지고 count 세기
+      const count = await Comment.count({
+        where: {
+          qId: q.qId,
+        },
+      });
+      questionCommentCount.push(count);
+    }
+
+    // 데이터 응답
     res.send({
-      questions: paginatedQuestions,
-      pageCount,
-      cDate: create,
-      msg: '페이지별 Question 호출 처리 완료',
+      questionData: paginatedQuestion, // question 데이터(20개씩)
+      questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+      questionUserName, // question 데이터에서 uname을 가져와서
+      questionCommentCount, // question 데이터에서 CommentCount을 가져와서
+      success: true,
+      msg: '페이지별 QnA 질문 호출 처리 완료',
     });
   } catch (error) {
     console.error(error);
