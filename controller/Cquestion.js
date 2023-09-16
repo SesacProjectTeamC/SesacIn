@@ -295,45 +295,39 @@ exports.patchQuestion = async (req, res) => {
 };
 
 //=== 질문 삭제하기 ===
+// /question/:qId/delete
 exports.deleteQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
   try {
-    if (isLogin) {
-      const { qId } = req.params;
+    const { qId } = req.params;
 
-      const isDeleted = await Question.destroy({
-        where: { qId },
-      });
+    const isDeleted = await Question.destroy({
+      where: { qId },
+    });
 
-      console.log('isDeleted >>>', isDeleted); // 성공 시 1, 실패 시 0
-
-      if (isDeleted) {
-        return res.status(200).send({
-          result: true,
-          isLogin,
-          currentUser: req.session.user,
-          success: true,
-        });
-      } else {
-        return res.status(500).send({
-          result: false,
-          isLogin,
-          currentUser: req.session.user,
-          success: false,
-        });
-      }
-    } else {
-      res.status(401).send({
+    // 삭제 실패 처리
+    if (!isDeleted) {
+      res.status(404).send({
+        result: false,
         isLogin,
         currentUser: req.session.user,
-        success: false,
+        msg: '질문 게시글이 삭제되지 않았습니다.',
       });
+      return;
     }
+
+    // 정상 삭제 처리
+    res.redirect('/');
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+
+    res.status(500).send({
+      result: false,
+      isLogin,
+      currentUser: req.session.user,
+    });
   }
 };
 
