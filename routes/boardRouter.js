@@ -3,6 +3,9 @@ const router = express.Router();
 const Cboard = require('../controller/Cboard');
 const { needToLogin } = require('../util/middleware');
 
+// 자유게시판 메인 페이지 렌더링
+router.get('/main', Cboard.getBoardMain);
+
 // 개별 게시글 페이지 렌더링
 // /board/detail/:bId
 router.get('/detail/:bId', Cboard.detailBoard);

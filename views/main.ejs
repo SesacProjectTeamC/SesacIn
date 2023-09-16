@@ -21,22 +21,6 @@
 
     <%- include('./components/carousel')%>
     <div class="container">
-      <!-- <div class="menuContainer">
-        <div style="display: flex">
-          <div class="menu activeM" onclick="changeType(this)">Q&A</div>
-          <div class="menu" onclick="changeType(this);">자유게시판</div>
-        </div>
-      </div> -->
-      <!-- <div style="display: flex; justify-content: flex-end">
-        <button
-          onclick="moveToMakePost()"
-          type="button"
-          class="btn btn-outline-primary"
-        >
-          글쓰기
-        </button>
-      </div> -->
-
       <div class="qnaMenu" style="margin-top: 50px">
         <div style="display: flex; align-items: center">
           🙋‍♂️ Sesac Q&A
@@ -56,10 +40,11 @@
 
       <div class="swiper qnaSwiper">
         <div class="swiper-wrapper">
-          <%for(let i = 0; i < data.length; i++){%>
+          <%for(let i = 0; i < questionData.length; i++){%>
           <div class="swiper-slide">
-            <%-include('./components/questionBoardCard', { data: data[i], cDate:
-            cDate[i] })%>
+            <%-include('./components/questionBoardCard', { data:
+            questionData[i], cDate: questionCreateAt[i], uName:
+            questionUserName[i], commentCount: questionCommentCount[i] })%>
           </div>
           <%}%>
         </div>
@@ -84,37 +69,15 @@
 
       <div class="swiper boardSwiper">
         <div class="swiper-wrapper">
-          <%for(let i = 0; i < data.length; i++){%>
+          <%for(let i = 0; i < boardData.length; i++){%>
           <div class="swiper-slide">
-            <%-include('./components/freeBoardCard', { data: data[i], cDate:
-            cDate[i] })%>
+            <%-include('./components/freeBoardCard', { data: boardData[i],
+            cDate: boardCreateAt[i], uName: boardUserName[i], commentCount:
+            boardCommentCount[i] })%>
           </div>
           <%}%>
         </div>
       </div>
-
-      <!-- <nav
-        aria-label="..."
-        style="display: flex; justify-content: center; margin-top: 20px"
-      >
-        <ul class="pagination">
-          <li id="prev" class="page-item disabled">
-            <a class="page-link" tabindex="-1" onclick="getPageData('prev')"
-              ><</a
-            >
-          </li>
-
-          <%for(let i = 1; i <= (pageCount > 10 ? 10 : pageCount); i++){%>
-          <li class="page-item <%= i === 1 && 'active' %>">
-            <a class="page-link" onclick="getPageData('<%= i%>')"><%= i%></a>
-          </li>
-          <%}%>
-
-          <li id="next" class="page-item <%= pageCount === 1 && 'disabled'%>">
-            <a class="page-link" onclick="getPageData('next')">></a>
-          </li>
-        </ul>
-      </nav> -->
     </div>
 
     <footer>

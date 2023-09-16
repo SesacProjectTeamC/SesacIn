@@ -97,66 +97,61 @@
     }
   </style>
 </head>
-<body>
-  <div class="cHeader">
-    <div class="left-content">
-      <a href="/">
-        <img src="/static/img/logo.png" alt="logo" class="logo" height="45px" />
-      </a>
-    </div>
-    <div class="right-content">
-      <% if (isLogin === true) { %>
-      <a onclick="moveToMakePost()" style="margin-right: 5px; cursor: pointer"
-        >새 글 쓰기</a
-      >
-      <div class="dropdown">
-        <button
-          class="btn btn-light dropdown-toggle"
-          type="button"
-          id="userDropdown"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <img
-            src="/static/img/user.png"
-            alt="사용자 메뉴"
-            class="dropdownImg"
-          />
-          <!-- 화살표 아이콘 -->
-          <i class="fa-solid fa-chevron-up fa-xl"></i>
-        </button>
-        <ul class="dropdown-menu">
-          <li>
-            <a class="dropdown-item" href="#" onclick="logout()">로그아웃</a>
-          </li>
-          <li><a class="dropdown-item" href="/users/profile">마이페이지</a></li>
-          <li>
-            <a class="dropdown-item" href="/users/editprofile">회원정보수정</a>
-          </li>
-        </ul>
-        <% } else { %>
-        <a href="/login">로그인</a>
-        <% } %>
-      </div>
-    </div>
-    <script>
-      function logout() {
-        axios({
-          method: 'POST',
-          url: '/logout',
-        })
-          .then((res) => {
-            console.log('로그아웃 요청 성공');
-            window.location.reload();
-          })
-          .catch((err) => {
-            console.log('로그아웃 요청 실패', err);
-            alert('로그아웃 요청 실패');
-          });
-      }
-      const moveToMakePost = () => {
-        window.location.href = '/board/create';
-      };
-    </script>
+
+<div class="cHeader">
+  <div class="left-content">
+    <a href="/">
+      <img src="/static/img/logo.png" alt="logo" class="logo" height="45px" />
+    </a>
   </div>
-</body>
+  <div class="right-content">
+    <% if (isLogin === true) { %>
+    <a onclick="moveToMakePost()" style="margin-right: 5px; cursor: pointer"
+      >새 글 쓰기</a
+    >
+    <div class="dropdown">
+      <button
+        class="btn btn-light dropdown-toggle"
+        type="button"
+        id="userDropdown"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <img src="/static/img/user.png" alt="사용자 메뉴" class="dropdownImg" />
+        <!-- 화살표 아이콘 -->
+        <i class="fa-solid fa-chevron-up fa-xl"></i>
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <a class="dropdown-item" href="#" onclick="logout()">로그아웃</a>
+        </li>
+        <li><a class="dropdown-item" href="/users/profile">마이페이지</a></li>
+        <li>
+          <a class="dropdown-item" href="/users/editprofile">회원정보수정</a>
+        </li>
+      </ul>
+      <% } else { %>
+      <a href="/login">로그인</a>
+      <% } %>
+    </div>
+  </div>
+  <script>
+    function logout() {
+      axios({
+        method: 'POST',
+        url: '/logout',
+      })
+        .then((res) => {
+          console.log('로그아웃 요청 성공');
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log('로그아웃 요청 실패', err);
+          alert('로그아웃 요청 실패');
+        });
+    }
+    const moveToMakePost = () => {
+      window.location.href = '/board/create';
+    };
+  </script>
+</div>
