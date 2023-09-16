@@ -26,4 +26,9 @@ img {
 .hidden {
     display: none;
   }
-  
+
+form[name=profile]{
+  display:flex;
+  justify-content: center;
+
+}
