@@ -311,6 +311,13 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+// 마이페이지 프로필 이미지 변경 처리
+// /users/profile/img
+exports.patchProfileImg = async (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+};
+
 // password 해싱 함수. hash된 패스워드를 리턴함
 const hashPassword = (password) => {
   let saltRounds = 10;
