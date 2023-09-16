@@ -45,7 +45,7 @@ exports.getUser = async (req, res) => {
       const comments = await Comment.findAll({ where: { uId } });
 
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      res.render('profileTestImg', {
+      res.render('profile', {
         userData: user,
         likeQuestionData: likeQuestion,
         likeAnswerData: likeAnswer,
