@@ -45,7 +45,7 @@ exports.getUser = async (req, res) => {
       const comments = await Comment.findAll({ where: { uId } });
 
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      res.render('profile', {
+      res.render('profileTestImg', {
         userData: user,
         likeQuestionData: likeQuestion,
         likeAnswerData: likeAnswer,
@@ -130,6 +130,22 @@ exports.patchUser = async (req, res) => {
     const userData = { uId: uId };
     let { email, pw, uName } = req.body;
     console.log(req.body);
+
+    const uNameIsDuplicate = await User.count({ where: { uName } });
+
+    if (uNameIsDuplicate) {
+      return res.status(409).json({
+        OK: false,
+        uNameIsDuplicate,
+        msg: '닉네임이 이미 존재합니다.',
+      });
+    }
+    if (!pw) {
+      return res.status(400).json({
+        OK: false,
+        msg: '입력 필드 중 하나 이상이 누락되었습니다.',
+      });
+    }
 
     pw = hashPassword(pw);
 

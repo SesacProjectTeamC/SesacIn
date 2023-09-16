@@ -20,7 +20,7 @@
     <header>
       <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
       <div>
-    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goToLogin()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goBack()">
       <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
       <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
     </svg>
@@ -215,7 +215,6 @@
               setModalTextAndShow('이미 사용중인 닉네임입니다.');
             } else {
               setModalTextAndShow('회원가입 중 오류가 발생했습니다.');
-              window.document.href = '/'
             }
         });
       }
@@ -253,6 +252,10 @@
         form_profile.email.value = '';
         form_profile.pw.value = '';
         form_profile.pw_check.value = '';
+      }
+      //뒤로가기 버튼 클릭시 사용자가 전에 머물던 페이지로 이동
+      function goBack() {
+        window.history.back();
       }
        
       
