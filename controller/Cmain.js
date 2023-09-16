@@ -18,7 +18,7 @@ exports.getMainPage = async (req, res) => {
     const boardTotalCount = await Board.count();
     const boardPageCount = parseInt(Math.ceil(boardTotalCount / pageSize)); // 페이지 수 (올림처리)
 
-    // 페이지별 Question 호출
+    // 페이지별 Question 데이터 조회
     const paginatedQuestion = await Question.findAll({
       order: [['createdAt', 'DESC']], // 정렬 기준
       limit: pageSize,
@@ -26,7 +26,7 @@ exports.getMainPage = async (req, res) => {
     });
 
     // 페이지별 Board 호출
-    const paginatedBoard = await Question.findAll({
+    const paginatedBoard = await Board.findAll({
       order: [['createdAt', 'DESC']], // 정렬 기준
       limit: pageSize,
       offset: (page - 1) * pageSize,
@@ -35,11 +35,11 @@ exports.getMainPage = async (req, res) => {
     // QnA & Board. createdAt 포맷 변경 후 배열에 저장
     const questionCreateAt = [];
     for (q of paginatedQuestion) {
-      questionCreateAt.push(moment(q.createdAt).format('YYYY-MM-DD'));
+      questionCreateAt.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
     }
     const boardCreateAt = [];
     for (b of paginatedBoard) {
-      boardCreateAt.push(moment(q.createdAt).format('YYYY-MM-DD'));
+      boardCreateAt.push(moment(b.dataValues.createdAt).format('YYYY-MM-DD'));
     }
 
     // QnA & Board. uNname 배열에 저장
@@ -72,7 +72,7 @@ exports.getMainPage = async (req, res) => {
       // Comment 모델로 bid가지고 count 세기
       const count = await Comment.count({
         where: {
-          bId: b.qId,
+          bId: b.bId,
         },
       });
       boardCommentCount.push(count);
@@ -90,6 +90,7 @@ exports.getMainPage = async (req, res) => {
       boardCommentCount, // Board 데이터에서 CommentCount을 가져와서
       isLogin,
       currentUserId,
+      success: true,
     });
   } catch (err) {
     console.log(err);

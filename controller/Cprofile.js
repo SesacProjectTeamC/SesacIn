@@ -4,9 +4,9 @@
 // 3. 수정 버튼 -> 회원정보 PATCH, DELETE
 
 //////////////////////////////////////////////
-const { User, Question, Answer, Comment, Board, uLike } = require("../models");
-const { Op } = require("sequelize");
-const bcrypt = require("bcrypt");
+const { User, Question, Answer, Comment, Board, uLike } = require('../models');
+const { Op } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 exports.getUser = async (req, res) => {
   // 세션 검사
@@ -45,7 +45,7 @@ exports.getUser = async (req, res) => {
       const comments = await Comment.findAll({ where: { uId } });
 
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      res.render("profileTestImg", {
+      res.render('profile', {
         userData: user,
         likeQuestionData: likeQuestion,
         likeAnswerData: likeAnswer,
@@ -55,7 +55,7 @@ exports.getUser = async (req, res) => {
         isLogin,
         currentUser: req.session.user,
         success: true,
-        msg: "마이페이지 렌더링 정상 처리",
+        msg: '마이페이지 렌더링 정상 처리',
       });
     } else {
       // 로그인 되어있지 않은 상태에서의 요청시
@@ -65,7 +65,7 @@ exports.getUser = async (req, res) => {
       //   success: false,
       //   mgs: '로그인 정보 다름. 권한 없음.',
       // });
-      res.redirect("/");
+      res.redirect('/');
     }
   } catch (err) {
     console.log(err);
@@ -73,7 +73,7 @@ exports.getUser = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "마이페이지 렌더링 중 서버에러 발생",
+      msg: '마이페이지 렌더링 중 서버에러 발생',
     });
   }
 };
@@ -91,7 +91,7 @@ exports.getUserInfo = (req, res) => {
       };
 
       // ********** 추후에 어떤 화면으로 이동할 지 이름 수정 필요할수도 있음
-      res.status(200).render("editprofile", {
+      res.status(200).render('editprofile', {
         userData,
       });
       return;
@@ -104,7 +104,7 @@ exports.getUserInfo = (req, res) => {
       //   mgs: '로그인 정보 다름. 권한 없음.',
       // });
       // return;
-      res.redirect("/404");
+      res.redirect('/404');
     }
   } catch (error) {
     console.log(error);
@@ -113,7 +113,7 @@ exports.getUserInfo = (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "회원정보 수정 페이지 렌더링 중 서버에러 발생",
+      msg: '회원정보 수정 페이지 렌더링 중 서버에러 발생',
     });
   }
 };
@@ -168,7 +168,7 @@ exports.patchUser = async (req, res) => {
       { email: updateData.email, pw: pw, uName: updateData.uName },
       {
         where: { uId: uId },
-      },
+      }
     );
 
     const posts = await Question.findAll({ where: { uId: uId } });
@@ -185,7 +185,7 @@ exports.patchUser = async (req, res) => {
     //   }
     // });
 
-    res.render("profile", {
+    res.render('profile', {
       userData: updatedUser,
       postData: posts,
       answerData: answers,
@@ -200,7 +200,7 @@ exports.patchUser = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "서버 오류 발생",
+      msg: '서버 오류 발생',
     });
   }
 };
@@ -226,7 +226,7 @@ exports.deleteUser = async (req, res) => {
           res.status(301).send({
             isLogin,
             success: false,
-            msg: "세션 삭제 실패",
+            msg: '세션 삭제 실패',
           });
           return;
         }
@@ -244,7 +244,7 @@ exports.deleteUser = async (req, res) => {
         isLogin,
         currentUser: req.session.user,
         success: false,
-        msg: "서버 에러 발생",
+        msg: '서버 에러 발생',
       });
     }
   } catch (err) {
@@ -253,7 +253,7 @@ exports.deleteUser = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "서버 오류 발생",
+      msg: '서버 오류 발생',
     });
   }
 };

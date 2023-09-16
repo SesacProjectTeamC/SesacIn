@@ -1,4 +1,4 @@
-const { Board, Comment, uLike } = require('../models/index');
+const { Board, Comment, uLike, User } = require('../models/index');
 const { Op } = require('sequelize');
 const moment = require('moment');
 
@@ -306,8 +306,8 @@ exports.paginateBoard = async (req, res) => {
     // 페이지에 해당하는 게시글 데이터 조회
     // limit = 가져올 데이터 양
     // offset = 가져올 첫 데이터 위치
-    // 페이지별 Board 호출
-    const paginatedBoard = await Question.findAll({
+    // 페이지별 Board 데이터 조회
+    const paginatedBoard = await Board.findAll({
       order: [['createdAt', 'DESC']], // 정렬 기준
       limit: pageSize,
       offset: (page - 1) * pageSize,
@@ -316,7 +316,7 @@ exports.paginateBoard = async (req, res) => {
     // 날짜 데이터 포맷 변경
     const boardCreateAt = [];
     for (b of paginatedBoard) {
-      boardCreateAt.push(moment(q.createdAt).format('YYYY-MM-DD'));
+      boardCreateAt.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
     }
 
     // Board. uNname 배열에 저장
@@ -339,12 +339,14 @@ exports.paginateBoard = async (req, res) => {
       boardCommentCount.push(count);
     }
 
+    // 데이터 응답
     res.send({
       boardData: paginatedBoard, // Board 데이터(20개씩)
       boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
       boardUserName, // Board 데이터에서 uname을 가져와서
       boardCommentCount, // Board 데이터에서 CommentCount을 가져와서
       boardPageCount, // 총 몇페이지인지
+      success: true,
       msg: '페이지별 게시글 호출 처리 완료',
     });
   } catch (error) {
