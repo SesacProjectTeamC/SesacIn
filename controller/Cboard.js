@@ -126,7 +126,7 @@ exports.detailBoard = async (req, res) => {
 
     // 2) 좋아요 히스토리에 있으면 true, 없으면 false
     const resultLike = !!uLikeFind;
-    if(bool === 'yes'){
+    if (bool === 'yes') {
       res.send({
         success: true,
         isLogin,
@@ -136,19 +136,19 @@ exports.detailBoard = async (req, res) => {
         cDate: create,
         commentData: allComment,
         bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
-      })
-    }else {
+      });
+    } else {
       res.status(200).render('boardDetailTest', {
-      success: true,
-      isLogin,
-      currentLoginUser: req.session.user,
-      msg: '페이지 렌더링 정상 처리',
-      boardData: eachBoard,
-      cDate: create,
-      commentData: allComment,
-      bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
-    });
-  }
+        success: true,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '페이지 렌더링 정상 처리',
+        boardData: eachBoard,
+        cDate: create,
+        commentData: allComment,
+        bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -158,9 +158,7 @@ exports.detailBoard = async (req, res) => {
       msg: '서버에러 발생',
     });
   }
-}
-
-
+};
 
 //=== [ 세화 ] ===
 // 조회수 처리 (메인페이지에서 자유게시글 상세페이지 클릭 시, 조회수 + 1)
@@ -173,10 +171,7 @@ exports.viewBoard = async (req, res) => {
     const eachBoard = await getBoard(bId);
 
     // 조회수 업데이트 +1
-    await Board.update(
-      { viewCount: eachBoard.viewCount + 1 },
-      { where: { bId } }
-    );
+    await Board.update({ viewCount: eachBoard.viewCount + 1 }, { where: { bId } });
     res.status(200).send({ boardData: eachBoard });
   } catch (error) {
     console.error(error);
@@ -221,10 +216,7 @@ exports.likeBoard = async (req, res) => {
       });
 
       // (2) 자유게시글 likeCount +1 업데이트
-      await Board.update(
-        { likeCount: eachBoard.likeCount + 1 },
-        { where: { bId } }
-      );
+      await Board.update({ likeCount: eachBoard.likeCount + 1 }, { where: { bId } });
     } else if (uLikeFind) {
       // 3-2. uLike findOne -> bId 있으면,
       // (1) 좋아요 히스토리 삭제 : uLike에 해당 bId 삭제함
@@ -233,10 +225,7 @@ exports.likeBoard = async (req, res) => {
       });
 
       // (2) 자유게시글 likeCount -1 업데이트
-      await Board.update(
-        { likeCount: eachBoard.likeCount - 1 },
-        { where: { bId } }
-      );
+      await Board.update({ likeCount: eachBoard.likeCount - 1 }, { where: { bId } });
     }
 
     res.status(200).send({
@@ -519,8 +508,7 @@ exports.editBoard = async (req, res) => {
 };
 
 // 자유게시판 게시글 내용/제목 변경여부 확인 함수
-const hasChanged = (before, after) =>
-  before.title !== after.title || before.content !== after.content;
+const hasChanged = (before, after) => before.title !== after.title || before.content !== after.content;
 
 // 게시글 삭제 처리
 // /board/delete/:bId
@@ -682,10 +670,7 @@ exports.editComment = async (req, res) => {
     }
 
     // 댓글 수정
-    const isUpdatedComment = await Comment.update(
-      { content: content },
-      { where: { cId: cId } }
-    );
+    const isUpdatedComment = await Comment.update({ content: content }, { where: { cId: cId } });
 
     // 댓글이 달린 게시글의 총 댓글수 확인
     const commentCount = await getCommentCount(cId);
