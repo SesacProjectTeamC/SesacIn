@@ -4,9 +4,9 @@
 // 3. 수정 버튼 -> 회원정보 PATCH, DELETE
 
 //////////////////////////////////////////////
-const {User, Question, Answer, Comment, Board, uLike} = require("../models");
-const {Op} = require("sequelize");
-const bcrypt = require("bcrypt");
+const { User, Question, Answer, Comment, Board, uLike } = require('../models');
+const { Op } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 exports.getUser = async (req, res) => {
   // 세션 검사
@@ -19,32 +19,32 @@ exports.getUser = async (req, res) => {
     if (isLogin) {
       // 데이터베이스에서 해당 사용자 정보를 조회합니다.
       const user = await User.findOne({
-        where: {uId: uId},
+        where: { uId: uId },
       });
 
       //-- 좋아요 클릭 게시글 가져오기
-      const likes = await uLike.findAll({where: {uId}});
+      const likes = await uLike.findAll({ where: { uId } });
 
       // 좋아요 누른 질문
       const likeQuestion = await Question.findAll({
-        where: {qId: likes.map((like) => like.qId)},
+        where: { qId: likes.map((like) => like.qId) },
       });
 
       // 좋아요 누른 답변
       const likeAnswer = await Answer.findAll({
-        where: {aId: likes.map((like) => like.aId)},
+        where: { aId: likes.map((like) => like.aId) },
       });
 
       //-- 작성한 게시글 가져오기
-      const posts = await Question.findAll({where: {uId: uId}});
+      const posts = await Question.findAll({ where: { uId: uId } });
 
       //-- 작성한 답변 가져오기
-      const answers = await Answer.findAll({where: {uId: uId}});
+      const answers = await Answer.findAll({ where: { uId: uId } });
 
       //-- 작성한 댓글 가져오기
-      const comments = await Comment.findAll({where: {uId: uId}});
+      const comments = await Comment.findAll({ where: { uId: uId } });
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      res.render("profile", {
+      res.render('profileTestImg', {
         userData: user,
         likeQuestionData: likeQuestion,
         likeAnswerData: likeAnswer,
@@ -54,16 +54,17 @@ exports.getUser = async (req, res) => {
         isLogin,
         currentUser: req.session.user,
         success: true,
-        msg: "마이페이지 렌더링 정상 처리",
+        msg: '마이페이지 렌더링 정상 처리',
       });
     } else {
       // 로그인 되어있지 않은 상태에서의 요청시
-      res.status(401).send({
-        isLogin,
-        currentUser: req.session.user,
-        success: false,
-        mgs: "로그인 정보 다름. 권한 없음.",
-      });
+      // res.status(401).send({
+      //   isLogin,
+      //   currentUser: req.session.user,
+      //   success: false,
+      //   mgs: '로그인 정보 다름. 권한 없음.',
+      // });
+      res.redirect('/');
     }
   } catch (err) {
     console.log(err);
@@ -71,7 +72,7 @@ exports.getUser = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "마이페이지 렌더링 중 서버에러 발생",
+      msg: '마이페이지 렌더링 중 서버에러 발생',
     });
   }
 };
@@ -89,19 +90,20 @@ exports.getUserInfo = (req, res) => {
       };
 
       // ********** 추후에 어떤 화면으로 이동할 지 이름 수정 필요할수도 있음
-      res.status(200).render("editprofile", {
+      res.status(200).render('editprofile', {
         userData,
       });
       return;
     } else {
       // 로그인 되어있지 않은 상태에서의 요청시
-      res.status(401).send({
-        isLogin,
-        currentUser: req.session.user,
-        success: false,
-        mgs: "로그인 정보 다름. 권한 없음.",
-      });
-      return;
+      // res.status(401).send({
+      //   isLogin,
+      //   currentUser: req.session.user,
+      //   success: false,
+      //   mgs: '로그인 정보 다름. 권한 없음.',
+      // });
+      // return;
+      res.redirect('/404');
     }
   } catch (error) {
     console.log(error);
@@ -110,7 +112,7 @@ exports.getUserInfo = (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "회원정보 수정 페이지 렌더링 중 서버에러 발생",
+      msg: '회원정보 수정 페이지 렌더링 중 서버에러 발생',
     });
   }
 };
@@ -124,22 +126,22 @@ exports.patchUser = async (req, res) => {
     const uId = req.session.user;
     console.log(uId);
 
-    const userData = {uId: uId};
-    let {email, pw, uName} = req.body;
+    const userData = { uId: uId };
+    let { email, pw, uName } = req.body;
     console.log(req.body);
 
     pw = hashPassword(pw);
 
     const updatedUser = await User.update(
-      {email: email, pw: pw, uName: uName},
+      { email: email, pw: pw, uName: uName },
       {
-        where: {uId: uId},
+        where: { uId: uId },
       }
     );
 
-    const posts = await Question.findAll({where: {uId: uId}});
-    const answers = await Answer.findAll({where: {uId: uId}});
-    const comments = await Comment.findAll({where: {uId: uId}});
+    const posts = await Question.findAll({ where: { uId: uId } });
+    const answers = await Answer.findAll({ where: { uId: uId } });
+    const comments = await Comment.findAll({ where: { uId: uId } });
 
     // 세션 지우는 로직 (이로직을 수행하면 로그인이 풀려버린다.)
     // console.log('>>>>>>>', updatedUser);
@@ -151,7 +153,7 @@ exports.patchUser = async (req, res) => {
     //   }
     // });
 
-    res.render("profile", {
+    res.render('profile', {
       userData: updatedUser,
       postData: posts,
       answerData: answers,
@@ -166,12 +168,13 @@ exports.patchUser = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "서버 오류 발생",
+      msg: '서버 오류 발생',
     });
   }
 };
 
 // 회원 삭제 - 회원 탈퇴할 경우
+// /users/deleteprofile
 exports.deleteUser = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -179,21 +182,24 @@ exports.deleteUser = async (req, res) => {
   try {
     const uId = req.session.user;
     const isDeleted = await User.destroy({
-      where: {uId: uId},
+      where: { uId: uId },
     });
-    // console.log(isDeleted); // 성공시 1, 실패시 0
+
     if (isDeleted) {
       // 성공적으로 삭제된 경우
       req.session.destroy((err) => {
+        // 세션 삭제 실패
         if (err) {
           console.log(err);
-          res.status(500).send({
-            OK: false,
-            msg: "세션 삭제 실패",
+          res.status(301).send({
+            isLogin,
+            success: false,
+            msg: '세션 삭제 실패',
           });
           return;
         }
 
+        // 정상 처리
         res.status(200).send({
           isLogin: false,
           deletedUser: uId,
@@ -201,18 +207,21 @@ exports.deleteUser = async (req, res) => {
         });
       });
     } else {
-      // 삭제 실패
+      // 서버 에러
       res.status(500).send({
         isLogin,
         currentUser: req.session.user,
         success: false,
+        msg: '서버 에러 발생',
       });
     }
   } catch (err) {
     console.log(err);
     res.status(500).send({
-      OK: false,
-      msg: "데이터베이스 오류 발생",
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '서버 오류 발생',
     });
   }
 };
