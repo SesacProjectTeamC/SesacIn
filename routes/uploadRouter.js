@@ -6,11 +6,6 @@ const { needToLogin } = require('../util/middleware');
 
 // 이미지 업로드 처리 라우터
 // /upload/image/user
-router.post(
-  '/image/user',
-  needToLogin,
-  upload.single('file'),
-  Cupload.uploadImageFile
-);
+router.post('/image/user', needToLogin, upload.single('file'), Cupload.uploadImageFile);
 
 module.exports = router;

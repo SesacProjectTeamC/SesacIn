@@ -8,10 +8,6 @@ const { needToLogin } = require('../util/middleware');
 // /users/profile
 router.get('/profile', needToLogin, Cprofile.getUser);
 
-// 마이페이지에서 프로필 이미지 변경 처리
-// /users/profile/img
-router.patch('/profile/img', needToLogin, Cprofile.patchProfileImg);
-
 // 회원 정보 수정 페이지 렌더링
 // /users/editprofile
 router.get('/editprofile', needToLogin, Cprofile.getUserInfo);
