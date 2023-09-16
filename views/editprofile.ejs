@@ -66,7 +66,7 @@
 
     <button type="button" class="profileEdit" onclick="profileEdit();" disabled>수정하기</button><br>
 
-      <button type="button" class="profileDelete" onclick="profileDelete();">회원탈퇴</button>
+      <button type="button" class="profileDelete" onclick="openDeleteModal();">회원탈퇴</button>
     </form>
 
     <!-- Modal -->
@@ -84,6 +84,34 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 회원 탈퇴 확인용 모달 -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmDeleteModalLabel">회원 탈퇴</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>회원 탈퇴를 진행하려면 비밀번호를 입력하세요:</p>
+            <input id="deletePassword" type="password" class="form-control" placeholder="비밀번호">
+          </div>
+          <br>
+
+          <div id="pwModalMessage" class="alert alert-danger" style="display: none;"></div>
+          <br>
+
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+            <button type="button" class="btn btn-danger" id="deletebtn" onclick="confirmDelete()">탈퇴</button>
           </div>
         </div>
       </div>
@@ -179,7 +207,7 @@
         // 초기화
         validateForm();
  
-   function profileEdit() {
+      function profileEdit() {
       const form_profile = document.forms['form_profile'];
             
       
@@ -220,24 +248,63 @@
       }
 
 
-      function profileDelete() {
-        if (confirm("정말 삭제 하시겠습니까?")) {
-          axios({
-            method: 'DELETE',
-            url: '/users/deleteprofile',
-          })
-          .then((result) => {
-            alert("삭제되었습니다.");
-            // 메인 화면으로 이동
-            document.location.href = '/';
-            resetFormInputs();
+      // 회원 탈퇴 확인용 모달 열기
+      function openDeleteModal() {
+        $('#confirmDeleteModal').modal('show');
+      }
 
+      // 회원 탈퇴 확인
+      function confirmDelete() {
+        const deletePassword = document.getElementById('deletePassword').value;
+
+        // 비밀번호 서버 전송
+        axios({
+          method: 'POST',
+          url: '/users/checkpassword',
+          data: {
+            password: deletePassword,
+          },
+        })
+          .then((result) => {
+            // 비번 체크하고 맞으면
+            if (result.data.success) {
+              // 사용자 정보 삭제 요청 전송
+              axios({
+                method: 'DELETE',
+                url: '/users/deleteprofile',
+              })
+                .then((deleteResult) => {
+                  alert('회원 탈퇴가 완료되었습니다.');
+                  document.location.href = '/';
+                })
+                .catch((deleteError) => {
+                  console.error(deleteError);
+                });
+            } else {
+              // 비밀번호 불일치
+              const errorMessage = '비밀번호가 일치하지 않습니다. 다시 시도해주세요.';
+              const errorMessageElement = document.getElementById('pwModalMessage');
+              errorMessageElement.textContent = errorMessage;
+              errorMessageElement.style.display = 'block';
+              $('#deletePassword').val(''); // 비밀번호 입력창 초기화
+            }
           })
-          .catch((err) => {
-            console.log(err);
+          .catch((error) => {
+            console.error(error);
+            const status = error.response.request.status;
+            if (status === 401) {
+              const errorMessage = '비밀번호가 일치하지 않습니다. 다시 시도해주세요.';
+              const errorMessageElement = document.getElementById('pwModalMessage');
+              errorMessageElement.textContent = errorMessage;
+              errorMessageElement.style.display = 'block';
+              $('#deletePassword').val(''); // 비밀번호 입력창 초기화
+            } else {
+              alert('서버 오류 발생')
+              window.document.href = '/'
+            }
           });
-        }
-      } 
+      }
+
 
       // 모달창
       function setModalTextAndShow(message) {

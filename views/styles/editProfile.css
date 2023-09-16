@@ -87,6 +87,20 @@ h2 {
   margin-top: 1.5rem;
 }
 
+/* modal */
+.modal-content {
+  font-weight: bold;
+}
+
+#deletebtn {
+  background-color: #dc7983;
+  border-color: #dc7983;
+}
+#deletebtn:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+}
+
 /* alert */
 .alert {
   position: relative;

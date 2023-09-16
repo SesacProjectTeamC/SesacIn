@@ -20,6 +20,10 @@ router.post('/', Cuser.postUser);
 // /users/editprofile
 router.patch('/editprofile', needToLogin, Cprofile.patchUser);
 
+// 회원 탈퇴 시 비밀번호 확인
+// /users/checkpassword
+router.post('/checkpassword', Cprofile.checkPassword);
+
 // 회원 탈퇴 처리
 // /users/deleteprofile
 router.delete('/deleteprofile', needToLogin, Cprofile.deleteUser);

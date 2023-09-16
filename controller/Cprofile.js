@@ -221,6 +221,43 @@ exports.patchUser = async (req, res) => {
   }
 };
 
+// 회원 탈퇴할 때 비밀번호 체크 위한 로직
+exports.checkPassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+    const uId = req.session.user;
+
+    const user = await User.findOne({
+      where: { uId },
+    });
+
+    if (!user) {
+      // 사용자가 존재하지 않는 경우
+      res
+        .status(400)
+        .json({ success: false, message: '사용자가 존재하지 않습니다.' });
+      return;
+    }
+
+    // 비밀번호 일치 여부 확인
+    const passwordMatch = await bcrypt.compare(password, user.pw);
+
+    if (!passwordMatch) {
+      // 비밀번호가 일치하지 않는 경우
+      res
+        .status(401)
+        .json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
+      return;
+    }
+
+    // 비밀번호가 일치하는 경우
+    res.status(200).json({ success: true, message: '비밀번호가 일치합니다.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: '서버 오류 발생' });
+  }
+};
+
 // 회원 삭제 - 회원 탈퇴할 경우
 // /users/deleteprofile
 exports.deleteUser = async (req, res) => {
