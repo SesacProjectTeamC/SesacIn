@@ -134,19 +134,41 @@
         </div>
         </div>
      </div>
-      <button type="button" class="btn-primary" onclick="register();" >가입하기</button>
+      <button type="button" class="btn-primary" id="registerButton" onclick="register();" disabled>가입하기</button>
     </form>
   </main>
   <script>
       //input 유효성 검사
-      function validateInput(input) {
-          if (!input.validity.valid) {
-              if (input.validity.patternMismatch || input.validity.valueMissing) {
-                return input.title;
-              }
-          }
-          return '';
+      function checkFormValidity() {
+        const form_register = document.forms['form_register'];
+        const idInput = form_register.uId;
+        const pwInput = form_register.pw;
+        const pwCheckInput = form_register.pwCheck;
+        const uNameInput = form_register.uName;
+        const emailInput = form_register.email;
+        const registerButton = document.getElementById("registerButton");
+
+        // 각 입력 필드의 유효성 검사 결과를 가져옴
+        const idValid = idInput.validity.valid;
+        const pwValid = pwInput.validity.valid;
+        const pwCheckValid = pwCheckInput.validity.valid && pwCheckInput.value === pwInput.value;
+        const uNameValid = uNameInput.validity.valid;
+        const emailValid = emailInput.validity.valid;
+
+
+        if (idValid && pwValid && pwCheckValid && uNameValid && emailValid) {
+          registerButton.disabled = false;
+        } else {
+          registerButton.disabled = true;
+        }
       }
+
+      const form_register = document.forms['form_register'];
+      form_register.uId.addEventListener("input", checkFormValidity);
+      form_register.pw.addEventListener("input", checkFormValidity);
+      form_register.pwCheck.addEventListener("input", checkFormValidity);
+      form_register.uName.addEventListener("input", checkFormValidity);
+      form_register.email.addEventListener("input", checkFormValidity);
       
       // 새싹 크루 -> 아니오
       function onNoSelected() {

@@ -133,8 +133,39 @@ exports.patchUser = async (req, res) => {
 
     pw = hashPassword(pw);
 
+    // 사용자가 둘 다 빈 값으로 넘기면 닉네임, 이메일 수정 X
+    if (!uName && !email) {
+      const currentUser = await User.findOne({ where: { uId: uId } });
+
+      const posts = await Question.findAll({ where: { uId: uId } });
+      const answers = await Answer.findAll({ where: { uId: uId } });
+      const comments = await Comment.findAll({ where: { uId: uId } });
+
+      return res.render('profile', {
+        userData: currentUser,
+        postData: posts,
+        answerData: answers,
+        commentData: comments,
+        isLogin,
+        currentUser: req.session.user,
+        success: true,
+      });
+    }
+
+    const currentUser = await User.findOne({ where: { uId: uId } });
+    const updateData = {};
+    // uName 바꾸면 uName 업데이트
+    if (uName !== '') {
+      updateData.uName = uName;
+    }
+
+    // email 바꾸면 email 업데이트
+    if (email !== '') {
+      updateData.email = email;
+    }
+
     const updatedUser = await User.update(
-      { email: email, pw: pw, uName: uName },
+      { email: updateData.email, pw: pw, uName: updateData.uName },
       {
         where: { uId: uId },
       },

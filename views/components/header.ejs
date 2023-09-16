@@ -1,54 +1,162 @@
-<style>
-  .cHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-  a {
-    text-decoration-line: none;
-    color: black;
-    font-weight: 700;
-  }
-</style>
+<head>
+  <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
+  <link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
 
-<div class="cHeader">
-  <a href="/">
-    <img src="/static/img/logo.png" alt="logo" class="logo" height="45px" />
-  </a>
-  <div>
-    <% if ( isLogin == true ) { %>
-    <a onclick="moveToMakePost()" style="margin-right: 5px; cursor: pointer"
-      >새 글 쓰기</a
-    >
-    <a onclick="logout()" style="margin-right: 5px; cursor: pointer"
-      >로그아웃</a
-    >
-    <a href="/users/profile">마이페이지</a>
-    <% } else { %>
+  <link rel="stylesheet" href="views/styles/globalstyle.css" />
 
-    <a href="/login">로그인</a>
-
-    <% } %>
-  </div>
-  <script>
-    function logout() {
-      axios({
-        method: "POST",
-        url: "/logout",
-      })
-        .then((res) => {
-          console.log("로그아웃 요청 성공");
-          window.location.reload();
-        })
-        .catch((err) => {
-          console.log("로그인 요청 실패", err);
-        });
+  <style>
+    .cHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .left-content {
+      display: flex;
+      align-items: center;
+      margin-right: auto;
+    }
+    .right-content {
+      display: flex;
+      align-items: center;
     }
 
-    const moveToMakePost = () => {
-      window.location.href = "/board/create";
-    };
-  </script>
-</div>
+    a {
+      text-decoration-line: none;
+      color: black;
+      font-weight: 700;
+    }
+
+    /* 드롭다운 및 사용자 메뉴 */
+    i {
+      margin-left: 1rem;
+    }
+
+    .dropdownImg {
+      width: 3rem;
+      height: 3rem;
+    }
+    .dropdown {
+      margin-left: 1.5rem;
+    }
+
+    .dropdown-toggle {
+      white-space: nowrap;
+    }
+
+    .dropdown-item {
+      display: block;
+      width: 100%;
+      padding: 1.25rem 2.5rem;
+      clear: both;
+      font-weight: bold;
+      color: #212529;
+      text-align: inherit;
+      white-space: nowrap;
+      background-color: transparent;
+      border: 0;
+    }
+    /* 기존 부트스트랩에 달려있는 화살표 지우기 */
+    .dropdown-toggle::after {
+      display: none;
+    }
+    /* 버튼  */
+    .btn-light {
+      color: #212529;
+      background-color: transparent;
+      border-color: transparent;
+      border-radius: 20px;
+    }
+    .btn-light:hover {
+      border-radius: 20px;
+    }
+
+    /* 열렸을 때 */
+    .btn-light[aria-expanded='true'] .fa-chevron-up {
+      transform: rotate(-180deg);
+      transition: transform 0.3s;
+    }
+
+    /* 닫혔을 때 */
+    .btn-light[aria-expanded='false'] .fa-chevron-up {
+      transform: rotate(0deg);
+      transition: transform 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <div class="cHeader">
+    <div class="left-content">
+      <a href="/">
+        <img src="/static/img/logo.png" alt="logo" class="logo" height="45px" />
+      </a>
+    </div>
+    <div class="right-content">
+      <% if (isLogin === true) { %>
+      <a onclick="moveToMakePost()" style="margin-right: 5px; cursor: pointer"
+        >새 글 쓰기</a
+      >
+      <div class="dropdown">
+        <button
+          class="btn btn-light dropdown-toggle"
+          type="button"
+          id="userDropdown"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <img
+            src="/static/img/user.png"
+            alt="사용자 메뉴"
+            class="dropdownImg"
+          />
+          <!-- 화살표 아이콘 -->
+          <i class="fa-solid fa-chevron-up fa-xl"></i>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item" href="#" onclick="logout()">로그아웃</a>
+          </li>
+          <li><a class="dropdown-item" href="/users/profile">마이페이지</a></li>
+          <li>
+            <a class="dropdown-item" href="/users/editprofile">회원정보수정</a>
+          </li>
+        </ul>
+        <% } else { %>
+        <a href="/login">로그인</a>
+        <% } %>
+      </div>
+    </div>
+    <script>
+      function logout() {
+        axios({
+          method: 'POST',
+          url: '/logout',
+        })
+          .then((res) => {
+            console.log('로그아웃 요청 성공');
+            window.location.reload();
+          })
+          .catch((err) => {
+            console.log('로그아웃 요청 실패', err);
+            alert('로그아웃 요청 실패');
+          });
+      }
+      const moveToMakePost = () => {
+        window.location.href = '/board/create';
+      };
+    </script>
+  </div>
+</body>
