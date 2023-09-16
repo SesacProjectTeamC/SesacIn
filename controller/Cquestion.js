@@ -145,8 +145,6 @@ exports.getQuestion = async (req, res) => {
         },
       });
 
-      console.log(":::::::::::", uLikeAnswersFind);
-
       // (2) 답변의 결과 (T/F)
       const uLikeAnswerFindResult = !!uLikeAnswersFind;
 
@@ -183,7 +181,7 @@ exports.viewQuestion = async (req, res) => {
       { viewCount: question.viewCount + 1 },
       {
         where: { qId },
-      }
+      },
     );
 
     res.send({ data: question });
@@ -298,8 +296,10 @@ exports.patchQuestion = async (req, res) => {
       { title, content },
       {
         where: { qId },
-      }
+      },
     );
+
+    //%%% 타입 변경, 수정날짜에 대한 로직 추가 ?
 
     res.send({ data: updatedQuestion });
   } catch (err) {
@@ -376,7 +376,7 @@ exports.likeQuestion = async (req, res) => {
       // (2) 질문 likeCount 업데이트 +1
       await Question.update(
         { likeCount: getQuestion.likeCount + 1 },
-        { where: { qId } }
+        { where: { qId } },
       );
     } else if (uLikeFind) {
       // 2) uLike findOne -> qId 있으면,
@@ -388,7 +388,7 @@ exports.likeQuestion = async (req, res) => {
       // (2) 질문 likeCount 업데이트 -1
       await Question.update(
         { likeCount: getQuestion.likeCount - 1 },
-        { where: { qId } }
+        { where: { qId } },
       );
     }
 
