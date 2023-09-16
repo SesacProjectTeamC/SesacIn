@@ -72,7 +72,7 @@ exports.getMainPage = async (req, res) => {
       // Comment 모델로 bid가지고 count 세기
       const count = await Comment.count({
         where: {
-          bId: b.qId,
+          bId: b.bId,
         },
       });
       boardCommentCount.push(count);
