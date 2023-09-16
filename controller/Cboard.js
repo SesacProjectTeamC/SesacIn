@@ -444,14 +444,11 @@ const hasChanged = (before, after) =>
   before.title !== after.title || before.content !== after.content;
 
 // 게시글 삭제 처리
+// /board/delete/:bId
 exports.deleteBoard = async (req, res) => {
-  // 테스트를 위해 로그인 된것으로 처리
-  req.session.user = 'tgkim';
+  // 세션 확인
+  let isLogin = req.session.user ? true : false;
 
-  if (!req.session.user) {
-    // 로그인 상태가 아니면 홈으로 리다이렉트
-    res.redirect('/');
-  }
   const { bId } = req.params;
 
   try {
@@ -460,18 +457,26 @@ exports.deleteBoard = async (req, res) => {
         bId: bId,
       },
     });
-    if (isDeleted) {
-      return res.send({
-        isDeleted: true,
-      });
-    } else {
-      return res.send({
+
+    // 삭제 실패 처리
+    if (!isDeleted) {
+      res.status(404).send({
         isDeleted: false,
+        currentLoginUser: req.session.user,
+        msg: '게시글이 삭제되지 않았습니다.',
       });
+      return;
     }
+
+    // 정상 삭제 처리
+    res.redirect('/');
   } catch (error) {
     console.log(error);
     // 에러 처리
+    res.status(500).send({
+      currentLoginUser: req.session.user,
+      msg: '게시글 삭제처리 중 서버에러 발생',
+    });
   }
 };
 
