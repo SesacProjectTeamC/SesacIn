@@ -45,7 +45,7 @@ exports.getUser = async (req, res) => {
       const comments = await Comment.findAll({ where: { uId } });
 
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      res.render('profileTestImg', {
+      res.render('profile', {
         userData: user,
         likeQuestionData: likeQuestion,
         likeAnswerData: likeAnswer,
@@ -233,9 +233,7 @@ exports.checkPassword = async (req, res) => {
 
     if (!user) {
       // 사용자가 존재하지 않는 경우
-      res
-        .status(400)
-        .json({ success: false, message: '사용자가 존재하지 않습니다.' });
+      res.status(400).json({ success: false, message: '사용자가 존재하지 않습니다.' });
       return;
     }
 
@@ -244,9 +242,7 @@ exports.checkPassword = async (req, res) => {
 
     if (!passwordMatch) {
       // 비밀번호가 일치하지 않는 경우
-      res
-        .status(401)
-        .json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
+      res.status(401).json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
       return;
     }
 
