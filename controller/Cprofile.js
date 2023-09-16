@@ -7,14 +7,14 @@
 const { User, Question, Answer, Comment, Board, uLike } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
-
-exports.getUser = async (req, res) => {
+exports. getUser = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
   try {
     // 세션에서 로그인 된 사용자 id 가져오기
     const uId = req.session.user;
+    const bool = req.params.bool;
 
     if (isLogin) {
       // 데이터베이스에서 해당 사용자 정보를 조회합니다.
@@ -45,18 +45,33 @@ exports.getUser = async (req, res) => {
       const comments = await Comment.findAll({ where: { uId } });
 
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      res.render('profile', {
-        userData: user,
-        likeQuestionData: likeQuestion,
-        likeAnswerData: likeAnswer,
-        postData: posts,
-        answerData: answers,
-        commentData: comments,
-        isLogin,
-        currentUser: req.session.user,
-        success: true,
-        msg: '마이페이지 렌더링 정상 처리',
-      });
+      if (bool === 'yes') {
+        res.send({
+          userData: user,
+          likeQuestionData: likeQuestion,
+          likeAnswerData: likeAnswer,
+          postData: posts,
+          answerData: answers,
+          commentData: comments,
+          isLogin,
+          currentUser: req.session.user,
+          success: true,
+          msg: "마이페이지 렌더링 정상 처리",
+        });
+      } else {
+        res.render("profile", {
+          userData: user,
+          likeQuestionData: likeQuestion,
+          likeAnswerData: likeAnswer,
+          postData: posts,
+          answerData: answers,
+          commentData: comments,
+          isLogin,
+          currentUser: req.session.user,
+          success: true,
+          msg: "마이페이지 렌더링 정상 처리",
+        });
+      }
     } else {
       // 로그인 되어있지 않은 상태에서의 요청시
       // res.status(401).send({
@@ -65,7 +80,7 @@ exports.getUser = async (req, res) => {
       //   success: false,
       //   mgs: '로그인 정보 다름. 권한 없음.',
       // });
-      res.redirect('/');
+      res.redirect("/");
     }
   } catch (err) {
     console.log(err);
@@ -73,7 +88,7 @@ exports.getUser = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: '마이페이지 렌더링 중 서버에러 발생',
+      msg: "마이페이지 렌더링 중 서버에러 발생",
     });
   }
 };

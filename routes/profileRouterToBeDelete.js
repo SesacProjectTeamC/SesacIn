@@ -4,7 +4,7 @@ const Cprofile = require('../controller/Cprofile');
 
 // 마이페이지 렌더링
 // /users/profile
-router.get('/profile', Cprofile.getUser);
+router.get('/profile/', Cprofile.getUser);
 
 // 회원 정보 수정 페이지 렌더링
 // /users/editprofile

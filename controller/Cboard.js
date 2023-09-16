@@ -126,8 +126,19 @@ exports.detailBoard = async (req, res) => {
 
     // 2) 좋아요 히스토리에 있으면 true, 없으면 false
     const resultLike = !!uLikeFind;
-
-    res.status(200).render('boardDetailTest', {
+    if(bool === 'yes'){
+      res.send({
+        success: true,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '페이지 렌더링 정상 처리',
+        boardData: eachBoard,
+        cDate: create,
+        commentData: allComment,
+        bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
+      })
+    }else {
+      res.status(200).render('boardDetailTest', {
       success: true,
       isLogin,
       currentLoginUser: req.session.user,
@@ -137,6 +148,7 @@ exports.detailBoard = async (req, res) => {
       commentData: allComment,
       bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
     });
+  }
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -146,7 +158,9 @@ exports.detailBoard = async (req, res) => {
       msg: '서버에러 발생',
     });
   }
-};
+}
+
+
 
 //=== [ 세화 ] ===
 // 조회수 처리 (메인페이지에서 자유게시글 상세페이지 클릭 시, 조회수 + 1)

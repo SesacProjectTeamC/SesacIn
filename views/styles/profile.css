@@ -23,26 +23,12 @@ img {
   height: 80px;
 }
 
-.sesac_badge {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-}
-
-.person {
-  width: 150px;
-  height: 150px;
-}
-
-.questionBoardCard_likedPost {
-  display: hidden;
-}
-
-.freeBoardCard {
-  display: hidden;
-}
-
 .hidden {
     display: none;
   }
-  
+
+form[name=profile]{
+  display:flex;
+  justify-content: center;
+
+}
