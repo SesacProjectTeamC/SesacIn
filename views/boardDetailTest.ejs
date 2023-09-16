@@ -381,7 +381,12 @@
         if (res) {
           document.location.href = `/board/detail/${bId}`;
         }
-      });
+      }).catch((err) => {
+        console.log(err)
+        if(err.response.status === 401) {
+          document.location.href = '/'
+        }
+      })
     };
   </script>
 </html>

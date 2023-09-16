@@ -13,7 +13,7 @@ router.patch('/detail/view/:bId', Cboard.viewBoard);
 
 // 게시글 좋아요 추가 처리
 // /board/like/:bId
-router.patch('/detail/like/:bId', Cboard.likeBoard);
+router.patch('/detail/like/:bId', needToLogin, Cboard.likeBoard);
 
 // 새 게시글 생성 페이지 렌더링
 // /board/create
