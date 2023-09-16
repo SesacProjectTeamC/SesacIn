@@ -112,8 +112,8 @@
         // 입력 항목 초기화
         resetFormInputs();
         
-        // 로그인 창으로 이동
-        document.location.href = '/login';
+        // 마이페이지로 이동
+        document.location.href = 'users/profile';
     })
     .catch((err) => {
         setModalTextAndShow('서버에서 오류가 발생했습니다.');
