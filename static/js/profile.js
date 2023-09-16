@@ -13,7 +13,7 @@ function change(buttonType) {
   const contentDiv = document.getElementById('content');
 
   // 서버에서 데이터 가져오기
-  axios.get('/users/profile')
+  axios.post('/users/profile')
       .then(response => {
           const data = response.data;
 
