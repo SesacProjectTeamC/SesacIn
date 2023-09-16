@@ -245,12 +245,17 @@ const editQuestionDone = (qId) => {
       title: title.value,
       content: content.value,
     },
-  }).then((res) => {
-    if (res.data) {
-      alert("수정 완료되었습니다.");
-      document.location.href = `/question/${qId}`;
-    }
-  });
+  })
+    .then((res) => {
+      console.log(res);
+      if (res.data) {
+        alert("수정 완료되었습니다.");
+        document.location.href = `/question/${qId}`;
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 const editQuestionCancel = (qId) => {

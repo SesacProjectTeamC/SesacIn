@@ -35,7 +35,7 @@ router.get('/:qId/edit', needToLogin, Cquestion.getEditQuestion);
 router.patch('/:qId/edit', Cquestion.patchQuestion);
 
 // 특정 질문 삭제
-// /question/${qId}/delete
+// /question/:qId/delete
 router.delete('/:qId/delete', needToLogin, Cquestion.deleteQuestion);
 
 //==== Answer ====
