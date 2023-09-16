@@ -46,7 +46,7 @@ exports.newBoardPage = (req, res) => {
 // 개별 게시글 페이지 렌더링
 // board/detail/:bId
 exports.detailBoard = async (req, res) => {
-  // 세션 검사
+  // 세션 확인
   let isLogin = req.session.user ? true : false;
 
   try {
@@ -75,7 +75,7 @@ exports.detailBoard = async (req, res) => {
       where: {
         bId,
         //! uId
-        uId: 1, // 임의 유저 1
+        uId: req.session.user, // 로그인 유저
       },
     });
 
@@ -130,6 +130,9 @@ exports.viewBoard = async (req, res) => {
 // PATCH
 // board/detail/like/:bId
 exports.likeBoard = async (req, res) => {
+  // 세션 확인
+  let isLogin = req.session.user ? true : false;
+
   try {
     const { bId } = req.params;
 
@@ -140,7 +143,7 @@ exports.likeBoard = async (req, res) => {
       where: {
         bId,
         //! uId
-        uId: 1, // 임의 유저 1
+        uId: req.session.user, // 로그인 현재 로그인 된 유저
       },
     });
 
@@ -154,7 +157,7 @@ exports.likeBoard = async (req, res) => {
       // (1) 좋아요 히스토리 생성 : uLike에 해당 bId 생성됨.
       await uLike.create({
         // uId
-        uId: 1, // 임의 유저 1
+        uId: req.session.user, // 임의 유저 1
         bId,
       });
 
@@ -354,15 +357,15 @@ exports.editBoard = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    if (!isLogin) {
-      res.status(401).send({
-        success: false,
-        isLogin,
-        currentLoginUser: req.session.user,
-        msg: '로그인 되어있지 않습니다.',
-      });
-      return;
-    }
+    // if (!isLogin) {
+    //   res.status(401).send({
+    //     success: false,
+    //     isLogin,
+    //     currentLoginUser: req.session.user,
+    //     msg: '로그인 되어있지 않습니다.',
+    //   });
+    //   return;
+    // }
 
     const { bId } = req.params;
     const { title, content } = req.body;
@@ -381,7 +384,7 @@ exports.editBoard = async (req, res) => {
       return;
     }
 
-    let isUpdated = await Board.update(
+    let result = await Board.update(
       {
         title: title,
         content: content,
@@ -390,12 +393,11 @@ exports.editBoard = async (req, res) => {
         where: { bId: bId },
       }
     );
-
-    // update 처리 성공시 isUpdated[0] = 0
-    // update 처리 실패시 isUpdated[0] = 1
+    console.log(result);
+    // update 처리 성공시 isUpdated[0] = 1
+    // update 처리 실패시 isUpdated[0] = 0
     // 하지만 실제로 같은 데이터로 업데이트를 수행해서 데이터변경이 없어도 update결과로 isUpdated가 1(성공)이 나와버린다.
-    if (!isUpdated[0]) {
-      isUpdated = false;
+    if (!result[0]) {
       throw new Error('게시글 수정 실패'); // 에러를 던짐(catch에서 수행)
       return;
     }
@@ -407,25 +409,20 @@ exports.editBoard = async (req, res) => {
     const hasChangedResult = hasChanged(before.dataValues, after.dataValues);
     isUpdated = hasChangedResult ? true : false;
 
-    if (isUpdated) {
-      res.status(200).send({
-        success: true,
-        isLogin,
-        currentLoginUser: req.session.user,
-        isUpdated,
-        msg: '게시글 업데이트 처리 성공',
-      });
-      return;
-    } else {
-      res.status(200).send({
-        success: true,
-        isLogin,
-        currentLoginUser: req.session.user,
-        isUpdated,
-        msg: '게시글의 제목, 내용 모두 변경된게 없습니다.',
-      });
+    if (!isUpdated) {
+      isUpdated = false;
+      throw new Error('게시글의 제목, 내용 모두 변경된게 없습니다.'); // 에러를 던짐(catch에서 수행)
       return;
     }
+
+    // 정상 처리
+    res.status(200).send({
+      success: true,
+      isLogin,
+      currentLoginUser: req.session.user,
+      isUpdated,
+      msg: '게시글 업데이트 처리 성공',
+    });
   } catch (error) {
     // 에러 처리
     console.log(error);
