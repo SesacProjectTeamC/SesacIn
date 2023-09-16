@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
     <link rel="stylesheet" href="/views/styles/index.css" />
     <script defer src="../static/js/index.js"></script>
+    <script defer src="../static/js/main.js"></script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
@@ -17,17 +18,16 @@
     <div class="container">
       <%- include('./components/header', { isLogin: isLogin }) %>
     </div>
+
     <%- include('./components/carousel')%>
     <div class="container">
-      <div class="menuContainer">
-        <!-- <div class="menu" onclick="changeType('all')">전체</div> -->
+      <!-- <div class="menuContainer">
         <div style="display: flex">
           <div class="menu activeM" onclick="changeType(this)">Q&A</div>
           <div class="menu" onclick="changeType(this);">자유게시판</div>
         </div>
-        <!-- BE : test용 추가 생성 버튼 -->
-      </div>
-      <div style="display: flex; justify-content: flex-end">
+      </div> -->
+      <!-- <div style="display: flex; justify-content: flex-end">
         <button
           onclick="moveToMakePost()"
           type="button"
@@ -35,11 +35,28 @@
         >
           글쓰기
         </button>
+      </div> -->
+
+      <div class="qnaMenu" style="margin-top: 50px">
+        <div style="display: flex; align-items: center">
+          🙋‍♂️ Sesac Q&A
+          <div class="showMore">더보기</div>
+        </div>
+        <div id="btnContainer">
+          <div
+            class="swiper-button-prev qPrev"
+            style="position: relative"
+          ></div>
+          <div
+            class="swiper-button-next qNext"
+            style="position: relative"
+          ></div>
+        </div>
       </div>
 
-      <div class="swiper mySwiper">
+      <div class="swiper qnaSwiper">
         <div class="swiper-wrapper">
-          <%for(let i = 0; i < 10; i++){%>
+          <%for(let i = 0; i < data.length; i++){%>
           <div class="swiper-slide">
             <%-include('./components/questionBoardCard', { data: data[i], cDate:
             cDate[i] })%>
@@ -48,7 +65,35 @@
         </div>
       </div>
 
-      <nav
+      <div class="qnaMenu" style="margin-top: 50px">
+        <div style="display: flex; align-items: center">
+          📋 Sesac 자유게시판
+          <div class="showMore">더보기</div>
+        </div>
+        <div id="btnContainer">
+          <div
+            class="swiper-button-prev bPrev"
+            style="position: relative"
+          ></div>
+          <div
+            class="swiper-button-next bNext"
+            style="position: relative"
+          ></div>
+        </div>
+      </div>
+
+      <div class="swiper boardSwiper">
+        <div class="swiper-wrapper">
+          <%for(let i = 0; i < data.length; i++){%>
+          <div class="swiper-slide">
+            <%-include('./components/freeBoardCard', { data: data[i], cDate:
+            cDate[i] })%>
+          </div>
+          <%}%>
+        </div>
+      </div>
+
+      <!-- <nav
         aria-label="..."
         style="display: flex; justify-content: center; margin-top: 20px"
       >
@@ -69,54 +114,11 @@
             <a class="page-link" onclick="getPageData('next')">></a>
           </li>
         </ul>
-      </nav>
+      </nav> -->
     </div>
 
     <footer>
       <div>대충 사이트정보 표시</div>
     </footer>
-
-    <script>
-      var slide = new Swiper(".swiper", {
-        slidesPerView: "1", // 한 슬라이드에 보여줄 갯수
-        slidesPerGroup: 1,
-        loop: false, // 슬라이드 반복 여부
-        pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
-        }, // pager 여부
-        autoplay: {
-          // 자동 슬라이드 설정
-          delay: 3000, // 시간 설정
-          disableOnInteraction: false, // false로 설정하면 스와이프 후 자동 재생이 비활성화 되지 않음
-        },
-
-        breakpoints: {
-          //반응형
-          // 화면의 넓이가 320px 이상일 때
-          700: {
-            slidesPerView: 2,
-            spaceBetween: 0,
-            slidesPerGroup: 2,
-          },
-          1000: {
-            slidesPerView: 3,
-            spaceBetween: 0,
-            slidesPerGroup: 3,
-          },
-          // 화면의 넓이가 640px 이상일 때
-          1300: {
-            slidesPerView: 4,
-            spaceBetween: 0,
-            slidesPerGroup: 4,
-          },
-        },
-      });
-      //   var swiper = new Swiper(".mySwiper", {
-      //     pagination: {
-      //       el: ".swiper-pagination",
-      //     },
-      //   });
-    </script>
   </body>
 </html>

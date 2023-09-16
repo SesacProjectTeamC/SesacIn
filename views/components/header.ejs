@@ -19,7 +19,12 @@
   </a>
   <div>
     <% if ( isLogin == true ) { %>
-    <a href="#" onclick="logout()">로그아웃</a>
+    <a onclick="moveToMakePost()" style="margin-right: 5px; cursor: pointer"
+      >새 글 쓰기</a
+    >
+    <a onclick="logout()" style="margin-right: 5px; cursor: pointer"
+      >로그아웃</a
+    >
     <a href="/users/profile">마이페이지</a>
     <% } else { %>
 
@@ -30,16 +35,20 @@
   <script>
     function logout() {
       axios({
-        method: 'POST',
-        url: '/logout',
+        method: "POST",
+        url: "/logout",
       })
         .then((res) => {
-          console.log('로그아웃 요청 성공');
+          console.log("로그아웃 요청 성공");
           window.location.reload();
         })
         .catch((err) => {
-          console.log('로그인 요청 실패', err);
+          console.log("로그인 요청 실패", err);
         });
     }
+
+    const moveToMakePost = () => {
+      window.location.href = "/board/create";
+    };
   </script>
 </div>

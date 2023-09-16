@@ -65,7 +65,7 @@ a {
 
 footer {
   display: flex;
-  margin-top: 20px;
+  margin-top: 40px;
   width: 100%;
   height: 150px;
   background-color: #f9f9f9;
@@ -157,4 +157,79 @@ user {
 .svg {
   margin-left: 5px;
   margin-right: 5px;
+}
+
+.qnaMenu {
+  display: flex;
+  padding: 0px 10px 0px 10px;
+  margin: 0px 0px 12px;
+  font-size: 38px;
+  font-weight: bold;
+  justify-content: space-between;
+}
+
+.swiper-button-next {
+  background: url(/static/img/right-arrow-button.png) no-repeat;
+  background-size: 100%;
+  background-position: bottom;
+}
+
+.swiper-button-prev {
+  background: url(/static/img/left-arrow-button.png) no-repeat;
+  background-size: 100%;
+  background-position: bottom;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  display: none;
+}
+
+#btnContainer {
+  display: flex;
+  width: 80px;
+  justify-content: space-between;
+}
+
+.showMore {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  cursor: pointer;
+  border: solid 2px lightgray;
+  border-radius: 30px;
+  padding: 4px 12px 4px 12px;
+  font-size: 18px;
+  font-weight: 300;
+  color: rgb(145, 132, 132);
+  transition: 0.3s;
+  height: 40px;
+}
+
+.showMore:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 800px) {
+  /* viewport width가 480px 이하일 때 */
+  .qnaMenu {
+    font-size: 24px;
+    margin: 0px 0px 10px;
+  }
+  .showMore {
+    font-size: 14px;
+    height: 30px;
+  }
+}
+
+@media (max-width: 450px) {
+  /* viewport width가 480px 이하일 때 */
+  .qnaMenu {
+    font-size: 18px;
+    margin: 0px 0px 8px;
+  }
+  .showMore {
+    font-size: 12px;
+    height: 25px;
+  }
 }
