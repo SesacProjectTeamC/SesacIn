@@ -233,9 +233,7 @@ exports.checkPassword = async (req, res) => {
 
     if (!user) {
       // 사용자가 존재하지 않는 경우
-      res
-        .status(400)
-        .json({ success: false, message: '사용자가 존재하지 않습니다.' });
+      res.status(400).json({ success: false, message: '사용자가 존재하지 않습니다.' });
       return;
     }
 
@@ -244,9 +242,7 @@ exports.checkPassword = async (req, res) => {
 
     if (!passwordMatch) {
       // 비밀번호가 일치하지 않는 경우
-      res
-        .status(401)
-        .json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
+      res.status(401).json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
       return;
     }
 
@@ -309,15 +305,6 @@ exports.deleteUser = async (req, res) => {
       msg: '서버 오류 발생',
     });
   }
-};
-
-// 마이페이지 프로필 이미지 변경 처리
-// /users/profile/img
-exports.patchProfileImg = async (req, res) => {
-  // 세션 검사
-  let isLogin = req.session.user ? true : false;
-
-  // 미구현
 };
 
 // password 해싱 함수. hash된 패스워드를 리턴함
