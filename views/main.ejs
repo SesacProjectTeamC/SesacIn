@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('./components/cdn', { title: '메인' }) %>
+    <link rel="stylesheet" href="/views/styles/globalstyle.css" />
+    <link rel="stylesheet" href="/views/styles/index.css" />
+    <script defer src="../static/js/index.js"></script>
+    <script defer src="../static/js/main.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <%- include('./components/header', { isLogin: isLogin }) %>
+    </div>
+
+    <%- include('./components/carousel')%>
+    <div class="container">
+      <div class="qnaMenu" style="margin-top: 50px">
+        <div style="display: flex; align-items: center">
+          🙋‍♂️ Sesac Q&A
+          <div class="showMore">더보기</div>
+        </div>
+        <div id="btnContainer">
+          <div
+            class="swiper-button-prev qPrev"
+            style="position: relative"
+          ></div>
+          <div
+            class="swiper-button-next qNext"
+            style="position: relative"
+          ></div>
+        </div>
+      </div>
+
+      <div class="swiper qnaSwiper">
+        <div class="swiper-wrapper">
+          <%for(let i = 0; i < questionData.length; i++){%>
+          <div class="swiper-slide">
+            <%-include('./components/questionBoardCard', { data:
+            questionData[i], cDate: questionCreateAt[i], uName:
+            questionUserName[i], commentCount: questionCommentCount[i] })%>
+          </div>
+          <%}%>
+        </div>
+      </div>
+
+      <div class="qnaMenu" style="margin-top: 50px">
+        <div style="display: flex; align-items: center">
+          📋 Sesac 자유게시판
+          <div class="showMore">더보기</div>
+        </div>
+        <div id="btnContainer">
+          <div
+            class="swiper-button-prev bPrev"
+            style="position: relative"
+          ></div>
+          <div
+            class="swiper-button-next bNext"
+            style="position: relative"
+          ></div>
+        </div>
+      </div>
+
+      <div class="swiper boardSwiper">
+        <div class="swiper-wrapper">
+          <%for(let i = 0; i < boardData.length; i++){%>
+          <div class="swiper-slide">
+            <%-include('./components/freeBoardCard', { data: boardData[i],
+            cDate: boardCreateAt[i], uName: boardUserName[i], commentCount:
+            boardCommentCount[i] })%>
+          </div>
+          <%}%>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div>대충 사이트정보 표시</div>
+    </footer>
+  </body>
+</html>

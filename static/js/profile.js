@@ -133,7 +133,7 @@ function fileUpload() {
       "Content-Type": "multipart/form-data",
     },
   }).then((res) => {
-    const {data} = res;
+    const { data } = res;
     console.log(data);
     document.querySelector("img").src = "/" + data.path;
   });

@@ -1,7 +1,8 @@
-const { Question, Answer, Comment, uLike } = require('../models');
+const { Question, Answer, Comment, uLike, User } = require('../models');
 const moment = require('moment');
 
 //=== 메인페이지,질문 목록 가져오기 ===
+
 exports.getQuestions = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -34,7 +35,7 @@ exports.getQuestions = async (req, res) => {
     if (isLogin) {
       console.log('로그인O 사용자 >>>', req.session.user);
 
-      res.status(200).render('index', {
+      res.status(200).render('main', {
         type: 'qna',
         data: paginatedQuestions,
         pageCount: pageCount,
@@ -44,7 +45,63 @@ exports.getQuestions = async (req, res) => {
     } else {
       console.log('로그인X');
 
-      res.render('index', {
+      res.render('main', {
+        type: 'qna',
+        data: paginatedQuestions,
+        pageCount: pageCount,
+        cDate: create,
+        isLogin,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.send('Internet Server Error!!!');
+  }
+};
+
+exports.getQuestionsMain = async (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
+  try {
+    // 한페이지 만큼 데이터 조회
+    let page = parseInt(req.params.page) || 1;
+    let pageSize = parseInt(req.params.pageSize) || 20;
+
+    // 전체 Question목록 개수 계산
+    const totalPage = await Question.count();
+
+    // 페이지 수 (올림처리)
+    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+
+    // 페이지별 Question호출
+    const paginatedQuestions = await Question.findAll({
+      order: [['createdAt', 'DESC']], // 정렬 기준
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
+    });
+
+    // 날짜 데이터 포맷 변경
+    const create = [];
+
+    for (q of paginatedQuestions) {
+      create.push(moment(q.createdAt).format('YYYY-MM-DD'));
+    }
+
+    if (isLogin) {
+      console.log('로그인O 사용자 >>>', req.session.user);
+
+      res.status(200).render('listMain', {
+        type: 'qna',
+        data: paginatedQuestions,
+        pageCount: pageCount,
+        cDate: create,
+        isLogin,
+      });
+    } else {
+      console.log('로그인X');
+
+      res.render('listMain', {
         type: 'qna',
         data: paginatedQuestions,
         pageCount: pageCount,
@@ -59,36 +116,59 @@ exports.getQuestions = async (req, res) => {
 };
 
 //=== 질문 목록 가져오기(페이지별) ===
+// /question/list/:page&:pageSize
 exports.paginateQuestion = async (req, res) => {
-  let page = parseInt(req.params.page) || 1;
-  let pageSize = parseInt(req.params.pageSize) || 20;
+  // 세션 확인
+  let isLogin = req.session.user ? true : false;
 
   try {
-    // 전체 Question목록 개수 계산
-    const totalPage = await Question.count();
+    let page = parseInt(req.params.page) || 1;
+    let pageSize = parseInt(req.params.pageSize) || 20;
 
-    // 페이지 수 (올림처리)
-    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+    const questionTotalCount = await Question.count();
+    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
-    // 페이지에 해당하는 Question 데이터 조회
-    const paginatedQuestions = await Question.findAll({
-      //최신글 정렬
-      order: [['createdAt', 'DESC']],
+    // 페이지별 Question 데이터 조회
+    const paginatedQuestion = await Question.findAll({
+      order: [['createdAt', 'DESC']], // 정렬 기준
       limit: pageSize,
       offset: (page - 1) * pageSize,
     });
 
-    // 날짜 데이터 포맷 변경
-    const create = [];
-    for (q of paginatedQuestions) {
-      create.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
+    // Question createdAt 포맷 변경 후 배열에 저장
+    const questionCreateAt = [];
+    for (q of paginatedQuestion) {
+      questionCreateAt.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
     }
 
+    // Question uNname 배열에 저장
+    const questionUserName = [];
+    for (q of paginatedQuestion) {
+      // User 모델로 uid가지고 uName 가져오기
+      const user = await User.findByPk(q.uId);
+      questionUserName.push(user.uName);
+    }
+
+    // Question Comment 배열에 저장 후 총 갯수 계산
+    const questionCommentCount = [];
+    for (q of paginatedQuestion) {
+      // Comment 모델로 qid가지고 count 세기
+      const count = await Comment.count({
+        where: {
+          qId: q.qId,
+        },
+      });
+      questionCommentCount.push(count);
+    }
+
+    // 데이터 응답
     res.send({
-      questions: paginatedQuestions,
-      pageCount,
-      cDate: create,
-      msg: '페이지별 Question 호출 처리 완료',
+      questionData: paginatedQuestion, // question 데이터(20개씩)
+      questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+      questionUserName, // question 데이터에서 uname을 가져와서
+      questionCommentCount, // question 데이터에서 CommentCount을 가져와서
+      success: true,
+      msg: '페이지별 QnA 질문 호출 처리 완료',
     });
   } catch (error) {
     console.error(error);
@@ -99,9 +179,10 @@ exports.paginateQuestion = async (req, res) => {
   }
 };
 
-//=== QnA 특정 질문 상세 페이지 GET ===
+//=== QnA 특정 질문 상세 페이지 렌더링 GET ===
 // 1. 특정 질문과 그 질문에 대한 답변 전체 리스트 가져오기 (Cquestion)
 // 2. 특정 답변에 대한 전체 댓글 리스트 가져오기 (Ccomment)
+// /question/:qId
 exports.getQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -122,18 +203,20 @@ exports.getQuestion = async (req, res) => {
     });
 
     // 1) 질문 좋아요
+    // [태균] uLike 테이블에서 해당하는 qId에 대한 row데이터를 가져옴
     const uLikeQuestionFind = await uLike.findOne({
       where: {
         qId,
         //! uId
-        uId: 1, // 임의 유저 1
+        //uId: req.session.user,
       },
     });
 
-    // 질문 좋아요의 결과 (T/F)
+    // 질문에대한 좋아요가 있는지 없는지 확인 결과 (T/F)
     const qResultLike = !!uLikeQuestionFind;
 
     // 2) 여러 개의 답변 좋아요
+    // answers = 질문에 달린 복수 답변 전체의 데이터
     let uLikeAnswersResult = [];
     for (let i = 0; i < answers.length; i++) {
       // (1) 좋아요 히스토리에서 해당하는 질문에 대한 답변 찾기
@@ -141,7 +224,7 @@ exports.getQuestion = async (req, res) => {
         where: {
           aId: answers[i].aId,
           //! uId
-          uId: 1, // 임의 유저 1
+          uId: 1, // 임의 유저 1 [태균] 임의유저가 아니라면 누가 들어가야 하는건지?
         },
       });
 
@@ -220,9 +303,6 @@ exports.getCreateQuestion = async (req, res) => {
 
 //=== 질문 생성 POST ===
 exports.postQuestion = async (req, res) => {
-  // test login
-  req.session.user = 1;
-
   if (!req.session.user) {
     res.redirect('/');
   }
@@ -236,7 +316,7 @@ exports.postQuestion = async (req, res) => {
       viewCount: 0,
       likeCount: 0,
       qType,
-      uId: loginUser,
+      uId: req.session.user,
     });
     console.log('추가>>>', { result: newQuestion });
     res.send({ result: newQuestion });
@@ -247,6 +327,7 @@ exports.postQuestion = async (req, res) => {
 };
 
 //=== 질문 수정 GET ===
+// /question/:qId/edit
 exports.getEditQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -275,10 +356,27 @@ exports.getEditQuestion = async (req, res) => {
 };
 
 //=== 질문 수정 PATCH ===
+// /question/:qId/edit
 exports.patchQuestion = async (req, res) => {
+  // 세션 확인
+  let isLogin = req.session.user ? true : false;
+
   try {
     const { qId } = req.params;
     const { title, content } = req.body;
+
+    // 업데이트 전 질문 데이터 조회
+    const before = await Question.findByPk(qId);
+
+    // uid로 게시글 소유자 여부 확인(권한 확인)
+    if (before.dataValues.uId !== req.session.user) {
+      res.status(401).send({
+        success: false,
+        currentLoginUser: req.session.user,
+        msg: '게시글의 소유자가 아님',
+      });
+      return;
+    }
 
     const updatedQuestion = await Question.update(
       { title, content },
@@ -286,6 +384,8 @@ exports.patchQuestion = async (req, res) => {
         where: { qId },
       }
     );
+
+    //%%% 타입 변경, 수정날짜에 대한 로직 추가 ?
 
     res.send({ data: updatedQuestion });
   } catch (err) {
@@ -295,45 +395,39 @@ exports.patchQuestion = async (req, res) => {
 };
 
 //=== 질문 삭제하기 ===
+// /question/:qId/delete
 exports.deleteQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
   try {
-    if (isLogin) {
-      const { qId } = req.params;
+    const { qId } = req.params;
 
-      const isDeleted = await Question.destroy({
-        where: { qId },
-      });
+    const isDeleted = await Question.destroy({
+      where: { qId },
+    });
 
-      console.log('isDeleted >>>', isDeleted); // 성공 시 1, 실패 시 0
-
-      if (isDeleted) {
-        return res.status(200).send({
-          result: true,
-          isLogin,
-          currentUser: req.session.user,
-          success: true,
-        });
-      } else {
-        return res.status(500).send({
-          result: false,
-          isLogin,
-          currentUser: req.session.user,
-          success: false,
-        });
-      }
-    } else {
-      res.status(401).send({
+    // 삭제 실패 처리
+    if (!isDeleted) {
+      res.status(404).send({
+        result: false,
         isLogin,
         currentUser: req.session.user,
-        success: false,
+        msg: '질문 게시글이 삭제되지 않았습니다.',
       });
+      return;
     }
+
+    // 정상 삭제 처리
+    res.redirect('/');
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+
+    res.status(500).send({
+      result: false,
+      isLogin,
+      currentUser: req.session.user,
+    });
   }
 };
 

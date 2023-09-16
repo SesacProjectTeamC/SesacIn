@@ -3,6 +3,9 @@ const router = express.Router();
 const Cboard = require('../controller/Cboard');
 const { needToLogin } = require('../util/middleware');
 
+// 자유게시판 메인 페이지 렌더링
+router.get('/main', Cboard.getBoardMain);
+
 // 개별 게시글 페이지 렌더링
 // /board/detail/:bId
 router.get('/detail/:bId', Cboard.detailBoard);
@@ -13,7 +16,7 @@ router.patch('/detail/view/:bId', Cboard.viewBoard);
 
 // 게시글 좋아요 추가 처리
 // /board/like/:bId
-router.patch('/detail/like/:bId', Cboard.likeBoard);
+router.patch('/detail/like/:bId', needToLogin, Cboard.likeBoard);
 
 // 새 게시글 생성 페이지 렌더링
 // /board/create

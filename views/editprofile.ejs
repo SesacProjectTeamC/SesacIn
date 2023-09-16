@@ -1,158 +1,329 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        
-        <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="views/componets/cdn.ejs">
-        <link rel="stylesheet" href="/views/styles/editProfile.css">
-        <link rel="stylesheet" href="/views/styles/globalstyle.css">
-        
-        
-    </head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="views/componets/cdn.ejs">
+    <link rel="stylesheet" href="/views/styles/editProfile.css">
+    <link rel="stylesheet" href="/views/styles/globalstyle.css">
+  </head>
   <body>
     <header>
       <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
       <div>
-    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goToLogin()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goBack()">
       <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
       <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
     </svg>
     </div>
-  </header>
-<main>
+    </header>
+    <main>
     <form class="form_profile" name="form_profile">
 
-      <h1>회원 정보 수정</h1>
+      <h2>회원 정보 수정</h2>
       <br>
       <div class="input-wrapper">
-      <label class="uId">ID</label><br>
+      <label class="uId">아이디</label><br>
       <label class="userId"> <%= userData.uId %></label><br>
     </div>
-    <div class="input-wrapper">
-      <label for="email">이메일</label>
-      <input id="email" type="text" name="email" value=""pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" title="올바른 이메일 형식을 입력해주세요.">
+    <div class="input-wrapper2">
+      <label for="uName" class="uName">닉네임</label>
+      <input id="uName" type="text" name="uName" pattern="^[a-zA-Z0-9가-힣]{2,12}$" required 
+      placeholder="변경하지 않는다면 넘겨주세요." oninput="checkNameFormat()"/>
     </div>
-    <div class="input-wrapper">
-      <label for="uName">닉네임</label>
-      <input id="uName" type="text" name="uName" value="" required />
-    </div>
-    <div class="input-wrapper">
-      <label for="pw">비밀번호</label>
-      <input id="pw" type="password" name="pw" value="" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required />
-    </div>
+    <div id="nameErrorMessage" class="alert alert-danger" style="display: none;"></div>
 
-    <div class="input-wrapper">
+    <div class="input-wrapper2">
+      <label for="email" class="email">이메일</label>
+      <input id="email" type="text" name="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}" 
+        placeholder="변경하지 않는다면 넘겨주세요.">
+    </div>
+    <div id="emailErrorMessage" class="alert alert-danger" style="display: none;"></div>
+
+    <div class="input-wrapper2">
+      <label for="pw" class="pw">비밀번호</label>
+      <input id="pw" type="password" name="pw" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" required oninput="checkPwFormat()"/>
+    </div>
+    <div id="pwErrorMessage" class="alert alert-danger" style="display: none;"></div>
+
+
+    <div class="input-wrapper2">
       <label for="pw_check">비밀번호확인</label>
-      <input id="pw_check" type="password" name="pw_check" value="" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" title="비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다." required />
+      <input id="pwCheck" type="password" name="pwCheck" pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$" required />
     </div>
-      <button type="button" class="profileEdit" onclick="profileEdit();">수정하기</button><br>
+    <div id="pwCheckErrorMessage" class="alert alert-danger" style="display: none;"></div>
 
-      <button type="button" class="profileDelete" onclick="profileDelete();">회원탈퇴</button>
+
+
+    <button type="button" class="profileEdit" onclick="profileEdit();" disabled>수정하기</button><br>
+
+      <button type="button" class="profileDelete" onclick="openDeleteModal();">회원탈퇴</button>
     </form>
 
-      <!-- Modal -->
-      <div class="modal fade" id="cautionModal" tabindex="-1" aria-labelledby="cautionModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <!-- Modal -->
+    <div class="modal fade" id="cautionModal" tabindex="-1" aria-labelledby="cautionModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+          <div class="modal-header">
             <h5 class="modal-title" id="cautionModalLabel">경고</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-            </div>
-            <div class="modal-body">
+          </div>
+          <div class="modal-body">
             <p id="cautionText"></p>
-            </div>
-            <div class="modal-footer">
+          </div>
+          <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-            </div>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- 회원 탈퇴 확인용 모달 -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmDeleteModalLabel">회원 탈퇴</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>회원 탈퇴를 진행하려면 비밀번호를 입력하세요:</p>
+            <input id="deletePassword" type="password" class="form-control" placeholder="비밀번호">
+          </div>
+          <br>
+
+          <div id="pwModalMessage" class="alert alert-danger" style="display: none;"></div>
+          <br>
+
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+            <button type="button" class="btn btn-danger" id="deletebtn" onclick="confirmDelete()">탈퇴</button>
+          </div>
         </div>
+      </div>
     </div>
   </main>
     <script>
+      const pwInput = document.getElementById("pw");
+      const pwCheckInput = document.getElementById("pwCheck");
+      const pwCheckErrorMessage = document.getElementById("pwCheckErrorMessage");
+      const uNameInput = document.getElementById("uName");
+      const emailInput = document.getElementById("email");
+
+      const editButton = document.querySelector(".profileEdit");
+
+      // 닉네임 필드 포커스가 벗어났을 때 
+      function checkNameFormat() {
+          const nameInput = document.getElementById("uName");
+          const nameErrorMessage = document.getElementById("nameErrorMessage");
+
+          if (!nameInput.validity.valid) {
+              // 형식이 올바르지 않은 경우 알림을 표시
+              const errorMessage = "한글, 영문, 숫자로 2자 이상 12자 이하로 구성되어야 합니다.";
+              nameErrorMessage.textContent = errorMessage;
+              nameErrorMessage.style.display = "block";
+          } else {
+              // 형식이 올바른 경우 알림을 숨김
+              nameErrorMessage.style.display = "none";
+
+          }
+      }
+      // 이메일 필드 포커스가 벗어났을 때 
+      function checkEmailFormat() {
+          const emailInput = document.getElementById("email");
+          const emailErrorMessage = document.getElementById("emailErrorMessage");
+
+          if (!emailInput.validity.valid) {
+              // 형식이 올바르지 않은 경우 알림을 표시
+              const errorMessage = "올바른 이메일 형식을 입력해주세요.";
+              emailErrorMessage.textContent = errorMessage;
+              emailErrorMessage.style.display = "block";
+          } else {
+              // 형식이 올바른 경우 알림을 숨김
+              emailErrorMessage.style.display = "none";
+          }
+      }
+      // pw 필드 포커스가 벗어났을 때 
+      function checkPwFormat() {
+          const pwInput = document.getElementById("pw");
+          const pwErrorMessage = document.getElementById("pwErrorMessage");
+
+          if (!pwInput.validity.valid) {
+              // 형식이 올바르지 않은 경우 알림을 표시
+              const errorMessage = "비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다.";
+              pwErrorMessage.textContent = errorMessage;
+              pwErrorMessage.style.display = "block";
+          } else {
+              // 형식이 올바른 경우 알림을 숨김
+              pwErrorMessage.style.display = "none";
+          }
+      }
+      // 비밀번호 일치 여부
+      function checkPasswordMatch() {
+          if (pwInput.value !== pwCheckInput.value) {
+              pwCheckErrorMessage.textContent = "비밀번호가 일치하지 않습니다.";
+              pwCheckErrorMessage.style.display = "block";
+              editButton.disabled = true;
+          } else {
+              pwCheckErrorMessage.style.display = "none";
+              editButton.disabled = false;
+          }
+      }
+      pwCheckInput.addEventListener("input", checkPasswordMatch);
+
+      // input 유효성 검사
+      function validateForm() {
+          const pwValid = pwInput.validity.valid;
+          const pwCheckValid = pwCheckInput.validity.valid;
+          
+          // 닉네임이나 이메일 필드가 비어있지 않다면 해당 필드의 유효성 검사 수행
+          const uNameValid = uNameInput.value.trim() === "" || uNameInput.validity.valid;
+          const emailValid = emailInput.value.trim() === "" || emailInput.validity.valid;
+
+          // 모든 필드가 유효한 경우 수정 버튼 활성화
+          if (pwValid && pwCheckValid && uNameValid && emailValid) {
+            editButton.disabled = false;
+          } else {
+            editButton.disabled = true;
+          }
+        }
+        uNameInput.addEventListener("input", validateForm);
+        emailInput.addEventListener("input", validateForm);
+        pwCheckInput.addEventListener("input", validateForm);
+        // 초기화
+        validateForm();
  
-   function profileEdit() {
-            const form_profile = document.forms['form_profile'];
+      function profileEdit() {
+      const form_profile = document.forms['form_profile'];
             
-            if (!form_profile.email.checkValidity()) {
-                setModalTextAndShow('올바른 이메일 형식을 입력해주세요');
-                return;
-            } else if (!form_profile.uName.checkValidity()) {
-                setModalTextAndShow('닉네임을 다시 입력해 주세요!');
-                return;
-            } else if (!form_profile.pw.checkValidity()) {
-                setModalTextAndShow('비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다.!');
-                return;
-            } else if (!form_profile.pw_check.checkValidity()) {
-                setModalTextAndShow('비밀번호가 일치 하지 않습니다!');
-                return;
-            } else {
       
-    axios({
-        method: 'PATCH',
-        url: `/users/editprofile`,
-        data: {
-            email: form_profile.email.value,
-            pw: form_profile.pw.value,
-            uName: form_profile.uName.value,
-        },
-    })
-    .then((result) => {
-        alert("회원 정보 수정 성공");
-        // 입력 항목 초기화
-        resetFormInputs();
-        
-        // 마이페이지로 이동
-        document.location.href = 'users/profile';
-    })
-    .catch((err) => {
-        setModalTextAndShow('서버에서 오류가 발생했습니다.');
-    });
-  }
-   }
-
-      function profileDelete() {
-        if (confirm("정말 삭제 하시겠습니까?")) {
+        axios({
+            method: 'PATCH',
+            url: `/users/editprofile`,
+            data: {
+                email: form_profile.email.value,
+                pw: form_profile.pw.value,
+                uName: form_profile.uName.value,
+            },
+        })
+        .then((result) => {
+          // PATCH 메소드 안에서 리다이렉트 불가능 -> 로그아웃해서 세션 날리고 로그인 창으로 이동
           axios({
-            method: 'DELETE',
-            url: '/users/deleteprofile',
+            method: 'POST',
+            url: '/logout', 
           })
-            .then((result) => {
-              alert("삭제되었습니다.");
-              // 메인 화면으로 이동
-              document.location.href = '/';
-              resetFormInputs();
+          .then((logoutResult) => {
+            document.location.href = '/login';
+          })
+          .catch((logoutError) => {
+            console.log(logoutError);
+          });
+          
+        })
+        .catch((error) => {
 
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        }
-      } 
-       // 모달창
-       function setModalTextAndShow(message) {
-            $('#cautionText').text(message);
-            $('#cautionModal').modal('show');
-        }
+          const status = error.response.request.status;
+            if (status === 400) {
+              setModalTextAndShow('입력 필드 중 하나 이상이 누락되었습니다.');
+            } else if (status === 409) {
+              setModalTextAndShow('이미 사용중인 닉네임입니다.');
+            } else {
+              setModalTextAndShow('회원가입 중 오류가 발생했습니다.');
+            }
+        });
+      }
 
-        //입력 항목 초기화 
-        function resetFormInputs() {
+
+      // 회원 탈퇴 확인용 모달 열기
+      function openDeleteModal() {
+        $('#confirmDeleteModal').modal('show');
+      }
+
+      // 회원 탈퇴 확인
+      function confirmDelete() {
+        const deletePassword = document.getElementById('deletePassword').value;
+
+        // 비밀번호 서버 전송
+        axios({
+          method: 'POST',
+          url: '/users/checkpassword',
+          data: {
+            password: deletePassword,
+          },
+        })
+          .then((result) => {
+            // 비번 체크하고 맞으면
+            if (result.data.success) {
+              // 사용자 정보 삭제 요청 전송
+              axios({
+                method: 'DELETE',
+                url: '/users/deleteprofile',
+              })
+                .then((deleteResult) => {
+                  alert('회원 탈퇴가 완료되었습니다.');
+                  document.location.href = '/';
+                })
+                .catch((deleteError) => {
+                  console.error(deleteError);
+                });
+            } else {
+              // 비밀번호 불일치
+              const errorMessage = '비밀번호가 일치하지 않습니다. 다시 시도해주세요.';
+              const errorMessageElement = document.getElementById('pwModalMessage');
+              errorMessageElement.textContent = errorMessage;
+              errorMessageElement.style.display = 'block';
+              $('#deletePassword').val(''); // 비밀번호 입력창 초기화
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            const status = error.response.request.status;
+            if (status === 401) {
+              const errorMessage = '비밀번호가 일치하지 않습니다. 다시 시도해주세요.';
+              const errorMessageElement = document.getElementById('pwModalMessage');
+              errorMessageElement.textContent = errorMessage;
+              errorMessageElement.style.display = 'block';
+              $('#deletePassword').val(''); // 비밀번호 입력창 초기화
+            } else {
+              alert('서버 오류 발생')
+              window.document.href = '/'
+            }
+          });
+      }
+
+
+      // 모달창
+      function setModalTextAndShow(message) {
+          $('#cautionText').text(message);
+          $('#cautionModal').modal('show');
+      }
+
+      //입력 항목 초기화 
+      function resetFormInputs() {
         const form_profile = document.forms["form_profile"];
         form_profile.uName.value = '';
         form_profile.email.value = '';
         form_profile.pw.value = '';
         form_profile.pw_check.value = '';
-    }
+      }
+      //뒤로가기 버튼 클릭시 사용자가 전에 머물던 페이지로 이동
+      function goBack() {
+        window.history.back();
+      }
        
       
     </script>

@@ -19,10 +19,10 @@ exports. getUser = async (req, res) => {
     if (isLogin) {
       // 데이터베이스에서 해당 사용자 정보를 조회합니다.
       const user = await User.findOne({
-        where: { uId: uId },
+        where: { uId },
       });
 
-      //-- 좋아요 클릭 게시글 가져오기
+      // 좋아요 히스토리 가져오기
       const likes = await uLike.findAll({ where: { uId } });
 
       // 좋아요 누른 질문
@@ -35,14 +35,15 @@ exports. getUser = async (req, res) => {
         where: { aId: likes.map((like) => like.aId) },
       });
 
-      //-- 작성한 게시글 가져오기
-      const posts = await Question.findAll({ where: { uId: uId } });
+      // 작성한 질문
+      const posts = await Question.findAll({ where: { uId } });
 
-      //-- 작성한 답변 가져오기
-      const answers = await Answer.findAll({ where: { uId: uId } });
+      // 작성한 답변
+      const answers = await Answer.findAll({ where: { uId } });
 
-      //-- 작성한 댓글 가져오기
-      const comments = await Comment.findAll({ where: { uId: uId } });
+      // 작성한 댓글
+      const comments = await Comment.findAll({ where: { uId } });
+
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
       if (bool === 'yes') {
         res.send({
@@ -145,10 +146,57 @@ exports.patchUser = async (req, res) => {
     let { email, pw, uName } = req.body;
     console.log(req.body);
 
+    const uNameIsDuplicate = await User.count({ where: { uName } });
+
+    if (uNameIsDuplicate) {
+      return res.status(409).json({
+        OK: false,
+        uNameIsDuplicate,
+        msg: '닉네임이 이미 존재합니다.',
+      });
+    }
+    if (!pw) {
+      return res.status(400).json({
+        OK: false,
+        msg: '입력 필드 중 하나 이상이 누락되었습니다.',
+      });
+    }
+
     pw = hashPassword(pw);
 
+    // 사용자가 둘 다 빈 값으로 넘기면 닉네임, 이메일 수정 X
+    if (!uName && !email) {
+      const currentUser = await User.findOne({ where: { uId: uId } });
+
+      const posts = await Question.findAll({ where: { uId: uId } });
+      const answers = await Answer.findAll({ where: { uId: uId } });
+      const comments = await Comment.findAll({ where: { uId: uId } });
+
+      return res.render('profile', {
+        userData: currentUser,
+        postData: posts,
+        answerData: answers,
+        commentData: comments,
+        isLogin,
+        currentUser: req.session.user,
+        success: true,
+      });
+    }
+
+    const currentUser = await User.findOne({ where: { uId: uId } });
+    const updateData = {};
+    // uName 바꾸면 uName 업데이트
+    if (uName !== '') {
+      updateData.uName = uName;
+    }
+
+    // email 바꾸면 email 업데이트
+    if (email !== '') {
+      updateData.email = email;
+    }
+
     const updatedUser = await User.update(
-      { email: email, pw: pw, uName: uName },
+      { email: updateData.email, pw: pw, uName: updateData.uName },
       {
         where: { uId: uId },
       }
@@ -185,6 +233,39 @@ exports.patchUser = async (req, res) => {
       success: false,
       msg: '서버 오류 발생',
     });
+  }
+};
+
+// 회원 탈퇴할 때 비밀번호 체크 위한 로직
+exports.checkPassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+    const uId = req.session.user;
+
+    const user = await User.findOne({
+      where: { uId },
+    });
+
+    if (!user) {
+      // 사용자가 존재하지 않는 경우
+      res.status(400).json({ success: false, message: '사용자가 존재하지 않습니다.' });
+      return;
+    }
+
+    // 비밀번호 일치 여부 확인
+    const passwordMatch = await bcrypt.compare(password, user.pw);
+
+    if (!passwordMatch) {
+      // 비밀번호가 일치하지 않는 경우
+      res.status(401).json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
+      return;
+    }
+
+    // 비밀번호가 일치하는 경우
+    res.status(200).json({ success: true, message: '비밀번호가 일치합니다.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: '서버 오류 발생' });
   }
 };
 

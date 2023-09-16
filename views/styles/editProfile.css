@@ -24,20 +24,34 @@ img {
 }
 
 main {
-  margin: 50px auto;
+  margin: 60px auto;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 500px;
-  height: 650px;
+  width: 530px;
+  height: 750px;
   border: 5px solid var(--border-color);
   border-radius: 20px;
-  padding: 30px;
+  padding: 50px 20px;
   flex-wrap: wrap;
 }
 
-h1 {
+h2 {
   color: var(--border-color);
+  font-weight: bold;
+}
+
+.uId,
+.email,
+.uName,
+.pw {
+  width: 7.5rem;
+}
+
+.input-wrapper .userId {
+  background-color: transparent;
+  margin: auto;
 }
 
 .form_profile input {
@@ -46,7 +60,6 @@ h1 {
   box-shadow: 0px 2px 0px 0px var(--main-color);
   padding: 5px 10px;
   transition: box-shadow 0.3s ease-in-out;
-  margin-bottom: 2.5rem;
   cursor: pointer;
 }
 
@@ -56,33 +69,82 @@ h1 {
 }
 
 .form_profile label {
-  margin-bottom: 2.5rem;
   margin-right: 0.5rem;
   background-color: var(--main-color);
   border-radius: 5px;
-  text-align: right;
+  text-align: center;
+  font-weight: bold;
+  padding: 8px;
 }
 
 .input-wrapper {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
 }
-.input-wrapper label {
-  align-items: end;
+.input-wrapper2 {
+  display: flex;
+  align-items: baseline;
+  margin-top: 1.5rem;
 }
-.input-wrapper .userId {
-  align-items: end;
+
+/* modal */
+.modal-content {
+  font-weight: bold;
 }
+
+#deletebtn {
+  background-color: #dc7983;
+  border-color: #dc7983;
+}
+#deletebtn:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+}
+
+/* alert */
+.alert {
+  position: relative;
+  margin: -1rem 0rem;
+  border: none;
+  border-radius: none;
+  font-size: small;
+}
+
+.alert-danger {
+  color: red;
+  background-color: transparent;
+  border-color: none;
+}
+
+/* placeholder */
+
+::placeholder {
+  font-size: 0.8em;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  font-size: 0.8em;
+  opacity: 1; /* Firefox */
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  font-size: 0.8em;
+  opacity: 1; /* Firefox */
+}
+
+/* button */
+
 button.profileEdit,
 button.profileDelete {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: auto;
-  width: 96px;
+  margin: 10px auto;
   height: 40px;
-  border-radius: 10px;
+
   background-color: var(--main-color);
   color: black;
   border: none;
@@ -92,12 +154,30 @@ button.profileDelete {
   transition: background-color 0.3s ease-in-out;
   cursor: pointer;
 }
+button.profileEdit {
+  font-weight: bold;
+  border-radius: 10px;
+  width: 120px;
+  margin-top: 3.5rem;
+}
 
-button.profileEdit:hover,
-button.profileDelete:hover {
+button.profileEdit:hover {
   background-color: var(--border-color);
   cursor: pointer;
+  color: white;
 }
 button.profileDelete {
-  background-color: rgb(224, 135, 135);
+  background-color: transparent;
+  border-bottom: 1px solid lightgrey;
+  color: lightgrey;
+  width: 100px;
+}
+button.profileDelete:hover {
+  cursor: pointer;
+}
+/* 비활성화된 버튼*/
+button[disabled] {
+  pointer-events: none; /* 마우스 이벤트 무시 */
+  opacity: 0.6;
+  cursor: default;
 }

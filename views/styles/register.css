@@ -172,6 +172,8 @@ label.isSesac {
   width: 10rem;
 }
 
+/* button */
+
 .btn-primary {
   display: flex;
   justify-content: center;
@@ -198,12 +200,15 @@ label.isSesac {
   cursor: pointer;
 }
 
-/* 중복 확인 중인 경우 버튼 색상을 파란색으로 변경
-button.checking-duplicate {
-  background-color: darkgreen !important;
-  border-color: darkgreen !important;
-  cursor: not-allowed !important;
-} */
+/* 비활성화된 버튼*/
+button[disabled] {
+  pointer-events: none; /* 마우스 이벤트 무시 */
+  opacity: 0.6; 
+  cursor: default; 
+}
+
+
+/* alert */
 
 .alert {
   position: relative;

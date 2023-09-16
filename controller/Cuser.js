@@ -11,21 +11,30 @@ exports.getJoin = (req, res) => {
 
   try {
     if (isLogin) {
-      res.status(301).send({
+      // res.status(301).send({
+      //   isLogin,
+      //   currentUser: req.session.user,
+      //   success: false,
+      //   msg: '이미 로그인되어있어서 회원가입 페이지로 이동시키면 안됨',
+      // });
+      // return;
+
+      // 이 경우 세션 삭제 후 다시 회원가입 할 수 있도록 함
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        res.redirect('/join');
+      });
+    } else {
+      res.render('join', {
         isLogin,
         currentUser: req.session.user,
-        success: false,
-        msg: '이미 로그인되어있어서 회원가입 페이지로 이동시키면 안됨',
+        success: true,
+        msg: '회원가입창 페이지 렌더링 처리 성공',
       });
-      return;
     }
-
-    res.render('join', {
-      isLogin,
-      currentUser: req.session.user,
-      success: true,
-      msg: '회원가입창 페이지 렌더링 처리 성공',
-    });
   } catch (error) {
     res.status(500).send({
       isLogin,
@@ -142,24 +151,33 @@ exports.login = (req, res) => {
   console.log(req.session.user);
   try {
     if (isLogin) {
-      res.status(301).send({
+      // res.status(301).send({
+      //   isLogin,
+      //   currentUser: req.session.user,
+      //   success: false,
+      //   msg: '이미 로그인 되어 있습니다.',
+      // });
+      // return;
+
+      // 이 경우 세션 삭제 후 다시 로그인 할 수 있도록 함
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        res.redirect('/login');
+      });
+    } else {
+      res.render('login', {
+        title: 'test',
+        uId: req.body,
+        pw: req.body,
         isLogin,
         currentUser: req.session.user,
-        success: false,
-        msg: '이미 로그인 되어 있습니다.',
+        success: true,
+        msg: '로그인 페이지 렌더링 정상 처리',
       });
-      return;
     }
-
-    res.render('login', {
-      title: 'test',
-      uId: req.body,
-      pw: req.body,
-      isLogin,
-      currentUser: req.session.user,
-      success: true,
-      msg: '로그인 페이지 렌더링 정상 처리',
-    });
   } catch (error) {
     res.status(500).send({
       isLogin,

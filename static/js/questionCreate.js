@@ -26,7 +26,7 @@ const changeType = (t) => {
 
 const postBoard = (t) => {
   const title = document.querySelector("#title");
-  const content = editor.getData();
+  const content = editor.getData(); // 에디터 내부 데이터
   if (title.value === "" || !title.value) {
     appendAlert("제목을 입력해 주세요");
   } else if (content === "" || !content) {
@@ -53,7 +53,7 @@ const postBoard = (t) => {
       }).then((res) => {
         if (res) {
           console.log(res.data);
-          document.location.href = `/question/${res.data.result.qId}`;
+          document.location.href = `/question/detail/${res.data.result.qId}`;
         }
       });
     }

@@ -1,6 +1,51 @@
-const { Board, Comment, uLike } = require('../models/index');
+const { Board, Comment, uLike, User } = require('../models/index');
 const { Op } = require('sequelize');
 const moment = require('moment');
+
+// 게시글 메인
+exports.getBoardMain = async (req, res) => {
+  console.log(req.params);
+  let page = parseInt(req.params.page) || 1;
+  let pageSize = parseInt(req.params.pageSize) || 20;
+  try {
+    // 전체 게시글 개수 계산
+    const totalPage = await Board.count();
+
+    // 페이지 수 (올림처리)
+    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+
+    // 페이지에 해당하는 게시글 데이터 조회
+    // limit = 가져올 데이터 양
+    // offset = 가져올 첫 데이터 위치
+    const paginatedBoards = await Board.findAll({
+      //최신글 정렬
+      order: [['createdAt', 'DESC']],
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
+    });
+
+    // 날짜 데이터 포맷 변경
+    const create = [];
+    for (b of paginatedBoards) {
+      create.push(moment(b.dataValues.createdAt).format('YYYY-MM-DD'));
+    }
+
+    res.render('listMain', {
+      type: 'board',
+      boards: paginatedBoards,
+      // paginatedCount: pageSize,
+      pageCount,
+      cDate: create,
+      msg: '페이지별 게시글 호출 처리 완료',
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      error: '서버 에러',
+    });
+  }
+};
 
 // 새 게시글 생성 페이지 렌더링
 // /board/create
@@ -46,7 +91,7 @@ exports.newBoardPage = (req, res) => {
 // 개별 게시글 페이지 렌더링
 // board/detail/:bId
 exports.detailBoard = async (req, res) => {
-  // 세션 검사
+  // 세션 확인
   let isLogin = req.session.user ? true : false;
 
   try {
@@ -75,7 +120,7 @@ exports.detailBoard = async (req, res) => {
       where: {
         bId,
         //! uId
-        uId: 1, // 임의 유저 1
+        uId: req.session.user, // 로그인 유저
       },
     });
 
@@ -144,6 +189,9 @@ exports.viewBoard = async (req, res) => {
 // PATCH
 // board/detail/like/:bId
 exports.likeBoard = async (req, res) => {
+  // 세션 확인
+  let isLogin = req.session.user ? true : false;
+
   try {
     const { bId } = req.params;
 
@@ -154,7 +202,7 @@ exports.likeBoard = async (req, res) => {
       where: {
         bId,
         //! uId
-        uId: 1, // 임의 유저 1
+        uId: req.session.user, // 로그인 현재 로그인 된 유저
       },
     });
 
@@ -168,7 +216,7 @@ exports.likeBoard = async (req, res) => {
       // (1) 좋아요 히스토리 생성 : uLike에 해당 bId 생성됨.
       await uLike.create({
         // uId
-        uId: 1, // 임의 유저 1
+        uId: req.session.user, // 임의 유저 1
         bId,
       });
 
@@ -257,39 +305,62 @@ const getComment = async (bId) => {
 };
 
 // 게시글 페이지별 호출시 처리
+// /board/list/:page
 exports.paginateBoard = async (req, res) => {
-  console.log(req.params);
-  let page = parseInt(req.params.page) || 1;
-  // let pageSize = parseInt(req.params.pageSize) || 20;
-  let pageSize = 3;
-  try {
-    // 전체 게시글 개수 계산
-    const totalPage = await Board.count();
+  // 세션 확인
+  let isLogin = req.session.user ? true : false;
 
-    // 페이지 수 (올림처리)
-    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+  try {
+    let page = parseInt(req.params.page) || 1;
+    let pageSize = parseInt(req.params.pageSize) || 20;
+
+    const boardTotalCount = await Board.count();
+    const boardPageCount = parseInt(Math.ceil(boardTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 페이지에 해당하는 게시글 데이터 조회
     // limit = 가져올 데이터 양
     // offset = 가져올 첫 데이터 위치
-    const paginatedBoards = await Board.findAll({
-      //최신글 정렬
-      order: [['createdAt', 'DESC']],
+    // 페이지별 Board 데이터 조회
+    const paginatedBoard = await Board.findAll({
+      order: [['createdAt', 'DESC']], // 정렬 기준
       limit: pageSize,
       offset: (page - 1) * pageSize,
     });
 
     // 날짜 데이터 포맷 변경
-    const create = [];
-    for (b of paginatedBoards) {
-      create.push(moment(b.dataValues.createdAt).format('YYYY-MM-DD'));
+    const boardCreateAt = [];
+    for (b of paginatedBoard) {
+      boardCreateAt.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
     }
 
+    // Board. uNname 배열에 저장
+    const boardUserName = [];
+    for (b of paginatedBoard) {
+      // User 모델로 uid가지고 uName 가져오기
+      const user = await User.findByPk(b.uId);
+      boardUserName.push(user.uName);
+    }
+
+    // Board. Comment 배열에 저장 후 총 갯수 계산
+    const boardCommentCount = [];
+    for (b of paginatedBoard) {
+      // Comment 모델로 bid가지고 count 세기
+      const count = await Comment.count({
+        where: {
+          bId: b.qId,
+        },
+      });
+      boardCommentCount.push(count);
+    }
+
+    // 데이터 응답
     res.send({
-      boards: paginatedBoards,
-      // paginatedCount: pageSize,
-      pageCount,
-      cDate: create,
+      boardData: paginatedBoard, // Board 데이터(20개씩)
+      boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+      boardUserName, // Board 데이터에서 uname을 가져와서
+      boardCommentCount, // Board 데이터에서 CommentCount을 가져와서
+      boardPageCount, // 총 몇페이지인지
+      success: true,
       msg: '페이지별 게시글 호출 처리 완료',
     });
   } catch (error) {
@@ -368,15 +439,15 @@ exports.editBoard = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    if (!isLogin) {
-      res.status(401).send({
-        success: false,
-        isLogin,
-        currentLoginUser: req.session.user,
-        msg: '로그인 되어있지 않습니다.',
-      });
-      return;
-    }
+    // if (!isLogin) {
+    //   res.status(401).send({
+    //     success: false,
+    //     isLogin,
+    //     currentLoginUser: req.session.user,
+    //     msg: '로그인 되어있지 않습니다.',
+    //   });
+    //   return;
+    // }
 
     const { bId } = req.params;
     const { title, content } = req.body;
@@ -395,7 +466,7 @@ exports.editBoard = async (req, res) => {
       return;
     }
 
-    let isUpdated = await Board.update(
+    let result = await Board.update(
       {
         title: title,
         content: content,
@@ -404,12 +475,11 @@ exports.editBoard = async (req, res) => {
         where: { bId: bId },
       }
     );
-
-    // update 처리 성공시 isUpdated[0] = 0
-    // update 처리 실패시 isUpdated[0] = 1
+    console.log(result);
+    // update 처리 성공시 isUpdated[0] = 1
+    // update 처리 실패시 isUpdated[0] = 0
     // 하지만 실제로 같은 데이터로 업데이트를 수행해서 데이터변경이 없어도 update결과로 isUpdated가 1(성공)이 나와버린다.
-    if (!isUpdated[0]) {
-      isUpdated = false;
+    if (!result[0]) {
       throw new Error('게시글 수정 실패'); // 에러를 던짐(catch에서 수행)
       return;
     }
@@ -421,25 +491,20 @@ exports.editBoard = async (req, res) => {
     const hasChangedResult = hasChanged(before.dataValues, after.dataValues);
     isUpdated = hasChangedResult ? true : false;
 
-    if (isUpdated) {
-      res.status(200).send({
-        success: true,
-        isLogin,
-        currentLoginUser: req.session.user,
-        isUpdated,
-        msg: '게시글 업데이트 처리 성공',
-      });
-      return;
-    } else {
-      res.status(200).send({
-        success: true,
-        isLogin,
-        currentLoginUser: req.session.user,
-        isUpdated,
-        msg: '게시글의 제목, 내용 모두 변경된게 없습니다.',
-      });
+    if (!isUpdated) {
+      isUpdated = false;
+      throw new Error('게시글의 제목, 내용 모두 변경된게 없습니다.'); // 에러를 던짐(catch에서 수행)
       return;
     }
+
+    // 정상 처리
+    res.status(200).send({
+      success: true,
+      isLogin,
+      currentLoginUser: req.session.user,
+      isUpdated,
+      msg: '게시글 업데이트 처리 성공',
+    });
   } catch (error) {
     // 에러 처리
     console.log(error);
@@ -458,14 +523,11 @@ const hasChanged = (before, after) =>
   before.title !== after.title || before.content !== after.content;
 
 // 게시글 삭제 처리
+// /board/delete/:bId
 exports.deleteBoard = async (req, res) => {
-  // 테스트를 위해 로그인 된것으로 처리
-  req.session.user = 'tgkim';
+  // 세션 확인
+  let isLogin = req.session.user ? true : false;
 
-  if (!req.session.user) {
-    // 로그인 상태가 아니면 홈으로 리다이렉트
-    res.redirect('/');
-  }
   const { bId } = req.params;
 
   try {
@@ -474,18 +536,26 @@ exports.deleteBoard = async (req, res) => {
         bId: bId,
       },
     });
-    if (isDeleted) {
-      return res.send({
-        isDeleted: true,
-      });
-    } else {
-      return res.send({
+
+    // 삭제 실패 처리
+    if (!isDeleted) {
+      res.status(404).send({
         isDeleted: false,
+        currentLoginUser: req.session.user,
+        msg: '게시글이 삭제되지 않았습니다.',
       });
+      return;
     }
+
+    // 정상 삭제 처리
+    res.redirect('/');
   } catch (error) {
     console.log(error);
     // 에러 처리
+    res.status(500).send({
+      currentLoginUser: req.session.user,
+      msg: '게시글 삭제처리 중 서버에러 발생',
+    });
   }
 };
 
