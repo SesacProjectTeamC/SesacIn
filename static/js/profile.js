@@ -9,88 +9,109 @@ function change(type) {
   fetchData(type);
 }
 
-function fetchData(type) {
-  let url = `/data/${type}`;
+function change(buttonType) {
+  const contentDiv = document.getElementById('content');
 
-  axios
-    .get(url)
-    .then((response) => {
-      //div태그로 렌더
-      renderContent(type, response.data);
-    })
-    .catch((error) => {
-      console.error("데이터를 불러오는 중 에러가 발생했습니다:", error);
-    });
+  // 서버에서 데이터 가져오기
+  axios.get('/users/profile')
+      .then(response => {
+          const data = response.data;
+
+          switch (buttonType) {
+              case 'likedQuestion':
+                  let likedQuestionsHtml = '';
+                  for (let question of data.likeQuestionData) {
+                      likedQuestionsHtml += `
+                          <div class="question">
+                              <h3>${question.title}</h3>
+                              <p>질문 유형: ${question.qType}</p>
+                              <p>${question.content}</p>
+                              <p>조회수: ${question.viewCount}</p>
+                              <p>좋아요 수: ${question.likeCount}</p>
+                              <p>생성일: ${question.createdAt}</p>
+                              <p>수정일: ${question.updatedAt}</p>
+                          </div>
+                      `;
+                  }
+                  contentDiv.innerHTML = likedQuestionsHtml;
+                  break;
+
+              case 'likedAnswer':
+                  let likedAnswersHtml = '';
+                  for (let answer of data.likeAnswerData) {
+                      likedAnswersHtml += `
+                          <div class="answer">
+                              <h3>${answer.title}</h3>
+                              <p>${answer.content}</p>
+                              <p>좋아요 수: ${answer.likeCount}</p>
+                              <p>생성일: ${answer.createdAt}</p>
+                              <p>수정일: ${answer.updatedAt}</p>
+                          </div>
+                      `;
+                  }
+                  contentDiv.innerHTML = likedAnswersHtml;
+                  break;
+
+              case 'postedQuestion':
+                  let postedQuestionsHtml = '';
+                  for (let post of data.postData) {
+                      postedQuestionsHtml += `
+                          <div class="postedQuestion">
+                              <h3>${post.title}</h3>
+                              <p>질문 유형: ${post.qType}</p>
+                              <p>${post.content}</p>
+                              <p>조회수: ${post.viewCount}</p>
+                              <p>좋아요 수: ${post.likeCount}</p>
+                              <p>생성일: ${post.createdAt}</p>
+                              <p>수정일: ${post.updatedAt}</p>
+                          </div>
+                      `;
+                  }
+                  contentDiv.innerHTML = postedQuestionsHtml;
+                  break;
+
+              case 'postedAnswer':
+                  let postedAnswersHtml = '';
+                  for (let answer of data.answerData) {
+                      postedAnswersHtml += `
+                          <div class="postedAnswer">
+                              <h3>${answer.title}</h3>
+                              <p>${answer.content}</p>
+                              <p>좋아요 수: ${answer.likeCount}</p>
+                              <p>생성일: ${answer.createdAt}</p>
+                              <p>수정일: ${answer.updatedAt}</p>
+                          </div>
+                      `;
+                  }
+                  contentDiv.innerHTML = postedAnswersHtml;
+                  break;
+
+              case 'commented':
+                  let commentHtml = '';
+                  for (let comment of data.commentData) {
+                      commentHtml += `
+                          <div class="comment">
+                              <h3>댓글 ID: ${comment.cId}</h3>
+                              <p>질문 ID: ${comment.qId}</p>
+                              <p>답변 ID: ${comment.aId}</p>
+                              <p>사용자 ID: ${comment.uId}</p>
+                              <p>${comment.content}</p>
+                          </div>
+                      `;
+                  }
+                  contentDiv.innerHTML = commentHtml;
+                  break;
+
+              default:
+                  contentDiv.innerHTML = '선택된 내용이 없습니다.';
+          }
+      })
+      .catch(error => {
+          console.error('Error fetching data:', error);
+          contentDiv.innerHTML = '데이터를 가져오는데 오류가 발생했습니다.';
+      });
 }
 
-function renderContent(type, data) {
-  const content = document.getElementById("content");
-  if (Array.isArray(data)) {
-    let divContent = [
-      //여기서 보여줄 거 : 제목, 내용 한줄
-      `<h2> ${type.likeQuestionData} </h2>`,
-    ];
-    data.forEach((item) => {
-      divContent += change(item, item.type); 
-    });
-    console.log(divContent);
-    content.innerHTML = divContent;
-  } else {
-    console.error("데이터 형식이 배열이 아닙니다:", data);
-  }
-}
-
-function qnaPost (type, data){
-  const content = document.getElementById("content");
-  let posts = [];
-
-  let divContent = [
-    `<h2> ${type.likeQuestionData} </h2>`,
-  ];
-  data.forEach((item) => {
-    divContent += change(item, item.type); // 예제로 cDate를 item에서 가져왔습니다.
-  });
-  divContent.push(posts);
-  console.log(posts);
-  content.innerHTML = divContent;
-}else {
-  console.error("데이터 형식이 배열이 아닙니다:", data);
-}
-
-function freeboardPost(type, data){
-
-  let divContent = [
-    `<h2> ${type.likeQuestionData} </h2>`,
-    `<h2> ${type.answerData.slice(5)} </h2>`,
-
-  ];
-
-}
-function likePost(type,data) {
-  const content = document.getElementById("content");
-  let posts = [];
-  console.log(likeQuestion.likeQuestionData[0]);
-
-  axios({
-    method: 'POST',
-    url: '/question/create',
-    data: { title: title.value, content: content.value, qType: type },
-  }).then((res) => {
-    console.log('sdsd');
-  });
-}
-
-function commentedPost(type, data){
-  const content = document.getElementById("content");
-  let posts = [];
-
-}
-
-function answeredPost(type, data){
-  const content = document.getElementById("content");
-  let posts = [];
-
-}
 
 // 이벤트 리스너들
 document.querySelector(".liked").addEventListener("click", () => {
