@@ -114,10 +114,7 @@ exports.viewBoard = async (req, res) => {
     const eachBoard = await getBoard(bId);
 
     // 조회수 업데이트 +1
-    await Board.update(
-      { viewCount: eachBoard.viewCount + 1 },
-      { where: { bId } }
-    );
+    await Board.update({ viewCount: eachBoard.viewCount + 1 }, { where: { bId } });
     res.status(200).send({ boardData: eachBoard });
   } catch (error) {
     console.error(error);
@@ -162,10 +159,7 @@ exports.likeBoard = async (req, res) => {
       });
 
       // (2) 자유게시글 likeCount +1 업데이트
-      await Board.update(
-        { likeCount: eachBoard.likeCount + 1 },
-        { where: { bId } }
-      );
+      await Board.update({ likeCount: eachBoard.likeCount + 1 }, { where: { bId } });
     } else if (uLikeFind) {
       // 3-2. uLike findOne -> bId 있으면,
       // (1) 좋아요 히스토리 삭제 : uLike에 해당 bId 삭제함
@@ -174,10 +168,7 @@ exports.likeBoard = async (req, res) => {
       });
 
       // (2) 자유게시글 likeCount -1 업데이트
-      await Board.update(
-        { likeCount: eachBoard.likeCount - 1 },
-        { where: { bId } }
-      );
+      await Board.update({ likeCount: eachBoard.likeCount - 1 }, { where: { bId } });
     }
 
     res.status(200).send({
@@ -246,39 +237,60 @@ const getComment = async (bId) => {
 };
 
 // 게시글 페이지별 호출시 처리
+// /board/list/:page
 exports.paginateBoard = async (req, res) => {
-  console.log(req.params);
-  let page = parseInt(req.params.page) || 1;
-  // let pageSize = parseInt(req.params.pageSize) || 20;
-  let pageSize = 3;
-  try {
-    // 전체 게시글 개수 계산
-    const totalPage = await Board.count();
+  // 세션 확인
+  let isLogin = req.session.user ? true : false;
 
-    // 페이지 수 (올림처리)
-    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+  try {
+    let page = parseInt(req.params.page) || 1;
+    let pageSize = parseInt(req.params.pageSize) || 20;
+
+    const boardTotalCount = await Board.count();
+    const boardPageCount = parseInt(Math.ceil(boardTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 페이지에 해당하는 게시글 데이터 조회
     // limit = 가져올 데이터 양
     // offset = 가져올 첫 데이터 위치
-    const paginatedBoards = await Board.findAll({
-      //최신글 정렬
-      order: [['createdAt', 'DESC']],
+    // 페이지별 Board 호출
+    const paginatedBoard = await Question.findAll({
+      order: [['createdAt', 'DESC']], // 정렬 기준
       limit: pageSize,
       offset: (page - 1) * pageSize,
     });
 
     // 날짜 데이터 포맷 변경
-    const create = [];
-    for (b of paginatedBoards) {
-      create.push(moment(b.dataValues.createdAt).format('YYYY-MM-DD'));
+    const boardCreateAt = [];
+    for (b of paginatedBoard) {
+      boardCreateAt.push(moment(q.createdAt).format('YYYY-MM-DD'));
+    }
+
+    // Board. uNname 배열에 저장
+    const boardUserName = [];
+    for (b of paginatedBoard) {
+      // User 모델로 uid가지고 uName 가져오기
+      const user = await User.findByPk(b.uId);
+      boardUserName.push(user.uName);
+    }
+
+    // Board. Comment 배열에 저장 후 총 갯수 계산
+    const boardCommentCount = [];
+    for (b of paginatedBoard) {
+      // Comment 모델로 bid가지고 count 세기
+      const count = await Comment.count({
+        where: {
+          bId: b.qId,
+        },
+      });
+      boardCommentCount.push(count);
     }
 
     res.send({
-      boards: paginatedBoards,
-      // paginatedCount: pageSize,
-      pageCount,
-      cDate: create,
+      boardData: paginatedBoard, // Board 데이터(20개씩)
+      boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+      boardUserName, // Board 데이터에서 uname을 가져와서
+      boardCommentCount, // Board 데이터에서 CommentCount을 가져와서
+      boardPageCount, // 총 몇페이지인지
       msg: '페이지별 게시글 호출 처리 완료',
     });
   } catch (error) {
@@ -437,8 +449,7 @@ exports.editBoard = async (req, res) => {
 };
 
 // 자유게시판 게시글 내용/제목 변경여부 확인 함수
-const hasChanged = (before, after) =>
-  before.title !== after.title || before.content !== after.content;
+const hasChanged = (before, after) => before.title !== after.title || before.content !== after.content;
 
 // 게시글 삭제 처리
 // /board/delete/:bId
@@ -600,10 +611,7 @@ exports.editComment = async (req, res) => {
     }
 
     // 댓글 수정
-    const isUpdatedComment = await Comment.update(
-      { content: content },
-      { where: { cId: cId } }
-    );
+    const isUpdatedComment = await Comment.update({ content: content }, { where: { cId: cId } });
 
     // 댓글이 달린 게시글의 총 댓글수 확인
     const commentCount = await getCommentCount(cId);
