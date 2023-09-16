@@ -220,9 +220,6 @@ exports.getCreateQuestion = async (req, res) => {
 
 //=== 질문 생성 POST ===
 exports.postQuestion = async (req, res) => {
-  // test login
-  req.session.user = 1;
-
   if (!req.session.user) {
     res.redirect('/');
   }
@@ -275,10 +272,27 @@ exports.getEditQuestion = async (req, res) => {
 };
 
 //=== 질문 수정 PATCH ===
+// /question/:qId/edit
 exports.patchQuestion = async (req, res) => {
+  // 세션 확인
+  let isLogin = req.session.user ? true : false;
+
   try {
     const { qId } = req.params;
     const { title, content } = req.body;
+
+    // 업데이트 전 질문 데이터 조회
+    const before = await Question.findByPk(qId);
+
+    // uid로 게시글 소유자 여부 확인(권한 확인)
+    if (before.dataValues.uId !== req.session.user) {
+      res.status(401).send({
+        success: false,
+        currentLoginUser: req.session.user,
+        msg: '게시글의 소유자가 아님',
+      });
+      return;
+    }
 
     const updatedQuestion = await Question.update(
       { title, content },
