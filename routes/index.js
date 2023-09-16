@@ -2,6 +2,7 @@
 // 경로 선언과 관련된 내용 기술
 const express = require('express');
 const router = express.Router();
+const Cmain = require('../controller/Cmain');
 const Cuser = require('../controller/Cuser');
 const Cquestion = require('../controller/Cquestion');
 const Cboard = require('../controller/Cboard');
@@ -9,7 +10,10 @@ const Cprofile = require('../controller/Cprofile');
 // const CprofileTest = require("../controller/CprofileTest");
 
 // 메인 페이지 렌더링
-router.get('/', Cquestion.getQuestions);
+router.get('/', Cmain.getMainPage);
+
+/////////////////////////
+// 사용자 처리 관련 Route
 
 // 회원 가입 페이지 렌더링
 router.get('/join', Cuser.getJoin);
