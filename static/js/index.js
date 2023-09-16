@@ -60,6 +60,8 @@ const changePagination = (res, page) => {
 const freeboardcard = (data, cDate) => {
   const result = [
     `<a href="/board/detail/${data.bId}">`,
+    // `<button onclick="moveToDetailBoard('<%= data.bId %>')">`,
+    // [ BE ] 변경 부탁드립니다 !
     `<div id="cardContainer">`,
     `<type> 자유 | ${cDate} </type>`,
     '<div class="ques  boards">자유.',
@@ -81,7 +83,7 @@ const freeboardcard = (data, cDate) => {
     '</div>',
     '</user>',
     '</div>',
-    '</a>',
+    '<a>',
   ].join('');
   return result;
 };
@@ -157,6 +159,33 @@ const moveToMakePost = () => {
 
 //=== 0. 버튼 클릭 시 url 이동 ===
 // 1) 질문
+const moveToDetailQuestion = (qId) => {
+  axios({
+    method: 'PATCH',
+    url: `/question/${qId}/view`,
+  })
+    .then((res) => {
+      if (res) {
+        document.location.href = `/question/${qId}`;
+      }
+    })
+    .catch((err) => console.log(err));
+};
+
+// 2) 자유 게시판
+const moveToDetailBoard = (bId) => {
+  axios({
+    method: 'PATCH',
+    url: `/board/view/${bId}`,
+  })
+    .then((res) => {
+      if (res) {
+        document.location.href = `/board/detail/${bId}`;
+      }
+    })
+    .catch((err) => console.log(err));
+};
+
 const moveToCreateQuestion = () => {
   window.location.href = '/question/create';
 };
@@ -326,7 +355,7 @@ const deleteAnswer = (qId, aId) => {
 const aLikeHandler = (qId, aId) => {
   axios({
     method: 'PATCH',
-    url: `/question/${qId}/${aId}`,
+    url: `/question/${qId}/like/${aId}`,
     data: { aId },
   }).then((res) => {
     if (res) {

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="views/componets/cdn.ejs">
+    <link rel="stylesheet" href="/views/styles/profile.css">
+    <link rel="stylesheet" href="/views/styles/globalstyle.css">
+    
+    
+</head>
+  <body>
+    <header>
+      <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
+      <div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left">
+      <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
+      <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+    </svg>
+  </div>
+
+</header>
+<main>
+  
+  <!-- 이미지 업로드 -->
+  <form action="/upload/image/user" method="post" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="text" name="title">
+    <button type="submit">업로드</button>
+  </form>
+  <!-- 프로필 -->
+  
+  <form name="profile">
+
+    <img 
+    src="/../static/svg/person.svg" 
+    class="person"
+    alt="src"
+    >
+    <!-- 배지 -->
+    <img class="sesac_badge" src="/../static/img/sesac_badge.png">
+
+    
+    <h1>User Profile</h1>
+    <% if (userData) { %>
+      <!-- 닉네임 -->
+      <p>UserName: <%= userData.uName %></p>
+      <!-- id -->
+      <p>UserID: <%= userData.uId %></p>
+      <!-- 이메일 -->
+      <p>Email: <%= userData.email %></p>
+      <!-- 새싹인지 아닌지 -->
+      <p>Is Sesac: <%= userData.isSesac ? 'Yes' : 'No' %></p>
+      <!-- 새싹 캠퍼스 -->
+      <p>Campus: <%= userData.campus %></p>
+      <% }  %>
+    </form>
+    
+    <!-- <button onclick="gotoProfileEdit()">회원정보 수정</button> -->
+
+    <!-- /users/editprofile 로 GET을 날리는게 아니라 PATCH를 날려야 합니다. -->
+    <a href=/users/editprofile>회원 정보 수정</a><br>
+      <!-- 여기서 type 값은 qna과 free를 보냄 -->
+      <button class="qna" onclick="change('qna')">Q&A 게시판</button>
+      <button class="free" onclick="change('free')">자유 게시판</button><br>
+      
+      <!-- 숨겨진 버튼들 -->
+      <button class="option hidden liked" onclick="change('liked')">좋아요 누른 게시글</button>
+      <button class="option hidden writed" onclick="change('writed')">내가 작성한 게시글</button>
+      <button class="option hidden commented" onclick="change('commented')">내가 댓글단 게시글</button>
+      <button class="option hidden answered" onclick="change('answered')">내가 답변한 게시글</button>
+      
+      <div id="content"></div>
+      
+   
+    <div id="content"></div>
+  </main>
+    <script>
+     function change(type) {
+        const content = document.getElementById("content");
+        const options = document.querySelectorAll('.option'); // 옵션 버튼을 선택
+        const answeredButton = document.querySelector('.answered'); // '내가 답변한 게시글' 버튼을 선택
+
+        let boardTitle;
+        let divContent = "";
+
+        if (type === "qna") {
+          boardTitle = "QnA 게시판";
+
+          options.forEach(opt => opt.classList.remove('hidden')); // 옵션 버튼들을 보여줍니다.
+          change('liked'); // 기본값으로 '좋아요 누른 게시글'의 이벤트를 실행
+          return; // '좋아요 누른 게시글'의 이벤트가 실행된 후, 현재 함수의 나머지 부분을 실행하지 않도록 합니다.
+        } else if (type === "free") {
+          boardTitle = "자유 게시판";
+
+          options.forEach(opt => opt.classList.remove('hidden')); // 옵션 버튼들을 보여줍니다.
+          answeredButton.classList.add('hidden'); // '내가 답변한 게시글' 버튼을 숨깁니다.
+          change('liked'); // 기본값으로 '좋아요 누른 게시글'의 이벤트를 실행
+          return; // '좋아요 누른 게시글'의 이벤트가 실행된 후, 현재 함수의 나머지 부분을 실행하지 않도록 합니다.
+        } else {
+          boardTitle = type.charAt(0).toUpperCase() + type.slice(1); // type의 첫 글자만 대문자로 바꿉니다.
+          divContent = `
+            <div>
+                <h2>${boardTitle} 게시판</h2>
+                <div>1. ${boardTitle} 글 1</div>
+                <div>2. ${boardTitle} 글 2</div>
+            </div>
+          `;
+        }
+
+        content.innerHTML = divContent;
+      }
+
+
+
+ 
+    function editProfile() {
+      axios({
+        method: 'GET',
+        url: '/users/editprofile',
+      }).then((res) => {
+    if (res) {
+    }
+  });
+    }
+
+  
+    function fileUpload() {
+          console.log('동적 파일 업로드');
+          // js파일만으로 폼을 전송 ( 파일 데이터를 서버로 전송해야 하는 케이스)
+          // FormData 객체를 활용하면 쉽게 전송 가능!
+          const formData = new FormData();
+          const file = document.querySelector('#dynamic-file');
+          console.dir(file);
+          console.dir(file.files);
+          console.dir(file.files[0]);
+
+          //append( key, value)
+          formData.append('dynamicUserfile', file.files[0]);
+
+          axios({
+              method: 'post',
+              url: '/dynamicFile',
+              data: formData,
+              header : {
+                  'Content-Type': 'multipart/form-data',
+              },
+          }).then ((res) => {
+              const {data} = res;
+              console.log(data);
+              document.querySelector('img').src = '/' + data.path;
+          });
+      }
+  </script>
+</html>

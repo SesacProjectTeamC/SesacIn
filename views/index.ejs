@@ -26,7 +26,8 @@
         <button
           onclick="moveToMakePost()"
           type="button"
-          class="btn btn-outline-primary">
+          class="btn btn-outline-primary"
+        >
           글쓰기
         </button>
       </div>
@@ -42,9 +43,11 @@
       >
         <ul class="pagination">
           <li id="prev" class="page-item disabled">
-            <a class="page-link" tabindex="-1" onclick="getPageData('prev')"
-              ><</a
-            >
+            <a
+              class="page-link"
+              tabindex="-1"
+              onclick="getPageData('prev')"
+            ></a>
           </li>
 
           <%for(let i = 1; i <= (pageCount > 10 ? 10 : pageCount); i++){%>
