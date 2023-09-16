@@ -6,6 +6,14 @@ const Cboard = require('../controller/Cboard');
 // /board/detail/:bId
 router.get('/detail/:bId', Cboard.detailBoard);
 
+// 게시글 조회수 처리
+// /board/view/:bId
+router.patch('/detail/view/:bId', Cboard.viewBoard);
+
+// 게시글 좋아요 추가 처리
+// /board/like/:bId
+router.patch('/detail/like/:bId', Cboard.likeBoard);
+
 // 새 게시글 생성 페이지 렌더링
 // /board/create
 router.get('/create', Cboard.newBoardPage);

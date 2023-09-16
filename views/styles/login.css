@@ -16,6 +16,7 @@ header {
 
 .bi-arrow-left:hover .hover-circle {
   fill: var(--hover-color);
+  cursor: pointer;
 }
 
 img {
@@ -24,15 +25,17 @@ img {
 }
 
 main {
-  margin: 80px auto;
+  margin: 60px auto;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 350px;
-  height: 450px;
+  max-width: 450px;
+  height: 500px;
   border: 5px solid var(--border-color);
   border-radius: 20px;
   padding: 30px;
+  flex-wrap: wrap;
 }
 
 form#login_form {
@@ -46,21 +49,21 @@ form#login_form {
   display: flex;
   flex-direction: column;
 }
-label[for="login_form_id"]:hover,
-label[for="login_form_pw"]:hover {
+label[for='login_form_id']:hover,
+label[for='login_form_pw']:hover {
   color: var(--hover-color2);
 }
 
-input[class="login_form_id"],
-input[class="login_form_pw"] {
+input[class='login_form_id'],
+input[class='login_form_pw'] {
   border: none;
   outline: none;
   box-shadow: 0px 2px 0px 0px var(--main-color);
   padding: 5px 10px;
   transition: box-shadow 0.3s ease-in-out;
 }
-input[class="login_form_id"]:hover,
-input[class="login_form_pw"]:hover {
+input[class='login_form_id']:hover,
+input[class='login_form_pw']:hover {
   border: none;
   outline: none;
   box-shadow: 0px 0px 0px 1px var(--hover-color);
@@ -86,6 +89,7 @@ form#login_form a:last-of-type {
   color: var(--border-color);
   text-decoration: none;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .id-link:hover,
@@ -106,12 +110,19 @@ form#login_form a:last-of-type {
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
   align-items: center;
-  margin-left: 1.5rem;
-  margin-top: 0.5rem;
+  margin-left: 3.5rem;
+  margin-top: 1rem;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .btn-primary:hover {
   background-color: var(--border-color);
   cursor: pointer;
+}
+
+.caution {
+  margin-top: 10px;
+  font-size: small;
+  color: red;
 }

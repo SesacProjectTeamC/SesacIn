@@ -26,19 +26,18 @@ img {
 main {
   margin: 60px auto;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 500px;
-  height: 650px;
-  border: 5px solid #04432c;
+  max-width: 550px;
+  border: 5px solid var(--border-color);
   background-color: rgb(255, 255, 255);
   border-radius: 20px;
-  padding: 30px;
+  padding: 50px 30px;
   flex-wrap: wrap;
 }
 
-h1 {
-  color: #04432c;
+h2 {
   font-weight: bold;
 }
 
@@ -51,7 +50,6 @@ h1 {
   margin-right: 0.3rem;
   cursor: pointer;
   font-weight: bold;
-  color: #04432c;
 }
 
 option {
@@ -80,12 +78,18 @@ button.btn.btn-primary {
   margin-top: 0.85rem;
 }
 
+.btn-primary.disabled,
+.btn-primary:disabled {
+  color: gray;
+  background-color: var(--form-color);
+  border-color: var(--form-color);
+}
+
 label {
   display: inline-block;
   margin-bottom: 2.5rem;
   margin-right: 1rem;
   font-weight: bold;
-  color: #04432c;
 }
 
 label.isSesac {
@@ -107,7 +111,7 @@ label.isSesac {
 
 .form-select {
   margin-top: 1rem;
-  width: 13rem;
+  width: 16rem;
 }
 
 .form-check-inline {
@@ -123,7 +127,7 @@ label.isSesac {
   appearance: none;
   width: 20px;
   height: 20px;
-  border: 2px solid #04432c;
+  border: 2px solid var(--border-color);
   border-radius: 50%;
   background-color: transparent;
   margin-right: 5px;
@@ -131,35 +135,33 @@ label.isSesac {
 }
 
 .form-check-input[type='radio']:checked {
-  background-color: #04432c;
+  background-color: var(--border-color);
 }
 
 .form-check-label {
   font-weight: bold;
-  color: #04432c;
   cursor: pointer;
 }
 
 /* 새싹 캠퍼스  */
 .form-select {
   background-color: transparent;
-  border: 2px solid #04432c;
+  border: 2px solid var(--form-color);
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
   font-weight: bold;
-  color: #04432c;
-  background-color: #c9ded1;
+  background-color: var(--form-color);
 }
 
 /* 드롭다운 내부 항목 */
 .form-select option {
-  background-color: #c9ded1;
+  background-color: var(--form-color);
   font-weight: bold;
 }
 
 #basic-addon1 {
-  width: 5.5rem;
+  width: 7.5rem;
 }
 
 #campusLabel {
@@ -179,7 +181,6 @@ label.isSesac {
   height: 40px;
   border-radius: 10px;
   background-color: var(--main-color);
-  color: #04432c;
   border: 2px solid var(--main-color);
   outline: none;
   align-self: center;
@@ -188,17 +189,37 @@ label.isSesac {
   margin-top: 3rem;
   cursor: pointer;
   font-weight: bold;
+  color: black;
 }
 
 .btn-primary:hover {
-  background-color: #04432c;
+  background-color: var(--border-color);
+  border: 2px solid var(--main-color);
   cursor: pointer;
 }
 
-/* 중복 확인 중인 경우 버튼 색상을 파란색으로 변경 */
+/* 중복 확인 중인 경우 버튼 색상을 파란색으로 변경
 button.checking-duplicate {
-  background-color: blue !important;
-  border-color: blue !important;
-  color: white !important;
+  background-color: darkgreen !important;
+  border-color: darkgreen !important;
   cursor: not-allowed !important;
+} */
+
+.alert {
+  position: relative;
+  margin: -1rem 0rem;
+  border: none;
+  border-radius: none;
+  font-size: small;
+}
+.alert-info {
+  color: blue;
+  background-color: transparent;
+  border-color: none;
+}
+
+.alert-danger {
+  color: red;
+  background-color: transparent;
+  border-color: none;
 }

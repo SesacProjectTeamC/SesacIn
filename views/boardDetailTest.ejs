@@ -6,7 +6,7 @@
     <%- include('./components/cdn', { title: 'SesacIn 자유게시글 상세' }) %>
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
     <link rel="stylesheet" href="/views/styles/boardDetail.css" />
-    <script defer src="../static/js/boardDetail.js"></script>
+    <script defer src="/static/js/boardDetail.js"></script>
   </head>
   <body class="container">
     <%- include('./components/header', { isLogin: isLogin }) %>
@@ -20,15 +20,42 @@
             <%= boardData.uId %>
           </div>
           |
-          <div class="viewImg">
+
+<div>
+          <%= boardData.bId %>
+          <%= boardData.content %>
+     
+        </div>
+          <!-- 좋아요 기능 -->
+          <% if(!bResult) { %>
+    
+            <div class="viewImg" onclick="bLikeHandler('<%= boardData.bId %>')">
+              <img
+                src="../../static/svg/heart.svg"
+                alt="좋아요수"
+                width="24px"
+                class="svg"
+              />
+              <div style="background-color: lightgray;"><%= bResult %></div>
+              <%= boardData.likeCount%>
+            </div>
+
+          <% } else if(bResult) { %>
+
+          <div class="viewImg" onclick="bLikeHandler('<%= boardData.bId %>')">
             <img
               src="../../static/svg/heart.svg"
               alt="좋아요수"
               width="24px"
               class="svg"
             />
-            <%= boardData.likeCount%>
+            <div style="background-color: pink;"><%= bResult %></div>
+
+            <%= boardData.likeCount %>
           </div>
+
+          <% } %>
+
           <div class="viewImg">
             <img
               src="../../static/svg/eye.svg"
@@ -344,5 +371,17 @@
       });
     }
 
+    //=== 세화 ===
+    // 좋아요 기능
+    const bLikeHandler = (bId) => {
+      axios({
+        method: 'PATCH',
+        url: `/board/detail/like/${bId}`,
+      }).then((res) => {
+        if (res) {
+          document.location.href = `/board/detail/${bId}`;
+        }
+      });
+    };
   </script>
 </html>

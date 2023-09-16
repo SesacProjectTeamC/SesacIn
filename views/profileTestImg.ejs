@@ -31,8 +31,13 @@
 </header>
 <main>
   
+  <!-- 이미지 업로드 -->
+  <form action="/upload/image/user" method="post" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="text" name="title">
+    <button type="submit">업로드</button>
+  </form>
   <!-- 프로필 -->
-  
   
   <form name="profile">
 
@@ -44,6 +49,7 @@
     <!-- 배지 -->
     <img class="sesac_badge" src="/../static/img/sesac_badge.png">
 
+    
     <h1>User Profile</h1>
     <% if (userData) { %>
       <!-- 닉네임 -->
@@ -122,9 +128,9 @@
         method: 'GET',
         url: '/users/editprofile',
       }).then((res) => {
-        if (res) {
-        }
-      });
+    if (res) {
+    }
+  });
     }
 
   

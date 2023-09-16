@@ -1,4 +1,4 @@
-const { Board, Comment } = require('../models/index');
+const { Board, Comment, uLike } = require('../models/index');
 const { Op } = require('sequelize');
 const moment = require('moment');
 
@@ -68,6 +68,20 @@ exports.detailBoard = async (req, res) => {
     // 날짜 데이터 포맷 변경
     const create = moment(eachBoard.dataValues.createdAt).format('YYYY-MM-DD');
 
+    //=== [ 세화 ] ===
+    // 1. 좋아요
+    // 1) 좋아요 히스토리 찾기
+    const uLikeFind = await uLike.findOne({
+      where: {
+        bId,
+        //! uId
+        uId: 1, // 임의 유저 1
+      },
+    });
+
+    // 2) 좋아요 히스토리에 있으면 true, 없으면 false
+    const resultLike = !!uLikeFind;
+
     res.status(200).render('boardDetailTest', {
       success: true,
       isLogin,
@@ -76,6 +90,7 @@ exports.detailBoard = async (req, res) => {
       boardData: eachBoard,
       cDate: create,
       commentData: allComment,
+      bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
     });
   } catch (error) {
     console.log(error);
@@ -85,6 +100,89 @@ exports.detailBoard = async (req, res) => {
       currentLoginUser: req.session.user,
       msg: '서버에러 발생',
     });
+  }
+};
+
+//=== [ 세화 ] ===
+// 조회수 처리 (메인페이지에서 자유게시글 상세페이지 클릭 시, 조회수 + 1)
+// PATCH
+// board/detail/view/:bId
+exports.viewBoard = async (req, res) => {
+  try {
+    const { bId } = req.params;
+
+    const eachBoard = await getBoard(bId);
+
+    // 조회수 업데이트 +1
+    await Board.update(
+      { viewCount: eachBoard.viewCount + 1 },
+      { where: { bId } }
+    );
+    res.status(200).send({ boardData: eachBoard });
+  } catch (error) {
+    console.error(error);
+    res.send('Internal Server Error');
+  }
+};
+
+//=== [ 세화 ] ===
+// 좋아요 버튼 클릭 시, 게시글 좋아요 추가 및 삭제 처리
+// PATCH
+// board/detail/like/:bId
+exports.likeBoard = async (req, res) => {
+  try {
+    const { bId } = req.params;
+
+    const eachBoard = await getBoard(bId);
+
+    // 1. 좋아요 히스토리 찾기
+    const uLikeFind = await uLike.findOne({
+      where: {
+        bId,
+        //! uId
+        uId: 1, // 임의 유저 1
+      },
+    });
+
+    // 2. 좋아요 히스토리에 있으면 true, 없으면 false
+    const resultLike = !!uLikeFind;
+
+    console.log('board 좋아요', resultLike);
+
+    // 3-1. uLike findOne -> bId 없으면,
+    if (!uLikeFind) {
+      // (1) 좋아요 히스토리 생성 : uLike에 해당 bId 생성됨.
+      await uLike.create({
+        // uId
+        uId: 1, // 임의 유저 1
+        bId,
+      });
+
+      // (2) 자유게시글 likeCount +1 업데이트
+      await Board.update(
+        { likeCount: eachBoard.likeCount + 1 },
+        { where: { bId } }
+      );
+    } else if (uLikeFind) {
+      // 3-2. uLike findOne -> bId 있으면,
+      // (1) 좋아요 히스토리 삭제 : uLike에 해당 bId 삭제함
+      await uLike.destroy({
+        where: { bId },
+      });
+
+      // (2) 자유게시글 likeCount -1 업데이트
+      await Board.update(
+        { likeCount: eachBoard.likeCount - 1 },
+        { where: { bId } }
+      );
+    }
+
+    res.status(200).send({
+      bResult: resultLike, // 좋아요 결과 T/F
+    });
+  } catch (error) {
+    console.error(error);
+    res.send('Internal Server Error');
   }
 };
 
@@ -105,6 +203,7 @@ const getBoard = async (bId) => {
     const board = await Board.findOne({
       where: { bId: bId },
     });
+
     return board;
   } catch (error) {
     console.error(error);

@@ -1,9 +1,30 @@
 * {
-  font-family: "Spoqa Han Sans", "Spoqa Han Sans JP", "Sans-serif";
+  font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', 'Sans-serif';
 }
 :root {
   --main-color: #ddecca;
-  --border-color: #b7b763;
+  --border-color: #7fac5d;
   --hover-color: rgb(220, 219, 219);
   --hover-color2: rgb(146, 142, 142);
+  --form-color: #edf6e2;
+}
+
+/* 모달창 */
+.modal-dialog {
+  max-width: 500px;
+  margin: 7.75rem auto;
+}
+
+.btn-secondary {
+  font-weight: bold;
+  color: #fff;
+  background-color: var(--border-color);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover{
+  font-weight: bold;
+  color: #fff;
+  background-color: darkgreen;
+  border-color: darkgreen;
 }
