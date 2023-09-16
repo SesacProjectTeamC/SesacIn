@@ -3,15 +3,17 @@ const router = express.Router();
 const Cquestion = require('../controller/Cquestion');
 const Canswer = require('../controller/Canswer');
 const Ccomment = require('../controller/Ccomment');
-const { needToLogin } = require('../util/middleware');
+const { needToLogin } = require('../util/middleware'); // 꼭 로그인 해야하는 API에만 적용하면 됨
 
 // 질문 추가 페이지 렌더링
 router.get('/create', needToLogin, Cquestion.getCreateQuestion);
 
 // 질문 추가 처리
+// /question/create
 router.post('/create', needToLogin, Cquestion.postQuestion);
 
 // 특정 질문 페이지 렌더링
+// /question/:qId
 router.get('/:qId', Cquestion.getQuestion);
 
 // 특정 질문 좋아요
@@ -26,9 +28,11 @@ router.patch('/:qId/like/:aId', Canswer.likeAnswer);
 //==== Question ====
 
 // 페이지별 질문 조회
+// /question/list/:page&:pageSize
 router.get('/list/:page&:pageSize', Cquestion.paginateQuestion);
 
 // 특정 질문 내용 수정 페이지 렌더링
+// /question/:qId/edit
 router.get('/:qId/edit', needToLogin, Cquestion.getEditQuestion);
 
 // 특정 질문 내용 수정 처리

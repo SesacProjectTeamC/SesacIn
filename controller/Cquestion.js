@@ -1,64 +1,8 @@
 const { Question, Answer, Comment, uLike } = require('../models');
 const moment = require('moment');
 
-//=== 메인페이지,질문 목록 가져오기 ===
-exports.getQuestions = async (req, res) => {
-  // 세션 검사
-  let isLogin = req.session.user ? true : false;
-
-  try {
-    // 한페이지 만큼 데이터 조회
-    let page = parseInt(req.params.page) || 1;
-    let pageSize = parseInt(req.params.pageSize) || 20;
-
-    // 전체 Question목록 개수 계산
-    const totalPage = await Question.count();
-
-    // 페이지 수 (올림처리)
-    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
-
-    // 페이지별 Question호출
-    const paginatedQuestions = await Question.findAll({
-      order: [['createdAt', 'DESC']], // 정렬 기준
-      limit: pageSize,
-      offset: (page - 1) * pageSize,
-    });
-
-    // 날짜 데이터 포맷 변경
-    const create = [];
-
-    for (q of paginatedQuestions) {
-      create.push(moment(q.createdAt).format('YYYY-MM-DD'));
-    }
-
-    if (isLogin) {
-      console.log('로그인O 사용자 >>>', req.session.user);
-
-      res.status(200).render('main', {
-        type: 'qna',
-        data: paginatedQuestions,
-        pageCount: pageCount,
-        cDate: create,
-        isLogin,
-      });
-    } else {
-      console.log('로그인X');
-
-      res.render('main', {
-        type: 'qna',
-        data: paginatedQuestions,
-        pageCount: pageCount,
-        cDate: create,
-        isLogin,
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    res.send('Internet Server Error!!!');
-  }
-};
-
 //=== 질문 목록 가져오기(페이지별) ===
+// /question/list/:page&:pageSize
 exports.paginateQuestion = async (req, res) => {
   let page = parseInt(req.params.page) || 1;
   let pageSize = parseInt(req.params.pageSize) || 20;
@@ -99,9 +43,10 @@ exports.paginateQuestion = async (req, res) => {
   }
 };
 
-//=== QnA 특정 질문 상세 페이지 GET ===
+//=== QnA 특정 질문 상세 페이지 렌더링 GET ===
 // 1. 특정 질문과 그 질문에 대한 답변 전체 리스트 가져오기 (Cquestion)
 // 2. 특정 답변에 대한 전체 댓글 리스트 가져오기 (Ccomment)
+// /question/:qId
 exports.getQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -122,18 +67,20 @@ exports.getQuestion = async (req, res) => {
     });
 
     // 1) 질문 좋아요
+    // [태균] uLike 테이블에서 해당하는 qId에 대한 row데이터를 가져옴
     const uLikeQuestionFind = await uLike.findOne({
       where: {
         qId,
         //! uId
-        uId: 1, // 임의 유저 1
+        //uId: req.session.user,
       },
     });
 
-    // 질문 좋아요의 결과 (T/F)
+    // 질문에대한 좋아요가 있는지 없는지 확인 결과 (T/F)
     const qResultLike = !!uLikeQuestionFind;
 
     // 2) 여러 개의 답변 좋아요
+    // answers = 질문에 달린 복수 답변 전체의 데이터
     let uLikeAnswersResult = [];
     for (let i = 0; i < answers.length; i++) {
       // (1) 좋아요 히스토리에서 해당하는 질문에 대한 답변 찾기
@@ -141,7 +88,7 @@ exports.getQuestion = async (req, res) => {
         where: {
           aId: answers[i].aId,
           //! uId
-          uId: 1, // 임의 유저 1
+          uId: 1, // 임의 유저 1 [태균] 임의유저가 아니라면 누가 들어가야 하는건지?
         },
       });
 
@@ -242,6 +189,7 @@ exports.postQuestion = async (req, res) => {
 };
 
 //=== 질문 수정 GET ===
+// /question/:qId/edit
 exports.getEditQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
