@@ -100,10 +100,6 @@ button:focus {
   align-items: start;
 }
 
-:root {
-  --main-color: #3498db;
-}
-
 button:active,
 button:focus {
   box-shadow: 0 2px 2px var(--hover-color);
