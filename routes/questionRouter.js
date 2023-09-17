@@ -6,7 +6,7 @@ const Ccomment = require('../controller/Ccomment');
 const { needToLogin } = require('../util/middleware'); // 꼭 로그인 해야하는 API에만 적용하면 됨
 
 // QnA 메인 페이지 렌더링
-router.get('/', Cquestion.getQuestions);
+router.get('/main', Cquestion.getQuestions);
 
 // 질문 추가 페이지 렌더링
 router.get('/create', needToLogin, Cquestion.getCreateQuestion);
@@ -72,6 +72,10 @@ router.get('/:qId/:aId/comment/:cId/edit', Ccomment.getEditComment);
 router.patch('/:qId/:aId/comment/:cId/edit', Ccomment.patchComment);
 
 // 삭제
-router.delete('/:qId/:aId/comment/:cId/delete', needToLogin, Ccomment.deleteComment);
+router.delete(
+  '/:qId/:aId/comment/:cId/delete',
+  needToLogin,
+  Ccomment.deleteComment
+);
 
 module.exports = router;

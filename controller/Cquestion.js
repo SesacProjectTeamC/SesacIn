@@ -35,7 +35,7 @@ exports.getQuestions = async (req, res) => {
     if (isLogin) {
       console.log('로그인O 사용자 >>>', req.session.user);
 
-      res.status(200).render('main', {
+      res.status(200).render('listMain', {
         type: 'qna',
         data: paginatedQuestions,
         pageCount: pageCount,
@@ -45,7 +45,7 @@ exports.getQuestions = async (req, res) => {
     } else {
       console.log('로그인X');
 
-      res.render('main', {
+      res.render('listMain', {
         type: 'qna',
         data: paginatedQuestions,
         pageCount: pageCount,
@@ -126,7 +126,9 @@ exports.paginateQuestion = async (req, res) => {
     let pageSize = parseInt(req.params.pageSize) || 20;
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(
+      Math.ceil(questionTotalCount / pageSize)
+    ); // 페이지 수 (올림처리)
 
     // 페이지별 Question 데이터 조회
     const paginatedQuestion = await Question.findAll({
@@ -138,7 +140,9 @@ exports.paginateQuestion = async (req, res) => {
     // Question createdAt 포맷 변경 후 배열에 저장
     const questionCreateAt = [];
     for (q of paginatedQuestion) {
-      questionCreateAt.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
+      questionCreateAt.push(
+        moment(q.dataValues.createdAt).format('YYYY-MM-DD')
+      );
     }
 
     // Question uNname 배열에 저장
@@ -167,6 +171,7 @@ exports.paginateQuestion = async (req, res) => {
       questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
       questionUserName, // question 데이터에서 uname을 가져와서
       questionCommentCount, // question 데이터에서 CommentCount을 가져와서
+      questionPageCount,
       success: true,
       msg: '페이지별 QnA 질문 호출 처리 완료',
     });
