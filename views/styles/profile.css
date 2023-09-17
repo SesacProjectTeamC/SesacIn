@@ -18,9 +18,14 @@ header {
   cursor: pointer;
 }
 
-img {
+img.logo {
   width: 100px;
   height: 80px;
+}
+
+img.like {
+  width: 10px;
+  height: 8px;
 }
 
 .hidden {

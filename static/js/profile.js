@@ -28,67 +28,80 @@ function change(buttonType) {
     });
 }
 const liked = (data, contentDiv) => {
-        for (let question of data.likeQuestionData) {
-            contentDiv.innerHTML += [
-                
-        `<div class="question">
-        <a href ="/board/detail/${data.qId}">
-                <h3>${question.title}</h3>
-                <p>질문 유형: ${question.qType}</p>
-                <p>${question.content}</p>
-            </div>`
-            ]
-            ;
-        }
-        console.log(data);
-    }
- const commented = (data, contentDiv) => {
-        console.log(data);
-        for (let answer of data.likeAnswerData) {
-            contentDiv.innerHTML += [`
-            <a href ="/board/detail/${data.cId}">
-            <div class="answer">
-                <h3>${answer.title}</h3>
-                <p>${answer.content}</p>
-            </div>`
-        ]
-            ;
-        }
-    }
-const qna = (data, contentDiv) => {
-        for (let post of data.postData) {
-            contentDiv.innerHTML += [`
+    for (let question of data.likeQuestionData) {
+        contentDiv.innerHTML = [
+            
+            `<div class="question">
             <a href ="/board/detail/${data.qId}">
-            <div class="postedQuestion">
-                <h3>${post.title}</h3>
-                <p>질문 유형: ${post.qType}</p>
-                <p>${post.content}</p>
+            <h3>${question.title}</h3>
+            <p>질문 유형: ${question.qType}</p>
+            <p>${question.content}</p>
             </div>`
         ]
-        }
+        ;
     }
+    console.log('liked');
+}
+const commented = (data, contentDiv) => {
+    console.log(data);
+    for (let answer of data.likeAnswerData) {
+        contentDiv.innerHTML = [`
+        <a href ="/board/detail/${data.cId}">
+        <div class="answer">
+        <h3>${answer.title}</h3>
+        <p>${answer.content}</p>
+        </div>`
+    ]
+    ;
+}
+console.log('commented');
+}
+const qna = (data, contentDiv) => {
+    for (let post of data.postData) {
+        contentDiv.innerHTML += [`
+        <a href ="/board/detail/${data.qId}">
+        <div class="postedQuestion">
+        <h3>${post.title}</h3>
+        <p>${post.content}</p>
+        <div class="like">
+        <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
+        <p>${post.likeCount}</p>
+        <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
+        <p>${post.viewCount}</p>
+        </div>`
+    ]
+}
+console.log('qna');
+}
 const answered = (data, contentDiv) => {
-        for(let answer of data.answerData){
-            contentDiv.innerHTML += [
-                `<a href ="/board/detail/${data.aId}">
-                <div class="postedAnswer">
-                <h3>${answer.title}</h3>
-                <p>${answer.content}</p>
-                </div>
-                `
-            ]   
-            }
+    for(let answer of data.answerData){
+        contentDiv.innerHTML = [
+            `<a href ="/board/detail/${data.aId}">
+            <div class="postedAnswer">
+            <h3>${answer.title}</h3>
+            <p>${answer.content}</p>
+            </div>
+            `
+        ]   
+    }
+    console.log('answered');
         }
 const free = (data, contentDiv) =>{
             for(let boards of data.boards){
-                contentDiv.innerHTML += [`
+                contentDiv.innerHTML = [`
                 <div class="freeBoards">
                 <p>${boards.title}</p>
                 <p>${boards.content}</p>
-                </div>
-                `,
+                <div class="like">
+                <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
+                <p>${boards.likeCount}</p>
+                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
+                <p>${boards.viewCount}</p>
+                </div>`
+                ,
             ]
         }
+        console.log('free');
     }
     
 function isSesac(data){
