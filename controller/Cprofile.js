@@ -227,11 +227,11 @@ exports.patchUser = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(500).send({
+    res.status(err.statusCode || 500).send({
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: '서버 오류 발생',
+      msg: err.message,
     });
   }
 };
