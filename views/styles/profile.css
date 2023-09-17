@@ -4,12 +4,14 @@ body {
   padding: 0;
   height: 100vh;
   position: relative;
+  background-color: var(--main-color);
 }
 
 header {
   width: 100%;
   text-align: start;
-  margin: 0 30px;
+  margin: 20px 30px;
+
   cursor: pointer;
 }
 
@@ -19,16 +21,26 @@ header {
 }
 
 img {
-  width: 100px;
-  height: 80px;
+  width: 135px;
+  height: 45px;
 }
 
+img.person {
+  width: 150px;
+  height: 150px;
+}
+img.profile {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
 .like {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
   font-size: 14px;
+  /* background-color: blue; */
   /* padding-top: 30px; */
 }
 
@@ -44,6 +56,56 @@ img {
 }
 
 form[name="profile"] {
+  /* background-color: aqua; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+img.sesac_badge {
   display: flex;
   justify-content: center;
+  width: 35px;
+  height: 35px;
+}
+
+.container {
+  padding: 20px;
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 20px;
+  margin: 10px 0; /* 수직 간격을 조정합니다. */
+  cursor: pointer;
+  transition: border-color 0.3s, color 0.3s;
+  color: black;
+  outline: none;
+  text-align: center;
+  display: block;
+  width: 60%;
+}
+
+button:hover,
+button:focus {
+  border-bottom-color: var(--main-color);
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+:root {
+  --main-color: #3498db;
+}
+
+button:active,
+button:focus {
+  box-shadow: 0 2px 2px var(--hover-color);
+  outline: none;
 }

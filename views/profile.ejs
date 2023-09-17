@@ -27,33 +27,36 @@
       <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
     </svg>
     </div>
-
     </header>
     <main>
   
   <!-- 프로필 -->
   
   
-  <form name="profile">
+  <form name="profile"  method="post" action="/upload/image/user" enctype="multipart/form-data">
 
-    <img 
-    src="/../static/svg/person.svg" 
-    class="person"
-    alt="src"
-    >
     <!-- 배지 -->
-    <img class="sesac_badge" onclick="" src="/../static/img/sesac_badge.png">
+    <img class="sesac_badge" onclick="" src="/../static/img/leaf.png"><br>
 
-    <h1>User Profile</h1>
+    <!-- 이미지 업로드 -->
+    <% if (userData && userData.userImgPath) { %>
+      <div> 
+          <img class="profile" src="/<%= userData.userImgPath %>" alt="User Image">
+      </div>
+    <% } else { %>
+        <img src="/../static/svg/person.svg" class="person" alt="Default Image">
+    <% } %><br>
+
+      <input type="file" name="file">
+
+    <!-- 프로필 정보 -->
     <% if (userData) { %>
-      <p>UserName: <%= userData.uName %></p>
+      <div class="name"> 내 이름: <%= userData.uName %></div>
+      <div class="campus"> 캠퍼스 : <%= userData.campus %></div>
       <% }  %>
     </form>
     
-    <!-- <button onclick="gotoProfileEdit()">회원정보 수정</button> -->
-
-    <!-- /users/editprofile 로 GET을 날리는게 아니라 PATCH를 날려야 합니다. -->
-    <a href=/users/editprofile>회원 정보 수정</a><br>
+<!-- 게시판 --> 
     <div class="container text-center">
       <div class="row row-cols-5">
       <button class="qna" onclick="change('qna')">Q&A 게시판</button>
