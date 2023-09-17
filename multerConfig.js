@@ -12,11 +12,24 @@ const storage = multer.diskStorage({
     const sanitizedFilename = sanitizeFilename(path.basename(file.originalname, ext));
     cb(null, sanitizedFilename + '__' + Date.now() + ext); // 파일명 설정 (유니크한 이름)
   },
-  // limits: 파일 제한 정보
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
 });
 
+// 파일 필터 함수 정의 (이미지 파일만 허용)
+const fileFilter = (req, file, cb) => {
+  const allowedMimeTypes = ['image/tiff', 'image/png', 'image/jpg', 'image/jpeg', 'image/png', 'image/gif']; // 허용할 이미지 MIME 타입 목록
+
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    cb(null, true); // 허용
+  } else {
+    cb(new Error('지원하지 않는 파일 형식입니다.'), false); // 거부
+  }
+};
+
 // 파일 업로드를 처리할 Multer 인스턴스 생성
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter, // 파일 필터 적용
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});
 
 module.exports = upload;

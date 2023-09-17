@@ -241,6 +241,8 @@
               setModalTextAndShow('입력 필드 중 하나 이상이 누락되었습니다.');
             } else if (status === 409) {
               setModalTextAndShow('이미 사용중인 닉네임입니다.');
+            } else if (status === 411) {
+              setModalTextAndShow('비속어 닉네임 사용.');
             } else {
               setModalTextAndShow('회원가입 중 오류가 발생했습니다.');
             }
