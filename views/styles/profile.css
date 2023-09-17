@@ -18,22 +18,32 @@ header {
   cursor: pointer;
 }
 
-img.logo {
+img {
   width: 100px;
   height: 80px;
 }
 
-img.like {
-  width: 10px;
-  height: 8px;
+.like {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  font-size: 14px;
+  /* padding-top: 30px; */
+}
+
+.svg {
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .hidden {
-    display: none;
-  }
+  display: none;
+}
 
-form[name=profile]{
-  display:flex;
+form[name="profile"] {
+  display: flex;
   justify-content: center;
-
 }

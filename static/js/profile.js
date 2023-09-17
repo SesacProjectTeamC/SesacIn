@@ -10,14 +10,19 @@ function change(buttonType) {
         const data = response.data;
         if (buttonType === 'liked') {
             liked(data, contentDiv);
+            return;
         } else if (buttonType === 'commented') {
             commented(data, contentDiv);
+            return;
         } else if (buttonType === 'answered') {
             answered(data, contentDiv);
+            return;
         } else if (buttonType === 'qna') {
             qna(data, contentDiv);
+            return;
         } else if (buttonType === 'free') {
             free(data, contentDiv);
+            return;
         } else {
             contentDiv.innerHTML = "선택된 내용이 없습니다.";
         }
@@ -58,7 +63,7 @@ console.log('commented');
 }
 const qna = (data, contentDiv) => {
     for (let post of data.postData) {
-        contentDiv.innerHTML += [`
+        contentDiv.innerHTML = [`
         <a href ="/board/detail/${data.qId}">
         <div class="postedQuestion">
         <h3>${post.title}</h3>
