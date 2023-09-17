@@ -1,14 +1,14 @@
-const { Question, Answer, Comment } = require("../models");
+const { Question, Answer, Comment } = require('../models');
 
 //=== 댓글 등록 GET ===
 exports.getCreateComment = async (req, res) => {
   try {
     const { qId, aId } = req.params;
 
-    res.render("commentCreateTest", { data: qId, answerData: aId });
+    res.render('commentCreateTest', { data: qId, answerData: aId });
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -16,10 +16,10 @@ exports.getCreateComment = async (req, res) => {
 exports.postComment = async (req, res) => {
   try {
     // test login
-    req.session.user = 1;
+    // req.session.user = 1;
 
     if (!req.session.user) {
-      res.redirect("/");
+      res.redirect('/');
     }
     let loginUser = req.session.user;
 
@@ -43,7 +43,7 @@ exports.postComment = async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -60,14 +60,14 @@ exports.getEditComment = async (req, res) => {
       where: { cId },
     });
 
-    res.render("commentEditTest", {
+    res.render('commentEditTest', {
       data: qId,
       answerData: answer,
       commentData: comment,
     });
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -81,7 +81,7 @@ exports.patchComment = async (req, res) => {
       { content },
       {
         where: { cId },
-      },
+      }
     );
 
     if (updatedComment) {
@@ -94,7 +94,7 @@ exports.patchComment = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -119,6 +119,6 @@ exports.deleteComment = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };

@@ -136,11 +136,18 @@ exports.postUser = async (req, res) => {
   } catch (err) {
     // 기타 데이터베이스 오류
     console.log(err);
-    res.status(500).send({
+    // res.status(500).send({
+    //   OK: false,
+    //   msg: '데이터베이스 오류 발생',
+    // });
+    // return;
+
+    // [태균] 비속어 관련
+    // 미들웨어에서 던진 에러를 처리 : 닉네임에만 적용. 비속어있을 경우 status 코드 400 발생
+    res.status(err.statusCode || 500).send({
+      msg: err.message,
       OK: false,
-      msg: '데이터베이스 오류 발생',
     });
-    return;
   }
 };
 

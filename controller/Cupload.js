@@ -1,16 +1,30 @@
 const upload = require('../multerConfig'); // Multer 설정 가져오기
+const { User } = require('../models');
+const { Op } = require('sequelize');
 
 // 이미지 업로드 컨트롤러 함수
 // /upload/image/user
-exports.uploadImageFile = (req, res) => {
+exports.uploadImageFile = async (req, res) => {
+  // 세션 확인
+  let isLogin = req.session.user ? true : false;
+
   try {
-    // Null 검사
-    if (!req.file) {
-      return res.status(400).send({
-        success: false,
-        msg: 'Null / 업로드한 파일이 없습니다.',
-      });
-    }
+    // path == 이미지를 받을 수 있는 URL
+    // originalname == 유저가 업로드한 원본 파일 이름(확장자 포함)
+    const { originalname, path } = req.file;
+
+    // user 테이블에 데이터 저장
+    await User.update(
+      {
+        userImg: originalname,
+        userImgPath: path,
+      },
+      {
+        where: {
+          uId: req.session.user,
+        },
+      }
+    );
 
     // 파일 업로드 성공
     res.status(200).send({

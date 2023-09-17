@@ -7,7 +7,6 @@
 const { User, Question, Answer, Comment, Board, uLike } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
-
 exports.getUser = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -15,6 +14,7 @@ exports.getUser = async (req, res) => {
   try {
     // 세션에서 로그인 된 사용자 id 가져오기
     const uId = req.session.user;
+    const bool = req.params.bool;
 
     if (isLogin) {
       // 데이터베이스에서 해당 사용자 정보를 조회합니다.
@@ -45,18 +45,33 @@ exports.getUser = async (req, res) => {
       const comments = await Comment.findAll({ where: { uId } });
 
       // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      res.render('profileTestImg', {
-        userData: user,
-        likeQuestionData: likeQuestion,
-        likeAnswerData: likeAnswer,
-        postData: posts,
-        answerData: answers,
-        commentData: comments,
-        isLogin,
-        currentUser: req.session.user,
-        success: true,
-        msg: '마이페이지 렌더링 정상 처리',
-      });
+      if (bool === 'yes') {
+        res.send({
+          userData: user,
+          likeQuestionData: likeQuestion,
+          likeAnswerData: likeAnswer,
+          postData: posts,
+          answerData: answers,
+          commentData: comments,
+          isLogin,
+          currentUser: req.session.user,
+          success: true,
+          msg: '마이페이지 렌더링 정상 처리',
+        });
+      } else {
+        res.render('profile', {
+          userData: user,
+          likeQuestionData: likeQuestion,
+          likeAnswerData: likeAnswer,
+          postData: posts,
+          answerData: answers,
+          commentData: comments,
+          isLogin,
+          currentUser: req.session.user,
+          success: true,
+          msg: '마이페이지 렌더링 정상 처리',
+        });
+      }
     } else {
       // 로그인 되어있지 않은 상태에서의 요청시
       // res.status(401).send({
@@ -212,11 +227,11 @@ exports.patchUser = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(500).send({
+    res.status(err.statusCode || 500).send({
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: '서버 오류 발생',
+      msg: err.message,
     });
   }
 };
@@ -233,9 +248,7 @@ exports.checkPassword = async (req, res) => {
 
     if (!user) {
       // 사용자가 존재하지 않는 경우
-      res
-        .status(400)
-        .json({ success: false, message: '사용자가 존재하지 않습니다.' });
+      res.status(400).json({ success: false, message: '사용자가 존재하지 않습니다.' });
       return;
     }
 
@@ -244,9 +257,7 @@ exports.checkPassword = async (req, res) => {
 
     if (!passwordMatch) {
       // 비밀번호가 일치하지 않는 경우
-      res
-        .status(401)
-        .json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
+      res.status(401).json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
       return;
     }
 
