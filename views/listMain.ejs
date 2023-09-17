@@ -5,13 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('./components/cdn', { title: 'SesacIn' }) %>
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
-    <link rel="stylesheet" href="/views/styles/index.css" />
-    <script defer src="../static/js/index.js"></script>
-    <script defer src="../static/js/main.js"></script>
+    <link rel="stylesheet" href="/views/styles/listMain.css" />
+    <script defer src="../static/js/listMain.js"></script>
   </head>
-  <body>
-    <div class="container">
-      <%- include('./components/header', { isLogin: isLogin }) %>
+  <body class="container">
+    <%- include('./components/header', { isLogin: isLogin }) %>
+    <div id="listType">
+      <%= type === 'board' ? '📋 Sesac 자유게시판' : '🙋‍♂️ Sesac Q&A'%>
     </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col" style="width: 7%">ID</th>
+          <th scope="col">제목</th>
+          <th scope="col" class="bInfo">글쓴이</th>
+          <th scope="col" class="bInfo">추천수</th>
+          <th scope="col" class="bInfo cDate">작성일</th>
+        </tr>
+      </thead>
+      <tbody class="listC">
+        <%if (type === 'board'){%> <%for(let i = 0; i < boards.length; i++){%>
+        <tr
+          onclick="moveToDetailBoard('<%= boards[i].bId%>')"
+          style="cursor: pointer"
+        >
+          <th><%= boards[i].bId%></th>
+          <td style="text-align: start"><%= boards[i].title%></td>
+          <td><%= boards[i].uName%></td>
+          <td><%= boards[i].likeCount%></td>
+          <td><%= cDate[i]%></td>
+        </tr>
+        <%}%> <%} else{%> <%for(let i = 0; i < data.length; i++){%>
+        <tr
+          onclick="moveToDetailQuestion('<%=data[i].qId%>')"
+          style="cursor: pointer"
+        >
+          <th><%= data[i].qId%></th>
+          <td style="text-align: start"><%= data[i].title%></td>
+          <td><%= data[i].uName%></td>
+          <td><%= data[i].likeCount%></td>
+          <td><%= cDate[i]%></td>
+        </tr>
+        <%}%> <%}%>
+      </tbody>
+    </table>
+
+    <nav
+      aria-label="..."
+      style="display: flex; justify-content: center; margin-top: 20px"
+    >
+      <ul class="pagination">
+        <li id="prev" class="page-item disabled">
+          <a class="page-link" tabindex="-1" onclick="getPageData('prev')"><</a>
+        </li>
+
+        <%for(let i = 1; i <= (pageCount > 10 ? 10 : pageCount); i++){%>
+        <li class="page-item <%= i === 1 && 'active' %>">
+          <a class="page-link" onclick="getPageData('<%= i%>')"><%= i%></a>
+        </li>
+        <%}%>
+
+        <li id="next" class="page-item <%= pageCount === 1 && 'disabled'%>">
+          <a class="page-link" onclick="getPageData('next')">></a>
+        </li>
+      </ul>
+    </nav>
   </body>
 </html>
