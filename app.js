@@ -58,7 +58,7 @@ app.use('/', indexRouter);
 
 // test
 app.get('/check', (req, res) => {
-  res.send(req.session);
+  res.render('mainTest');
 });
 
 // 404 처리
