@@ -7,7 +7,7 @@
 const { User, Question, Answer, Comment, Board, uLike } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
-exports. getUser = async (req, res) => {
+exports.getUser = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
@@ -56,10 +56,10 @@ exports. getUser = async (req, res) => {
           isLogin,
           currentUser: req.session.user,
           success: true,
-          msg: "마이페이지 렌더링 정상 처리",
+          msg: '마이페이지 렌더링 정상 처리',
         });
       } else {
-        res.render("profile", {
+        res.render('profile', {
           userData: user,
           likeQuestionData: likeQuestion,
           likeAnswerData: likeAnswer,
@@ -69,7 +69,7 @@ exports. getUser = async (req, res) => {
           isLogin,
           currentUser: req.session.user,
           success: true,
-          msg: "마이페이지 렌더링 정상 처리",
+          msg: '마이페이지 렌더링 정상 처리',
         });
       }
     } else {
@@ -80,7 +80,7 @@ exports. getUser = async (req, res) => {
       //   success: false,
       //   mgs: '로그인 정보 다름. 권한 없음.',
       // });
-      res.redirect("/");
+      res.redirect('/');
     }
   } catch (err) {
     console.log(err);
@@ -88,7 +88,7 @@ exports. getUser = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "마이페이지 렌더링 중 서버에러 발생",
+      msg: '마이페이지 렌더링 중 서버에러 발생',
     });
   }
 };

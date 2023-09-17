@@ -9,14 +9,6 @@ exports.uploadImageFile = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    // Null 검사
-    if (!req.file) {
-      return res.status(400).send({
-        success: false,
-        msg: 'Null / 업로드한 파일이 없습니다.',
-      });
-    }
-
     // path == 이미지를 받을 수 있는 URL
     // originalname == 유저가 업로드한 원본 파일 이름(확장자 포함)
     const { originalname, path } = req.file;
