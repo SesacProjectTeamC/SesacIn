@@ -4,6 +4,7 @@ const moment = require('moment');
 
 // 게시글 메인
 exports.getBoardMain = async (req, res) => {
+  let isLogin = req.session.user ? true : false;
   console.log(req.params);
   let page = parseInt(req.params.page) || 1;
   let pageSize = parseInt(req.params.pageSize) || 20;
@@ -35,6 +36,7 @@ exports.getBoardMain = async (req, res) => {
       boards: paginatedBoards,
       // paginatedCount: pageSize,
       pageCount,
+      isLogin,
       cDate: create,
       msg: '페이지별 게시글 호출 처리 완료',
     });

@@ -1,0 +1,27 @@
+th,
+td {
+  text-align: center;
+}
+a {
+  cursor: pointer;
+}
+#listType {
+  margin: 20px 0px 20px 10px;
+  font-size: 38px;
+  font-weight: bold;
+}
+
+.bInfo {
+  width: 10%;
+  text-align: center;
+}
+
+@media (max-width: 1200px) {
+  /* viewport width가 480px 이하일 때 */
+  .bInfo {
+    width: 14%;
+  }
+  .cDate {
+    width: 20%;
+  }
+}
