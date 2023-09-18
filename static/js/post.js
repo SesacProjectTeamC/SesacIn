@@ -16,7 +16,10 @@ class UploadAdapter {
 
   _initRequest() {
     const xhr = (this.xhr = new XMLHttpRequest());
-    xhr.open('POST', 'http://localhost:8000/upload/image/user', true);
+    // 경로 변수화
+    const currentUrl = window.location.origin;
+    const uploadUrl = `${currentUrl}/upload/editor/file`;
+    xhr.open('POST', uploadUrl, true);
     xhr.responseType = 'json';
   }
 
