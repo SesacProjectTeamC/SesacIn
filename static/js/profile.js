@@ -215,7 +215,7 @@ function editProfile() {
 //   // console.dir(file.files[0]);
 // }
 
-async function handleFileInput() {
+async function userProfileImgUpload() {
   const formData = new FormData();
   const file = document.getElementById('fileInput');
 
