@@ -319,7 +319,7 @@ exports.postQuestion = async (req, res) => {
       qType,
       uId: req.session.user,
     });
-    console.log("추가>>>", { result: newQuestion });
+
     res.send({ result: newQuestion });
   } catch (err) {
     console.error(err);
@@ -509,7 +509,7 @@ exports.likeQuestion = async (req, res) => {
 
       console.log("성공 !!");
 
-      res.send({ data: getQuestion, qResult: true });
+      res.send({ data: getQuestion, qResult: "yes" });
     } else {
       // 2) uLike findOne -> qId 있으면,
       // (1) 좋아요 -> uLike 해당 qId 삭제함
@@ -523,7 +523,7 @@ exports.likeQuestion = async (req, res) => {
         { where: { qId } },
       );
 
-      res.send({ data: getQuestion, qResult: false });
+      res.send({ data: getQuestion, qResult: "no" });
     }
   } catch (err) {
     console.log(err);
