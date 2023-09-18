@@ -11,19 +11,18 @@
   <body>
     <h1>질문 상세 페이지</h1>
     <h3>질문</h3>
-
     <% if (!qResult) { %>
     <button
       style="background-color: lightgray; border: none"
-      onclick="qLikeHandler('<%= data.qId %>')"
+      onclick="qLikeHandler('<%= data.qId %>','<%= isLogin %>')"
       id="qLike"
     >
       좋아요
     </button>
-    <% } else if (qResult) { %>
+    <% } else { %>
     <button
       style="background-color: pink; border: none"
-      onclick="qLikeHandler('<%= data.qId %>')"
+      onclick="qLikeHandler('<%= data.qId %>','<%= isLogin  %>')"
       id="qLike"
     >
       좋아요
@@ -39,12 +38,24 @@
     <div>내용 <%= data.content %></div>
     <div>생성날짜 <%= data.createdAt %></div>
     <div>수정날짜 <%= data.updatedAt %></div>
+
+    <!-- test 유저 확인용 -->
+    <% console.log("currentUser", currentUser) %> <% console.log("data.uId",
+    data.uId) %> <% console.log("currentUser === data.uId", currentUser ===
+    data.uId) %> <% console.log("isLogin === 'true'" , isLogin === 'true') %>
+
+    <!-- 로그인 상태 O && 유저 일치하면 : '질문'에 대한 '수정', '삭제' 버튼 보이기 -->
+    <% if(isLogin === true && currentUser === data.uId) { %>
     <button onclick="moveToEditQuestion('<%= data.qId %>')">수정</button>
     <button onclick="deleteQuestion('<%= data.qId %>')">삭제</button>
+    <% } %>
 
-    <% if (answerData) { %>
+    <!-- test 답변 성공값 확인용 -->
+    <% console.log("aaaResult", aResult) %> <% if (answerData) { %>
     <h3>답변 리스트</h3>
-    <button onclick="moveToCreateAnswer('<%= data.qId %>')">답변 등록</button>
+    <button onclick="moveToCreateAnswer('<%= data.qId %>', '<%= isLogin %>')">
+      답변 등록
+    </button>
 
     <div>답변 개수 <%= answerData.length %></div>
     <br />
@@ -58,7 +69,7 @@
     <% if (!aResult[i]) { %>
     <button
       style="background-color: lightgray; border: none"
-      onclick="aLikeHandler('<%= data.qId %>', '<%= answerData[i].aId %>')"
+      onclick="aLikeHandler('<%= data.qId %>', '<%= answerData[i].aId %>', '<%= isLogin %>')"
       id="aLike"
     >
       좋아요
@@ -67,7 +78,7 @@
     <% } else if (aResult[i]) { %>
     <button
       style="background-color: sandybrown; border: none"
-      onclick="aLikeHandler('<%= data.qId %>', '<%= answerData[i].aId %>')"
+      onclick="aLikeHandler('<%= data.qId %>', '<%= answerData[i].aId %>', '<%= isLogin %>')"
       id="aLike"
     >
       좋아요
@@ -79,6 +90,8 @@
     </div>
     <br />
 
+    <!-- 로그인 상태 O && 유저 일치하면 : '답변'에 대한 '수정', '삭제' 버튼 보이기 -->
+    <% if(isLogin === true && currentUser === answerData[i].uId) { %>
     <button
       onclick="moveToEditAnswer('<%= data.qId %>', '<%= answerData[i].aId %>')"
     >
@@ -89,6 +102,8 @@
     >
       답변 삭제하기
     </button>
+    <% } %>
+
     <div>답변 제목 : <%= answerData[i].title %></div>
     <div>답변 내용 :<%= answerData[i].content %></div>
     <div>답변 좋아요 :<%= answerData[i].likeCount %></div>
@@ -110,7 +125,7 @@
     </div>
     <br />
     <button
-      onclick="moveToCreateComment('<%= data.qId %>', '<%= answerData[i].aId %>')"
+      onclick="moveToCreateComment('<%= data.qId %>', '<%= answerData[i].aId %>', '<%= isLogin %>')"
     >
       댓글 등록
     </button>
@@ -118,6 +133,9 @@
 
     <% for(let j = 0; j < answerCommentList.length; j++) { %>
     <br />
+
+    <!-- 로그인 상태 O && 유저 일치하면 : '댓글'에 대한 '수정', '삭제' 버튼 보이기 -->
+    <% if(isLogin === true && currentUser === answerCommentList[j].uId) { %>
     <button
       onclick="moveToEditComment('<%= data.qId %>', '<%= answerData[i].aId %>', '<%= answerCommentList[j].cId %>')"
     >
@@ -128,6 +146,8 @@
     >
       댓글 삭제하기
     </button>
+    <% } %>
+
     <div>댓글 작성자 : <%= answerCommentList[j].uId %></div>
     <div>댓글 내용 : <%= answerCommentList[j].content %></div>
     <div>댓글 생성날짜 : <%= answerCommentList[j].createdAt %></div>

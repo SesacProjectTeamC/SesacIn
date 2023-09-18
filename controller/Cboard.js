@@ -211,7 +211,6 @@ exports.likeBoard = async (req, res) => {
     const uLikeFind = await uLike.findOne({
       where: {
         bId,
-        //! uId
         uId: req.session.user, // 로그인 현재 로그인 된 유저
       },
     });
@@ -225,8 +224,7 @@ exports.likeBoard = async (req, res) => {
     if (!uLikeFind) {
       // (1) 좋아요 히스토리 생성 : uLike에 해당 bId 생성됨.
       await uLike.create({
-        // uId
-        uId: req.session.user, // 임의 유저 1
+        uId: req.session.user,
         bId,
       });
 
