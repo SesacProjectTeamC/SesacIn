@@ -163,8 +163,17 @@ const moveToEditQuestion = (qId) => {
 };
 
 // 2) 답변
-const moveToCreateAnswer = (qId) => {
-  window.location.href = `/question/${qId}/answer/create`;
+const moveToCreateAnswer = (qId, isLogin) => {
+  if (isLogin === "false") {
+    let loginConfirm = confirm(`로그인이 필요합니다. 
+로그인하시겠습니까 ?`);
+
+    if (loginConfirm) {
+      document.location.href = "/login";
+    } else return;
+  } else {
+    window.location.href = `/question/${qId}/answer/create`;
+  }
 };
 
 const moveToEditAnswer = (qId, aId) => {
@@ -172,8 +181,17 @@ const moveToEditAnswer = (qId, aId) => {
 };
 
 // 3) 댓글
-const moveToCreateComment = (qId, aId) => {
-  window.location.href = `/question/${qId}/${aId}/comment/create`;
+const moveToCreateComment = (qId, aId, isLogin) => {
+  if (isLogin === "false") {
+    let loginConfirm = confirm(`로그인이 필요합니다. 
+로그인하시겠습니까 ?`);
+
+    if (loginConfirm) {
+      document.location.href = "/login";
+    } else return;
+  } else {
+    window.location.href = `/question/${qId}/${aId}/comment/create`;
+  }
 };
 
 const moveToEditComment = (qId, aId, cId) => {
@@ -250,15 +268,24 @@ const deleteQuestion = (qId) => {
 };
 
 // 4) 좋아요
-const qLikeHandler = (qId) => {
-  axios({
-    method: "PATCH",
-    url: `/question/${qId}`,
-  }).then((res) => {
-    if (res) {
-      document.location.href = `/question/${qId}`;
-    }
-  });
+const qLikeHandler = (qId, isLogin) => {
+  if (isLogin === "false") {
+    let loginConfirm = confirm(`로그인이 필요합니다. 
+로그인하시겠습니까 ?`);
+
+    if (loginConfirm) {
+      document.location.href = "/login";
+    } else return;
+  } else {
+    axios({
+      method: "PATCH",
+      url: `/question/${qId}`,
+    }).then((res) => {
+      if (res) {
+        document.location.href = `/question/${qId}`;
+      }
+    });
+  }
 };
 
 //=== 2. Answer ===
@@ -325,16 +352,25 @@ const deleteAnswer = (qId, aId) => {
 };
 
 // 4) 좋아요
-const aLikeHandler = (qId, aId) => {
-  axios({
-    method: "PATCH",
-    url: `/question/${qId}/like/${aId}`,
-    data: { aId },
-  }).then((res) => {
-    if (res) {
-      document.location.href = `/question/${qId}`;
-    }
-  });
+const aLikeHandler = (qId, aId, isLogin) => {
+  if (isLogin === "false") {
+    let loginConfirm = confirm(`로그인이 필요합니다. 
+로그인하시겠습니까 ?`);
+
+    if (loginConfirm) {
+      document.location.href = "/login";
+    } else return;
+  } else {
+    axios({
+      method: "PATCH",
+      url: `/question/${qId}/like/${aId}`,
+      data: { aId },
+    }).then((res) => {
+      if (res) {
+        document.location.href = `/question/${qId}`;
+      }
+    });
+  }
 };
 
 //=== 3. Comment ===
