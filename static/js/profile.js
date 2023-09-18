@@ -6,7 +6,7 @@ function change(buttonType) {
     url: `/users/profile/${buttonType}`,
   })
     .then((response) => {
-      console.log('백엔드로부터 전달받은 데이터', response);
+      console.log("백엔드로부터 전달받은 데이터", response);
       const data = response.data;
       if (buttonType === "liked") {
         liked(data, contentDiv);
@@ -32,24 +32,26 @@ function change(buttonType) {
       cautionA.innerHTML = "작성하신 글이 없습니다.";
     });
 }
+// 좋아요 선택한 글
 const liked = (data, contentDiv) => {
   contentDiv.innerHTML = "";
   for (let question of data.likeQuestionData) {
-    contentDiv.innerHTML = [
+    contentDiv.innerHTML += [
       `<div class="question">
-            <a href ="/board/detail/${data.qId}">
+            <a href="/question/${data.qId}">
             <h3>${question.title}</h3>
-            <p>질문 유형: ${question.qType}</p>
+            <p>${question.qType}</p>
             <p>${question.content}</p>
             </div>`,
     ];
+    console.log("liked");
   }
-  console.log("liked");
 
-  for (let boards of data.boards) {
-    contentDiv.innerHTML = [
+  for (let boards of data.boardsData) {
+    contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
+                <a href="/board/detail/${data.bId}">
                 <p>${boards.title}</p>
                 <p>${boards.content}</p>
                 <div class="like">
@@ -57,29 +59,33 @@ const liked = (data, contentDiv) => {
                 <p>${boards.likeCount}</p>
                 <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
                 <p>${boards.viewCount}</p>
-                </div>`,
+                </div>
+                </div>
+                `,
     ];
+    console.log("liked");
   }
-  
 };
+//댓글 단 글
 const commented = (data, contentDiv) => {
   console.log(data);
   contentDiv.innerHTML = "";
   for (let answer of data.likeAnswerData) {
-    contentDiv.innerHTML = [
+    contentDiv.innerHTML += [
       `
-        <a href ="/board/detail/${data.cId}">
-        <div class="answer">
+      <div class="answer">
+      <a href="/question/${data.qId}">
         <h3>${answer.title}</h3>
         <p>${answer.content}</p>
         </div>`,
     ];
+    console.log("commented");
   }
-  console.log("commented");
-  for (let boards of data.boards) {
-    contentDiv.innerHTML = [
+  for (let boards of data.boardsData) {
+    contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
+                <a href="/board/detail/${data.bId}">
                 <p>${boards.title}</p>
                 <p>${boards.content}</p>
                 <div class="like">
@@ -87,17 +93,22 @@ const commented = (data, contentDiv) => {
                 <p>${boards.likeCount}</p>
                 <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
                 <p>${boards.viewCount}</p>
+                </div>
                 </div>`,
     ];
+    console.log("commented");
   }
 };
+
+// qna 게시글
 const qna = (data, contentDiv) => {
   contentDiv.innerHTML = "";
   for (let post of data.postData) {
-    contentDiv.innerHTML = [
+    contentDiv.innerHTML += [
       `
-        <a href ="/board/detail/${data.qId}">
-        <div class="postedQuestion">
+      <div class="postedQuestion">
+      <a href ="/question/${data.qId}">
+        <div class="qna">
         <h3>${post.title}</h3>
         <p>${post.content}</p>
         <div class="like">
@@ -105,31 +116,37 @@ const qna = (data, contentDiv) => {
         <p>${post.likeCount}</p>
         <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
         <p>${post.viewCount}</p>
+        </div>
+        </div>
+        <hr>
         </div>`,
     ];
+    console.log("qna");
   }
-  console.log("qna");
 };
-const answered = (data, contentDiv) => {
-  contentDiv.innerHTML = "";
-  for (let answer of data.answerData) {
-    contentDiv.innerHTML = [
-      `<a href ="/board/detail/${data.aId}">
-            <div class="postedAnswer">
-            <h3>${answer.title}</h3>
-            <p>${answer.content}</p>
-            </div>
-            `,
-    ];
-  }
-  console.log("answered");
-};
+// const answered = (data, contentDiv) => {
+//   contentDiv.innerHTML = "";
+//   for (let answer of data.answerData) {
+//     contentDiv.innerHTML = [
+//             `<div class="postedAnswer">
+//            <a href ="/question/${data.qId}">
+//             <h3>${answer.title}</h3>
+//             <p>${answer.content}</p>
+//             </div>
+//             `,
+//     ];
+//   }
+//   console.log("answered");
+// };
+
+// 자유 게시판
 const free = (data, contentDiv) => {
-    contentDiv.innerHTML = "";
-  for (let boards of data.boards) {
-    contentDiv.innerHTML = [
+  contentDiv.innerHTML = "";
+  for (let boards of data.boardsData) {
+    contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
+                <a href="/board/detail/${data.bId}">
                 <p>${boards.title}</p>
                 <p>${boards.content}</p>
                 <div class="like">
@@ -137,10 +154,11 @@ const free = (data, contentDiv) => {
                 <p>${boards.likeCount}</p>
                 <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
                 <p>${boards.viewCount}</p>
+                </div>
                 </div>`,
     ];
+    console.log("free");
   }
-  console.log("free");
 };
 
 function isSesac(data) {
@@ -166,30 +184,39 @@ function isSesac(data) {
     });
 }
 
+function editProfile() {
+  axios({
+    method: "GET",
+    url: "/users/editprofile",
+  }).then((res) => {
+    if (res) {
+    }
+  });
+}
 function fileUpload() {
-  console.log('동적 파일 업로드');
+  console.log("동적 파일 업로드");
   // js파일만으로 폼을 전송 ( 파일 데이터를 서버로 전송해야 하는 케이스)
   // FormData 객체를 활용하면 쉽게 전송 가능!
   const formData = new FormData();
-  const file = document.querySelector('#dynamic-file');
+  const file = document.querySelector("#dynamic-file");
   console.dir(file);
   console.dir(file.files);
   console.dir(file.files[0]);
 
   //append( key, value)
-  formData.append('dynamicUserfile', file.files[0]);
+  formData.append("dynamicUserfile", file.files[0]);
 
   axios({
-    method: 'post',
-    url: '/dynamicFile',
+    method: "post",
+    url: "/dynamicFile",
     data: formData,
     header: {
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "multipart/form-data",
     },
   }).then((res) => {
     const {data} = res;
     console.log(data);
-    document.querySelector('img').src = '/' + data.path;
+    document.querySelector("img").src = "/" + data.path;
   });
 }
 

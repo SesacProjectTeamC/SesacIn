@@ -111,3 +111,43 @@ button:focus {
 .caution {
   border: 0 0 0 1px solid var(--hover-color2);
 }
+
+/* .question,
+.freeBoards,
+.postedQuestion,
+.answer {
+  border: none;
+} */
+
+.freeBoards {
+  display: flex;
+  justify-content: flex-start;
+  margin: 20px;
+}
+
+.freeBoards a,
+.postedQuestion a,
+.question a,
+.answer a {
+  text-decoration: none;
+  color: black;
+  background-color: aliceblue;
+}
+
+/* .freeBoards a:hover,
+.postedQuestion a:hover,
+.question a:hover,
+.answer a:hover{
+
+} 
+
+.freeBoards p,
+.postedQuestion p,
+.question p,
+.answer p{
+  
+}  */
+
+.qna {
+  background-color: aliceblue;
+}

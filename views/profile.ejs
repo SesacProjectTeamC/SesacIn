@@ -52,8 +52,8 @@
       <input type="file" id="file" style="display: none;" onchange="document.getElementById('fileName').value = this.value;">
 
       <!-- 커스텀 버튼 및 표시될 파일명 -->
-      <button class="upload" onclick="document.getElementById('file').click();">파일 업로드</button>
-
+      <button class="upload" onclick="document.getElementById('file').click();">파일 선택</button>
+      <button type="submit">업로드</button>
 
     <!-- 프로필 정보 -->
     <% if (userData) { %>
@@ -69,7 +69,7 @@
       <button class="free" onclick="change('free')">자유 게시판</button>
       <button class="liked" onclick="change('liked')">좋아요 선택한 글</button>
       <button class="commented" onclick="change('commented')">댓글 작성한 글</button>
-      <button class="answered" onclick="change('answered')">답변 작성한 글</button>
+      <!-- <button class="answered" onclick="change('answered')">답변 작성한 글</button> -->
     </div>
   </div>
      
