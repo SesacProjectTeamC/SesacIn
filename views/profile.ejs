@@ -20,49 +20,55 @@
 </head>
   <body>
     <header>
-      <img src="../../static/img/제목을 입력해주세요_-001 (2).png" ></img>
+      <img class="logo" src="/static/img/logo.png" ></img>
       <div>
     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left">
       <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
       <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
     </svg>
     </div>
-
     </header>
     <main>
   
   <!-- 프로필 -->
   
   
-  <form name="profile">
+  <form name="profile"  method="post" action="/upload/image/user" enctype="multipart/form-data">
 
-    <img 
-    src="/../static/svg/person.svg" 
-    class="person"
-    alt="src"
-    >
     <!-- 배지 -->
-    <img class="sesac_badge" onclick="" src="/../static/img/sesac_badge.png">
+    <img class="sesac_badge" onclick="" src="/../static/img/leaf.png"><br>
 
-    <h1>User Profile</h1>
+    <!-- 이미지 업로드 -->
+    <% if (userData && userData.userImgPath) { %>
+      <div> 
+          <img class="profile" src="/<%= userData.userImgPath %>" alt="User Image">
+      </div>
+    <% } else { %>
+        <img src="/../static/svg/person.svg" class="person" alt="Default Image">
+    <% } %><br>
+
+      <input type="file" name="file">
+
+    <!-- 프로필 정보 -->
     <% if (userData) { %>
-      <p>UserName: <%= userData.uName %></p>
+      <div class="name"> 내 이름: <%= userData.uName %></div>
+      <div class="campus"> 캠퍼스 : <%= userData.campus %></div>
       <% }  %>
     </form>
     
-    <!-- <button onclick="gotoProfileEdit()">회원정보 수정</button> -->
-
-    <!-- /users/editprofile 로 GET을 날리는게 아니라 PATCH를 날려야 합니다. -->
-    <a href=/users/editprofile>회원 정보 수정</a><br>
-    
+<!-- 게시판 --> 
+    <div class="container text-center">
+      <div class="row row-cols-5">
       <button class="qna" onclick="change('qna')">Q&A 게시판</button>
       <button class="free" onclick="change('free')">자유 게시판</button>
       <button class="liked" onclick="change('liked')">좋아요 누른 게시글</button>
       <button class="commented" onclick="change('commented')">내가 댓글단 게시글</button>
       <button class="answered" onclick="change('answered')">내가 답변한 게시글</button>
-      
-    
-      <div id="content"></div>
+    </div>
+  </div>
+     
+        <div id="content"></div>
+     
     </main>
        
        

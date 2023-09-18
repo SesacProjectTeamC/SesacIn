@@ -39,8 +39,8 @@ router.patch('/edit/:bId', needToLogin, Cboard.editBoard);
 router.delete('/delete/:bId', needToLogin, Cboard.deleteBoard);
 
 // 게시글 페이지별 호출시 처리
-// /board/list/:page
-router.get('/list/:page&:pageSize', Cboard.paginateBoard);
+// /board/list/:page&:pageSize&:sortField&:sortOrder
+router.get('/list/:page&:pageSize&:sortField&:sortOrder', Cboard.paginateBoard);
 
 // 게시글 댓글 생성 처리
 // /board/comment/create/:bId

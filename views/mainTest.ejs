@@ -4,26 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
   <body>
-    <div>questionData: <%= questionData%></div>
-    <br />
-    <div>questionCreateAt: <%= questionCreateAt%></div>
-    <br />
-    <div>questionUserName: <%= questionUserName%></div>
-    <br />
-    <div>questionCommentCount: <%= questionCommentCount%></div>
-    <br />
-    <div>boardData: <%= boardData%></div>
-    <br />
-    <div>boardCreateAt: <%= boardCreateAt%></div>
-    <br />
-    <div>boardUserName: <%= boardUserName%></div>
-    <br />
-    <div>boardCommentCount: <%= boardCommentCount%></div>
-    <br />
-    <div>isLogin: <%= isLogin%></div>
-    <br />
-    <div>currentUserId: <%= currentUserId%></div>
+    <button onclick="getList()">zz</button>
   </body>
+  <script>
+    let page = 0;
+    const getList = () => {
+      let pageSize = 10;
+      let sortField = 'commentCount';
+      // let sortField = 'viewCount';
+      let sortOrder = 'desc';
+
+      axios({
+        method: 'get',
+        url: `/board/list/${page}&${pageSize}&${sortField}&${sortOrder}`,
+      })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      page++;
+    };
+  </script>
 </html>
