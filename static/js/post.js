@@ -16,26 +16,27 @@ class UploadAdapter {
 
   _initRequest() {
     const xhr = (this.xhr = new XMLHttpRequest());
-    xhr.open("POST", "http://localhost:8000/upload/image/user", true);
-    xhr.responseType = "json";
+    // 경로 변수화
+    const currentUrl = window.location.origin;
+    const uploadUrl = `${currentUrl}/upload/editor/file`;
+    xhr.open('POST', uploadUrl, true);
+    xhr.responseType = 'json';
   }
 
   _initListeners(resolve, reject, file) {
     const xhr = this.xhr;
     const loader = this.loader;
-    const genericErrorText = "파일을 업로드 할 수 없습니다.";
+    const genericErrorText = '파일을 업로드 할 수 없습니다.';
 
-    xhr.addEventListener("error", () => {
+    xhr.addEventListener('error', () => {
       reject(genericErrorText);
     });
-    xhr.addEventListener("abort", () => reject());
-    xhr.addEventListener("load", () => {
+    xhr.addEventListener('abort', () => reject());
+    xhr.addEventListener('load', () => {
       const response = xhr.response;
       console.log(response);
       if (!response || response.error) {
-        return reject(
-          response && response.error ? response.error.message : genericErrorText
-        );
+        return reject(response && response.error ? response.error.message : genericErrorText);
       }
 
       resolve({
@@ -46,7 +47,7 @@ class UploadAdapter {
 
   _sendRequest(file) {
     const data = new FormData();
-    data.append("file", file);
+    data.append('file', file);
     console.log(data);
     this.xhr.send(data);
   }
@@ -55,12 +56,12 @@ class UploadAdapter {
 let editor;
 
 function MyCustomUploadAdapterPlugin(editor) {
-  editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+  editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
     return new UploadAdapter(loader);
   };
 }
 
-ClassicEditor.create(document.querySelector(".editor"), {
+ClassicEditor.create(document.querySelector('.editor'), {
   extraPlugins: [MyCustomUploadAdapterPlugin],
 })
   .then((newEditor) => {
@@ -76,18 +77,18 @@ function temp() {
 }
 
 const temp2 = () => {
-  editor.setData("<p>Some text.</p>");
+  editor.setData('<p>Some text.</p>');
 };
 
 const changeType = (t) => {
-  const typeLabel = document.querySelector("#typeLabel");
+  const typeLabel = document.querySelector('#typeLabel');
   typeLabel.innerHTML = t;
-  const dpContainer = document.querySelector("#dpContainer");
-  dpContainer.style.display = "flex";
-  if (t === "자유") {
-    dpContainer.style.display = "none";
+  const dpContainer = document.querySelector('#dpContainer');
+  dpContainer.style.display = 'flex';
+  if (t === '자유') {
+    dpContainer.style.display = 'none';
   } else {
-    dpContainer.style.display = "flex";
+    dpContainer.style.display = 'flex';
   }
   // dpContainer = "";
   // if (t !== "자유") {
@@ -124,24 +125,24 @@ const changeType = (t) => {
 };
 
 const changeType2 = (t) => {
-  const dpLabel = document.querySelector("#dpLabel");
+  const dpLabel = document.querySelector('#dpLabel');
   dpLabel.innerHTML = t;
 };
 
 const postBoard = () => {
-  const t = document.querySelector("#typeLabel").innerHTML.trim();
-  const title = document.querySelector("#title");
+  const t = document.querySelector('#typeLabel').innerHTML.trim();
+  const title = document.querySelector('#title');
   const content = editor.getData(); // 에디터 내부 데이터
   console.log(t);
-  if (title.value === "" || !title.value) {
-    appendAlert("제목을 입력해 주세요");
-  } else if (content === "" || !content) {
-    appendAlert("내용을 입력해 주세요");
+  if (title.value === '' || !title.value) {
+    appendAlert('제목을 입력해 주세요');
+  } else if (content === '' || !content) {
+    appendAlert('내용을 입력해 주세요');
   } else {
-    if (t === "자유") {
+    if (t === '자유') {
       axios({
-        method: "POST",
-        url: "/board/create",
+        method: 'POST',
+        url: '/board/create',
         data: { title: title.value, content: content },
       }).then((res) => {
         if (res) {
@@ -150,11 +151,11 @@ const postBoard = () => {
         }
       });
     } else {
-      const dpLabel = document.querySelector("#dpLabel").innerHTML.trim();
+      const dpLabel = document.querySelector('#dpLabel').innerHTML.trim();
       console.log({ title: title.value, content: content, qType: dpLabel });
       axios({
-        method: "POST",
-        url: "/question/create",
+        method: 'POST',
+        url: '/question/create',
         data: { title: title.value, content: content, qType: dpLabel },
       }).then((res) => {
         if (res) {
@@ -166,19 +167,19 @@ const postBoard = () => {
   }
 };
 
-const alertPlaceholder = document.querySelector("#alertC");
+const alertPlaceholder = document.querySelector('#alertC');
 const appendAlert = (message) => {
-  alertPlaceholder.innerHTML = "";
-  const wrapper = document.createElement("div");
+  alertPlaceholder.innerHTML = '';
+  const wrapper = document.createElement('div');
   wrapper.innerHTML = [
     `<div style="display: none" id="myAlert" class="alert alert-danger alert-dismissible fade show" role="alert">`,
     `   <div>${message}</div>`,
     '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-    "</div>",
-  ].join("");
+    '</div>',
+  ].join('');
 
   alertPlaceholder.append(wrapper);
   console.log(alertPlaceholder);
   window.scrollTo(0, 0);
-  $("#myAlert").fadeIn();
+  $('#myAlert').fadeIn();
 };

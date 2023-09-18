@@ -7,16 +7,11 @@ const { needToLogin } = require('../util/middleware');
 
 // 사용자 프로필 이미지 업로드 처리 라우터
 // /upload/image/user
-router.post(
-  '/image/user',
-  needToLogin,
-  upload.single('file'),
-  Cupload.uploadImageFile
-);
+router.post('/image/user', needToLogin, upload.single('file'), Cupload.uploadImageFile);
 
 // 에디터에서의 파일 업로드 처리 라우터
 // /upload/editor/file
-// router.post('/editor/file', needToLogin, editorUploader.multi('file'));
+router.post('/editor/file', needToLogin, editorUploader.single('file'), Cupload.uploadEditImageFile);
 
 // 에러 처리 미들웨어 (Multer에서 발생한 오류 처리)
 router.use((err, req, res, next) => {
