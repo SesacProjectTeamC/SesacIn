@@ -14,6 +14,18 @@ const storage = multer.diskStorage({
   },
 });
 
+// 업로드된 파일을 저장할 디렉터리 및 파일명 설정
+const storageEditor = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'static/editorImg'); // 파일을 저장할 디렉터리
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    const sanitizedFilename = sanitizeFilename(path.basename(file.originalname, ext));
+    cb(null, sanitizedFilename + '__' + Date.now() + ext); // 파일명 설정 (유니크한 이름)
+  },
+});
+
 // 파일 필터 함수 정의 (이미지 파일만 허용)
 const fileFilter = (req, file, cb) => {
   const allowedMimeTypes = ['image/tiff', 'image/png', 'image/jpg', 'image/jpeg', 'image/png', 'image/gif']; // 허용할 이미지 MIME 타입 목록
@@ -33,7 +45,11 @@ const upload = multer({
 });
 
 // 글쓰기 에디터에서 파일 업로드를 처리할 Multer 인스턴스
-const editorUploader = multer({});
+const editorUploader = multer({
+  storage: storageEditor,
+  fileFilter: fileFilter, // 파일 필터 적용
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});
 
 module.exports = {
   upload,
