@@ -7,9 +7,9 @@ body {
 }
 
 header {
+  padding: 2rem;
   width: 100%;
   text-align: start;
-  margin: 0 30px;
   cursor: pointer;
 }
 
@@ -17,14 +17,22 @@ header {
   fill: var(--hover-color);
   cursor: pointer;
 }
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
 
 img {
-  width: 100px;
-  height: 80px;
+  display: flex;
+  width: 17rem;
+  height: 6rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 main {
-  margin: 60px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -203,10 +211,9 @@ label.isSesac {
 /* 비활성화된 버튼*/
 button[disabled] {
   pointer-events: none; /* 마우스 이벤트 무시 */
-  opacity: 0.6; 
-  cursor: default; 
+  opacity: 0.6;
+  cursor: default;
 }
-
 
 /* alert */
 

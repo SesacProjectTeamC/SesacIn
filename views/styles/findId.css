@@ -13,9 +13,10 @@ header {
   cursor: pointer;
 }
 
-.bi-arrow-left:hover .hover-circle {
-  fill: var(--hover-color);
-  cursor: pointer;
+h2 {
+  margin-bottom: 3rem;
+  font-weight: bold;
+
 }
 
 .content {
@@ -23,6 +24,11 @@ header {
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
+}
+
+.bi-arrow-left:hover .hover-circle {
+  fill: var(--hover-color);
+  cursor: pointer;
 }
 
 img {
@@ -39,7 +45,7 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 450px;
+  width: 600px;
   height: 500px;
   border: 5px solid var(--border-color);
   border-radius: 20px;
@@ -47,73 +53,49 @@ main {
   flex-wrap: wrap;
 }
 
-form#login_form {
+form#findId_form {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.findInfo {
-  display: block;
-  margin-left: 1rem;
-}
-
-.login_form_id,
-.login_form_pw {
+.findId_form_uName,
+.findId_form_email {
   display: flex;
   flex-direction: column;
 }
-label[for='login_form_id']:hover,
-label[for='login_form_pw']:hover {
+label[for='findId_form_uName']:hover,
+label[for='findId_form_email']:hover {
   color: var(--hover-color2);
 }
 
-input[class='login_form_id'],
-input[class='login_form_pw'] {
+input[class='findId_form_uName'],
+input[class='findId_form_email'] {
   border: none;
   outline: none;
   box-shadow: 0px 2px 0px 0px var(--main-color);
   padding: 5px 10px;
   transition: box-shadow 0.3s ease-in-out;
 }
-input[class='login_form_id']:hover,
-input[class='login_form_pw']:hover {
+input[class='findId_form_uName']:hover,
+input[class='findId_form_email']:hover {
   border: none;
   outline: none;
   box-shadow: 0px 0px 0px 1px var(--hover-color);
   padding: 5px 10px;
 }
 
-form#login_form a {
+/* form#findId_form a {
   display: inline-block;
 }
 
-form#login_form a:last-of-type {
+form#findId_form a:last-of-type {
   margin-right: 0;
-}
-.login_links {
-  margin: -2px;
-  display: flex;
-  justify-content: center;
-  cursor: pointer;
-}
+} */
 
-.id-link,
-.pw-link {
-  color: var(--border-color);
-  text-decoration: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.id-link:hover,
-.pw-link:hover {
-  color: var(--hover-color);
-  cursor: pointer;
-}
 .btn-primary {
   margin: auto;
-  width: 96px;
+  width: 120px;
   height: 40px;
   border-radius: 10px;
   background-color: var(--main-color);
@@ -124,7 +106,6 @@ form#login_form a:last-of-type {
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
   align-items: center;
-  margin-left: 3.5rem;
   margin-top: 1rem;
   cursor: pointer;
   font-weight: bold;
