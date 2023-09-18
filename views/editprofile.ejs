@@ -221,16 +221,16 @@
             },
         })
         .then((result) => {
-          // PATCH 메소드 안에서 리다이렉트 불가능 -> 로그아웃해서 세션 날리고 로그인 창으로 이동
           axios({
-            method: 'POST',
-            url: '/logout', 
+            method: 'GET',
+            url: '/users/profile', 
           })
-          .then((logoutResult) => {
-            document.location.href = '/login';
+          .then(() => {
+            document.location.href = '/users/profile';
           })
-          .catch((logoutError) => {
-            console.log(logoutError);
+          .catch((error) => {
+            setModalTextAndShow('오류 발생. 다시 시도해주세요.');
+            console.log(error);
           });
           
         })

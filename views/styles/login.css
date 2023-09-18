@@ -36,12 +36,18 @@ main {
   border-radius: 20px;
   padding: 30px;
   flex-wrap: wrap;
+  margin-top: 10rem;
 }
 
 form#login_form {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.findInfo {
+  display: block;
+  margin-left: 1rem;
 }
 
 .login_form_id,
