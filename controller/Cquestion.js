@@ -138,9 +138,7 @@ exports.paginateQuestion = async (req, res) => {
     let pageSize = parseInt(req.params.pageSize) || 20;
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(
-      Math.ceil(questionTotalCount / pageSize)
-    ); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 페이지별 Question 데이터 조회
     const paginatedQuestion = await Question.findAll({
@@ -152,9 +150,7 @@ exports.paginateQuestion = async (req, res) => {
     // Question createdAt 포맷 변경 후 배열에 저장
     const questionCreateAt = [];
     for (q of paginatedQuestion) {
-      questionCreateAt.push(
-        moment(q.dataValues.createdAt).format('YYYY-MM-DD')
-      );
+      questionCreateAt.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
     }
 
     // Question uNname 배열에 저장
@@ -273,6 +269,7 @@ exports.getQuestion = async (req, res) => {
       });
     }
 
+    // 비로그인 시 동작
     return res.render('questionTest', {
       data: question,
       answerData: answers,
@@ -282,7 +279,7 @@ exports.getQuestion = async (req, res) => {
       qResult: qResultLike, // 특정 질문에 대한 결과 (T/F)
       aResult: uLikeAnswersResult, // 특정 질문에 대한 답변의 결과
       //+ 답변은 여러 개이므로, 배열로 결과 값을 보냄 ---> ex. [ true, false, false ]
-      userData: user,
+      // userData: user,
     });
   } catch (err) {
     console.log(err);
@@ -424,7 +421,6 @@ exports.patchQuestion = async (req, res) => {
     // }
 
     if (!isLogin) {
-      
       res.status(401).send({
         success: false,
         isLogin,
@@ -548,10 +544,7 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 +1
-        await Question.update(
-          { likeCount: getQuestion.likeCount + 1 },
-          { where: { qId } }
-        );
+        await Question.update({ likeCount: getQuestion.likeCount + 1 }, { where: { qId } });
 
         console.log('성공 !!');
 
@@ -564,10 +557,7 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 -1
-        await Question.update(
-          { likeCount: getQuestion.likeCount - 1 },
-          { where: { qId } }
-        );
+        await Question.update({ likeCount: getQuestion.likeCount - 1 }, { where: { qId } });
 
         res.send({ data: getQuestion, qResult: false });
       }
