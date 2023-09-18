@@ -1,6 +1,7 @@
 const { Board, Comment, uLike, User, sequelize } = require('../models/index');
 const { Op } = require('sequelize');
 const moment = require('moment');
+const session = require('express-session');
 
 // 게시글 메인
 exports.getBoardMain = async (req, res) => {
@@ -50,7 +51,7 @@ exports.getBoardMain = async (req, res) => {
     if (isLogin) {
       const uId = req.session.user;
 
-      const user = await User.findOne({
+      const userData = await User.findOne({
         where: { uId },
       });
 
@@ -63,6 +64,7 @@ exports.getBoardMain = async (req, res) => {
         msg: '페이지별 게시글 호출 처리 완료',
         isLogin,
         currentLoginUser: uId,
+        userData: { userImgPath: req.session.userImgPath },
       });
     } else {
       // 비로그인시 처리
@@ -92,25 +94,12 @@ exports.newBoardPage = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    // 로그인 여부 검사
-    if (!isLogin) {
-      // 백엔드에서 처리하는 경우 (로그인 안한상태에서 글쓰기 페이지를 요청하면 로그인 페이지로 리다이렉트)
-      res.status(301).redirect('/login');
-
-      // 프론트엔드에서 처리하는 경우
-      // res.status(401).send({
-      //   success: false,
-      //   isLogin,
-      //   msg: "로그인 되어있지 않습니다.",
-      // });
-      return;
-    }
-
     const uId = req.session.user;
 
     const user = await User.findOne({
       where: { uId },
     });
+
     res.status(200).render('post', {
       success: true,
       isLogin,
@@ -191,6 +180,7 @@ exports.detailBoard = async (req, res) => {
           uId: req.session.user, // 로그인 유저
         },
       });
+
       res.status(200).render('boardDetailTest', {
         success: true,
         isLogin,
@@ -202,6 +192,9 @@ exports.detailBoard = async (req, res) => {
         cDate: create,
         commentData: allComment,
         bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
+        userData: {
+          userImgPath: req.session.userImgPath,
+        },
       });
     } else {
       res.status(200).render('boardDetailTest', {

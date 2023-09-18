@@ -54,7 +54,7 @@ exports.getQuestions = async (req, res) => {
       const user = await User.findOne({
         where: { uId },
       });
-
+      console.log(user);
       res.status(200).render('listMain', {
         type: 'qna',
         questionData: paginatedQuestion, // question 데이터(20개씩)
@@ -62,13 +62,14 @@ exports.getQuestions = async (req, res) => {
         pageCount: questionPageCount, // 총 몇페이지인지
         success: true,
         msg: 'QnA 호출 처리 완료',
-
         // data: paginatedQuestions,
         // pageCount: pageCount,
         // cDate: create,
-
         isLogin,
         currentLoginUser: uId,
+        userData: {
+          userImgPath: req.session.userImgPath,
+        },
       });
     } else {
       console.log('로그인X');
@@ -339,26 +340,22 @@ exports.getCreateQuestion = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    if (!isLogin) {
-      // 로그인 안한상태에서 QnA 글쓰기 페이지를 요청하면 로그인 페이지로 리다이렉트
-      res.status(301).redirect('/login');
-    } else {
-      const uId = req.session.user;
+    const uId = req.session.user;
 
-      const user = await User.findOne({
-        where: { uId },
-      });
-      // 로그인 되어있을때 페이지 렌더링
-      res.status(200).render('post', {
-        isLogin,
-        currentUser: req.session.user,
-        userData: user,
+    const user = await User.findOne({
+      where: { uId },
+    });
 
-        data: {
-          type: 'qna',
-        },
-      });
-    }
+    // 로그인 되어있을때 페이지 렌더링
+    res.status(200).render('post', {
+      isLogin,
+      currentUser: req.session.user,
+      userData: user,
+
+      data: {
+        type: 'qna',
+      },
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send(err); // 상태 코드가 500이면 프론트의 catch에서 처리된다.
