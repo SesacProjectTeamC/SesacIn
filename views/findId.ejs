@@ -3,7 +3,6 @@
   <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Document <%= title %></title>
       <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
@@ -13,45 +12,41 @@
       <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
       <link rel="stylesheet" href="views/componets/cdn.ejs">
-      <link rel="stylesheet" href="views/styles/login.css">
+      <link rel="stylesheet" href="views/styles/findId.css">
       <link rel="stylesheet" href="views/styles/globalstyle.css">
   </head>
   <body>
-      <header>
-      <div>
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goTohome()">
-          <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
-          <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-        </svg>
-      </div>
+      <header>        
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goTohome()">
+            <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
+            <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+          </svg>
+        </div>
       </header>
       <div class="content">
         <img src="/static/img/logo.png" alt="logo" class="logo" />
+      <main>
+        <h2>아이디 찾기</h2>
 
-        <main>
-          <form name="login" id="form_login">
-              <div class="login_form_id">
-              <input type="id" class="login_form_id" id="uId" name="uId" placeholder="아이디" required >
-              </div>
-              <div class="caution" id="cautionId"></div>
-            <br>
-            <br>
-            <div class="login_form_pw">
-              <input type="password" class="login_form_pw" id="pw" name="pw" placeholder="비밀번호" required >
+          <form name="findId" id="form_findId">
+            <div class="findId_form_uName">
+            <input type="text" class="findId_form_uName" id="uName"" name="uName"" placeholder="닉네임" required >
             </div>
-            <div class="caution" id="cautionPw"></div>
+            <div class="caution" id="cautionName"></div>
             <br>
             <br>
+            <div class="findId_form_email">
+              <input type="email" class="findId_form_email" id="email" name="email" placeholder="이메일" required >
+            </div>
+            <div class="caution" id="cautionEmail"></div>
+            <br>
+            <br>
+            
+            <br>
+            <button type="button" class="btn btn-primary" onclick="findIdtest()">아이디 찾기</button>
 
-            <div class="findInfo">
-                <a href="/id" class="id-link">아이디 /</a>
-                <a href="/pw" class="pw-link">비밀번호 찾기</a>
-                
-            </div>
-            <br>
-            <button type="button" class="btn btn-primary" onclick="join()">회원가입</button>
-            <br>
-            <button type="button" class="btn btn-primary" onclick="logintest()">로그인</button>
+            <button type="button" class="btn btn-primary" onclick="goBack()">취소</button>
 
             <!-- Modal -->
             <div class="modal fade" id="cautionModal" tabindex="-1" aria-labelledby="cautionModalLabel" aria-hidden="true">
@@ -77,8 +72,8 @@
       </div>
   </div>
     <script>
-      function join(){
-        window.location.href = "/join";
+      function goBack(){
+        window.history.back();
       }
       function setModalTextAndShow(message) {
         const modalText = document.getElementById('cautionText');
@@ -89,49 +84,47 @@
       }
 
       function hideCaution() {
-        const cautionId = document.getElementById('cautionId');
-        const cautionPw = document.getElementById('cautionPw');
+        const cautionName = document.getElementById('cautionName');
+        const cautionEmail = document.getElementById('cautionEmail');
 
-        cautionId.textContent = '';
-        cautionPw.textContent = '';
+        cautionName.textContent = '';
+        cautionEmail.textContent = '';
       }
 
-      function logintest() {
-        const cautionId = document.getElementById('cautionId');
-        const cautionPw = document.getElementById('cautionPw');
-        const login_form = document.forms['login'];
+      function findIdtest() {
+        const cautionName = document.getElementById('cautionName');
+        const cautionEmail = document.getElementById('cautionEmail');
+        const findId_form = document.forms['findId'];
         
         try {
-          cautionId.textContent = ''; 
-          cautionPw.textContent = ''; 
+          cautionName.textContent = ''; 
+          cautionEmail.textContent = ''; 
 
-          if ( !login_form.uId.checkValidity ()) {
-            cautionId.textContent = `아이디를 입력해 주세요`;
+          if ( !findId_form.uName.checkValidity ()) {
+            cautionName.textContent = `닉네임을 입력해 주세요`;
             setTimeout(hideCaution, 3000);
             return;
-          } else if ( !login_form.pw.checkValidity ()) {
-            cautionPw.textContent = `비밀번호를 입력해 주세요`;
+          } else if ( !findId_form.email.checkValidity ()) {
+            cautionEmail.textContent = `이메일을 입력해 주세요`;
             setTimeout(hideCaution, 3000);
           } 
             axios({
               method: 'post',
-              url: '/login',
+              url: '/id',
               data: {
-                uId: login_form.uId.value,
-                pw: login_form.pw.value,
+                uName: findId_form.uName.value,
+                email: findId_form.email.value,
               },
             })
             .then((res) => {
                 // 로그인이 성공한 경우 메인 페이지로 이동
-                window.location.href = '/';
+                setModalTextAndShow(`${findId_form.uName.value}님의 아이디는 ${res.data.uId}입니다.`);
+
             })
             .catch((error) => {
               const status = error.response.request.status;
               if (status === 401) {
                 setModalTextAndShow('사용자를 찾을 수 없습니다.');
-
-              } else if (status === 402) {
-                setModalTextAndShow('비밀번호가 일치하지 않습니다.');
               }
             });
             } catch (err) {

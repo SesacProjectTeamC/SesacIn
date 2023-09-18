@@ -67,10 +67,13 @@ footer {
   display: flex;
   margin-top: 40px;
   width: 100%;
-  height: 150px;
+  height: 200px;
   background-color: #f9f9f9;
   align-items: center;
   justify-content: center;
+  align-self: flex-end;
+  position: fixed;
+  bottom: 0;
 }
 
 #cardContainer {
@@ -92,11 +95,35 @@ footer {
   box-shadow: 1px 1px 1px 1px lightgrey;
 }
 
-type {
-  color: gray;
+ques_header {
+  color: rgb(241, 152, 182);
   font-size: 14px;
-  font-weight: 550;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 }
+
+.ques_type {
+  border-radius: 11px;
+  width: 70px;
+  padding: 4px 0;
+  text-align: center;
+  color: white;
+  background-color: rgb(241, 152, 182);
+  font-weight: 400;
+  font-size: 14px;
+  border: 1px solid;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+board_header {
+  font-size: 14px;
+  color: cornflowerblue;
+}
+
 user {
   padding-top: 15px;
   display: flex;
@@ -119,31 +146,39 @@ user {
   font-size: 22px;
 }
 .ellipsis {
-  height: 65px;
+  height: 40px;
   overflow: hidden; /* 반드시 "visible" 이외의 값이 지정되어 있어야 한다. */
   text-overflow: ellipsis;
-  font-weight: bold;
-  font-size: 21px;
+  /* font-weight: bold; */
+  /* font-size: 21px; */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
-.ques {
-  margin-bottom: 5px;
+
+.title {
   font-size: 24px;
   font-weight: bold;
-  color: lightpink;
   display: flex;
   justify-content: space-between;
 }
-.boards {
-  color: cornflowerblue;
+
+.content {
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  color: gray;
 }
+
+.board_title {
+  color: black;
+}
+
 .viewImg {
   display: flex;
   font-size: 14px;
   font-weight: bold;
-  color: black;
+
   align-items: center;
 }
 .like {
@@ -152,6 +187,7 @@ user {
   justify-content: center;
   align-items: center;
   font-size: 14px;
+
   /* padding-top: 30px; */
 }
 .svg {
@@ -196,14 +232,17 @@ user {
   align-items: center;
   margin-left: 20px;
   cursor: pointer;
-  border: solid 2px lightgray;
-  border-radius: 30px;
-  padding: 4px 12px 4px 12px;
-  font-size: 18px;
-  font-weight: 300;
-  color: rgb(145, 132, 132);
+  border-radius: 20px;
+  padding: 0px 12px 0px 12px;
+  font-size: 14px;
+  margin-top: 12px;
+  font-weight: bold;
+  color: white;
   transition: 0.3s;
-  height: 40px;
+  height: 34px;
+  background-color: #c8c8c8;
+  width: 76px;
+  justify-content: space-between;
 }
 
 .showMore:hover {

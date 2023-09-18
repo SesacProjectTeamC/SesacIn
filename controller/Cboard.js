@@ -37,16 +37,36 @@ exports.getBoardMain = async (req, res) => {
     for (b of paginatedBoards) {
       create.push(moment(b.dataValues.createdAt).format('YYYY-MM-DD'));
     }
+    if (isLogin) {
+      const uId = req.session.user;
 
-    res.render('listMain', {
-      type: 'board',
-      boards: paginatedBoards,
-      // paginatedCount: pageSize,
-      pageCount,
-      isLogin,
-      cDate: create,
-      msg: '페이지별 게시글 호출 처리 완료',
-    });
+      const user = await User.findOne({
+        where: { uId },
+      });
+
+      res.render('listMain', {
+        type: 'board',
+        boards: paginatedBoards,
+        // paginatedCount: pageSize,
+        pageCount,
+        isLogin,
+        cDate: create,
+        userData: user,
+
+        msg: '페이지별 게시글 호출 처리 완료',
+      });
+    } else {
+      res.render('listMain', {
+        type: 'board',
+        boards: paginatedBoards,
+        // paginatedCount: pageSize,
+        pageCount,
+        isLogin,
+        cDate: create,
+
+        msg: '페이지별 게시글 호출 처리 완료',
+      });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).send({
@@ -58,7 +78,7 @@ exports.getBoardMain = async (req, res) => {
 
 // 새 게시글 생성 페이지 렌더링
 // /board/create
-exports.newBoardPage = (req, res) => {
+exports.newBoardPage = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
@@ -77,9 +97,16 @@ exports.newBoardPage = (req, res) => {
       return;
     }
 
+    const uId = req.session.user;
+
+    const user = await User.findOne({
+      where: { uId },
+    });
     res.status(200).render('post', {
       success: true,
       isLogin,
+      userData: user,
+
       currentLoginUser: req.session.user,
       msg: '페이지 렌더링 정상 처리',
       data: {
@@ -126,15 +153,6 @@ exports.detailBoard = async (req, res) => {
     // 1. 좋아요
     // 1) 좋아요 히스토리 찾기
     let uLikeFind;
-    if (isLogin) {
-      uLikeFind = await uLike.findOne({
-        where: {
-          bId,
-          //! uId
-          uId: req.session.user, // 로그인 유저
-        },
-      });
-    }
 
     // 2) 좋아요 히스토리에 있으면 true, 없으면 false
     const resultLike = isLogin ? !!uLikeFind : false;
@@ -150,16 +168,44 @@ exports.detailBoard = async (req, res) => {
     //     bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
     //   });
     // } else {
-    res.status(200).render('boardDetail', {
-      success: true,
-      isLogin,
-      currentLoginUser: req.session.user,
-      msg: '페이지 렌더링 정상 처리',
-      boardData: eachBoard,
-      cDate: create,
-      commentData: allComment,
-      bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
-    });
+    if (isLogin) {
+      const uId = req.session.user;
+
+      const user = await User.findOne({
+        where: { uId },
+      });
+
+      uLikeFind = await uLike.findOne({
+        where: {
+          bId,
+          //! uId
+          uId: req.session.user, // 로그인 유저
+        },
+      });
+      res.status(200).render('boardDetailTest', {
+        success: true,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '페이지 렌더링 정상 처리',
+        boardData: eachBoard,
+        userData: user,
+
+        cDate: create,
+        commentData: allComment,
+        bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
+      });
+    } else {
+      res.status(200).render('boardDetailTest', {
+        success: true,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '페이지 렌더링 정상 처리',
+        boardData: eachBoard,
+        cDate: create,
+        commentData: allComment,
+        bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
+      });
+    }
     // }
   } catch (error) {
     console.log(error);
@@ -419,6 +465,17 @@ exports.createBoard = async (req, res) => {
       content: req.body.content,
       uId: req.session.user,
     });
+    res.status(401).send({
+      success: false,
+      isLogin,
+      currentLoginUser: req.session.user,
+      msg: '로그인 되어있지 않습니다.',
+    });
+    const uId = req.session.user;
+
+    const user = await User.findOne({
+      where: { uId },
+    });
 
     res.status(200).send({
       success: true,
@@ -426,6 +483,7 @@ exports.createBoard = async (req, res) => {
       currentLoginUser: req.session.user,
       msg: '자유게시글 생성 처리 성공',
       bId: newBoard.dataValues.bId,
+      userData: user,
       data: {
         bId: newBoard.dataValues.bId,
       },
@@ -817,6 +875,26 @@ exports.editBoardPage = async (req, res) => {
         msg: '권한없는 유저 접근',
       });
       return;
+    } else {
+      const uId = req.session.user;
+
+      const user = await User.findOne({
+        where: { uId },
+      });
+      // 게시글 데이터 선택
+      const board = await Board.findOne({
+        where: { bId: req.params.bId },
+      });
+
+      // 정상 처리
+      res.status(200).render('boardEditTest', {
+        success: true,
+        isLogin,
+        currentLoginUser: req.session.user,
+        boards: board.dataValues,
+        userData: user,
+        msg: '페이지 렌더링 정상 처리',
+      });
     }
 
     // 게시글 데이터 선택

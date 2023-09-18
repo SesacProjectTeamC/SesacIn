@@ -7,10 +7,17 @@ body {
 }
 
 header {
+  padding: 2rem;
   width: 100%;
   text-align: start;
-  margin: 0 30px;
   cursor: pointer;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
 }
 
 .bi-arrow-left:hover > .hover-circle {
@@ -19,12 +26,15 @@ header {
 }
 
 img {
-  width: 100px;
-  height: 80px;
+  display: flex;
+  width: 17rem;
+  height: 6rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 main {
-  margin: 60px auto;
+  margin: 20px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
