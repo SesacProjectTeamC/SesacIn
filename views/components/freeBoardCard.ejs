@@ -9,9 +9,9 @@
     "
   >
     <div id="cardContainer">
-      <type> 자유 | <%= cDate%> </type>
-      <div class="ques boards">
-        자유.
+      <board_header><%= cDate%></board_header>
+      <div class="title">
+        <div class="ellipsis"><%= data.title %></div>
         <div class="viewImg">
           <img
             src="../../static/svg/eye.svg"
@@ -22,7 +22,7 @@
           <div><%= data.viewCount%></div>
         </div>
       </div>
-      <div class="ellipsis"><%= data.title%></div>
+      <div class="ellipsis"><div class="content">><%= data.content%></div></div>
       <user>
         <%= uName%>
         <div class="like">
