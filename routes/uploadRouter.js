@@ -7,10 +7,16 @@ const { needToLogin } = require('../util/middleware');
 
 // 이미지 업로드 처리 라우터
 // /upload/image/user
-router.post('/image/user', needToLogin, upload.single('file'), Cupload.uploadImageFile);
+router.post(
+  '/image/user',
+  needToLogin,
+  upload.single('file'),
+  Cupload.uploadImageFile
+);
 
 // 에러 처리 미들웨어 (Multer에서 발생한 오류 처리)
 router.use((err, req, res, next) => {
+  console.log(err.code);
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       res.status(400).send({ error: '파일 크기가 너무 큽니다. (최대 5MB)' });
