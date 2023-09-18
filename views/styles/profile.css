@@ -118,11 +118,21 @@ button:focus {
 .answer {
   border: none;
 } */
+#content {
+  /* background-color: aliceblue; */
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  
+}
 
-.freeBoards {
+.freeBoards,
+.postedQuestion,
+.question,
+.answer {
   display: flex;
   justify-content: flex-start;
-  margin: 20px;
 }
 
 .freeBoards a,
@@ -131,23 +141,26 @@ button:focus {
 .answer a {
   text-decoration: none;
   color: black;
-  background-color: aliceblue;
+  /* background-color: aliceblue; */
 }
 
-/* .freeBoards a:hover,
+.freeBoards a:hover,
 .postedQuestion a:hover,
 .question a:hover,
-.answer a:hover{
-
-} 
+.answer a:hover {
+  color: var(--hover-color2);
+}
 
 .freeBoards p,
 .postedQuestion p,
 .question p,
-.answer p{
-  
-}  */
+.answer p {
+  font-size: medium;
+}
 
-.qna {
-  background-color: aliceblue;
+.qnaList,
+.commentedList,
+.likedList,
+.freeList {
+  /* background-color: aliceblue; */
 }
