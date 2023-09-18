@@ -250,3 +250,58 @@ const hashPassword = (password) => {
 const comparePassword = (password, hashedPassword) => {
   return bcrypt.compareSync(password, hashedPassword);
 };
+
+// 아이디 찾기 페이지 렌더링
+exports.id = (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
+  try {
+    if (isLogin) {
+      // 로그인 되어 있는데 해당 페이지로 이동 시 강제 세션 삭제
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        // res.redirect('/');
+      });
+    } else {
+      res.render('findId', {
+        success: true,
+        msg: '아이디 찾기 페이지 렌더링 처리 성공',
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      msg: '서버 에러 발생',
+    });
+  }
+};
+
+// 아이디 찾기 기능
+exports.findId = async (req, res) => {
+  const { uName, email } = req.body;
+
+  try {
+    // 데이터베이스에서 일치하는 사용자를 조회
+    const user = await User.findOne({
+      where: {
+        uName,
+        email,
+      },
+    });
+
+    if (user) {
+      // 사용자를 찾은 경우
+      res.send({ uId: user.uId }); // 아이디를 표시하는 페이지 렌더링
+    } else {
+      // 사용자를 찾지 못한 경우
+      return res.status(401).json({ message: '사용자를 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    console.error('아이디 찾기 오류:', error);
+    res.status(500).send('아이디 찾기 중 오류가 발생했습니다.');
+  }
+};

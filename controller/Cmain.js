@@ -1,4 +1,5 @@
 const { Question, Board, Answer, Comment, uLike, User } = require('../models');
+const { Op } = require('sequelize');
 const moment = require('moment');
 
 //=== 메인페이지,질문 목록 가져오기 ===
@@ -14,7 +15,9 @@ exports.getMainPage = async (req, res) => {
     let page = parseInt(req.params.page) || 1;
     let pageSize = parseInt(req.params.pageSize) || 20;
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(
+      Math.ceil(questionTotalCount / pageSize)
+    ); // 페이지 수 (올림처리)
     const boardTotalCount = await Board.count();
     const boardPageCount = parseInt(Math.ceil(boardTotalCount / pageSize)); // 페이지 수 (올림처리)
 
@@ -35,7 +38,9 @@ exports.getMainPage = async (req, res) => {
     // QnA & Board. createdAt 포맷 변경 후 배열에 저장
     const questionCreateAt = [];
     for (q of paginatedQuestion) {
-      questionCreateAt.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
+      questionCreateAt.push(
+        moment(q.dataValues.createdAt).format('YYYY-MM-DD')
+      );
     }
     const boardCreateAt = [];
     for (b of paginatedBoard) {
@@ -77,21 +82,43 @@ exports.getMainPage = async (req, res) => {
       });
       boardCommentCount.push(count);
     }
+    if (isLogin) {
+      const uId = req.session.user;
 
-    // res.status(200).render('mainTest', {
-    res.status(200).render('main', {
-      questionData: paginatedQuestion, // question 데이터(20개씩)
-      questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
-      questionUserName, // question 데이터에서 uname을 가져와서
-      questionCommentCount, // question 데이터에서 CommentCount을 가져와서
-      boardData: paginatedBoard, // Board 데이터(20개씩)
-      boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
-      boardUserName, // Board 데이터에서 uname을 가져와서
-      boardCommentCount, // Board 데이터에서 CommentCount을 가져와서
-      isLogin,
-      currentUserId,
-      success: true,
-    });
+      const user = await User.findOne({
+        where: { uId },
+      });
+      // res.status(200).render('mainTest', {
+      res.status(200).render('main', {
+        questionData: paginatedQuestion, // question 데이터(20개씩)
+        questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+        questionUserName, // question 데이터에서 uname을 가져와서
+        questionCommentCount, // question 데이터에서 CommentCount을 가져와서
+        boardData: paginatedBoard, // Board 데이터(20개씩)
+        boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+        boardUserName, // Board 데이터에서 uname을 가져와서
+        boardCommentCount, // Board 데이터에서 CommentCount을 가져와서
+        isLogin,
+        currentUserId,
+        success: true,
+        userData: user,
+      });
+    } else {
+      // res.status(200).render('mainTest', {
+      res.status(200).render('main', {
+        questionData: paginatedQuestion, // question 데이터(20개씩)
+        questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+        questionUserName, // question 데이터에서 uname을 가져와서
+        questionCommentCount, // question 데이터에서 CommentCount을 가져와서
+        boardData: paginatedBoard, // Board 데이터(20개씩)
+        boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+        boardUserName, // Board 데이터에서 uname을 가져와서
+        boardCommentCount, // Board 데이터에서 CommentCount을 가져와서
+        isLogin,
+        currentUserId,
+        success: true,
+      });
+    }
   } catch (err) {
     console.log(err);
     res.send('Internet Server Error!!!');

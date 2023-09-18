@@ -5,7 +5,7 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-  <link rel="stylesheet" href="views/styles/globalstyle.css" />
+  <!-- <link rel="stylesheet" href="views/styles/globalstyle.css" /> -->
 
   <style>
     .cHeader {
@@ -37,8 +37,8 @@
     }
 
     .dropdownImg {
-      width: 3rem;
-      height: 3rem;
+      width: 2rem;
+      height: 2rem;
     }
     .dropdown {
       margin-left: 1.5rem;
@@ -51,7 +51,7 @@
     .dropdown-item {
       display: block;
       width: 100%;
-      padding: 1.25rem 2.5rem;
+      padding: 0.8rem 2rem;
       clear: both;
       font-weight: bold;
       color: #212529;
@@ -65,13 +65,13 @@
       display: none;
     }
     /* 버튼  */
-    .btn-light {
+    .btnHeader {
       color: #212529;
       background-color: transparent;
       border-color: transparent;
       border-radius: 20px;
     }
-    .btn-light:hover {
+    .btnHeader:hover {
       border-radius: 20px;
     }
 
@@ -100,15 +100,25 @@
     <a onclick="moveToMakePost()" style="margin-right: 5px; cursor: pointer">새 글 쓰기</a>
     <div class="dropdown">
       <button
-        class="btn btn-light dropdown-toggle"
+        class="btn btn-light dropdown-toggle btnHeader"
         type="button"
         id="userDropdown"
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
+        <% if (userData && userData.userImgPath) { %>
+        <!-- 프로필 이미지가 있을 때 -->
+        <img
+          src="<%= userData.userImgPath %>"
+          alt="프로필 이미지"
+          class="dropdownImg"
+        />
+        <% } else { %>
+        <!-- 프로필 이미지가 없을 때 기본 이미지 -->
         <img src="/static/img/user.png" alt="사용자 메뉴" class="dropdownImg" />
+        <% } %>
         <!-- 화살표 아이콘 -->
-        <i class="fa-solid fa-chevron-up fa-xl"></i>
+        <i class="fa-solid fa-chevron-up fa-sm"></i>
       </button>
       <ul class="dropdown-menu">
         <li>
@@ -140,7 +150,7 @@
         });
     }
     const moveToMakePost = () => {
-      window.location.href = '/question/create';
+      window.location.href = '/board/create';
     };
   </script>
 </div>

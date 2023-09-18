@@ -30,4 +30,10 @@ router.post('/login', Cuser.userLogin);
 // 로그아웃 처리
 router.post('/logout', Cuser.userLogout);
 
+// 아이디찾기 페이지 렌더링
+router.get('/id', Cuser.id);
+
+// 아이디찾기 기능
+router.post('/id', Cuser.findId);
+
 module.exports = router;
