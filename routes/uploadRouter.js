@@ -7,7 +7,7 @@ const { needToLogin } = require('../util/middleware');
 
 // 사용자 프로필 이미지 업로드 처리 라우터
 // /upload/image/user
-router.post('/image/user', needToLogin, upload.single('file'), Cupload.uploadImageFile);
+router.post('/image/user', needToLogin, upload.single('userImgFile'), Cupload.uploadImageFile);
 
 // 에디터에서의 파일 업로드 처리 라우터
 // /upload/editor/file

@@ -32,9 +32,7 @@
     <main>
   
   <!-- 프로필 -->
-  
-  
-  <form name="profile"  method="post" action="/upload/image/user" enctype="multipart/form-data">
+  <form name="profile">
 
     <!-- 배지 -->
     <img class="sesac_badge" onclick="" src="../static/img/leaf.png"><br>
@@ -48,19 +46,21 @@
         <img src="/../static/svg/person.svg" class="person" alt="Default Image">
     <% } %><br>
 
-      <!-- 숨겨진 원래의 file input -->
-      <input type="file" id="file" style="display: none;" onchange="document.getElementById('fileName').value = this.value;">
-
-      <!-- 커스텀 버튼 및 표시될 파일명 -->
-      <button class="upload" onclick="document.getElementById('file').click();">파일 선택</button>
-      <button type="submit">업로드</button>
+    <!-- 이미지 업로드 버튼(이미지) -->
+    <input type="file" id="fileInput" style="display: none;" onchange="handleFileInput()">
+    <!-- <div class="uploadBtnBox"> -->
+      <!-- <img class="uploadBtn" src="/../static/img/uploadIcon.png" alt="클릭하여 파일 찾기" onclick="document.getElementById('fileInput').click();" style="cursor: pointer;"> -->
+    <!-- </div> -->
+    <div class="uploadBtnBox" style="width: 40px; height: 40px; border-radius: 70%; overflow: hidden;">
+      <img class="uploadBtn" src="/../static/img/uploadIcon.png" alt="클릭하여 파일 찾기" onclick="document.getElementById('fileInput').click();" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+    </div><br>
 
     <!-- 프로필 정보 -->
     <% if (userData) { %>
       <div class="name"> 내 이름: <%= userData.uName %></div>
       <div class="campus"> 캠퍼스 : <%= userData.campus %></div>
       <% }  %>
-    </form>
+  </form>
     
 <!-- 게시판 --> 
     <div class="container text-center">
