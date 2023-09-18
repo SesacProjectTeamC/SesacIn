@@ -6,30 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('./components/cdn', { title: '메인' }) %>
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
-    <link rel="stylesheet" href="/views/styles/questionCreate.css" />
-    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.2/classic/ckeditor.js"></script>
-    <script defer src="/static/js/questionCreate.js"></script>
+    <link rel="stylesheet" href="/views/styles/post.css" />
+    <!-- <script src="https://cdn.ckeditor.com/ckeditor5/39.0.2/super-build/ckeditor.js"></script> -->
+    <script defer src="/static/js/post.js"></script>
   </head>
-  <body>
-    <div class="container">
-      <%- include('./components/header', { isLogin: isLogin }) %>
+  <body class="container">
+    <%- include('./components/header', { isLogin: isLogin }) %>
+    <div id="alertC"></div>
+    <div class="qcTitle">제목</div>
+    <div class="input-group mb-3 qcTitleContainer">
+      <input
+        id="title"
+        type="text"
+        class="form-control"
+        placeholder="제목을 입력해 주세요"
+        aria-label="title"
+        aria-describedby="basic-addon1"
+      />
     </div>
-
-    <div class="container" style="margin-bottom: 50px">
-      <div id="alertC"></div>
-      <div class="qcTitle">제목</div>
-      <div class="input-group mb-3 qcTitleContainer">
-        <input
-          id="title"
-          type="text"
-          class="form-control"
-          placeholder="제목을 입력해 주세요"
-          aria-label="title"
-          aria-describedby="basic-addon1"
-        />
-      </div>
-      <%if(data?.type !== '자유'){%>
+    <div style="display: flex; width: 500px; justify-content: space-between">
       <div style="display: flex; margin-bottom: 15px; align-items: center">
+        <div class="qcTitle">게시판 종류</div>
+        <div class="dropdown">
+          <button
+            id="typeLabel"
+            class="btn dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            자유
+          </button>
+          <ul class="dropdown-menu">
+            <%for(d of ['자유', 'Q&A']){%>
+            <li class="dropdown-item" onclick="changeType('<%= d%>')">
+              <%= d%>
+            </li>
+            <%}%>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        id="dpContainer"
+        style="display: none; margin-bottom: 15px; align-items: center"
+      >
         <div class="qcTitle">카테고리</div>
         <div class="dropdown">
           <button
@@ -44,34 +65,34 @@
           <ul class="dropdown-menu">
             <%for(d of ['앱/웹', 'AI', '빅데이터', '클라우드', '핀테크',
             '블록체인', '개임개발', '기타']){%>
-            <li class="dropdown-item" onclick="changeType('<%= d%>')">
+            <li class="dropdown-item" onclick="changeType2('<%= d%>')">
               <%= d%>
             </li>
             <%}%>
           </ul>
         </div>
       </div>
-      <%}%>
-
-      <div id="editor"></div>
-
-      <div class="qcWrite">
-        <button
-          type="button"
-          class="btn btn-outline-danger"
-          style="margin-right: 15px"
-          onclick="history.back()"
-        >
-          취소
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-success"
-          onclick="postBoard('<%= data.type%>')"
-        >
-          작성
-        </button>
-      </div>
     </div>
+
+    <div class="editor"></div>
+
+    <div class="qcWrite">
+      <button
+        type="button"
+        class="btn btn-outline-danger"
+        style="margin-right: 15px"
+        onclick="history.back()"
+      >
+        취소
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-success"
+        onclick="postBoard()"
+      >
+        작성
+      </button>
+    </div>
+    <script src="/static/editor/ckeditor.js"></script>
   </body>
 </html>

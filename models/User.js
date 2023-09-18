@@ -35,12 +35,12 @@ const User = (Sequelize, DataTypes) => {
       userImg: {
         type: DataTypes.STRING(500),
         allowNull: true,
-        defaultValue: 'NULL',
+        // defaultValue: 'NULL',
       },
       userImgPath: {
         type: DataTypes.STRING(500),
         allowNull: true,
-        defaultValue: 'NULL',
+        // defaultValue: 'NULL',
       },
     },
     {
@@ -50,7 +50,9 @@ const User = (Sequelize, DataTypes) => {
       hooks: {
         beforeCreate: (record, options) => {
           if (record.dataValues.content) {
-            record.dataValues.content = filterBadWords(record.dataValues.content);
+            record.dataValues.content = filterBadWords(
+              record.dataValues.content
+            );
           }
           if (record.dataValues.title) {
             record.dataValues.title = filterBadWords(record.dataValues.title);
@@ -69,7 +71,9 @@ const User = (Sequelize, DataTypes) => {
 
         beforeBulkUpdate: (options) => {
           if (options.attributes.content) {
-            options.attributes.content = filterBadWords(options.attributes.content);
+            options.attributes.content = filterBadWords(
+              options.attributes.content
+            );
           }
           if (options.attributes.title) {
             options.attributes.title = filterBadWords(options.attributes.title);

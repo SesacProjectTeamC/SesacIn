@@ -1,13 +1,13 @@
-const { Question, Answer, uLike, Comment } = require('../models');
+const { Question, Answer, uLike, Comment } = require("../models");
 
 //=== 답변 목록 가져오기 ===
 exports.getAnswers = async (req, res) => {
   try {
     const answers = await Answer.findAll();
-    res.render('questionTest', { answerData: answers });
+    res.render("questionTest", { answerData: answers });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -16,10 +16,10 @@ exports.getCreateAnswer = async (req, res) => {
   try {
     const { qId } = req.params;
 
-    res.render('answerCreateTest', { data: qId });
+    res.render("answerCreateTest", { data: qId });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -30,13 +30,14 @@ exports.postAnswer = async (req, res) => {
     // req.session.user = 1;
 
     if (!req.session.user) {
-      res.redirect('/');
+      res.redirect("/login");
     }
+
     let loginUser = req.session.user;
 
     const { qId } = req.params;
 
-    const { title, content, uId } = req.body;
+    const { title, content } = req.body;
 
     const newAnswer = await Answer.create({
       title,
@@ -60,7 +61,7 @@ exports.postAnswer = async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -73,10 +74,10 @@ exports.getEditAnswer = async (req, res) => {
       where: { aId },
     });
 
-    res.render('answerEditTest', { data: qId, answerData: answer });
+    res.render("answerEditTest", { data: qId, answerData: answer });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -86,11 +87,22 @@ exports.patchAnswer = async (req, res) => {
     const { aId } = req.params;
 
     const { title, content } = req.body;
+
+    // 비어 있는 경우
+    if (!title || !content) {
+      res.status(400).send({
+        success: false,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: "데이터에 빈값이 있습니다.",
+      });
+    }
+
     const updatedAnswer = await Answer.update(
       { title, content },
       {
         where: { aId },
-      }
+      },
     );
 
     res.send({
@@ -98,7 +110,7 @@ exports.patchAnswer = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -123,26 +135,30 @@ exports.deleteAnswer = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
 //=== 답변 좋아요 누르기 ===
 exports.likeAnswer = async (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user || false;
+
+  console.log("isLogin", isLogin);
+
   try {
-    const { aId } = req.params;
+    const { qId, aId } = req.params;
 
     const uLikeFind = await uLike.findOne({
       where: {
         aId,
-        // uId
-        uId: 1, // 임의 유저 1
+        uId: isLogin,
       },
     });
 
     const resultLike = !!uLikeFind;
 
-    console.log('답변 좋아요!!!!!!', resultLike);
+    console.log("답변 좋아요!!!!!!", resultLike);
 
     const getAnswer = await Answer.findOne({
       where: {
@@ -153,40 +169,61 @@ exports.likeAnswer = async (req, res) => {
     // 1) uLike findOne -> 없으면,
     if (!uLikeFind) {
       // (1) 좋아요 히스토리 생성
-      const createLike = await uLike.create({
-        //! uId
-        uId: 1, // 임의 유저 1
+      await uLike.create({
+        uId: isLogin,
         aId,
       });
 
       // (2) 답변 likeCount 업데이트 +1
-      const updatedLike = await Answer.update({ likeCount: getAnswer.likeCount + 1 }, { where: { aId } });
-
-      res.send({
-        answerData: updatedLike,
-        aResult: resultLike,
-      });
+      await Answer.update(
+        { likeCount: getAnswer.likeCount + 1 },
+        { where: { aId } },
+      );
     } else if (uLikeFind) {
       // 2) uLike findOne -> 있으면,
       // (1) 좋아요 -> uLike 해당 aId 삭제함
       await uLike.destroy({
         where: {
           aId,
-          // uId
-          uId: 1, // 임의 유저 1
+          uId: isLogin,
         },
       });
 
       // (2) 답변 likeCount 업데이트 -1
-      const updatedLike = await Answer.update({ likeCount: getAnswer.likeCount - 1 }, { where: { aId } });
-
-      res.send({
-        answerData: updatedLike,
-        aResult: resultLike,
-      });
+      await Answer.update(
+        { likeCount: getAnswer.likeCount - 1 },
+        { where: { aId } },
+      );
     }
+
+    const answers = await Answer.findAll({
+      where: { qId },
+    });
+
+    //-- 여러 개의 답변 좋아요
+    let uLikeAnswersResult = [];
+    for (let i = 0; i < answers.length; i++) {
+      // (1) 좋아요 히스토리에서 해당하는 질문에 대한 답변 찾기
+      const uLikeAnswersFind = await uLike.findOne({
+        where: {
+          aId: answers[i].aId,
+          uId: isLogin,
+        },
+      });
+
+      // (2) 답변의 결과 (T/F)
+      const uLikeAnswerFindResult = !!uLikeAnswersFind;
+
+      // (3) 결과 값 리스트에 담기
+      uLikeAnswersResult.push(uLikeAnswerFindResult);
+    }
+
+    res.send({
+      answerData: uLikeAnswersResult,
+      aResult: resultLike,
+    });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };

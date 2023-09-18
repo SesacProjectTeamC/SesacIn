@@ -1,36 +1,35 @@
 function change(buttonType) {
   console.log(buttonType);
-  const contentDiv = document.getElementById('content');
-  console.log('버튼 클릭했니');
+  const contentDiv = document.getElementById("content");
   axios({
-    method: 'GET',
+    method: "GET",
     url: `/users/profile/${buttonType}`,
   })
     .then((response) => {
       console.log('백엔드로부터 전달받은 데이터', response);
       const data = response.data;
-      if (buttonType === 'liked') {
+      if (buttonType === "liked") {
         liked(data, contentDiv);
         return;
-      } else if (buttonType === 'commented') {
+      } else if (buttonType === "commented") {
         commented(data, contentDiv);
         return;
-      } else if (buttonType === 'answered') {
+      } else if (buttonType === "answered") {
         answered(data, contentDiv);
         return;
-      } else if (buttonType === 'qna') {
+      } else if (buttonType === "qna") {
         qna(data, contentDiv);
         return;
-      } else if (buttonType === 'free') {
+      } else if (buttonType === "free") {
         free(data, contentDiv);
         return;
       } else {
-        contentDiv.innerHTML = '선택된 내용이 없습니다.';
+        contentDiv.innerHTML = "선택된 내용이 없습니다.";
       }
     })
     .catch((error) => {
-      console.error('Error fetching data:', error);
-      contentDiv.innerHTML = '데이터를 가져오는데 오류가 발생했습니다.';
+      console.error("Error fetching data:", error);
+      contentDiv.innerHTML = "데이터를 가져오는데 오류가 발생했습니다.";
     });
 }
 const liked = (data, contentDiv) => {
@@ -44,7 +43,7 @@ const liked = (data, contentDiv) => {
             </div>`,
     ];
   }
-  console.log('liked');
+  console.log("liked");
 };
 const commented = (data, contentDiv) => {
   console.log(data);
@@ -58,7 +57,7 @@ const commented = (data, contentDiv) => {
         </div>`,
     ];
   }
-  console.log('commented');
+console.log("commented");
 };
 const qna = (data, contentDiv) => {
   for (let post of data.postData) {
@@ -76,7 +75,7 @@ const qna = (data, contentDiv) => {
         </div>`,
     ];
   }
-  console.log('qna');
+  console.log("qna");
 };
 const answered = (data, contentDiv) => {
   for (let answer of data.answerData) {
@@ -89,10 +88,10 @@ const answered = (data, contentDiv) => {
             `,
     ];
   }
-  console.log('answered');
+  console.log("answered");
 };
 const free = (data, contentDiv) => {
-  for (let boards of data.boardsData) {
+  for (let boards of data.boards) {
     contentDiv.innerHTML = [
       `
                 <div class="freeBoards">
@@ -106,29 +105,29 @@ const free = (data, contentDiv) => {
                 </div>`,
     ];
   }
-  console.log('free');
+  console.log("free");
 };
 
 function isSesac(data) {
-  const sesacElements = document.getElementsByClassName('sesac_badge');
+  const sesacElements = document.getElementsByClassName("sesac_badge");
   axios({
-    method: 'GET',
-    url: '/users/profile',
+    method: "GET",
+    url: "/users/profile",
   })
     .then((response) => {
       const data = response.data;
       if (data.isSesac === true) {
         for (let element of sesacElements) {
-          element.style.display = ''; // 기본값으로 재설정하여 엘리먼트를 보이게 합니다.
+          element.style.display = ""; // 기본값으로 재설정하여 엘리먼트를 보이게 합니다.
         }
       } else {
         for (let element of sesacElements) {
-          element.style.display = 'none'; // 엘리먼트를 숨깁니다.
+          element.style.display = "none"; // 엘리먼트를 숨깁니다.
         }
       }
     })
     .catch((error) => {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     });
 }
 
