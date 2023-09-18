@@ -7,8 +7,10 @@ const { needToLogin } = require('../util/middleware');
 // 마이페이지 렌더링
 // /users/profile
 router.get('/profile', needToLogin, Cprofile.getUser);
+router.get('/profile/:buttonType', needToLogin, Cprofile.getUser);
 
-router.get('/profile/:bool', needToLogin, Cprofile.getUser);
+// 마이페이지에서 버튼터입별 데이터 호출
+// router.get('/profile/:buttonType', needToLogin, Cprofile.getMyPageContentData);
 
 // 회원 정보 수정 페이지 렌더링
 // /users/editprofile
