@@ -12,7 +12,7 @@
     <h1>질문 상세 페이지</h1>
     <h3>질문</h3>
 
-    <% if (!qResult) { %>
+    <% console.log("qResult", qResult) %> <% if (!qResult) { %>
     <button
       style="background-color: lightgray; border: none"
       onclick="qLikeHandler('<%= data.qId %>')"
@@ -20,7 +20,7 @@
     >
       좋아요
     </button>
-    <% } else if (qResult) { %>
+    <% } else { %>
     <button
       style="background-color: pink; border: none"
       onclick="qLikeHandler('<%= data.qId %>')"
@@ -42,7 +42,7 @@
     <button onclick="moveToEditQuestion('<%= data.qId %>')">수정</button>
     <button onclick="deleteQuestion('<%= data.qId %>')">삭제</button>
 
-    <% if (answerData) { %>
+    <% console.log("aaaResult", aResult) %> <% if (answerData) { %>
     <h3>답변 리스트</h3>
     <button onclick="moveToCreateAnswer('<%= data.qId %>')">답변 등록</button>
 

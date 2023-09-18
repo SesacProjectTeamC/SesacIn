@@ -1,12 +1,12 @@
 function change(buttonType) {
   console.log(buttonType);
   const contentDiv = document.getElementById("content");
-  const cautionA = document.getElementsByClassName("caution");
   axios({
     method: "GET",
-    url: `/users/profile/yes`,
+    url: `/users/profile/${buttonType}`,
   })
     .then((response) => {
+      console.log('백엔드로부터 전달받은 데이터', response);
       const data = response.data;
       if (buttonType === "liked") {
         liked(data, contentDiv);
@@ -167,29 +167,29 @@ function isSesac(data) {
 }
 
 function fileUpload() {
-  console.log("동적 파일 업로드");
+  console.log('동적 파일 업로드');
   // js파일만으로 폼을 전송 ( 파일 데이터를 서버로 전송해야 하는 케이스)
   // FormData 객체를 활용하면 쉽게 전송 가능!
   const formData = new FormData();
-  const file = document.querySelector("#dynamic-file");
+  const file = document.querySelector('#dynamic-file');
   console.dir(file);
   console.dir(file.files);
   console.dir(file.files[0]);
 
   //append( key, value)
-  formData.append("dynamicUserfile", file.files[0]);
+  formData.append('dynamicUserfile', file.files[0]);
 
   axios({
-    method: "post",
-    url: "/dynamicFile",
+    method: 'post',
+    url: '/dynamicFile',
     data: formData,
     header: {
-      "Content-Type": "multipart/form-data",
+      'Content-Type': 'multipart/form-data',
     },
   }).then((res) => {
     const {data} = res;
     console.log(data);
-    document.querySelector("img").src = "/" + data.path;
+    document.querySelector('img').src = '/' + data.path;
   });
 }
 
