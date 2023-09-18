@@ -7,6 +7,7 @@ function change(buttonType) {
     url: `/users/profile/yes`,
   })
     .then((response) => {
+<<<<<<< Updated upstream
       const data = response.data;
       if (buttonType === "liked") {
         liked(data, contentDiv);
@@ -23,6 +24,21 @@ function change(buttonType) {
       } else if (buttonType === "free") {
         free(data, contentDiv);
         return;
+=======
+      console.log(response.data);
+
+      const data = response.data;
+      if (buttonType === "liked") {
+        liked(data, contentDiv);
+      } else if (buttonType === "commented") {
+        commented(data, contentDiv);
+      } else if (buttonType === "answered") {
+        answered(data, contentDiv);
+      } else if (buttonType === "qna") {
+        qna(data, contentDiv);
+      } else if (buttonType === "free") {
+        free(data, contentDiv);
+>>>>>>> Stashed changes
       } else {
         contentDiv.innerHTML = "선택된 내용이 없습니다.";
       }
@@ -34,6 +50,7 @@ function change(buttonType) {
 }
 const liked = (data, contentDiv) => {
   for (let question of data.likeQuestionData) {
+<<<<<<< Updated upstream
     contentDiv.innerHTML = [
       `<div class="question">
             <a href ="/board/detail/${data.qId}">
@@ -93,10 +110,65 @@ const answered = (data, contentDiv) => {
 const free = (data, contentDiv) => {
   for (let boards of data.boards) {
     contentDiv.innerHTML = [
+=======
+    contentDiv.innerHTML += [
+      `<div class="question">
+        <a href ="/board/detail/${data.qId}">
+                <h3>${question.title}</h3>
+                <p>질문 유형: ${question.qType}</p>
+                <p>${question.content}</p>
+            </div>`,
+    ];
+  }
+  console.log(data);
+};
+const commented = (data, contentDiv) => {
+  console.log(data);
+  for (let answer of data.likeAnswerData) {
+    contentDiv.innerHTML += [
+      `
+            <a href ="/board/detail/${data.cId}">
+            <div class="answer">
+                <h3>${answer.title}</h3>
+                <p>${answer.content}</p>
+            </div>`,
+    ];
+  }
+};
+const qna = (data, contentDiv) => {
+  for (let post of data.postData) {
+    contentDiv.innerHTML += [
+      `
+            <a href ="/board/detail/${data.qId}">
+            <div class="postedQuestion">
+                <h3>${post.title}</h3>
+                <p>질문 유형: ${post.qType}</p>
+                <p>${post.content}</p>
+            </div>`,
+    ];
+  }
+};
+const answered = (data, contentDiv) => {
+  for (let answer of data.answerData) {
+    contentDiv.innerHTML += [
+      `<a href ="/board/detail/${data.aId}">
+                <div class="postedAnswer">
+                <h3>${answer.title}</h3>
+                <p>${answer.content}</p>
+                </div>
+                `,
+    ];
+  }
+};
+const free = (data, contentDiv) => {
+  for (let boards of data.boards) {
+    contentDiv.innerHTML += [
+>>>>>>> Stashed changes
       `
                 <div class="freeBoards">
                 <p>${boards.title}</p>
                 <p>${boards.content}</p>
+<<<<<<< Updated upstream
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
                 <p>${boards.likeCount}</p>
@@ -106,6 +178,12 @@ const free = (data, contentDiv) => {
     ];
   }
   console.log("free");
+=======
+                </div>
+                `,
+    ];
+  }
+>>>>>>> Stashed changes
 };
 
 function isSesac(data) {
