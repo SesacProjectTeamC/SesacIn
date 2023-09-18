@@ -26,9 +26,6 @@ exports.getCreateAnswer = async (req, res) => {
 //=== 답변 등록 POST ===
 exports.postAnswer = async (req, res) => {
   try {
-    // test login
-    // req.session.user = 1;
-
     if (!req.session.user) {
       res.redirect("/login");
     }
@@ -73,6 +70,11 @@ exports.getEditAnswer = async (req, res) => {
     const answer = await Answer.findOne({
       where: { aId },
     });
+
+    // 작성자가 아니면 404 화면으로
+    if (req.session.user !== answer.uId) {
+      return res.render("404");
+    }
 
     res.render("answerEditTest", { data: qId, answerData: answer });
   } catch (err) {

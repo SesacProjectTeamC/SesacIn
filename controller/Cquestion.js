@@ -192,6 +192,8 @@ exports.getQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
+  console.log("isLogin - getQuestion", isLogin);
+
   try {
     const { qId } = req.params;
 
@@ -207,35 +209,40 @@ exports.getQuestion = async (req, res) => {
       where: { qId },
     });
 
-    // 1) 질문 좋아요
-    // [태균] uLike 테이블에서 해당하는 qId에 대한 row데이터를 가져옴
-    const uLikeQuestionFind = await uLike.findOne({
-      where: {
-        qId,
-        uId: isLogin,
-      },
-    });
+    let qResultLike = false; // 질문 좋아요 초기값을 false로 설정
+    let uLikeAnswersResult = []; // 답변 좋아요 초기값을 빈 배열로 설정
 
-    // 질문에 대한 좋아요가 있는지 없는지 확인 결과 (T/F)
-    const qResultLike = !!uLikeQuestionFind;
-
-    // 2) 여러 개의 답변 좋아요
-    // answers = 질문에 달린 복수 답변 전체의 데이터
-    let uLikeAnswersResult = [];
-    for (let i = 0; i < answers.length; i++) {
-      // (1) 좋아요 히스토리에서 해당하는 질문에 대한 답변 찾기
-      const uLikeAnswersFind = await uLike.findOne({
+    if (isLogin) {
+      // 1) 질문 좋아요
+      // [태균] uLike 테이블에서 해당하는 qId에 대한 row데이터를 가져옴
+      const uLikeQuestionFind = await uLike.findOne({
         where: {
-          aId: answers[i].aId,
-          uId: isLogin,
+          qId,
+          uId: req.session.user,
         },
       });
 
-      // (2) 답변의 결과 (T/F)
-      const uLikeAnswerFindResult = !!uLikeAnswersFind;
+      // 질문에 대한 좋아요가 있는지 없는지 확인 결과 (T/F)
+      qResultLike = !!uLikeQuestionFind;
 
-      // (3) 결과 값 리스트에 담기
-      uLikeAnswersResult.push(uLikeAnswerFindResult);
+      // 2) 여러 개의 답변 좋아요
+      // answers = 질문에 달린 복수 답변 전체의 데이터
+
+      for (let i = 0; i < answers.length; i++) {
+        // (1) 좋아요 히스토리에서 해당하는 질문에 대한 답변 찾기
+        const uLikeAnswersFind = await uLike.findOne({
+          where: {
+            aId: answers[i].aId,
+            uId: req.session.user,
+          },
+        });
+
+        // (2) 답변의 결과 (T/F)
+        const uLikeAnswerFindResult = !!uLikeAnswersFind;
+
+        // (3) 결과 값 리스트에 담기
+        uLikeAnswersResult.push(uLikeAnswerFindResult);
+      }
     }
 
     return res.render("questionTest", {
@@ -472,58 +479,60 @@ exports.deleteQuestion = async (req, res) => {
 //=== 질문 좋아요 누르기 ===
 exports.likeQuestion = async (req, res) => {
   // 세션 검사
-  let isLogin = req.session.user || false;
+  let isLogin = req.session.user ? true : false;
 
   try {
     const { qId } = req.params;
 
-    const uLikeFind = await uLike.findOne({
-      where: {
-        qId,
-        uId: isLogin,
-      },
-    });
-
-    let resultLike = !!uLikeFind;
-
-    console.log("--------", uLikeFind);
-    console.log(":::::::::", resultLike);
-
-    const getQuestion = await Question.findOne({
-      where: { qId },
-    });
-
-    // 1) uLike findOne -> qId 없으면,
-    if (!uLikeFind) {
-      // (1) 좋아요 히스토리 생성 : uLike 해당 qId 생성됨.
-      await uLike.create({
-        uId: isLogin,
-        qId,
+    if (isLogin) {
+      const uLikeFind = await uLike.findOne({
+        where: {
+          qId,
+          uId: req.session.user,
+        },
       });
 
-      // (2) 질문 likeCount 업데이트 +1
-      await Question.update(
-        { likeCount: getQuestion.likeCount + 1 },
-        { where: { qId } },
-      );
+      // 잠시 주석처리
+      // let resultLike = !!uLikeFind;
 
-      console.log("성공 !!");
-
-      res.send({ data: getQuestion, qResult: "yes" });
-    } else {
-      // 2) uLike findOne -> qId 있으면,
-      // (1) 좋아요 -> uLike 해당 qId 삭제함
-      await uLike.destroy({
+      const getQuestion = await Question.findOne({
         where: { qId },
       });
 
-      // (2) 질문 likeCount 업데이트 -1
-      await Question.update(
-        { likeCount: getQuestion.likeCount - 1 },
-        { where: { qId } },
-      );
+      // 1) uLike findOne -> qId 없으면,
+      if (!uLikeFind) {
+        // (1) 좋아요 히스토리 생성 : uLike 해당 qId 생성됨.
+        await uLike.create({
+          uId: req.session.user,
+          qId,
+        });
 
-      res.send({ data: getQuestion, qResult: "no" });
+        // (2) 질문 likeCount 업데이트 +1
+        await Question.update(
+          { likeCount: getQuestion.likeCount + 1 },
+          { where: { qId } },
+        );
+
+        console.log("성공 !!");
+
+        res.send({ data: getQuestion, qResult: true });
+      } else {
+        // 2) uLike findOne -> qId 있으면,
+        // (1) 좋아요 -> uLike 해당 qId 삭제함
+        await uLike.destroy({
+          where: { qId },
+        });
+
+        // (2) 질문 likeCount 업데이트 -1
+        await Question.update(
+          { likeCount: getQuestion.likeCount - 1 },
+          { where: { qId } },
+        );
+
+        res.send({ data: getQuestion, qResult: false });
+      }
+    } else {
+      res.send({ isLogin });
     }
   } catch (err) {
     console.log(err);
