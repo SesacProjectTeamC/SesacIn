@@ -1,11 +1,4 @@
-const {
-  Board,
-  Comment,
-  uLike,
-  User,
-  Sequelize,
-  sequelize,
-} = require('../models/index');
+const { Board, Comment, uLike, User, sequelize } = require('../models/index');
 const { Op } = require('sequelize');
 const moment = require('moment');
 
@@ -37,6 +30,7 @@ exports.getBoardMain = async (req, res) => {
     for (b of paginatedBoards) {
       create.push(moment(b.dataValues.createdAt).format('YYYY-MM-DD'));
     }
+
     if (isLogin) {
       const uId = req.session.user;
 
@@ -229,10 +223,7 @@ exports.viewBoard = async (req, res) => {
     const eachBoard = await getBoard(bId);
 
     // 조회수 업데이트 +1
-    await Board.update(
-      { viewCount: eachBoard.viewCount + 1 },
-      { where: { bId } }
-    );
+    await Board.update({ viewCount: eachBoard.viewCount + 1 }, { where: { bId } });
     res.status(200).send({ boardData: eachBoard });
   } catch (error) {
     console.error(error);
@@ -275,10 +266,7 @@ exports.likeBoard = async (req, res) => {
       });
 
       // (2) 자유게시글 likeCount +1 업데이트
-      await Board.update(
-        { likeCount: eachBoard.likeCount + 1 },
-        { where: { bId } }
-      );
+      await Board.update({ likeCount: eachBoard.likeCount + 1 }, { where: { bId } });
     } else if (uLikeFind) {
       // 3-2. uLike findOne -> bId 있으면,
       // (1) 좋아요 히스토리 삭제 : uLike에 해당 bId 삭제함
@@ -287,10 +275,7 @@ exports.likeBoard = async (req, res) => {
       });
 
       // (2) 자유게시글 likeCount -1 업데이트
-      await Board.update(
-        { likeCount: eachBoard.likeCount - 1 },
-        { where: { bId } }
-      );
+      await Board.update({ likeCount: eachBoard.likeCount - 1 }, { where: { bId } });
     }
 
     res.status(200).send({
@@ -372,15 +357,8 @@ exports.paginateBoard = async (req, res) => {
     let sortField = req.params.sortField || 'createdAt';
     let sortOrder = req.params.sortOrder || 'desc';
 
-    console.log(req.params);
-
     // params 검사
-    if (
-      !sortField ||
-      !['createdAt', 'likeCount', 'viewCount', 'commentCount'].includes(
-        sortField
-      )
-    ) {
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'commentCount'].includes(sortField)) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -395,7 +373,7 @@ exports.paginateBoard = async (req, res) => {
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
     // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
     const sql = `
-    SELECT b.bId, u.uName, u.uid, u.userImgPath, b.title, b.content, b.viewCount, b.likeCount, b.createdAt, b.updatedAt, COALESCE(count(c.cId), 0) as commentCount 
+    SELECT b.bId, u.uName, u.uId, u.userImgPath, b.title, b.content, b.viewCount, b.likeCount, b.createdAt, b.updatedAt, COALESCE(count(c.cId), 0) as commentCount 
       FROM board b 
       LEFT JOIN comment c ON b.bId = c.bId 
       LEFT JOIN user u ON b.uId = u.uId 
@@ -587,8 +565,7 @@ exports.editBoard = async (req, res) => {
 };
 
 // 자유게시판 게시글 내용/제목 변경여부 확인 함수
-const hasChanged = (before, after) =>
-  before.title !== after.title || before.content !== after.content;
+const hasChanged = (before, after) => before.title !== after.title || before.content !== after.content;
 
 // 게시글 삭제 처리
 // /board/delete/:bId
@@ -750,10 +727,7 @@ exports.editComment = async (req, res) => {
     }
 
     // 댓글 수정
-    const isUpdatedComment = await Comment.update(
-      { content: content },
-      { where: { cId: cId } }
-    );
+    const isUpdatedComment = await Comment.update({ content: content }, { where: { cId: cId } });
 
     // 댓글이 달린 게시글의 총 댓글수 확인
     const commentCount = await getCommentCount(cId);
