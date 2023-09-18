@@ -5,9 +5,9 @@ const {
   User,
   Sequelize,
   sequelize,
-} = require("../models/index");
-const { Op } = require("sequelize");
-const moment = require("moment");
+} = require('../models/index');
+const { Op } = require('sequelize');
+const moment = require('moment');
 
 // 게시글 메인
 exports.getBoardMain = async (req, res) => {
@@ -27,7 +27,7 @@ exports.getBoardMain = async (req, res) => {
     // offset = 가져올 첫 데이터 위치
     const paginatedBoards = await Board.findAll({
       //최신글 정렬
-      order: [["createdAt", "DESC"]],
+      order: [['createdAt', 'DESC']],
       limit: pageSize,
       offset: (page - 1) * pageSize,
     });
@@ -35,30 +35,50 @@ exports.getBoardMain = async (req, res) => {
     // 날짜 데이터 포맷 변경
     const create = [];
     for (b of paginatedBoards) {
-      create.push(moment(b.dataValues.createdAt).format("YYYY-MM-DD"));
+      create.push(moment(b.dataValues.createdAt).format('YYYY-MM-DD'));
     }
+    if (isLogin) {
+      const uId = req.session.user;
 
-    res.render("listMain", {
-      type: "board",
-      boards: paginatedBoards,
-      // paginatedCount: pageSize,
-      pageCount,
-      isLogin,
-      cDate: create,
-      msg: "페이지별 게시글 호출 처리 완료",
-    });
+      const user = await User.findOne({
+        where: { uId },
+      });
+
+      res.render('listMain', {
+        type: 'board',
+        boards: paginatedBoards,
+        // paginatedCount: pageSize,
+        pageCount,
+        isLogin,
+        cDate: create,
+        userData: user,
+
+        msg: '페이지별 게시글 호출 처리 완료',
+      });
+    } else {
+      res.render('listMain', {
+        type: 'board',
+        boards: paginatedBoards,
+        // paginatedCount: pageSize,
+        pageCount,
+        isLogin,
+        cDate: create,
+
+        msg: '페이지별 게시글 호출 처리 완료',
+      });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).send({
       success: false,
-      error: "서버 에러",
+      error: '서버 에러',
     });
   }
 };
 
 // 새 게시글 생성 페이지 렌더링
 // /board/create
-exports.newBoardPage = (req, res) => {
+exports.newBoardPage = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
@@ -66,7 +86,7 @@ exports.newBoardPage = (req, res) => {
     // 로그인 여부 검사
     if (!isLogin) {
       // 백엔드에서 처리하는 경우 (로그인 안한상태에서 글쓰기 페이지를 요청하면 로그인 페이지로 리다이렉트)
-      res.status(301).redirect("/login");
+      res.status(301).redirect('/login');
 
       // 프론트엔드에서 처리하는 경우
       // res.status(401).send({
@@ -77,13 +97,20 @@ exports.newBoardPage = (req, res) => {
       return;
     }
 
-    res.status(200).render("post", {
+    const uId = req.session.user;
+
+    const user = await User.findOne({
+      where: { uId },
+    });
+    res.status(200).render('post', {
       success: true,
       isLogin,
+      userData: user,
+
       currentLoginUser: req.session.user,
-      msg: "페이지 렌더링 정상 처리",
+      msg: '페이지 렌더링 정상 처리',
       data: {
-        type: "자유",
+        type: '자유',
       },
     });
   } catch (error) {
@@ -92,7 +119,7 @@ exports.newBoardPage = (req, res) => {
       success: false,
       isLogin,
       currentLoginUser: req.session.user,
-      msg: "서버에러 발생",
+      msg: '서버에러 발생',
     });
   }
 };
@@ -107,11 +134,11 @@ exports.detailBoard = async (req, res) => {
     // req 데이터 검사
     const { bId } = req.params;
     if (!req.params.bId) {
-      console.log("프론트로부터 전달받은 bId 가 없음");
+      console.log('프론트로부터 전달받은 bId 가 없음');
       res.status(404).send({
         success: false,
         isLogin,
-        msg: "전달받은 bId 값이 없음",
+        msg: '전달받은 bId 값이 없음',
       });
       return;
     }
@@ -120,21 +147,12 @@ exports.detailBoard = async (req, res) => {
     const allComment = await getComment(bId);
 
     // 날짜 데이터 포맷 변경
-    const create = moment(eachBoard.createdAt).format("YYYY-MM-DD");
+    const create = moment(eachBoard.createdAt).format('YYYY-MM-DD');
 
     //=== [ 세화 ] ===
     // 1. 좋아요
     // 1) 좋아요 히스토리 찾기
     let uLikeFind;
-    if (isLogin) {
-      uLikeFind = await uLike.findOne({
-        where: {
-          bId,
-          //! uId
-          uId: req.session.user, // 로그인 유저
-        },
-      });
-    }
 
     // 2) 좋아요 히스토리에 있으면 true, 없으면 false
     const resultLike = isLogin ? !!uLikeFind : false;
@@ -150,16 +168,44 @@ exports.detailBoard = async (req, res) => {
     //     bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
     //   });
     // } else {
-    res.status(200).render("boardDetailTest", {
-      success: true,
-      isLogin,
-      currentLoginUser: req.session.user,
-      msg: "페이지 렌더링 정상 처리",
-      boardData: eachBoard,
-      cDate: create,
-      commentData: allComment,
-      bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
-    });
+    if (isLogin) {
+      const uId = req.session.user;
+
+      const user = await User.findOne({
+        where: { uId },
+      });
+
+      uLikeFind = await uLike.findOne({
+        where: {
+          bId,
+          //! uId
+          uId: req.session.user, // 로그인 유저
+        },
+      });
+      res.status(200).render('boardDetailTest', {
+        success: true,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '페이지 렌더링 정상 처리',
+        boardData: eachBoard,
+        userData: user,
+
+        cDate: create,
+        commentData: allComment,
+        bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
+      });
+    } else {
+      res.status(200).render('boardDetailTest', {
+        success: true,
+        isLogin,
+        currentLoginUser: req.session.user,
+        msg: '페이지 렌더링 정상 처리',
+        boardData: eachBoard,
+        cDate: create,
+        commentData: allComment,
+        bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
+      });
+    }
     // }
   } catch (error) {
     console.log(error);
@@ -167,7 +213,7 @@ exports.detailBoard = async (req, res) => {
       success: false,
       isLogin,
       currentLoginUser: req.session.user,
-      msg: "서버에러 발생",
+      msg: '서버에러 발생',
     });
   }
 };
@@ -185,12 +231,12 @@ exports.viewBoard = async (req, res) => {
     // 조회수 업데이트 +1
     await Board.update(
       { viewCount: eachBoard.viewCount + 1 },
-      { where: { bId } },
+      { where: { bId } }
     );
     res.status(200).send({ boardData: eachBoard });
   } catch (error) {
     console.error(error);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -218,7 +264,7 @@ exports.likeBoard = async (req, res) => {
     // 2. 좋아요 히스토리에 있으면 true, 없으면 false
     const resultLike = !!uLikeFind;
 
-    console.log("board 좋아요", resultLike);
+    console.log('board 좋아요', resultLike);
 
     // 3-1. uLike findOne -> bId 없으면,
     if (!uLikeFind) {
@@ -231,7 +277,7 @@ exports.likeBoard = async (req, res) => {
       // (2) 자유게시글 likeCount +1 업데이트
       await Board.update(
         { likeCount: eachBoard.likeCount + 1 },
-        { where: { bId } },
+        { where: { bId } }
       );
     } else if (uLikeFind) {
       // 3-2. uLike findOne -> bId 있으면,
@@ -243,7 +289,7 @@ exports.likeBoard = async (req, res) => {
       // (2) 자유게시글 likeCount -1 업데이트
       await Board.update(
         { likeCount: eachBoard.likeCount - 1 },
-        { where: { bId } },
+        { where: { bId } }
       );
     }
 
@@ -252,7 +298,7 @@ exports.likeBoard = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -260,10 +306,10 @@ exports.likeBoard = async (req, res) => {
 exports.getBoardList = async (req, res) => {
   try {
     const BoardList = await Board.findAll();
-    res.render("index", { type: "board", data: BoardList });
+    res.render('index', { type: 'board', data: BoardList });
   } catch (error) {
     console.error(error);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -294,7 +340,7 @@ exports.getCommentList = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send({
-      msg: "서버에러",
+      msg: '서버에러',
     });
   }
 };
@@ -323,23 +369,23 @@ exports.paginateBoard = async (req, res) => {
     let pageSize = parseInt(req.params.pageSize) || 20;
     let offset = (page - 1) * pageSize;
 
-    let sortField = req.params.sortField || "createdAt";
-    let sortOrder = req.params.sortOrder || "desc";
+    let sortField = req.params.sortField || 'createdAt';
+    let sortOrder = req.params.sortOrder || 'desc';
 
     console.log(req.params);
 
     // params 검사
     if (
       !sortField ||
-      !["createdAt", "likeCount", "viewCount", "commentCount"].includes(
-        sortField,
+      !['createdAt', 'likeCount', 'viewCount', 'commentCount'].includes(
+        sortField
       )
     ) {
-      res.status(400).send({ error: "올바른 정렬 필드를 지정하세요." });
+      res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
-    if (!sortOrder || !["desc", "asc"].includes(sortOrder)) {
-      res.status(400).json({ error: "올바른 정렬 순서를 지정하세요." });
+    if (!sortOrder || !['desc', 'asc'].includes(sortOrder)) {
+      res.status(400).json({ error: '올바른 정렬 순서를 지정하세요.' });
       return;
     }
 
@@ -362,7 +408,7 @@ exports.paginateBoard = async (req, res) => {
     // 날짜 데이터 포맷 변경
     const boardCreateAt = [];
     for (b of paginatedBoard) {
-      boardCreateAt.push(moment(b.createdAt).format("YYYY-MM-DD"));
+      boardCreateAt.push(moment(b.createdAt).format('YYYY-MM-DD'));
     }
 
     // 데이터 응답
@@ -371,13 +417,13 @@ exports.paginateBoard = async (req, res) => {
       boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
       boardPageCount, // 총 몇페이지인지
       success: true,
-      msg: "페이지별 게시글 호출 처리 완료",
+      msg: '페이지별 게시글 호출 처리 완료',
     });
   } catch (error) {
     console.error(error);
     res.status(500).send({
       success: false,
-      error: "서버 에러",
+      error: '서버 에러',
     });
   }
 };
@@ -394,7 +440,7 @@ exports.createBoard = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "로그인 되어있지 않습니다.",
+        msg: '로그인 되어있지 않습니다.',
       });
       return;
     }
@@ -405,7 +451,7 @@ exports.createBoard = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "데이터에 빈값이 있습니다.",
+        msg: '데이터에 빈값이 있습니다.',
       });
       return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
     }
@@ -419,13 +465,25 @@ exports.createBoard = async (req, res) => {
       content: req.body.content,
       uId: req.session.user,
     });
+    res.status(401).send({
+      success: false,
+      isLogin,
+      currentLoginUser: req.session.user,
+      msg: '로그인 되어있지 않습니다.',
+    });
+    const uId = req.session.user;
+
+    const user = await User.findOne({
+      where: { uId },
+    });
 
     res.status(200).send({
       success: true,
       isLogin,
       currentLoginUser: req.session.user,
-      msg: "자유게시글 생성 처리 성공",
+      msg: '자유게시글 생성 처리 성공',
       bId: newBoard.dataValues.bId,
+      userData: user,
       data: {
         bId: newBoard.dataValues.bId,
       },
@@ -437,7 +495,7 @@ exports.createBoard = async (req, res) => {
       success: false,
       isLogin,
       currentLoginUser: req.session.user,
-      msg: "서버에러 발생",
+      msg: '서버에러 발생',
     });
   }
 };
@@ -471,7 +529,7 @@ exports.editBoard = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "게시글의 소유자가 아님",
+        msg: '게시글의 소유자가 아님',
       });
       return;
     }
@@ -483,14 +541,14 @@ exports.editBoard = async (req, res) => {
       },
       {
         where: { bId: bId },
-      },
+      }
     );
     console.log(result);
     // update 처리 성공시 isUpdated[0] = 1
     // update 처리 실패시 isUpdated[0] = 0
     // 하지만 실제로 같은 데이터로 업데이트를 수행해서 데이터변경이 없어도 update결과로 isUpdated가 1(성공)이 나와버린다.
     if (!result[0]) {
-      throw new Error("게시글 수정 실패"); // 에러를 던짐(catch에서 수행)
+      throw new Error('게시글 수정 실패'); // 에러를 던짐(catch에서 수행)
       return;
     }
 
@@ -503,7 +561,7 @@ exports.editBoard = async (req, res) => {
 
     if (!isUpdated) {
       isUpdated = false;
-      throw new Error("게시글의 제목, 내용 모두 변경된게 없습니다."); // 에러를 던짐(catch에서 수행)
+      throw new Error('게시글의 제목, 내용 모두 변경된게 없습니다.'); // 에러를 던짐(catch에서 수행)
       return;
     }
 
@@ -513,7 +571,7 @@ exports.editBoard = async (req, res) => {
       isLogin,
       currentLoginUser: req.session.user,
       isUpdated,
-      msg: "게시글 업데이트 처리 성공",
+      msg: '게시글 업데이트 처리 성공',
     });
   } catch (error) {
     // 에러 처리
@@ -522,7 +580,7 @@ exports.editBoard = async (req, res) => {
       success: false,
       isLogin: true,
       currentLoginUser: req.session.user,
-      msg: "서버 에러 발생",
+      msg: '서버 에러 발생',
       // isUpdated: false,
     });
   }
@@ -552,19 +610,19 @@ exports.deleteBoard = async (req, res) => {
       res.status(404).send({
         isDeleted: false,
         currentLoginUser: req.session.user,
-        msg: "게시글이 삭제되지 않았습니다.",
+        msg: '게시글이 삭제되지 않았습니다.',
       });
       return;
     }
 
     // 정상 삭제 처리
-    res.redirect("/");
+    res.redirect('/');
   } catch (error) {
     console.log(error);
     // 에러 처리
     res.status(500).send({
       currentLoginUser: req.session.user,
-      msg: "게시글 삭제처리 중 서버에러 발생",
+      msg: '게시글 삭제처리 중 서버에러 발생',
     });
   }
 };
@@ -583,7 +641,7 @@ exports.createComment = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "로그인 되어있지 않습니다.",
+        msg: '로그인 되어있지 않습니다.',
       });
       return;
     }
@@ -594,7 +652,7 @@ exports.createComment = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "데이터에 빈값이 있습니다.",
+        msg: '데이터에 빈값이 있습니다.',
       });
       return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
     }
@@ -616,7 +674,7 @@ exports.createComment = async (req, res) => {
       success: true,
       isLogin,
       currentLoginUser: req.session.user,
-      msg: "게시글 댓글 생성 처리 성공",
+      msg: '게시글 댓글 생성 처리 성공',
       commentData: newComment.dataValues,
       commentCount, // 게시글에 달린 총 댓글수
     });
@@ -628,7 +686,7 @@ exports.createComment = async (req, res) => {
       success: false,
       isLogin,
       currentLoginUser: req.session.user,
-      msg: "데이터베이스 오류 발생",
+      msg: '데이터베이스 오류 발생',
     });
     return;
   }
@@ -647,7 +705,7 @@ exports.editComment = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "로그인 되어있지 않습니다.",
+        msg: '로그인 되어있지 않습니다.',
       });
       return;
     }
@@ -674,7 +732,7 @@ exports.editComment = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "서버 오류 발생: 해당 cid의 댓글이 없습니다.",
+        msg: '서버 오류 발생: 해당 cid의 댓글이 없습니다.',
       });
       return;
     }
@@ -686,7 +744,7 @@ exports.editComment = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "댓글의 소유자가 아님",
+        msg: '댓글의 소유자가 아님',
       });
       return;
     }
@@ -694,7 +752,7 @@ exports.editComment = async (req, res) => {
     // 댓글 수정
     const isUpdatedComment = await Comment.update(
       { content: content },
-      { where: { cId: cId } },
+      { where: { cId: cId } }
     );
 
     // 댓글이 달린 게시글의 총 댓글수 확인
@@ -704,7 +762,7 @@ exports.editComment = async (req, res) => {
       success: true,
       isLogin,
       currentLoginUser: req.session.user,
-      msg: "댓글 수정처리 완료",
+      msg: '댓글 수정처리 완료',
       updatedcId: cId,
       commentCount,
     });
@@ -714,7 +772,7 @@ exports.editComment = async (req, res) => {
       success: false,
       isLogin,
       currentLoginUser: req.session.user,
-      msg: "서버에러 발생",
+      msg: '서버에러 발생',
     });
   }
 };
@@ -732,7 +790,7 @@ exports.deleteComment = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "로그인 되어있지 않습니다.",
+        msg: '로그인 되어있지 않습니다.',
       });
       return;
     }
@@ -753,7 +811,7 @@ exports.deleteComment = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "서버 오류 발생: 해당 cid의 댓글이 없습니다.",
+        msg: '서버 오류 발생: 해당 cid의 댓글이 없습니다.',
       });
       return;
     }
@@ -765,7 +823,7 @@ exports.deleteComment = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "댓글의 소유자가 아님",
+        msg: '댓글의 소유자가 아님',
       });
       return;
     }
@@ -780,7 +838,7 @@ exports.deleteComment = async (req, res) => {
         success: true,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "댓글 삭제 완료",
+        msg: '댓글 삭제 완료',
         deletedcId: cId,
       });
     } else {
@@ -788,7 +846,7 @@ exports.deleteComment = async (req, res) => {
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: "서버 오류 발생: 댓글 삭제 실패",
+        msg: '서버 오류 발생: 댓글 삭제 실패',
       });
     }
   } catch (error) {
@@ -797,7 +855,7 @@ exports.deleteComment = async (req, res) => {
       success: false,
       isLogin,
       currentLoginUser: req.session.user,
-      msg: "서버에러 발생",
+      msg: '서버에러 발생',
     });
   }
 };
@@ -811,12 +869,32 @@ exports.editBoardPage = async (req, res) => {
   try {
     // 세션 검사
     if (!isLogin) {
-      res.status(200).render("boardEditTest", {
+      res.status(200).render('boardEditTest', {
         success: false,
         isLogin,
-        msg: "권한없는 유저 접근",
+        msg: '권한없는 유저 접근',
       });
       return;
+    } else {
+      const uId = req.session.user;
+
+      const user = await User.findOne({
+        where: { uId },
+      });
+      // 게시글 데이터 선택
+      const board = await Board.findOne({
+        where: { bId: req.params.bId },
+      });
+
+      // 정상 처리
+      res.status(200).render('boardEditTest', {
+        success: true,
+        isLogin,
+        currentLoginUser: req.session.user,
+        boards: board.dataValues,
+        userData: user,
+        msg: '페이지 렌더링 정상 처리',
+      });
     }
 
     // 게시글 데이터 선택
@@ -825,22 +903,22 @@ exports.editBoardPage = async (req, res) => {
     });
 
     // 정상 처리
-    res.status(200).render("boardEditTest", {
+    res.status(200).render('boardEditTest', {
       success: true,
       isLogin,
       currentLoginUser: req.session.user,
       boards: board.dataValues,
-      msg: "페이지 렌더링 정상 처리",
+      msg: '페이지 렌더링 정상 처리',
     });
     //
   } catch (error) {
     console.log(error);
     // 에러 처리
-    res.status(200).render("boardEditTest", {
+    res.status(200).render('boardEditTest', {
       success: false,
       isLogin,
       currentLoginUser: req.session.user,
-      msg: "서버 에러",
+      msg: '서버 에러',
     });
   }
 };
