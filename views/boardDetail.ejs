@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
     <link rel="stylesheet" href="/views/styles/boardDetail.css" />
     <script defer src="/static/js/boardDetail.js"></script>
+    <link rel="stylesheet" href="/static/editor/editorStyle.css" />
   </head>
   <body class="container">
     <%- include('./components/header', { isLogin: isLogin }) %>
@@ -65,7 +66,7 @@
         <div id="bTime"><%= cDate %></div>
       </div>
 
-      <div class="bContent"><%- boardData.content %></div>
+      <div class="bContent ck-content"><%- boardData.content %></div>
 
       <div id="bCommentCount">댓글 <%= commentData.length%></div>
 
@@ -84,8 +85,53 @@
             style="height: 100px"
           ></textarea>
         </div>
-        <button type="button" class="btn btn-primary">Primary</button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="addComment('<%= boardData.bId %>')"
+        >
+          작성하기
+        </button>
       </div>
+
+      <%for (let i = 0; i < commentData.length; i++) {%>
+
+      <div class="commentContainer">
+        <div
+          class="input-group"
+          style="
+            display: flex;
+            margin: 15px 0px 15px 0px;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
+          <div class="userC">
+            <img
+              src="../../static/svg/person.svg"
+              alt="프로필"
+              width="48px"
+              height="48px"
+              class="profileImg"
+            />
+            <%= commentData[i].uId %>
+          </div>
+          <div style="font-size: 14px; color: lightgray">
+            <%= commentData[i].createdAt %>
+          </div>
+        </div>
+        <div style="margin-left: 15px"><%= commentData[i].content %></div>
+        <div style="display: flex; justify-content: flex-end">
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="addComment('<%= boardData.bId %>')"
+          >
+            작성하기
+          </button>
+        </div>
+      </div>
+      <%}%>
     </div>
   </body>
   <script>

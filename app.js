@@ -66,7 +66,7 @@ app.get('*', (req, res) => {
   res.render('404.ejs');
 });
 
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => {
     console.log(`server open on port ${PORT}`);
   });

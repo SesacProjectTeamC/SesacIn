@@ -75,5 +75,17 @@ textarea {
 }
 
 .profileImg {
-  margin-right: 10px;
+  margin-right: 5px;
+}
+
+.commentContainer {
+  border: solid;
+  border-bottom-width: 1px;
+  padding: 10px 0px 20px 0px;
+  border-color: white;
+  border-bottom-color: lightgray;
+}
+
+.userC {
+  font-size: 21px;
 }
