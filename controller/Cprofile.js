@@ -7,6 +7,8 @@
 const { User, Question, Answer, Comment, Board, uLike } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
+
+// 마이페이지 렌더링
 exports.getUser = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -14,74 +16,80 @@ exports.getUser = async (req, res) => {
   try {
     // 세션에서 로그인 된 사용자 id 가져오기
     const uId = req.session.user;
-    const bool = req.params.bool;
+    const isButton = req.params.buttonType ? true : false;
+    // buttonType 은 liked, commented, answered, qna, free
 
-    if (isLogin) {
-      // 데이터베이스에서 해당 사용자 정보를 조회합니다.
-      const user = await User.findOne({
-        where: { uId },
+    // 데이터베이스에서 해당 사용자 정보를 조회합니다.
+    const user = await User.findOne({
+      where: { uId },
+    });
+
+    // 좋아요 히스토리 가져오기
+    const likes = await uLike.findAll({ where: { uId } });
+
+    // 좋아요 누른 질문
+    const likeQuestion = await Question.findAll({
+      where: { qId: likes.map((like) => like.qId) },
+    });
+
+    // 좋아요 누른 답변
+    const likeAnswer = await Answer.findAll({
+      where: { aId: likes.map((like) => like.aId) },
+    });
+
+    // 좋아요 누른 자유게시글
+    const likeBoard = await Answer.findAll({
+      where: { aId: likes.map((like) => like.aId) },
+    });
+
+    // 작성한 질문
+    const posts = await Question.findAll({ where: { uId } });
+
+    // 작성한 답변
+    const answers = await Answer.findAll({ where: { uId } });
+
+    // 작성한 댓글
+    const comments = await Comment.findAll({ where: { uId } });
+
+    // 내가 작성한 자유게시글 데이터
+    const boards = await Board.findAll({
+      where: { uId },
+      order: [['createdAt', 'DESC']], // createdAt 기준으로 내림차순으로 정렬
+    });
+
+    if (isButton) {
+      // send
+      res.send({
+        userData: user,
+        likeQuestionData: likeQuestion, // 좋아요 누른 질문
+        likeAnswerData: likeAnswer, // 좋아요 누른 답변
+        likeBoardData: likeBoard, // 좋아요 누른 자유게시글
+        postData: posts, // 내가 작성한 질문
+        boardsData: boards, // 내가 작성한 자유게시판 게시글
+        answerData: answers, // 내가 작성한 답변
+        commentData: comments, // 내가 작성한 댓글
+        isLogin,
+        currentUser: req.session.user,
+        success: true,
       });
-
-      // 좋아요 히스토리 가져오기
-      const likes = await uLike.findAll({ where: { uId } });
-
-      // 좋아요 누른 질문
-      const likeQuestion = await Question.findAll({
-        where: { qId: likes.map((like) => like.qId) },
-      });
-
-      // 좋아요 누른 답변
-      const likeAnswer = await Answer.findAll({
-        where: { aId: likes.map((like) => like.aId) },
-      });
-
-      // 작성한 질문
-      const posts = await Question.findAll({ where: { uId } });
-
-      // 작성한 답변
-      const answers = await Answer.findAll({ where: { uId } });
-
-      // 작성한 댓글
-      const comments = await Comment.findAll({ where: { uId } });
-
-      // 사용자 정보를 마이페이지 템플릿에 전달하여 렌더링합니다.
-      if (bool === 'yes') {
-        res.send({
-          userData: user,
-          likeQuestionData: likeQuestion,
-          likeAnswerData: likeAnswer,
-          postData: posts,
-          answerData: answers,
-          commentData: comments,
-          isLogin,
-          currentUser: req.session.user,
-          success: true,
-          msg: '마이페이지 렌더링 정상 처리',
-        });
-      } else {
-        res.render('profile', {
-          userData: user,
-          likeQuestionData: likeQuestion,
-          likeAnswerData: likeAnswer,
-          postData: posts,
-          answerData: answers,
-          commentData: comments,
-          isLogin,
-          currentUser: req.session.user,
-          success: true,
-          msg: '마이페이지 렌더링 정상 처리',
-        });
-      }
-    } else {
-      // 로그인 되어있지 않은 상태에서의 요청시
-      // res.status(401).send({
-      //   isLogin,
-      //   currentUser: req.session.user,
-      //   success: false,
-      //   mgs: '로그인 정보 다름. 권한 없음.',
-      // });
-      res.redirect('/');
+      return;
     }
+
+    // 마이페이지 렌더링
+    res.render('profile', {
+      userData: user,
+      likeQuestionData: likeQuestion, // 좋아요 누른 질문
+      likeAnswerData: likeAnswer, // 좋아요 누른 답변
+      likeBoardData: likeBoard, // 좋아요 누른 자유게시글
+      postData: posts, // 내가 작성한 질문
+      boardsData: boards, // 내가 작성한 자유게시판 게시글
+      answerData: answers, // 내가 작성한 답변
+      commentData: comments, // 내가 작성한 댓글
+      isLogin,
+      currentUser: req.session.user,
+      success: true,
+      msg: '마이페이지 렌더링 정상 처리',
+    });
   } catch (err) {
     console.log(err);
     res.status(500).send({
