@@ -8,28 +8,43 @@ exports.getQuestions = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    // 한페이지 만큼 데이터 조회
     let page = parseInt(req.params.page) || 1;
     let pageSize = parseInt(req.params.pageSize) || 20;
+    let offset = (page - 1) * pageSize;
 
-    // 전체 Question목록 개수 계산
-    const totalPage = await Question.count();
+    let sortField = req.params.sortField || 'createdAt';
+    let sortOrder = req.params.sortOrder || 'desc';
 
-    // 페이지 수 (올림처리)
-    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+    // params 검사
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
+      res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
+      return;
+    }
+    if (!sortOrder || !['desc', 'asc'].includes(sortOrder)) {
+      res.status(400).json({ error: '올바른 정렬 순서를 지정하세요.' });
+      return;
+    }
 
-    // 페이지별 Question호출
-    const paginatedQuestions = await Question.findAll({
-      order: [['createdAt', 'DESC']], // 정렬 기준
-      limit: pageSize,
-      offset: (page - 1) * pageSize,
-    });
+    const questionTotalCount = await Question.count();
+    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
+
+    // 시퀄라이즈에 SQL 쿼리 그대로 사용
+    // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
+    const sql = `
+    SELECT q.qId, u.uName, u.uId, u.userImgPath, q.title, q.content, q.viewCount, q.likeCount, q.createdAt, q.updatedAt, COALESCE(count(a.aId), 0) as answerCount
+      FROM question q
+      LEFT JOIN answer a ON q.qId = a.qId
+      LEFT JOIN user u ON q.uId = u.uId
+      GROUP BY q.qId
+      ORDER BY ${sortField} ${sortOrder} 
+      LIMIT ${offset}, ${pageSize};`;
+
+    const [paginatedQuestion, metadata] = await sequelize.query(sql);
 
     // 날짜 데이터 포맷 변경
-    const create = [];
-
-    for (q of paginatedQuestions) {
-      create.push(moment(q.createdAt).format('YYYY-MM-DD'));
+    const questionCreateAt = [];
+    for (q of paginatedQuestion) {
+      questionCreateAt.push(moment(q.createdAt).format('YYYY-MM-DD'));
     }
 
     if (isLogin) {
@@ -42,20 +57,29 @@ exports.getQuestions = async (req, res) => {
 
       res.status(200).render('listMain', {
         type: 'qna',
-        data: paginatedQuestions,
-        pageCount: pageCount,
-        cDate: create,
+        questionData: paginatedQuestion, // question 데이터(20개씩)
+        questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+        pageCount: questionPageCount, // 총 몇페이지인지
+        success: true,
+        msg: 'QnA 호출 처리 완료',
+
+        // data: paginatedQuestions,
+        // pageCount: pageCount,
+        // cDate: create,
+
         isLogin,
-        userData: user,
+        currentLoginUser: uId,
       });
     } else {
       console.log('로그인X');
 
       res.render('listMain', {
         type: 'qna',
-        data: paginatedQuestions,
-        pageCount: pageCount,
-        cDate: create,
+        questionData: paginatedQuestion, // question 데이터(20개씩)
+        questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+        pageCount: questionPageCount, // 총 몇페이지인지
+        success: true,
+        msg: 'QnA 호출 처리 완료',
         isLogin,
       });
     }

@@ -7,6 +7,7 @@ const { needToLogin } = require('../util/middleware'); // 꼭 로그인 해야�
 
 // QnA 메인 페이지 렌더링
 router.get('/main', Cquestion.getQuestions);
+router.get('/main/:page&:pageSize&:sortField&:sortOrder', Cquestion.getQuestions); // 파라미터에 따른 정렬기능 추가
 
 // 질문 추가 페이지 렌더링
 router.get('/create', needToLogin, Cquestion.getCreateQuestion);
