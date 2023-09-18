@@ -125,16 +125,19 @@ exports.detailBoard = async (req, res) => {
     //=== [ 세화 ] ===
     // 1. 좋아요
     // 1) 좋아요 히스토리 찾기
-    const uLikeFind = await uLike.findOne({
-      where: {
-        bId,
-        //! uId
-        uId: req.session.user, // 로그인 유저
-      },
-    });
+    let uLikeFind;
+    if (isLogin) {
+      uLikeFind = await uLike.findOne({
+        where: {
+          bId,
+          //! uId
+          uId: req.session.user, // 로그인 유저
+        },
+      });
+    }
 
     // 2) 좋아요 히스토리에 있으면 true, 없으면 false
-    const resultLike = !!uLikeFind;
+    const resultLike = isLogin ? !!uLikeFind : false;
     // if (bool === 'yes') {
     //   res.send({
     //     success: true,
