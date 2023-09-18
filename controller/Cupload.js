@@ -56,7 +56,7 @@ exports.uploadEditImageFile = async (req, res) => {
     res.status(200).send({
       success: true,
       msg: '파일이 성공적으로 업로드되었습니다.',
-      url: `${URL}/${path}`,
+      url: `http://${URL}/${path}`,
     });
   } catch (error) {
     console.error('파일 업로드 중 오류 발생:', error);
