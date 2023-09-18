@@ -185,7 +185,7 @@ exports.viewBoard = async (req, res) => {
     // 조회수 업데이트 +1
     await Board.update(
       { viewCount: eachBoard.viewCount + 1 },
-      { where: { bId } }
+      { where: { bId } },
     );
     res.status(200).send({ boardData: eachBoard });
   } catch (error) {
@@ -211,7 +211,6 @@ exports.likeBoard = async (req, res) => {
     const uLikeFind = await uLike.findOne({
       where: {
         bId,
-        //! uId
         uId: req.session.user, // 로그인 현재 로그인 된 유저
       },
     });
@@ -225,15 +224,14 @@ exports.likeBoard = async (req, res) => {
     if (!uLikeFind) {
       // (1) 좋아요 히스토리 생성 : uLike에 해당 bId 생성됨.
       await uLike.create({
-        // uId
-        uId: req.session.user, // 임의 유저 1
+        uId: req.session.user,
         bId,
       });
 
       // (2) 자유게시글 likeCount +1 업데이트
       await Board.update(
         { likeCount: eachBoard.likeCount + 1 },
-        { where: { bId } }
+        { where: { bId } },
       );
     } else if (uLikeFind) {
       // 3-2. uLike findOne -> bId 있으면,
@@ -245,7 +243,7 @@ exports.likeBoard = async (req, res) => {
       // (2) 자유게시글 likeCount -1 업데이트
       await Board.update(
         { likeCount: eachBoard.likeCount - 1 },
-        { where: { bId } }
+        { where: { bId } },
       );
     }
 
@@ -334,7 +332,7 @@ exports.paginateBoard = async (req, res) => {
     if (
       !sortField ||
       !["createdAt", "likeCount", "viewCount", "commentCount"].includes(
-        sortField
+        sortField,
       )
     ) {
       res.status(400).send({ error: "올바른 정렬 필드를 지정하세요." });
@@ -485,7 +483,7 @@ exports.editBoard = async (req, res) => {
       },
       {
         where: { bId: bId },
-      }
+      },
     );
     console.log(result);
     // update 처리 성공시 isUpdated[0] = 1
@@ -696,7 +694,7 @@ exports.editComment = async (req, res) => {
     // 댓글 수정
     const isUpdatedComment = await Comment.update(
       { content: content },
-      { where: { cId: cId } }
+      { where: { cId: cId } },
     );
 
     // 댓글이 달린 게시글의 총 댓글수 확인
