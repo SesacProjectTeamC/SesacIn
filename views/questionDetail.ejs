@@ -6,19 +6,22 @@
     <%- include('./components/cdn', { title: 'SesacIn 자유게시글 상세' }) %>
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
     <link rel="stylesheet" href="/views/styles/boardDetail.css" />
-    <script defer src="/static/js/boardDetail.js"></script>
+    <script defer src="/static/js/questionDetail.js"></script>
     <link rel="stylesheet" href="/static/editor/editorStyle.css" />
   </head>
   <body class="container">
     <%- include('./components/header', { isLogin: isLogin }) %>
     <div id="bWrapper">
-      <div id="bTitle"><%= boardData.title %></div>
+      <div id="bTitle">
+        <div class="ques_type"><%= data.qType %></div>
+        <%= data.title %>
+      </div>
       <div id="bUserC">
         <div style="display: flex; align-items: center">
           <div id="bUser">
-            <%console.log(boardData.title)%> <%if(boardData.userImgPath){%>
+            <%if(data.userImgPath){%>
             <img
-              src="/<%= boardData.userImgPath%>"
+              src="/<%= data.userImgPath%>"
               alt="프로필"
               width="36px"
               height="36px"
@@ -34,12 +37,12 @@
               style="border-radius: 999px"
               class="profileImg"
             />
-            <%}%> <%= boardData.uName %>
+            <%}%> <%= data.User.uName %>
           </div>
-          | <% if(!bResult) { %>
+          | <% if(!qResult) { %>
           <div
             class="viewImg likeImg"
-            onclick="bLikeHandler('<%= boardData.bId %>')"
+            onclick="bLikeHandler('<%= data.qId %>')"
           >
             <img
               src="/static/svg/heart.svg"
@@ -47,14 +50,14 @@
               width="24px"
               class="svg"
             />
-            <%= boardData.likeCount%>
+            <%= data.likeCount%>
           </div>
 
-          <% } else if(bResult) { %>
+          <% } else if(qResult) { %>
 
           <div
             class="viewImg likeImg"
-            onclick="bLikeHandler('<%= boardData.bId %>')"
+            onclick="bLikeHandler('<%= data.qId %>')"
           >
             <img
               src="/static/svg/heart-fill.svg"
@@ -62,7 +65,7 @@
               width="24px"
               class="svg"
             />
-            <%= boardData.likeCount %>
+            <%= data.likeCount %>
           </div>
 
           <% } %>
@@ -74,18 +77,19 @@
               width="24px"
               class="svg"
             />
-            <%= boardData.viewCount%>
+            <%= data.viewCount%>
           </div>
         </div>
 
-        <div id="bTime"><%= cDate %></div>
+        <div id="bTime"><%= questionCreateAt %></div>
       </div>
 
-      <div class="bContent ck-content"><%- boardData.content %></div>
-      <%if(isLogin && boardData.uId === userData.uId){%>
+      <div class="bContent ck-content"><%- data.content %></div>
+
+      <%if(isLogin && data.uId === userData.uId){%>
       <div style="display: flex; justify-content: flex-end">
         <a
-          href="/board/edit/<%= boardData.bId %>"
+          href="/board/edit/<%= data.qId %>"
           style="cursor: pointer; margin-right: 10px"
         >
           <div style="color: darkgray; font-size: 18px; font-weight: 300">
@@ -100,67 +104,52 @@
             font-weight: 300;
             cursor: pointer;
           "
-          onclick="openModal('정말 삭제하시겠어요?', 'deletePost(<%= boardData.bId %>)');"
+          onclick="openModal('정말 삭제하시겠어요?', 'deletePost(<%= data.qId %>)');"
         >
           삭제하기
         </div>
       </div>
       <%}%>
-
-      <div id="bCommentCount">댓글 <%= commentData.length%></div>
-
-      <div style="display: flex; flex-direction: column; align-items: flex-end">
-        <div class="input-group" style="margin: 15px 0px 15px 0px">
-          <%if(isLogin && userData.userImgPath){%>
-          <img
-            src="/<%= userData.userImgPath %>"
-            alt="프로필"
-            width="48px"
-            height="48px"
-            style="border-radius: 999px"
-            class="profileImg"
-          />
-          <%}else{%>
-          <img
-            src="../../static/svg/person.svg"
-            alt="프로필"
-            width="48px"
-            height="48px"
-            style="border-radius: 999px"
-            class="profileImg"
-          />
-          <%}%>
-          <textarea
-            class="form-control"
-            aria-label="With textarea"
-            style="height: 100px"
-          ></textarea>
-        </div>
+      <div class="answerContainer">
+        <div class="answerTitle">당신의 답변을 알려주세요 !</div>
+        <hr />
+        <textarea class="answerArea"></textarea>
+      </div>
+      <div class="btnContainer">
         <button
           type="button"
-          class="btn btn-primary"
-          onclick="addComment('<%= boardData.bId %>')"
+          class="btn btn-light answerCancelBtn"
+          onclick="toggleAnswerContainer()"
         >
-          작성하기
+          취소하기
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary answerBtn"
+          onclick="postAnswer('<%= data.qId %>')"
+        >
+          답변하기
         </button>
       </div>
 
-      <%for (let i = 0; i < commentData.length; i++) {%>
+      <div id="bCommentCount" style="margin: 20px 0px">
+        답변 <%= answerData.length%>
+      </div>
 
-      <div class="commentContainer">
+      <%for(let i = 0; i < answerData.length; i++){%>
+      <div class="answered">
         <div
           class="input-group"
           style="
             display: flex;
-            margin: 15px 0px 15px 0px;
             align-items: center;
             justify-content: space-between;
           "
         >
           <div class="userC">
-            <%if(commentData[i].userImgPath){%>
+            <%if(answerData[i].User?.userImgPath){%>
             <img
-              src="/<%= commentData[i].userImgPath %>"
+              src="/<%= answerData[i].User.userImgPath %>"
               alt="프로필"
               width="48px"
               height="48px"
@@ -176,83 +165,125 @@
               style="border-radius: 999px"
               class="profileImg"
             />
-            <%}%> <%= commentData[i].uName %>
+            <%}%> <%= answerData[i].User?.uName %>
           </div>
           <div style="font-size: 14px; color: lightgray">
-            <%= commentCreateAt[i] %>
+            <%= answersCreateAt[i] %>
           </div>
         </div>
-        <div id="comment<%= commentData[i].cId%>" style="margin-left: 15px">
-          <%= commentData[i].content %>
-        </div>
-        <%if(isLogin && commentData[i].uId === userData.uId){%>
+
+        <hr />
+
         <div
-          id="fixCommentC<%= commentData[i].cId %>"
+          id="comment<%= answerData[i].aId%>"
+          style="margin-left: 15px; min-height: 100px"
+        >
+          <%= answerData[i].content %>
+        </div>
+
+        <%if(isLogin && answerData[i].uId === userData.uId){%>
+        <div
+          id="fixCommentC<%= answerData[i].aId %>"
           style="display: flex; justify-content: flex-end; color: darkgray"
         >
-          <div
-            style="cursor: pointer; margin-right: 10px"
-            onclick="fixComment('<%= commentData[i].cId %>', '<%= boardData.bId %>')"
-          >
-            수정
-          </div>
+          <div style="cursor: pointer; margin-right: 10px">수정</div>
 
-          <div
-            style="cursor: pointer"
-            onclick="openModal('정말 삭제하시겠어요?', 'deleteComment(<%= commentData[i].cId %>, <%= boardData.bId %>)');"
-          >
-            삭제
-          </div>
+          <div style="cursor: pointer">삭제</div>
         </div>
         <%}%>
-      </div>
-      <%}%>
-    </div>
+        <div style="display: flex">
+          <% if (!aResult[i]) { %>
+          <div class="likeC" onclick="bLikeHandler('<%= data.qId %>')">
+            <img
+              src="/static/svg/heart.svg"
+              alt="좋아요수"
+              width="24px"
+              class="svg"
+            />
+            좋아요 <%= answerData[i].likeCount%>
+          </div>
+          <% } else if (aResult[i]) { %>
+          <div
+            class="likeC likeActive"
+            onclick="bLikeHandler('<%= data.qId %>')"
+          >
+            <img
+              src="/static/svg/heart-fill.svg"
+              alt="좋아요수"
+              width="24px"
+              class="svg"
+            />
+            좋아요 <%= answerData[i].likeCount%>
+          </div>
+          <% } %>
 
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="myModal"
-      tabindex="-1"
-      aria-labelledby="cautionModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="cautionModalLabel">경고</h5>
-          </div>
-          <div class="modal-body">
-            <p id="cautionText"></p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-              data-bs-dismiss="modal"
-            >
-              취소
-            </button>
-            <button type="button" class="btn btn-danger" id="deletebtn">
-              확인
-            </button>
+          <div
+            class="commentC"
+            onclick="toggleComment(this, '<%= answerData[i].aId%>')"
+          >
+            <% const answerCommentList = [] %> <% for(let comment of
+            commentData) { %> <% if(comment.aId === answerData[i].aId) { %> <%
+            answerCommentList.push(comment); %> <% } %> <% } %>
+            <img
+              src="/static/svg/message.svg"
+              alt="댓글"
+              width="24px"
+              style="margin-right: 5px; margin-top: 2px"
+            />
+            댓글 <%= answerCommentList.length %>
           </div>
         </div>
+
+        <!-- 댓글 눌렀을때 나오는 거 -->
+        <div id="commentC<%= answerData[i].aId%>" class="answerCommentC">
+          <div class="btnContainer" style="align-items: center">
+            <div style="font-size: 14px; display: flex; align-items: center">
+              <%if(isLogin && userData.userImgPath){%>
+              <img
+                src="/<%= userData.userImgPath %>"
+                alt="프로필"
+                width="32px"
+                height="32px"
+                style="border-radius: 999px; margin-right: 10px"
+                class="profileImg"
+              />
+              <%}else{%>
+              <img
+                src="../../static/svg/person.svg"
+                alt="프로필"
+                width="32px"
+                height="32px"
+                style="border-radius: 999px; margin-right: 10px"
+                class="profileImg"
+              />
+              <%}%> <%= userData && userData.uName%>
+            </div>
+            <div style="font-size: 14px; cursor: pointer">댓글 등록</div>
+          </div>
+
+          <textarea
+            id="commentArea"
+            class="form-control shadow-none"
+            aria-label="With textarea"
+            style="height: 70px; margin-top: 10px; font-size: 14px"
+            placeholder="댓글을 입력하세요"
+          ></textarea>
+        </div>
       </div>
+      <%}%>
     </div>
   </body>
   <script>
     //=== 세화 ===
     // 좋아요 기능
-    const bLikeHandler = (bId) => {
+    const bLikeHandler = (qId) => {
       axios({
         method: 'PATCH',
-        url: `/board/detail/like/${bId}`,
+        url: `/board/detail/like/${qId}`,
       })
         .then((res) => {
           if (res) {
-            document.location.href = `/board/detail/${bId}`;
+            document.location.href = `/board/detail/${qId}`;
           }
         })
         .catch((err) => {
