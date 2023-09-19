@@ -95,7 +95,7 @@ const fixFinish = (cId, bId) => {
     },
   })
     .then((response) => {
-      // document.location.href = `/board/detail/${bId}`;
+      document.location.href = `/board/detail/${bId}`;
     })
     .catch((error) => {
       console.log(error);
