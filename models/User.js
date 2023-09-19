@@ -42,6 +42,11 @@ const User = (Sequelize, DataTypes) => {
         allowNull: true,
         defaultValue: 'NULL',
       },
+      emailVerify: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
     {
       tableName: 'user', // 실제 db 테이블명

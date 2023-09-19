@@ -252,35 +252,6 @@ const comparePassword = (password, hashedPassword) => {
   return bcrypt.compareSync(password, hashedPassword);
 };
 
-// 아이디 찾기 페이지 렌더링
-exports.id = (req, res) => {
-  // 세션 검사
-  let isLogin = req.session.user ? true : false;
-
-  try {
-    if (isLogin) {
-      // 로그인 되어 있는데 해당 페이지로 이동 시 강제 세션 삭제
-      req.session.destroy((err) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        // res.redirect('/');
-      });
-    } else {
-      res.render('findId', {
-        success: true,
-        msg: '아이디 찾기 페이지 렌더링 처리 성공',
-      });
-    }
-  } catch (error) {
-    res.status(500).send({
-      success: false,
-      msg: '서버 에러 발생',
-    });
-  }
-};
-
 // 아이디 찾기 기능
 exports.findId = async (req, res) => {
   const { uName, email } = req.body;
@@ -305,4 +276,175 @@ exports.findId = async (req, res) => {
     console.error('아이디 찾기 오류:', error);
     res.status(500).send('아이디 찾기 중 오류가 발생했습니다.');
   }
+};
+
+// 로그인 페이지 렌더링
+exports.login = (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+  console.log(req.session.user);
+  try {
+    if (isLogin) {
+      // res.status(301).send({
+      //   isLogin,
+      //   currentUser: req.session.user,
+      //   success: false,
+      //   msg: '이미 로그인 되어 있습니다.',
+      // });
+      // return;
+
+      // 이 경우 세션 삭제 후 다시 로그인 할 수 있도록 함
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        res.redirect('/login');
+      });
+    } else {
+      res.render('login', {
+        title: 'test',
+        uId: req.body,
+        pw: req.body,
+        isLogin,
+        currentUser: req.session.user,
+        success: true,
+        msg: '로그인 페이지 렌더링 정상 처리',
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '로그인 페이지 렌더링 중 서버 에러 발생',
+      error,
+    });
+  }
+};
+
+const nodemailer = require('nodemailer');
+const smtpTransport = require('../config/email.js');
+
+const verificationCodes = {};
+
+// 이메일 인층 창 렌더링
+exports.getEmail = (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+
+  try {
+    if (isLogin) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        res.redirect('/email');
+      });
+    } else {
+      res.render('email', {
+        isLogin,
+        currentUser: req.session.user,
+        success: true,
+        msg: '페이지 렌더링 처리 성공',
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '서버 에러 발생',
+    });
+  }
+};
+
+// 랜덤 인증 코드 생성
+var generateRandomNumber = function (min, max) {
+  var randNum = Math.floor(Math.random() * (max - min + 1)) + min;
+  return randNum;
+};
+
+// 인증 이메일 발신
+exports.postEmail = async (req, res) => {
+  const number = generateRandomNumber(111111, 999999);
+
+  const { email } = req.body; //사용자가 입력한 이메일
+
+  verificationCodes[email] = {
+    code: number,
+    timestamp: Date.now(),
+  };
+
+  const mailOptions = {
+    from: 'oliviamoon1124@naver.com ', // 발신자 이메일 주소.
+    to: email, //사용자가 입력한 이메일 -> 목적지 주소 이메일
+    subject: ' 인증 관련 메일 입니다. ',
+    html: '<h1>인증번호를 입력해주세요 \n\n\n\n\n\n</h1>' + number,
+  };
+  smtpTransport.sendMail(mailOptions, (err, response) => {
+    if (err) {
+      res.json({ ok: false, msg: '메일 전송에 실패하였습니다.' });
+    } else {
+      // 서버에서 만든 인증코드를 세션에 저장
+      req.session.email = email;
+
+      req.session.verificationCodes = number;
+      res.json({ ok: true, msg: '메일 전송에 성공하였습니다.' });
+    }
+  });
+};
+
+// 기존 코드와 함께
+
+// '/users/verify' 엔드포인트를 생성
+exports.postVerify = async (req, res) => {
+  // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>', req.body);
+  // const number = generateRandomNumber(111111, 999999);
+
+  // const { email, verificationCode } = req.body; //사용자가 입력한 이메일
+  const { verificationCode } = req.body; //사용자가 입력한 이메일
+  if (req.session.verificationCodes == verificationCode) {
+    // 클라이언트에서 보낸 인증 코드와 저장된 코드를 비교
+    req.session.verificationCodes == null;
+
+    // 사용자 ID를 기반으로 User 모델을 업데이트합니다.
+    try {
+      const updatedUser = await User.update(
+        { emailVerify: true }, // 업데이트할 필드와 값을 설정합니다.
+        { where: { email: req.session.email } } // 어떤 사용자를 업데이트할지 설정합니다.
+      );
+
+      if (updatedUser) {
+        res.json({ ok: true, msg: '인증에 성공하였습니다.' });
+      } else {
+        res.json({ ok: false, msg: '사용자를 찾을 수 없습니다.' });
+      }
+    } catch (error) {
+      console.error('인증 업데이트 오류:', error);
+      res.json({ ok: false, msg: '인증 업데이트 중 오류가 발생했습니다.' });
+    }
+  } else {
+    res.json({
+      ok: false,
+      msg: '인증에 실패하였습니다. 올바른 코드를 입력하세요.',
+    });
+  }
+  // verificationCodes[email] = {
+  //   code: number,
+  //   timestamp: Date.now(),
+  // };
+
+  // if (verificationCodes[email].code === Number(verificationCode)) {
+  //   // 클라이언트에서 보낸 인증 코드와 저장된 코드를 비교
+  //   res.json({ ok: true, msg: '인증에 성공하였습니다.' });
+  //   // 인증에 성공했으므로, 저장된 코드를 삭제할 수도 있습니다.
+  //   delete verificationCodes[email];
+  // } else {
+  //   res.json({
+  //     ok: false,
+  //     msg: '인증에 실패하였습니다. 올바른 코드를 입력하세요.',
+  //   });
+  // }
 };
