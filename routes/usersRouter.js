@@ -4,13 +4,7 @@ const Cprofile = require('../controller/Cprofile');
 const Cuser = require('../controller/Cuser');
 const { needToLogin } = require('../util/middleware');
 
-// 이메일 인증 페이지 렌더링
 
-router.get('/email', Cuser.getEmail);
-
-// 이메일 인증
-router.post('/email', Cuser.postEmail);
-router.post('/verify', Cuser.postVerify);
 
 // 마이페이지 렌더링
 // /users/profile

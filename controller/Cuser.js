@@ -252,6 +252,51 @@ const comparePassword = (password, hashedPassword) => {
   return bcrypt.compareSync(password, hashedPassword);
 };
 
+// 아이디찾기 페이지 렌더링
+exports.id = (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+  console.log(req.session.user);
+  try {
+    if (isLogin) {
+      // res.status(301).send({
+      //   isLogin,
+      //   currentUser: req.session.user,
+      //   success: false,
+      //   msg: '이미 로그인 되어 있습니다.',
+      // });
+      // return;
+
+      // 이 경우 세션 삭제 후
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        res.redirect('/findId');
+      });
+    } else {
+      res.render('findId', {
+        title: 'test',
+        uId: req.body,
+        pw: req.body,
+        isLogin,
+        currentUser: req.session.user,
+        success: true,
+        msg: '아이디찾기 페이지 렌더링 정상 처리',
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '아이디찾기 페이지 렌더링 중 서버 에러 발생',
+      error,
+    });
+  }
+};
+
 // 아이디 찾기 기능
 exports.findId = async (req, res) => {
   const { uName, email } = req.body;
@@ -415,6 +460,7 @@ exports.postVerify = async (req, res) => {
         { emailVerify: true }, // 업데이트할 필드와 값을 설정합니다.
         { where: { email: req.session.email } } // 어떤 사용자를 업데이트할지 설정합니다.
       );
+      console.log(updatedUser[0])
 
       if (updatedUser) {
         res.json({ ok: true, msg: '인증에 성공하였습니다.' });

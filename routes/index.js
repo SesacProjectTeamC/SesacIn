@@ -31,9 +31,18 @@ router.post('/login', Cuser.userLogin);
 router.post('/logout', Cuser.userLogout);
 
 // 아이디찾기 페이지 렌더링
-// router.get('/id', Cuser.id);
+router.get('/id', Cuser.id);
 
 // 아이디찾기 기능
-// router.post('/id', Cuser.findId);
+router.post('/id', Cuser.findId);
+
+
+// 이메일 인증 페이지 렌더링
+
+router.get('/email', Cuser.getEmail);
+
+// 이메일 인증
+router.post('/email', Cuser.postEmail);
+router.post('/verify', Cuser.postVerify);
 
 module.exports = router;
