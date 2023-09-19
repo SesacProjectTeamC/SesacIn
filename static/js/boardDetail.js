@@ -118,9 +118,28 @@ function deleteComment(cId, bId) {
     });
 }
 
+const deletePost = (bId) => {
+  axios({
+    method: 'delete',
+    url: `/board/delete/${bId}`,
+  })
+    .then((response) => {
+      document.location.href = `/`;
+      // refreshComments(); // 댓글 목록 업데이트
+    })
+    .catch((error) => {
+      console.error(error.message);
+      console.error(error.response.data.msg);
+    });
+};
+
 const openModal = (msg, func) => {
   const confirmBtn = document.querySelector('#deletebtn');
   document.querySelector('#cautionText').innerHTML = msg;
   confirmBtn.setAttribute('onClick', func);
   $('#myModal').modal('show');
+};
+
+const closeModal = () => {
+  $('#myModal').modal('close');
 };

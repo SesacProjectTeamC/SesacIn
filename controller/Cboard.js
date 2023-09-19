@@ -631,10 +631,16 @@ exports.deleteBoard = async (req, res) => {
         msg: '게시글이 삭제되지 않았습니다.',
       });
       return;
+    } else {
+      res.status(200).send({
+        isDeleted: true,
+        currentLoginUser: req.session.user,
+        msg: '게시글이 정상적으로 삭제되었습니다.',
+      });
     }
 
     // 정상 삭제 처리
-    res.redirect('/');
+    // res.redirect('/');
   } catch (error) {
     console.log(error);
     // 에러 처리
@@ -889,7 +895,7 @@ exports.editBoardPage = async (req, res) => {
   try {
     // 세션 검사
     if (!isLogin) {
-      res.status(200).render('boardEditTest', {
+      res.status(200).render('post', {
         success: false,
         isLogin,
         msg: '권한없는 유저 접근',
@@ -905,10 +911,11 @@ exports.editBoardPage = async (req, res) => {
       const board = await Board.findOne({
         where: { bId: req.params.bId },
       });
-
+      console.log(board.dataValues);
       // 정상 처리
-      res.status(200).render('boardEditTest', {
+      res.status(200).render('edit', {
         success: true,
+        type: 'board',
         isLogin,
         currentLoginUser: req.session.user,
         boards: board.dataValues,
@@ -916,25 +923,10 @@ exports.editBoardPage = async (req, res) => {
         msg: '페이지 렌더링 정상 처리',
       });
     }
-
-    // 게시글 데이터 선택
-    const board = await Board.findOne({
-      where: { bId: req.params.bId },
-    });
-
-    // 정상 처리
-    res.status(200).render('boardEditTest', {
-      success: true,
-      isLogin,
-      currentLoginUser: req.session.user,
-      boards: board.dataValues,
-      msg: '페이지 렌더링 정상 처리',
-    });
-    //
   } catch (error) {
     console.log(error);
     // 에러 처리
-    res.status(200).render('boardEditTest', {
+    res.status(200).render('edit', {
       success: false,
       isLogin,
       currentLoginUser: req.session.user,
