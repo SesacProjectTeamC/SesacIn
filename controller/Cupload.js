@@ -11,7 +11,8 @@ exports.uploadImageFile = async (req, res) => {
   try {
     // path == 이미지를 받을 수 있는 URL
     // originalname == 유저가 업로드한 원본 파일 이름(확장자 포함)
-    const { originalname, path } = req.file;
+    console.log(req.file);
+    const {originalname, path} = req.file;
 
     // user 테이블에 데이터 저장
     await User.update(
@@ -29,13 +30,13 @@ exports.uploadImageFile = async (req, res) => {
     // 파일 업로드 성공
     res.status(200).send({
       success: true,
-      msg: '파일이 성공적으로 업로드되었습니다.',
+      msg: "파일이 성공적으로 업로드되었습니다.",
     });
   } catch (error) {
-    console.error('파일 업로드 중 오류 발생:', error);
+    console.error("파일 업로드 중 오류 발생:", error);
     res.status(500).send({
       success: false,
-      msg: '파일 업로드 중에 오류가 발생했습니다.',
+      msg: "파일 업로드 중에 오류가 발생했습니다.",
     });
   }
 };

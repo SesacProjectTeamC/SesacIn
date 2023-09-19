@@ -13,8 +13,9 @@
     <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="views/componets/cdn.ejs">
-    <link rel="stylesheet" href="/views/styles/profile.css">
     <link rel="stylesheet" href="/views/styles/globalstyle.css">
+    <link rel="stylesheet" href="/views/styles/profile.css">
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
     <script src="../static/js/profile.js"></script>
     
 </head>
@@ -22,7 +23,7 @@
     <header>
       <img class="logo" src="/static/img/logo.png" ></img>
       <div>
-    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goTohome()">
       <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
       <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
     </svg>
@@ -36,7 +37,7 @@
   <form name="profile"  method="post" action="/upload/image/user" enctype="multipart/form-data">
 
     <!-- 배지 -->
-    <img class="sesac_badge" onclick="" src="/../static/img/leaf.png"><br>
+    <img class="sesac_badge" onclick="" src="../static/img/leaf.png"><br>
 
     <!-- 이미지 업로드 -->
     <% if (userData && userData.userImgPath) { %>
@@ -47,7 +48,12 @@
         <img src="/../static/svg/person.svg" class="person" alt="Default Image">
     <% } %><br>
 
-      <input type="file" name="file">
+      <!-- 숨겨진 원래의 file input -->
+      <input type="file" id="file" style="display: none;" onchange="document.getElementById('fileName').value = this.value;">
+
+      <!-- 커스텀 버튼 및 표시될 파일명 -->
+      <button class="upload" onclick="document.getElementById('file').click();">파일 선택</button>
+      <button type="submit">업로드</button>
 
     <!-- 프로필 정보 -->
     <% if (userData) { %>
@@ -61,14 +67,14 @@
       <div class="row row-cols-5">
       <button class="qna" onclick="change('qna')">Q&A 게시판</button>
       <button class="free" onclick="change('free')">자유 게시판</button>
-      <button class="liked" onclick="change('liked')">좋아요 누른 게시글</button>
-      <button class="commented" onclick="change('commented')">내가 댓글단 게시글</button>
-      <button class="answered" onclick="change('answered')">내가 답변한 게시글</button>
+      <button class="liked" onclick="change('liked')">좋아요 선택한 글</button>
+      <button class="commented" onclick="change('commented')">댓글 작성한 글</button>
+      <!-- <button class="answered" onclick="change('answered')">답변 작성한 글</button> -->
     </div>
   </div>
      
         <div id="content"></div>
-     
+        <a class="caution"></a>
     </main>
       
     </body>
