@@ -14,7 +14,20 @@ header {
 
   cursor: pointer;
 }
+.header {
+  display: flex; /* 플렉스 디스플레이로 설정 */
+  justify-content: space-between; /* 양쪽의 요소들 사이에 최대한의 간격을 줍니다. */
+  align-items: center; /* 세로 중앙 정렬 (필요에 따라) */
+}
 
+.logo {
+  cursor: pointer; /* 로고를 클릭 가능하게 설정 (필요에 따라) */
+  flex-shrink: 1;
+}
+
+.header button {
+  justify-content: end;
+}
 .bi-arrow-left:hover > .hover-circle {
   fill: var(--hover-color);
   cursor: pointer;
@@ -87,28 +100,12 @@ button {
   outline: none;
   text-align: center;
   display: block;
-  width: 60%;
+  /* width: 60%; */
 }
-
-/* 모바일 화면: 화면 너비가 480px 이하일 때 */
-@media (max-width: 480px) {
-  button {
-    padding: 8px 15px;
-    width: 80%; 
-  }
+.header button {
+  display: flex;
+  flex-direction: flex-end;
 }
-
-/* 태블릿 화면: 화면 너비가 481px ~ 768px일 때 */
-@media (min-width: 481px) and (max-width: 768px) {
-  button {
-    padding: 9px 18px;
-    width: 70%; 
-  }
-}
-
-
-
-
 button:hover,
 button:focus {
   border-bottom-color: var(--hover-color2);
@@ -178,3 +175,18 @@ button:focus {
   font-size: medium;
 }
 
+/* 모바일 화면: 화면 너비가 480px 이하일 때 */
+@media (max-width: 480px) {
+  button {
+    padding: 8px 15px;
+    width: 80%;
+  }
+}
+
+/* 태블릿 화면: 화면 너비가 481px ~ 768px일 때 */
+@media (min-width: 481px) and (max-width: 768px) {
+  button {
+    padding: 9px 18px;
+    width: 70%;
+  }
+}

@@ -21,7 +21,10 @@
 </head>
   <body>
     <header>
-      <img class="logo" src="/static/img/logo.png" ></img>
+      <div class="header">
+      <img class="logo" onclick="goTohome()" src="/static/img/logo.png" ></img>
+      <button onclick="userLogout()">로그아웃</button>
+    </div>
       <div>
     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goTohome()">
       <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
@@ -57,7 +60,7 @@
 
     <!-- 프로필 정보 -->
     <% if (userData) { %>
-      <div class="name"> 내 이름: <%= userData.uName %></div>
+      <h3 class="name"> 닉네임 : <%= userData.uName %></h3>
       <!-- <div class="campus"> 캠퍼스 : <%= userData.campus %></div> -->
       <% }  %>
   </form>
