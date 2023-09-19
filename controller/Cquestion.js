@@ -228,17 +228,54 @@ exports.getQuestion = async (req, res) => {
   try {
     const { qId } = req.params;
 
+    // 태균 수정
     const question = await Question.findOne({
       where: { qId },
+      include: [
+        {
+          model: User,
+          attributes: ['uId', 'uName', 'userImgPath'],
+        },
+      ],
     });
+    // console.log('>>>>>>>>>>>>>>>>>>', questionTest);
 
+    // const question = await Question.findOne({
+    //   where: { qId },
+    // });
+
+    // 태균 수정
     const answers = await Answer.findAll({
       where: { qId },
+      include: [
+        {
+          model: User,
+          attributes: ['uId', 'uName', 'userImgPath'],
+        },
+      ],
+      attributes: { exclude: ['title'] }, // title 컬럼을 제외
     });
+    // console.log('>>>>>>>>>>>>>>>>>>', answersTest[0]);
 
+    // const answers = await Answer.findAll({
+    //   where: { qId },
+    // });
+
+    // 태균 수정
     const comments = await Comment.findAll({
       where: { qId },
+      include: [
+        {
+          model: User,
+          attributes: ['uId', 'uName', 'userImgPath'],
+        },
+      ],
     });
+    // console.log('>>>>>>>>>>>>>>>>>>', commentsTest[0].User);
+
+    // const comments = await Comment.findAll({
+    //   where: { qId },
+    // });
 
     let qResultLike = false; // 질문 좋아요 초기값을 false로 설정
     let uLikeAnswersResult = []; // 답변 좋아요 초기값을 빈 배열로 설정
