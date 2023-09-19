@@ -121,87 +121,26 @@
           </div>
         </div>
         <div style="margin-left: 15px"><%= commentData[i].content %></div>
-        <div style="display: flex; justify-content: flex-end">
-          <button
-            type="button"
-            class="btn btn-primary"
+        <div style="display: flex; justify-content: flex-end; color: darkgray">
+          <div
+            style="cursor: pointer; margin-right: 10px"
             onclick="addComment('<%= boardData.bId %>')"
           >
-            작성하기
-          </button>
+            수정
+          </div>
+
+          <div
+            style="cursor: pointer"
+            onclick="addComment('<%= boardData.bId %>')"
+          >
+            삭제
+          </div>
         </div>
       </div>
       <%}%>
     </div>
   </body>
   <script>
-    function addComment() {
-      const board = document.forms['boardInfoForm'];
-      const comment = document.forms['inputCommentForm'];
-
-      axios({
-        method: 'post',
-        url: `/board/comment/create/${board.bId.value}`, //bId가 params로 넘어갑니다.
-        data: {
-          bId: board.bId.value,
-          content: comment.commentContent.value,
-        },
-      })
-        .then((response) => {
-          // 성공했을때 처리.
-          // response.status에 의해서 판단한다.
-          console.log(response.data);
-
-          // 새로운 댓글 엘리먼트 생성 및 추가
-          const commentsContainer =
-            document.getElementById('commentsContainer');
-          const newComment = response.data.commentData; // 새로운 댓글 데이터
-
-          const commentDiv = document.createElement('div');
-          commentDiv.innerHTML = `
-        ${newComment.cId}. 댓글 작성자: ${newComment.uId}
-        <button
-          type="button"
-          onclick="editComment('${newComment.cId}')"
-        >
-          수정하기
-        </button>
-        <button
-          type="button"
-          onclick="deleteComment('${newComment.cId}')"
-        >
-          삭제하기
-        </button>
-      </div>
-      <div id="comment${newComment.cId}">
-        ${newComment.cId}. 댓글 내용: ${newComment.content}
-      </div>
-      <div id="editComment${newComment.cId}" style="display: none">
-        <input
-          type="text"
-          id="editedComment${newComment.cId}"
-          value="${newComment.cId}"
-        />
-        <button
-          type="button"
-          onclick="applyEdit('${newComment.cId}')"
-        >
-          적용
-        </button>
-        <button type="button" onclick="cancelEdit('${newComment.cId}')">취소</button>
-      </div>`;
-
-          commentsContainer.appendChild(commentDiv);
-        })
-        .catch((error) => {
-          // 실패했을때 처리
-          // response.status에 의해서 판단되어 catch 문에서 실행된다.
-
-          // 에러 객체 전체
-          console.log(error);
-        });
-    }
-
     let editingCommentcId = null;
 
     // 현재화면에서 댓글 수정하기 눌렀을때 수정하는 칸 나오기
