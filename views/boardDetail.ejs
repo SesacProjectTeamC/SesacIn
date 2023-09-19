@@ -13,7 +13,6 @@
     <%- include('./components/header', { isLogin: isLogin }) %>
     <div id="bWrapper">
       <div id="bTitle"><%= boardData.title %></div>
-
       <div id="bUserC">
         <div style="display: flex; align-items: center">
           <div id="bUser">
@@ -27,7 +26,7 @@
             onclick="bLikeHandler('<%= boardData.bId %>')"
           >
             <img
-              src="../../static/svg/heart.svg"
+              src="/static/svg/heart.svg"
               alt="좋아요수"
               width="24px"
               class="svg"
@@ -42,7 +41,7 @@
             onclick="bLikeHandler('<%= boardData.bId %>')"
           >
             <img
-              src="../../static/svg/heart-fill.svg"
+              src="/static/svg/heart-fill.svg"
               alt="좋아요수"
               width="24px"
               class="svg"
@@ -72,13 +71,25 @@
 
       <div style="display: flex; flex-direction: column; align-items: flex-end">
         <div class="input-group" style="margin: 15px 0px 15px 0px">
+          <%if(isLogin && userData.userImgPath){%>
+          <img
+            src="/<%= userData.userImgPath %>"
+            alt="프로필"
+            width="48px"
+            height="48px"
+            style="border-radius: 999px"
+            class="profileImg"
+          />
+          <%}else{%>
           <img
             src="../../static/svg/person.svg"
             alt="프로필"
             width="48px"
             height="48px"
+            style="border-radius: 999px"
             class="profileImg"
           />
+          <%}%>
           <textarea
             class="form-control"
             aria-label="With textarea"
@@ -107,17 +118,28 @@
           "
         >
           <div class="userC">
+            <%if(commentData[i].userImgPath){%>
+            <img
+              src="/<%= commentData[i].userImgPath %>"
+              alt="프로필"
+              width="48px"
+              height="48px"
+              style="border-radius: 999px"
+              class="profileImg"
+            />
+            <%}else{%>
             <img
               src="../../static/svg/person.svg"
               alt="프로필"
               width="48px"
               height="48px"
+              style="border-radius: 999px"
               class="profileImg"
             />
-            <%= commentData[i].uId %>
+            <%}%> <%= commentData[i].uId %>
           </div>
           <div style="font-size: 14px; color: lightgray">
-            <%= commentData[i].createdAt %>
+            <%= commentCreateAt[i] %>
           </div>
         </div>
         <div id="comment<%= commentData[i].cId%>" style="margin-left: 15px">
