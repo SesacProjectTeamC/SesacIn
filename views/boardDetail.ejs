@@ -22,43 +22,22 @@
           </div>
           | <% if(!bResult) { %>
 
-          <div
-            class="viewImg likeImg"
-            onclick="bLikeHandler('<%= boardData.bId %>')"
-          >
-            <img
-              src="../../static/svg/heart.svg"
-              alt="좋아요수"
-              width="24px"
-              class="svg"
-            />
+          <div class="viewImg likeImg" onclick="bLikeHandler('<%= boardData.bId %>')">
+            <img src="../../static/svg/heart.svg" alt="좋아요수" width="24px" class="svg" />
             <%= boardData.likeCount%>
           </div>
 
           <% } else if(bResult) { %>
 
-          <div
-            class="viewImg likeImg"
-            onclick="bLikeHandler('<%= boardData.bId %>')"
-          >
-            <img
-              src="../../static/svg/heart-fill.svg"
-              alt="좋아요수"
-              width="24px"
-              class="svg"
-            />
+          <div class="viewImg likeImg" onclick="bLikeHandler('<%= boardData.bId %>')">
+            <img src="../../static/svg/heart-fill.svg" alt="좋아요수" width="24px" class="svg" />
             <%= boardData.likeCount %>
           </div>
 
           <% } %>
 
           <div class="viewImg">
-            <img
-              src="../../static/svg/eye.svg"
-              alt="조회수"
-              width="24px"
-              class="svg"
-            />
+            <img src="../../static/svg/eye.svg" alt="조회수" width="24px" class="svg" />
             <%= boardData.viewCount%>
           </div>
         </div>
@@ -72,26 +51,10 @@
 
       <div style="display: flex; flex-direction: column; align-items: flex-end">
         <div class="input-group" style="margin: 15px 0px 15px 0px">
-          <img
-            src="../../static/svg/person.svg"
-            alt="프로필"
-            width="48px"
-            height="48px"
-            class="profileImg"
-          />
-          <textarea
-            class="form-control"
-            aria-label="With textarea"
-            style="height: 100px"
-          ></textarea>
+          <img src="../../static/svg/person.svg" alt="프로필" width="48px" height="48px" class="profileImg" />
+          <textarea class="form-control" aria-label="With textarea" style="height: 100px"></textarea>
         </div>
-        <button
-          type="button"
-          class="btn btn-primary"
-          onclick="addComment('<%= boardData.bId %>')"
-        >
-          작성하기
-        </button>
+        <button type="button" class="btn btn-primary" onclick="addComment('<%= boardData.bId %>')">작성하기</button>
       </div>
 
       <%for (let i = 0; i < commentData.length; i++) {%>
@@ -99,42 +62,19 @@
       <div class="commentContainer">
         <div
           class="input-group"
-          style="
-            display: flex;
-            margin: 15px 0px 15px 0px;
-            align-items: center;
-            justify-content: space-between;
-          "
+          style="display: flex; margin: 15px 0px 15px 0px; align-items: center; justify-content: space-between"
         >
           <div class="userC">
-            <img
-              src="../../static/svg/person.svg"
-              alt="프로필"
-              width="48px"
-              height="48px"
-              class="profileImg"
-            />
+            <img src="../../static/svg/person.svg" alt="프로필" width="48px" height="48px" class="profileImg" />
             <%= commentData[i].uId %>
           </div>
-          <div style="font-size: 14px; color: lightgray">
-            <%= commentData[i].createdAt %>
-          </div>
+          <div style="font-size: 14px; color: lightgray"><%= commentData[i].createdAt %></div>
         </div>
         <div style="margin-left: 15px"><%= commentData[i].content %></div>
         <div style="display: flex; justify-content: flex-end; color: darkgray">
-          <div
-            style="cursor: pointer; margin-right: 10px"
-            onclick="addComment('<%= boardData.bId %>')"
-          >
-            수정
-          </div>
+          <div style="cursor: pointer; margin-right: 10px" onclick="addComment('<%= boardData.bId %>')">수정</div>
 
-          <div
-            style="cursor: pointer"
-            onclick="addComment('<%= boardData.bId %>')"
-          >
-            삭제
-          </div>
+          <div style="cursor: pointer" onclick="addComment('<%= boardData.bId %>')">삭제</div>
         </div>
       </div>
       <%}%>
@@ -164,9 +104,7 @@
 
     // 댓글 수정하는 칸에서 적용 버튼 눌렀을때 실제 댓글 수정 처리
     function applyEdit(cId) {
-      const editedComment = document.getElementById(
-        `editedComment${cId}`
-      ).value;
+      const editedComment = document.getElementById(`editedComment${cId}`).value;
       const commentDiv = document.getElementById(`comment${cId}`);
       const editDiv = document.getElementById(`editComment${cId}`);
 
