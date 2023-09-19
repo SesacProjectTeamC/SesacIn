@@ -85,7 +85,8 @@ const fixCancel = (content, cId) => {
 };
 
 const fixFinish = (cId, bId) => {
-  const commentContent = document.querySelector('#fixC').innerHTML;
+  const commentContent = document.querySelector('#fixC').value;
+  console.log(commentContent);
   axios({
     method: 'patch',
     url: `/board/comment/edit/${cId}`,
@@ -94,7 +95,7 @@ const fixFinish = (cId, bId) => {
     },
   })
     .then((response) => {
-      document.location.href = `/board/detail/${bId}`;
+      // document.location.href = `/board/detail/${bId}`;
     })
     .catch((error) => {
       console.log(error);
