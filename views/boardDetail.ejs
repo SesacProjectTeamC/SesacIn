@@ -66,6 +66,23 @@
       </div>
 
       <div class="bContent ck-content"><%- boardData.content %></div>
+      <div
+        style="
+          display: flex;
+          justify-content: flex-end;
+          color: darkgray;
+          font-size: 18px;
+        "
+      >
+        <div
+          style="cursor: pointer; margin-right: 10px"
+          onclick="fixComment('<%= boardData.bId %>')"
+        >
+          수정하기
+        </div>
+
+        <div style="cursor: pointer">삭제하기</div>
+      </div>
 
       <div id="bCommentCount">댓글 <%= commentData.length%></div>
 
