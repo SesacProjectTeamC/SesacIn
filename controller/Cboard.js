@@ -16,12 +16,7 @@ exports.getBoardMain = async (req, res) => {
     let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (
-      !sortField ||
-      !['createdAt', 'likeCount', 'viewCount', 'commentCount'].includes(
-        sortField
-      )
-    ) {
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'commentCount'].includes(sortField)) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -147,17 +142,22 @@ exports.detailBoard = async (req, res) => {
     }
 
     // 게시글 데이터 조회
-    const eachBoard = await getBoard(bId);
+    const boardSql = `SELECT b.*, u.uId, u.uName, u.userImgPath
+    FROM board b
+    INNER JOIN user u ON b.uId = u.uId
+    WHERE b.bId = ${bId};`;
+    const [eachBoard] = await sequelize.query(boardSql);
+
     // 게시글의 날짜 데이터 포맷 변경
     const create = moment(eachBoard.createdAt).format('YYYY-MM-DD');
 
     // 댓글 데이터 조회
-    const sql = `SELECT c.*, u.uId, u.uName, u.userImgPath
+    const commentSql = `SELECT c.*, u.uId, u.uName, u.userImgPath
     FROM comment c
-    INNER JOIN user u ON c.uid = u.uid
+    INNER JOIN user u ON c.uId = u.uId
     WHERE c.bId = ${bId}
     ORDER BY c.createdAt desc;`;
-    const [allComment, metadata] = await sequelize.query(sql);
+    const [allComment] = await sequelize.query(commentSql);
 
     // 댓글의 날짜 데이터 포맷 변경
     const commentCreateAt = [];
@@ -170,19 +170,6 @@ exports.detailBoard = async (req, res) => {
     // 1) 좋아요 히스토리 찾기
     let uLikeFind;
 
-    // 2) 좋아요 히스토리에 있으면 true, 없으면 false
-    // if (bool === 'yes') {
-    //   res.send({
-    //     success: true,
-    //     isLogin,
-    //     currentLoginUser: req.session.user,
-    //     msg: '페이지 렌더링 정상 처리',
-    //     boardData: eachBoard,
-    //     cDate: create,
-    //     commentData: allComment,
-    //     bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
-    //   });
-    // } else {
     if (isLogin) {
       const uId = req.session.user;
 
@@ -198,6 +185,7 @@ exports.detailBoard = async (req, res) => {
         },
       });
       const resultLike = isLogin ? !!uLikeFind : false;
+
       res.status(200).render('boardDetail', {
         success: true,
         isLogin,
@@ -246,10 +234,7 @@ exports.viewBoard = async (req, res) => {
     const eachBoard = await getBoard(bId);
 
     // 조회수 업데이트 +1
-    await Board.update(
-      { viewCount: eachBoard.viewCount + 1 },
-      { where: { bId } }
-    );
+    await Board.update({ viewCount: eachBoard.viewCount + 1 }, { where: { bId } });
     res.status(200).send({ boardData: eachBoard });
   } catch (error) {
     console.error(error);
@@ -292,10 +277,7 @@ exports.likeBoard = async (req, res) => {
       });
 
       // (2) 자유게시글 likeCount +1 업데이트
-      await Board.update(
-        { likeCount: eachBoard.likeCount + 1 },
-        { where: { bId } }
-      );
+      await Board.update({ likeCount: eachBoard.likeCount + 1 }, { where: { bId } });
     } else if (uLikeFind) {
       // 3-2. uLike findOne -> bId 있으면,
       // (1) 좋아요 히스토리 삭제 : uLike에 해당 bId 삭제함
@@ -304,10 +286,7 @@ exports.likeBoard = async (req, res) => {
       });
 
       // (2) 자유게시글 likeCount -1 업데이트
-      await Board.update(
-        { likeCount: eachBoard.likeCount - 1 },
-        { where: { bId } }
-      );
+      await Board.update({ likeCount: eachBoard.likeCount - 1 }, { where: { bId } });
     }
 
     res.status(200).send({
@@ -403,12 +382,7 @@ exports.paginateBoard = async (req, res) => {
     let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (
-      !sortField ||
-      !['createdAt', 'likeCount', 'viewCount', 'commentCount'].includes(
-        sortField
-      )
-    ) {
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'commentCount'].includes(sortField)) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -609,8 +583,7 @@ exports.editBoard = async (req, res) => {
 };
 
 // 자유게시판 게시글 내용/제목 변경여부 확인 함수
-const hasChanged = (before, after) =>
-  before.title !== after.title || before.content !== after.content;
+const hasChanged = (before, after) => before.title !== after.title || before.content !== after.content;
 
 // 게시글 삭제 처리
 // /board/delete/:bId
@@ -719,6 +692,7 @@ exports.createComment = async (req, res) => {
 // 게시글 댓글 수정 처리
 // /board/comment/edit/:cId
 exports.editComment = async (req, res) => {
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
@@ -742,28 +716,15 @@ exports.editComment = async (req, res) => {
     // 요청에서 cId(댓글 ID)와 수정할 내용(content) 받아오기
     const { cId } = req.params;
     const { content } = req.body;
-
+    console.log(content);
     // 이 부분에서 댓글 작성자와 현재 사용자를 비교하여 권한이 없으면 에러 처리 가능
     // 1. cId로 댓글의 작성자를 확인하자
-    const result = await Comment.findOne({
+    const comment = await Comment.findOne({
       where: { cId: cId },
     });
-
-    // cid로 댓글 여부 먼저 확인
-    if (result === null) {
-      // 없는 댓글임
-      res.status(404).send({
-        success: false,
-        isLogin,
-        currentLoginUser: req.session.user,
-        msg: '서버 오류 발생: 해당 cid의 댓글이 없습니다.',
-      });
-      return;
-    }
-
     // uid로 댓글 소유자 여부 확인(권한 확인)
-    const commentWriter = result.uId;
-    if (req.session.user !== commentWriter) {
+    if (comment.uId !== req.session.user) {
+      console.log('댓글의 소유자가 아님');
       res.status(401).send({
         success: false,
         isLogin,
@@ -774,10 +735,7 @@ exports.editComment = async (req, res) => {
     }
 
     // 댓글 수정
-    const isUpdatedComment = await Comment.update(
-      { content: content },
-      { where: { cId: cId } }
-    );
+    const isUpdatedComment = await Comment.update({ content: content }, { where: { cId: cId } });
 
     // 댓글이 달린 게시글의 총 댓글수 확인
     const commentCount = await getCommentCount(cId);
