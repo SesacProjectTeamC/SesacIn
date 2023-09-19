@@ -81,7 +81,7 @@ a {
   border-radius: 30px;
   /* border-width: 2px;
   border: solid;
-  border-color: var(--border-color);
+  border-color var(--border-color);
   background-color: var(--main-color);
   border-radius: 30px; */
 }

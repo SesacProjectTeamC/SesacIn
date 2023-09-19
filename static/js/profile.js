@@ -1,59 +1,69 @@
 function change(buttonType) {
   console.log(buttonType);
-  const contentDiv = document.getElementById('content');
+  const contentDiv = document.getElementById("content");
   axios({
-    method: 'GET',
+    method: "GET",
     url: `/users/profile/${buttonType}`,
   })
     .then((response) => {
-      console.log('백엔드로부터 전달받은 데이터', response);
+      console.log("백엔드로부터 전달받은 데이터", response);
       const data = response.data;
-      if (buttonType === 'liked') {
+      if (buttonType === "liked") {
         liked(data, contentDiv);
         return;
-      } else if (buttonType === 'commented') {
+      } else if (buttonType === "commented") {
         commented(data, contentDiv);
         return;
-      } else if (buttonType === 'answered') {
+      } else if (buttonType === "answered") {
         answered(data, contentDiv);
         return;
-      } else if (buttonType === 'qna') {
+      } else if (buttonType === "qna") {
         qna(data, contentDiv);
         return;
-      } else if (buttonType === 'free') {
+      } else if (buttonType === "free") {
         free(data, contentDiv);
         return;
       } else {
-        contentDiv.innerHTML = '선택된 내용이 없습니다.';
+        contentDiv.innerHTML = "선택된 내용이 없습니다.";
       }
     })
     .catch((error) => {
-      console.error('Error fetching data:', error);
-      cautionA.innerHTML = '작성하신 글이 없습니다.';
+      console.error("Error fetching data:", error);
+      cautionA.innerHTML = "작성하신 글이 없습니다.";
     });
 }
 // 좋아요 선택한 글
 const liked = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
+  contentDiv.innerHTML = "";
   for (let question of data.likeQuestionData) {
     contentDiv.innerHTML += [
       `<div class="question">
-            <a href="/question/${data.qId}">
-            <h3>${question.title}</h3>
-            <p>${question.qType}</p>
+            <a href="/question/${question.qId}">
+            <div class="likedList">
+            <h2>${question.title}</h2>
             <p>${question.content}</p>
-            </div>`,
+            <div class="like">
+                <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
+                <p>${question.likeCount}</p>
+                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
+                <p>${question.viewCount}</p>
+            </div>
+            </div>
+            </div>
+            <hr>
+            `,
     ];
-    console.log('liked');
+    console.log("liked");
   }
 
   for (let boards of data.boardsData) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
-                <a href="/board/detail/${data.bId}">
-                <p>${boards.title}</p>
-                <p>${boards.content}</p>
+                <a href="/board/detail/${boards.bId}">
+                <div class="likedList">
+                <h2>${boards.title}</h2>
+                <h3>${boards.content}</h3>
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
                 <p>${boards.likeCount}</p>
@@ -61,56 +71,64 @@ const liked = (data, contentDiv) => {
                 <p>${boards.viewCount}</p>
                 </div>
                 </div>
+                </div>
+                <hr>
                 `,
     ];
-    console.log('liked');
+    console.log("liked");
   }
 };
 //댓글 단 글
 const commented = (data, contentDiv) => {
   console.log(data);
-  contentDiv.innerHTML = '';
+  contentDiv.innerHTML = "";
   for (let answer of data.likeAnswerData) {
     contentDiv.innerHTML += [
       `
       <div class="answer">
-      <a href="/question/${data.qId}">
-        <h3>${answer.title}</h3>
-        <p>${answer.content}</p>
-        </div>`,
+      <a href="/question/${answer.qId}">
+        <h2>${answer.title}</h2>
+        <h3>${answer.content}</h3>
+        </div>
+        <hr>
+        `,
     ];
-    console.log('commented');
+    console.log("commented");
   }
   for (let boards of data.boardsData) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
-                <a href="/board/detail/${data.bId}">
-                <p>${boards.title}</p>
-                <p>${boards.content}</p>
+                <a href="/board/detail/${boards.bId}">
+                <div class="commentedList">
+                <h2>${boards.title}</h2>
+                <h3>${boards.content}</h3>
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
                 <p>${boards.likeCount}</p>
                 <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
                 <p>${boards.viewCount}</p>
                 </div>
-                </div>`,
+                </div>
+                </div>
+                <hr>
+                `,
     ];
-    console.log('commented');
+    console.log("commented");
   }
 };
 
 // qna 게시글
 const qna = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
+  contentDiv.innerHTML = "";
   for (let post of data.postData) {
     contentDiv.innerHTML += [
       `
       <div class="postedQuestion">
-      <a href ="/question/${data.qId}">
-        <div class="qna">
-        <h3>${post.title}</h3>
-        <p>${post.content}</p>
+      <a href ="/question/${post.qId}">
+        <div class="qnaList">
+        <h2>${post.title}</h2>
+        <h3>${post.content}</h3>
         <div class="like">
         <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
         <p>${post.likeCount}</p>
@@ -118,10 +136,11 @@ const qna = (data, contentDiv) => {
         <p>${post.viewCount}</p>
         </div>
         </div>
+        </div>
         <hr>
-        </div>`,
+        `,
     ];
-    console.log('qna');
+    console.log("qna");
   }
 };
 // const answered = (data, contentDiv) => {
@@ -141,53 +160,57 @@ const qna = (data, contentDiv) => {
 
 // 자유 게시판
 const free = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
+  contentDiv.innerHTML = "";
   for (let boards of data.boardsData) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
-                <a href="/board/detail/${data.bId}">
-                <p>${boards.title}</p>
-                <p>${boards.content}</p>
+                <a href="/board/detail/${boards.bId}">
+                <div class="freeList">
+                <h2>${boards.title}</h2>
+                <h3>${boards.content}</h3>
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
                 <p>${boards.likeCount}</p>
                 <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
                 <p>${boards.viewCount}</p>
                 </div>
-                </div>`,
+                </div>
+                </div>
+                <hr>
+                `,
     ];
-    console.log('free');
+    console.log("free");
   }
 };
 
 function isSesac(data) {
-  const sesacElements = document.getElementsByClassName('sesac_badge');
+  const sesacElements = document.getElementsByClassName("sesac_badge");
   axios({
-    method: 'GET',
-    url: '/users/profile',
+    method: "GET",
+    url: "/users/profile",
   })
     .then((response) => {
       const data = response.data;
       if (data.isSesac === true) {
         for (let element of sesacElements) {
-          element.style.display = ''; // 기본값으로 재설정하여 엘리먼트를 보이게 합니다.
+          element.style.display = ""; // 기본값으로 재설정하여 엘리먼트를 보이게 합니다.
         }
       } else {
         for (let element of sesacElements) {
-          element.style.display = 'none'; // 엘리먼트를 숨깁니다.
+          element.style.display = "none"; // 엘리먼트를 숨깁니다.
         }
       }
     })
     .catch((error) => {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     });
 }
 
 function editProfile() {
   axios({
-    method: 'GET',
-    url: '/users/editprofile',
+    method: "GET",
+    url: "/users/editprofile",
   }).then((res) => {
     if (res) {
     }
@@ -217,16 +240,16 @@ function editProfile() {
 
 async function userProfileImgUpload() {
   const formData = new FormData();
-  const file = document.getElementById('fileInput');
+  const file = document.getElementById("fileInput");
 
-  formData.append('userImgFile', file.files[0]);
+  formData.append("userImgFile", file.files[0]);
 
   await axios({
-    method: 'post',
-    url: '/upload/image/user',
+    method: "post",
+    url: "/upload/image/user",
     data: formData,
     header: {
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "multipart/form-data",
     },
   }).then((res) => {
     location.href = location.href;
@@ -234,5 +257,5 @@ async function userProfileImgUpload() {
 }
 
 function goTohome() {
-  window.location.href = '/';
+  window.location.href = "/";
 }

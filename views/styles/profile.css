@@ -90,6 +90,25 @@ button {
   width: 60%;
 }
 
+/* 모바일 화면: 화면 너비가 480px 이하일 때 */
+@media (max-width: 480px) {
+  button {
+    padding: 8px 15px;
+    width: 80%; 
+  }
+}
+
+/* 태블릿 화면: 화면 너비가 481px ~ 768px일 때 */
+@media (min-width: 481px) and (max-width: 768px) {
+  button {
+    padding: 9px 18px;
+    width: 70%; 
+  }
+}
+
+
+
+
 button:hover,
 button:focus {
   border-bottom-color: var(--hover-color2);
@@ -118,11 +137,22 @@ button:focus {
 .answer {
   border: none;
 } */
+#content {
+  width: calc(
+    100% - 400px
+  ); /* 전체 너비에서 400px(양쪽 200px씩)을 뺀 크기로 설정 */
+  margin: 0 200px; /* 상하로는 0, 좌우로는 200px의 마진 설정 */
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
 
-.freeBoards {
+.freeBoards,
+.postedQuestion,
+.question,
+.answer {
   display: flex;
   justify-content: flex-start;
-  margin: 20px;
 }
 
 .freeBoards a,
@@ -131,23 +161,20 @@ button:focus {
 .answer a {
   text-decoration: none;
   color: black;
-  background-color: aliceblue;
+  /* background-color: aliceblue; */
 }
 
-/* .freeBoards a:hover,
+.freeBoards a:hover,
 .postedQuestion a:hover,
 .question a:hover,
-.answer a:hover{
-
-} 
+.answer a:hover {
+  color: var(--hover-color2);
+}
 
 .freeBoards p,
 .postedQuestion p,
 .question p,
-.answer p{
-  
-}  */
-
-.qna {
-  background-color: aliceblue;
+.answer p {
+  font-size: medium;
 }
+
