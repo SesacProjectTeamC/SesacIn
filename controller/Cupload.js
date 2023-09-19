@@ -13,6 +13,9 @@ exports.uploadImageFile = async (req, res) => {
     // originalname == 유저가 업로드한 원본 파일 이름(확장자 포함)
     const { originalname, path } = req.file;
 
+    // 세션에 경로 저장
+    req.session.userImgPath = path;
+
     // user 테이블에 데이터 저장
     await User.update(
       {

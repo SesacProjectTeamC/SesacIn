@@ -12,9 +12,7 @@
   </head>
   <body class="container">
     <%- include('./components/header', { isLogin: isLogin }) %>
-    <div id="listType">
-      <%= type === 'board' ? '📋 Sesac 자유게시판' : '🙋‍♂️ Sesac Q&A'%>
-    </div>
+    <div id="listType"><%= type === 'board' ? '📋 Sesac 자유게시판' : '🙋‍♂️ Sesac Q&A'%></div>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -26,36 +24,27 @@
         </tr>
       </thead>
       <tbody class="listC">
-        <%if (type === 'board'){%> <%for(let i = 0; i < boards.length; i++){%>
-        <tr
-          onclick="moveToDetailBoard('<%= boards[i].bId%>')"
-          style="cursor: pointer"
-        >
-          <th><%= boards[i].bId%></th>
-          <td style="text-align: start"><%= boards[i].title%></td>
-          <td><%= boards[i].uName%></td>
-          <td><%= boards[i].likeCount%></td>
-          <td><%= cDate[i]%></td>
+        <%if (type === 'board'){%> <%for(let i = 0; i < boardData.length; i++){%>
+        <tr onclick="moveToDetailBoard('<%= boardData[i].bId%>')" style="cursor: pointer">
+          <th><%= boardData[i].bId%></th>
+          <td style="text-align: start"><%= boardData[i].title%></td>
+          <td><%= boardData[i].uName%></td>
+          <td><%= boardData[i].likeCount%></td>
+          <td><%= boardCreateAt[i]%></td>
         </tr>
-        <%}%> <%} else{%> <%for(let i = 0; i < data.length; i++){%>
-        <tr
-          onclick="moveToDetailQuestion('<%=data[i].qId%>')"
-          style="cursor: pointer"
-        >
-          <th><%= data[i].qId%></th>
-          <td style="text-align: start"><%= data[i].title%></td>
-          <td><%= data[i].uName%></td>
-          <td><%= data[i].likeCount%></td>
-          <td><%= cDate[i]%></td>
+        <%}%> <%} else{%> <%for(let i = 0; i < questionData.length; i++){%>
+        <tr onclick="moveToDetailQuestion('<%=questionData[i].qId%>')" style="cursor: pointer">
+          <th><%= questionData[i].qId%></th>
+          <td style="text-align: start"><%= questionData[i].title%></td>
+          <td><%= questionData[i].uName%></td>
+          <td><%= questionData[i].likeCount%></td>
+          <td><%= questionCreateAt[i]%></td>
         </tr>
         <%}%> <%}%>
       </tbody>
     </table>
 
-    <nav
-      aria-label="..."
-      style="display: flex; justify-content: center; margin-top: 20px"
-    >
+    <nav aria-label="..." style="display: flex; justify-content: center; margin-top: 20px">
       <ul class="pagination">
         <li id="prev" class="page-item disabled">
           <a class="page-link" tabindex="-1" onclick="getPageData('prev')"><</a>
