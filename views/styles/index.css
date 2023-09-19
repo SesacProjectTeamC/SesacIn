@@ -6,6 +6,46 @@
   height: 240px;
 }
 
+.carousel-background {
+  height: 380px;
+  background-color: #333;
+  color: white;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-c1-title {
+  #c1-title-1 {
+    font-weight: bold;
+    font-size: 42px;
+  }
+}
+
+.carousel-c1-img {
+  width: 400px;
+  height: 300px;
+  margin: auto 0;
+  display: flex;
+}
+
+.carousel-c2-img {
+  height: 380px;
+  margin: auto;
+}
+
+.carousel-c3-img {
+  height: 380px;
+  margin: auto;
+  width: 100%;
+}
+.carousel-c3-codingon {
+  margin: auto;
+  width: 300px;
+  position: absolute;
+}
+
 header {
   display: flex;
   padding-right: 48px;
@@ -41,7 +81,7 @@ a {
   border-radius: 30px;
   /* border-width: 2px;
   border: solid;
-  border-color: var(--border-color);
+  border-color var(--border-color);
   background-color: var(--main-color);
   border-radius: 30px; */
 }
