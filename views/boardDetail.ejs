@@ -120,24 +120,68 @@
             <%= commentData[i].createdAt %>
           </div>
         </div>
-        <div style="margin-left: 15px"><%= commentData[i].content %></div>
-        <div style="display: flex; justify-content: flex-end; color: darkgray">
+        <div id="comment<%= commentData[i].cId%>" style="margin-left: 15px">
+          <%= commentData[i].content %>
+        </div>
+        <%if(isLogin && commentData[i].uId === userData.uId){%>
+        <div
+          id="fixCommentC<%= commentData[i].cId %>"
+          style="display: flex; justify-content: flex-end; color: darkgray"
+        >
           <div
             style="cursor: pointer; margin-right: 10px"
-            onclick="addComment('<%= boardData.bId %>')"
+            onclick="fixComment('<%= commentData[i].cId %>', '<%= boardData.bId %>')"
           >
             수정
           </div>
 
           <div
             style="cursor: pointer"
-            onclick="addComment('<%= boardData.bId %>')"
+            onclick="openModal('정말 삭제하시겠어요?', 'deleteComment(<%= commentData[i].cId %>, <%= boardData.bId %>)');"
           >
             삭제
           </div>
         </div>
+        <%}%>
       </div>
       <%}%>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="myModal"
+      tabindex="-1"
+      aria-labelledby="cautionModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cautionModalLabel">경고</h5>
+          </div>
+          <div class="modal-body">
+            <p id="cautionText"></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="deletebtn"
+              onclick="confirmDelete()"
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
   <script>
@@ -201,21 +245,6 @@
     }
 
     // 현재 페이지에 댓글 삭제하기
-    function deleteComment(cId) {
-      // 댓글 삭제 요청을 서버로 보내고, 성공하면 화면에서 삭제
-      axios({
-        method: 'delete',
-        url: `/board/comment/delete/${cId}`,
-      })
-        .then((response) => {
-          console.log(response.data);
-          refreshComments(); // 댓글 목록 업데이트
-        })
-        .catch((error) => {
-          console.error(error.message);
-          console.error(error.response.data.msg);
-        });
-    }
 
     // 댓글 목록을 다시 불러와서 화면 업데이트
     async function refreshComments() {
