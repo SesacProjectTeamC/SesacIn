@@ -7,7 +7,10 @@ const { needToLogin } = require('../util/middleware'); // 꼭 로그인 해야�
 
 // QnA 메인 페이지 렌더링
 router.get('/main', Cquestion.getQuestions);
-router.get('/main/:page&:pageSize&:sortField&:sortOrder', Cquestion.getQuestions); // 파라미터에 따른 정렬기능 추가
+router.get(
+  '/main/:page&:pageSize&:sortField&:sortOrder',
+  Cquestion.getQuestions
+); // 파라미터에 따른 정렬기능 추가
 
 // 질문 추가 페이지 렌더링
 router.get('/create', needToLogin, Cquestion.getCreateQuestion);
@@ -33,7 +36,10 @@ router.patch('/:qId/like/:aId', Canswer.likeAnswer);
 
 // 페이지별 질문 조회
 // /question/list/:page&:pageSize&:sortField&:sortOrder
-router.get('/list/:page&:pageSize&:sortField&:sortOrder', Cquestion.paginateQuestion);
+router.get(
+  '/list/:page&:pageSize&:sortField&:sortOrder',
+  Cquestion.paginateQuestion
+);
 
 // 특정 질문 내용 수정 페이지 렌더링
 // /question/:qId/edit
@@ -52,7 +58,7 @@ router.delete('/:qId/delete', needToLogin, Cquestion.deleteQuestion);
 
 // 답변 생성
 router.get('/:qId/answer/create', Canswer.getCreateAnswer);
-router.post('/:qId/answer/create', Canswer.postAnswer);
+router.post('/:qId/answer/create', needToLogin, Canswer.postAnswer);
 
 // 특정 답변 내용 수정
 router.get('/:qId/answer/:aId/edit', needToLogin, Canswer.getEditAnswer);
@@ -73,6 +79,10 @@ router.get('/:qId/:aId/comment/:cId/edit', Ccomment.getEditComment);
 router.patch('/:qId/:aId/comment/:cId/edit', Ccomment.patchComment);
 
 // 삭제
-router.delete('/:qId/:aId/comment/:cId/delete', needToLogin, Ccomment.deleteComment);
+router.delete(
+  '/:qId/:aId/comment/:cId/delete',
+  needToLogin,
+  Ccomment.deleteComment
+);
 
 module.exports = router;

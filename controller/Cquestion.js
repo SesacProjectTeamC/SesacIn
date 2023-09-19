@@ -342,7 +342,7 @@ exports.getQuestion = async (req, res) => {
         // (3) 결과 값 리스트에 담기
         uLikeAnswersResult.push(uLikeAnswerFindResult);
       }
-      return res.render('questionTest', {
+      return res.render('questionDetail', {
         data: question, // 질문의 데이터와 질문 작성자 데이터
         questionCreateAt, // 질문의 생성일 (포맷을 변경)
         answerData: answers, // 답변의 데이터와 답변 작성자 데이터
@@ -371,7 +371,7 @@ exports.getQuestion = async (req, res) => {
       qResult: qResultLike, // 특정 질문에 대한 결과 (T/F)
       aResult: uLikeAnswersResult, // 특정 질문에 대한 답변의 결과
       //+ 답변은 여러 개이므로, 배열로 결과 값을 보냄 ---> ex. [ true, false, false ]
-      // userData: user,
+      userData: null,
     });
   } catch (err) {
     console.log(err);
