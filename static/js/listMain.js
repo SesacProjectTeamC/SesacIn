@@ -1,13 +1,18 @@
 let savedPage = 1;
 
 const getPageData = (page) => {
-  const formattedPage = page === 'next' ? savedPage + 1 : page === 'prev' ? savedPage - 1 : page;
+  const formattedPage =
+    page === 'next' ? savedPage + 1 : page === 'prev' ? savedPage - 1 : page;
   savedPage = Number(formattedPage);
   const findType = document.querySelector('#listType').innerHTML.trim();
   axios({
     method: 'GET',
-    url: findType === '📋 Sesac 자유게시판' ? `/board/list/${formattedPage}&20` : `/question/list/${formattedPage}&20`,
+    url:
+      findType === '📋 Sesac 자유게시판'
+        ? `/board/list/${formattedPage}&20&createdAt&desc`
+        : `/question/list/${formattedPage}&20&createdAt&desc`,
   }).then((res) => {
+    console.log(res.data);
     changeList(res, findType);
     changePagination(res, formattedPage, findType);
     window.scrollTo(0, 0);
@@ -15,7 +20,10 @@ const getPageData = (page) => {
 };
 
 const changeList = (res, findType) => {
-  const arrayData = findType === '📋 Sesac 자유게시판' ? res.data.boardData : res.data.questionData;
+  const arrayData =
+    findType === '📋 Sesac 자유게시판'
+      ? res.data.boardData
+      : res.data.questionData;
   const container = document.querySelector('.listC');
   container.innerHTML = '';
   for (let i = 0; i < arrayData.length; i++) {
@@ -30,7 +38,7 @@ const changeList = (res, findType) => {
       include = qnalist(
         arrayData[i],
         res.data.questionCreateAt[i],
-        res.data.questionData[i].uName[i] // [태균]
+        res.data.questionData[i].uName // [태균]
         // res.data.questionUserName[i]
       );
     }
@@ -41,10 +49,7 @@ const changeList = (res, findType) => {
 const changePagination = (res, page, findType) => {
   const container = document.querySelector('.pagination');
   container.innerHTML = '';
-  container.innerHTML = pagination(
-    Number(page),
-    findType === '📋 Sesac 자유게시판' ? res.data.boardPageCount : res.data.questionPageCount
-  );
+  container.innerHTML = pagination(Number(page), res.data.pageCount);
 };
 
 const pagination = (page, pageCount) => {
@@ -56,9 +61,9 @@ const pagination = (page, pageCount) => {
   ].join('');
 
   const next = [
-    `<li id="next" class="page-item ${page === pageCount ? 'disabled' : ''}" style="cursor: ${
-      page === pageCount ? '' : 'pointer'
-    }">`,
+    `<li id="next" class="page-item ${
+      page === pageCount ? 'disabled' : ''
+    }" style="cursor: ${page === pageCount ? '' : 'pointer'}">`,
     `<a class="page-link" onclick="getPageData('next')">></a>`,
     '</li>',
   ].join('');

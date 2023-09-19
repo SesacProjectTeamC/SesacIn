@@ -20,7 +20,7 @@
 
       axios({
         method: 'get',
-        url: `/board/list/${page}&${pageSize}&${sortField}&${sortOrder}`,
+        url: `/${page}&${pageSize}&${sortField}&${sortOrder}`,
         // url: `/board/list/${sortField}&${sortOrder}&undefined&undefined`,
       })
         .then((res) => {

@@ -31,7 +31,7 @@ exports.getQuestions = async (req, res) => {
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
     // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
     const sql = `
-    SELECT q.qId, u.uName, u.uId, u.userImgPath, q.title, q.content, q.viewCount, q.likeCount, q.createdAt, q.updatedAt, COALESCE(count(a.aId), 0) as answerCount
+    SELECT q.qId, u.uName, u.uId, u.userImgPath, q.title, q.qType, q.content, q.viewCount, q.likeCount, q.createdAt, q.updatedAt, COALESCE(count(a.aId), 0) as answerCount
       FROM question q
       LEFT JOIN answer a ON q.qId = a.qId
       LEFT JOIN user u ON q.uId = u.uId
@@ -202,7 +202,7 @@ exports.paginateQuestion = async (req, res) => {
     res.send({
       questionData: paginatedQuestion, // question 데이터(20개씩)
       questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
-      questionPageCount, // 총 몇페이지인지
+      pageCount: questionPageCount, // 총 몇페이지인지
       success: true,
       msg: '페이지별 QnA 질문 호출 처리 완료',
     });

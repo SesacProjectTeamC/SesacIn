@@ -6,7 +6,7 @@
   height: 240px;
 }
 
-.carousel-background {
+.carousel-c1 {
   height: 380px;
   background-color: #333;
   color: white;
@@ -14,36 +14,65 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0 60px;
 }
 
 .carousel-c1-title {
-  #c1-title-1 {
-    font-weight: bold;
-    font-size: 42px;
-  }
+  padding-left: 50px;
+}
+
+#c1-title-1 {
+  font-weight: bold;
+  font-size: 42px;
 }
 
 .carousel-c1-img {
   width: 400px;
   height: 300px;
-  margin: auto 0;
+  margin: auto 100px auto 0;
   display: flex;
 }
 
 .carousel-c2-img {
   height: 380px;
+  width: 100%;
   margin: auto;
+  display: flex;
+  justify-content: center;
 }
 
 .carousel-c3-img {
   height: 380px;
   margin: auto;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
 }
+
 .carousel-c3-codingon {
   margin: auto;
   width: 300px;
+  height: 70px;
+  top: 30%;
+  left: 14%;
+  display: flex;
+  flex-direction: column;
   position: absolute;
+}
+
+.c3-title {
+  color: white;
+  font-weight: bold;
+  font-size: 26px;
+  padding: 30px 0;
+  /* -webkit-text-stroke: 1px black; 웹킷 브라우저 지원 */
+  /* text-stroke: 2px black; 표준 속성 */
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
+}
+
+#c3-img {
+  display: block;
 }
 
 header {
@@ -112,7 +141,6 @@ footer {
   align-items: center;
   justify-content: center;
   align-self: flex-end;
-  position: fixed;
   bottom: 0;
 }
 
@@ -177,14 +205,7 @@ user {
   border-top-color: lightgrey;
   /* margin-bottom: 18px; */
 }
-.title {
-  /* width: 100%; */
-  white-space: nowrap; /* 자동 줄바꿈을 방지 */
-  overflow: hidden; /* 반드시 "visible" 이외의 값이 지정되어 있어야 한다. */
-  text-overflow: ellipsis;
-  font-weight: bold;
-  font-size: 22px;
-}
+
 .ellipsis {
   height: 40px;
   overflow: hidden; /* 반드시 "visible" 이외의 값이 지정되어 있어야 한다. */
@@ -194,13 +215,6 @@ user {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
 }
 
 .content {
@@ -299,6 +313,21 @@ user {
     font-size: 14px;
     height: 30px;
   }
+
+  .carousel-c1 {
+    flex-direction: column-reverse;
+    padding-bottom: 30px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  #c1-title-1 {
+    font-size: 26px;
+  }
+  #c1-title-2 {
+    font-size: 20px;
+  }
 }
 
 @media (max-width: 450px) {
@@ -310,5 +339,13 @@ user {
   .showMore {
     font-size: 12px;
     height: 25px;
+  }
+
+  .carousel-c3-codingon {
+    font-size: 20px;
+  }
+
+  .carousel-c3-img {
+    width: 20%;
   }
 }
