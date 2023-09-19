@@ -46,7 +46,7 @@ const liked = (data, contentDiv) => {
         <div class="like">
         <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
         <p>${data.postData[i].likeCount}</p>
-        <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
+        <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
         <p>${data.postAnswerCount[i]}</p>
         </div>
         </div>
@@ -68,7 +68,7 @@ const liked = (data, contentDiv) => {
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
                 <p>${data.boardsData[i].likeCount}</p>
-                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
+                <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
                 <p>${data.commentsCount[i]}</p>
                 </div>
                 </div>
@@ -105,7 +105,7 @@ const commented = (data, contentDiv) => {
                     <div class="freeBoards">
                     <a href="/question/${comment.qId}">
                     <div class="commentedList">
-                    <h3>${comment.qId}</h3>
+                    <h3>${comment.qId ? comment.qId : comment.bId}</h3>
                     </div>
                     </div>
                     <hr>
@@ -130,7 +130,7 @@ const qna = (data, contentDiv) => {
   //       <div class="like">
   //       <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
   //       <p>${post.likeCount}</p>
-  //       <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
+  //       <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
   //       <p>${postAnswerCount}</p>
   //       </div>
   //       </div>
@@ -149,7 +149,7 @@ const qna = (data, contentDiv) => {
         <div class="like">
         <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
         <p>${data.postData[i].likeCount}</p>
-        <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
+        <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
         <p>${data.postAnswerCount[i]}</p>
         </div>
         </div>
@@ -189,7 +189,7 @@ const free = (data, contentDiv) => {
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
                 <p>${data.boardsData[i].likeCount}</p>
-                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
+                <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
                 <p>${data.commentsCount[i]}</p>
                 </div>
                 </div>
@@ -287,7 +287,7 @@ function userLogout() {
     })
     .catch((error) => {
       // 에러발생시 프론트에서 처리
-      console.log(error.response.data.message);
+      console.log(error.response.data);
       window.location.href = "/404";
     });
 }

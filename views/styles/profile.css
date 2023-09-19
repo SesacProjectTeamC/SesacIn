@@ -1,5 +1,5 @@
 body {
-  font-size: large;
+  font-size: medium;
   margin: 0;
   padding: 0;
   height: 100vh;
@@ -10,19 +10,27 @@ body {
 header {
   width: 100%;
   text-align: start;
-  margin: 20px 30px;
+  padding: 40px 40px;
 
   cursor: pointer;
 }
 .header {
-  display: flex; /* 플렉스 디스플레이로 설정 */
-  justify-content: space-between; /* 양쪽의 요소들 사이에 최대한의 간격을 줍니다. */
-  align-items: center; /* 세로 중앙 정렬 (필요에 따라) */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .logo {
-  cursor: pointer; /* 로고를 클릭 가능하게 설정 (필요에 따라) */
-  flex-shrink: 1;
+  cursor: pointer;
+  margin-left: 55px;
+}
+
+.logout {
+  font-size: large;
+  font-weight: bold;
+}
+.logout:hover {
+  border: none;
 }
 
 .header button {
@@ -52,7 +60,7 @@ img.profile {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
-  font-size: 14px;
+  font-size: 11px;
   /* background-color: blue; */
   /* padding-top: 30px; */
 }
@@ -109,13 +117,13 @@ button {
 button:hover,
 button:focus {
   border-bottom-color: var(--hover-color2);
-  width: fit-content;
 }
 
 .row {
   display: flex;
   justify-content: center;
   align-items: start;
+  font-size: large;
 }
 
 button:active,
@@ -135,10 +143,7 @@ button:focus {
   border: none;
 } */
 #content {
-  width: calc(
-    100% - 400px
-  ); /* 전체 너비에서 400px(양쪽 200px씩)을 뺀 크기로 설정 */
-  margin: 0 200px; /* 상하로는 0, 좌우로는 200px의 마진 설정 */
+  margin: 0 200px;
   display: flex;
   align-items: stretch;
   flex-direction: column;
@@ -179,7 +184,16 @@ button:focus {
 @media (max-width: 480px) {
   button {
     padding: 8px 15px;
-    width: 80%;
+  }
+  .row {
+    display: flex;
+    direction: row;
+    font-size: small;
+  }
+  #content {
+    margin: 0 50px;
+    display: flex;
+    align-items: stretch;
   }
 }
 
@@ -187,6 +201,15 @@ button:focus {
 @media (min-width: 481px) and (max-width: 768px) {
   button {
     padding: 9px 18px;
-    width: 70%;
+  }
+  .row {
+    display: flex;
+    direction: row;
+    font-size: medium;
+  }
+  #content {
+    margin: 0 100px;
+    display: flex;
+    align-items: stretch;
   }
 }
