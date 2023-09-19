@@ -228,17 +228,57 @@ exports.getQuestion = async (req, res) => {
   try {
     const { qId } = req.params;
 
+    // 태균 수정
     const question = await Question.findOne({
       where: { qId },
+      include: [
+        {
+          model: User,
+          attributes: ['uId', 'uName', 'userImgPath'],
+        },
+      ],
     });
+    console.log('>>>>>>>>>>>>>>>>>>', question.createdAt);
 
+    // 날짜 데이터 포맷 변경
+    const questionCreateAt = moment(question.createdAt).format('YYYY-MM-DD HH:mm');
+
+    // 태균 수정
     const answers = await Answer.findAll({
       where: { qId },
+      include: [
+        {
+          model: User,
+          attributes: ['uId', 'uName', 'userImgPath'],
+        },
+      ],
+      attributes: { exclude: ['title'] }, // title 컬럼을 제외
     });
+    // console.log('>>>>>>>>>>>>>>>>>>', answersTest[0]);
 
+    // 날짜 데이터 포맷 변경
+    const answersCreateAt = [];
+    for (a of answers) {
+      answersCreateAt.push(moment(a.createdAt).format('YYYY-MM-DD HH:mm'));
+    }
+
+    // 태균 수정
     const comments = await Comment.findAll({
       where: { qId },
+      include: [
+        {
+          model: User,
+          attributes: ['uId', 'uName', 'userImgPath'],
+        },
+      ],
     });
+    // console.log('>>>>>>>>>>>>>>>>>>', comments);
+
+    // 날짜 데이터 포맷 변경
+    const commentsCreateAt = [];
+    for (c of comments) {
+      commentsCreateAt.push(moment(c.createdAt).format('YYYY-MM-DD HH:mm'));
+    }
 
     let qResultLike = false; // 질문 좋아요 초기값을 false로 설정
     let uLikeAnswersResult = []; // 답변 좋아요 초기값을 빈 배열로 설정
@@ -280,9 +320,12 @@ exports.getQuestion = async (req, res) => {
         uLikeAnswersResult.push(uLikeAnswerFindResult);
       }
       return res.render('questionTest', {
-        data: question,
-        answerData: answers,
-        commentData: comments,
+        data: question, // 질문의 데이터와 질문 작성자 데이터
+        questionCreateAt, // 질문의 생성일 (포맷을 변경)
+        answerData: answers, // 답변의 데이터와 답변 작성자 데이터
+        answersCreateAt, // 답변의 생성일 (포맷을 변경)
+        commentData: comments, // 질문에 달린 모든 답변에 대한 모든 댓글 데이터와 댓글의 작성자 데이터
+        commentsCreateAt, // 댓글의 생성일 (포맷을 변경)
         isLogin,
         currentUser: req.session.user,
         qResult: qResultLike, // 특정 질문에 대한 결과 (T/F)
@@ -294,9 +337,12 @@ exports.getQuestion = async (req, res) => {
 
     // 비로그인 시 동작
     return res.render('questionTest', {
-      data: question,
-      answerData: answers,
-      commentData: comments,
+      data: question, // 질문의 데이터와 질문 작성자 데이터
+      questionCreateAt, // 질문의 생성일 (포맷을 변경)
+      answerData: answers, // 답변의 데이터와 답변 작성자 데이터
+      answersCreateAt, // 답변의 생성일 (포맷을 변경)
+      commentData: comments, // 질문에 달린 모든 답변에 대한 모든 댓글 데이터와 댓글의 작성자 데이터
+      commentsCreateAt, // 댓글의 생성일 (포맷을 변경)
       isLogin,
       currentUser: req.session.user,
       qResult: qResultLike, // 특정 질문에 대한 결과 (T/F)
