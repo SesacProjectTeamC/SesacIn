@@ -158,8 +158,12 @@ exports.detailBoard = async (req, res) => {
     WHERE c.bId = ${bId}
     ORDER BY c.createdAt desc;`;
     const [allComment, metadata] = await sequelize.query(sql);
+
     // 댓글의 날짜 데이터 포맷 변경
-    const commentCreateAt = moment(allComment.createdAt).format('YYYY-MM-DD');
+    const commentCreateAt = [];
+    for (c of allComment) {
+      commentCreateAt.push(moment(c.createdAt).format('YYYY-MM-DD'));
+    }
 
     //=== [ 세화 ] ===
     // 1. 좋아요

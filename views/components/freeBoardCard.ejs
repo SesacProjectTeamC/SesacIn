@@ -24,7 +24,27 @@
       </div>
       <div class="ellipsis"><div class="content">><%= data.content%></div></div>
       <user>
-        <%= uName%>
+        <div style="display: flex; align-items: center">
+          <%if(data.userImgPath){%>
+          <img
+            src="/<%= data.userImgPath %>"
+            alt="프로필"
+            width="32px"
+            height="32px"
+            style="border-radius: 999px; margin-right: 5px"
+            class="profileImg"
+          />
+          <%}else{%>
+          <img
+            src="/static/svg/person.svg"
+            alt="프로필"
+            width="32px"
+            height="32px"
+            style="border-radius: 999px; margin-right: 5px"
+            class="profileImg"
+          />
+          <%}%> <%= data.uName%>
+        </div>
         <div class="like">
           <img
             src="../../static/svg/heart.svg"
@@ -39,7 +59,7 @@
             width="24px"
             class="svg"
           />
-          <%= commentCount%>
+          <%= data.commentCount%>
         </div>
       </user>
     </div>
