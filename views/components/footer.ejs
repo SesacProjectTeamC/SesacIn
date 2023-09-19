@@ -1,0 +1,100 @@
+<head>
+  <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="views/styles/globalstyle.css" />
+
+  <style>
+    .cFooter {
+      display: flex;
+      justify-content: center; /* 가로 중앙 정렬 */
+      align-items: center; /* 세로 중앙 정렬 */
+      width: 100%;
+      height: 200px;
+    }
+
+    .team-members {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around; /* 요소들 간의 간격을 균등하게 배치 */
+      flex-grow: 1; /* 각 팀 멤버를 동일한 비율로 확장 */
+    }
+    .team-member {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 10px; /* 각 팀원 사이의 간격 조정 */
+    }
+
+    .member {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .memberImg {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      margin-bottom: 0.5rem;
+    }
+
+    .tstory {
+      color: lightgray;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="cFooter">
+    <div class="team-members">
+      <div class="team-member">
+        <a href="https://github.com/Sangwoo97">
+          <img src="/static/img/member1.jpg" alt="김상우" class="memberImg" />
+          <br />김상우
+        </a>
+        <a class="tstory" href="https://codingno1.tistory.com/">🌱Blog</a>
+      </div>
+
+      <!-- 팀원 2 -->
+      <div class="team-member">
+        <a href="https://github.com/ellin45">
+          <img src="/static/img/member2.jpg" alt="정채림" class="memberImg" />
+          <br />정채림
+        </a>
+        <a class="tstory" href="https://velog.io/@chaelimj45">🌱Blog</a>
+      </div>
+
+      <!-- 팀원 3 -->
+      <div class="team-member">
+        <a href="https://github.com/hotdog7778">
+          <img src="/static/img/member3.jpg" alt="김태균" class="memberImg" />
+          <br />김태균
+        </a>
+        <a class="tstory" href="https://dksl00.tistory.com/">🌱Blog</a>
+      </div>
+      <!-- 팀원 4 -->
+      <div class="team-member">
+        <a href="https://github.com/loveflora">
+          <img src="/static/img/member4.jpg" alt="김세화" class="memberImg" />
+          <br />김세화
+        </a>
+        <a class="tstory" href="https://oooooooooooo.tistory.com/m">🌱Blog</a>
+      </div>
+      <!-- 팀원 5 -->
+      <div class="team-member">
+        <a href="https://github.com/jinnymoon1124">
+          <img src="/static/img/member5.jpg" alt="문효진" class="memberImg" />
+          <br />문효진
+        </a>
+        <a class="tstory" href="https://jinnycoding.tistory.com/">🌱Blog</a>
+      </div>
+    </div>
+  </div>
+</body>
