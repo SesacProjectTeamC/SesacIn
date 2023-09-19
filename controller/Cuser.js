@@ -216,6 +216,7 @@ exports.userLogin = async (req, res) => {
   if (passCheck) {
     // 로그인 성공처리. 세션에 uId 저장
     req.session.user = resultUser.uId;
+    req.session.userImgPath = resultUser.userImgPath;
     console.log('login >>>', req.session.user);
 
     // 성공 응답 보내주기

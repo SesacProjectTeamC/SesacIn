@@ -1,4 +1,4 @@
-const { Question, Answer, Comment, uLike, User } = require('../models');
+const { Question, Answer, Comment, uLike, User, sequelize } = require('../models');
 const moment = require('moment');
 
 //=== 메인페이지,질문 목록 가져오기 ===
@@ -8,28 +8,43 @@ exports.getQuestions = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    // 한페이지 만큼 데이터 조회
     let page = parseInt(req.params.page) || 1;
     let pageSize = parseInt(req.params.pageSize) || 20;
+    let offset = (page - 1) * pageSize;
 
-    // 전체 Question목록 개수 계산
-    const totalPage = await Question.count();
+    let sortField = req.params.sortField || 'createdAt';
+    let sortOrder = req.params.sortOrder || 'desc';
 
-    // 페이지 수 (올림처리)
-    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+    // params 검사
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
+      res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
+      return;
+    }
+    if (!sortOrder || !['desc', 'asc'].includes(sortOrder)) {
+      res.status(400).json({ error: '올바른 정렬 순서를 지정하세요.' });
+      return;
+    }
 
-    // 페이지별 Question호출
-    const paginatedQuestions = await Question.findAll({
-      order: [['createdAt', 'DESC']], // 정렬 기준
-      limit: pageSize,
-      offset: (page - 1) * pageSize,
-    });
+    const questionTotalCount = await Question.count();
+    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
+
+    // 시퀄라이즈에 SQL 쿼리 그대로 사용
+    // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
+    const sql = `
+    SELECT q.qId, u.uName, u.uId, u.userImgPath, q.title, q.content, q.viewCount, q.likeCount, q.createdAt, q.updatedAt, COALESCE(count(a.aId), 0) as answerCount
+      FROM question q
+      LEFT JOIN answer a ON q.qId = a.qId
+      LEFT JOIN user u ON q.uId = u.uId
+      GROUP BY q.qId
+      ORDER BY ${sortField} ${sortOrder} 
+      LIMIT ${offset}, ${pageSize};`;
+
+    const [paginatedQuestion, metadata] = await sequelize.query(sql);
 
     // 날짜 데이터 포맷 변경
-    const create = [];
-
-    for (q of paginatedQuestions) {
-      create.push(moment(q.createdAt).format('YYYY-MM-DD'));
+    const questionCreateAt = [];
+    for (q of paginatedQuestion) {
+      questionCreateAt.push(moment(q.createdAt).format('YYYY-MM-DD'));
     }
 
     if (isLogin) {
@@ -39,23 +54,33 @@ exports.getQuestions = async (req, res) => {
       const user = await User.findOne({
         where: { uId },
       });
-
+      console.log(user);
       res.status(200).render('listMain', {
         type: 'qna',
-        data: paginatedQuestions,
-        pageCount: pageCount,
-        cDate: create,
+        questionData: paginatedQuestion, // question 데이터(20개씩)
+        questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+        pageCount: questionPageCount, // 총 몇페이지인지
+        success: true,
+        msg: 'QnA 호출 처리 완료',
+        // data: paginatedQuestions,
+        // pageCount: pageCount,
+        // cDate: create,
         isLogin,
-        userData: user,
+        currentLoginUser: uId,
+        userData: {
+          userImgPath: req.session.userImgPath,
+        },
       });
     } else {
       console.log('로그인X');
 
       res.render('listMain', {
         type: 'qna',
-        data: paginatedQuestions,
-        pageCount: pageCount,
-        cDate: create,
+        questionData: paginatedQuestion, // question 데이터(20개씩)
+        questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+        pageCount: questionPageCount, // 총 몇페이지인지
+        success: true,
+        msg: 'QnA 호출 처리 완료',
         isLogin,
       });
     }
@@ -128,7 +153,7 @@ exports.getQuestionsMain = async (req, res) => {
 };
 
 //=== 질문 목록 가져오기(페이지별) ===
-// /question/list/:page&:pageSize
+// /question/list/:page&:pageSize&:sortField&:sortOrder
 exports.paginateQuestion = async (req, res) => {
   // 세션 확인
   let isLogin = req.session.user ? true : false;
@@ -136,50 +161,48 @@ exports.paginateQuestion = async (req, res) => {
   try {
     let page = parseInt(req.params.page) || 1;
     let pageSize = parseInt(req.params.pageSize) || 20;
+    let offset = (page - 1) * pageSize;
+
+    let sortField = req.params.sortField || 'createdAt';
+    let sortOrder = req.params.sortOrder || 'desc';
+
+    // params 검사
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
+      res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
+      return;
+    }
+    if (!sortOrder || !['desc', 'asc'].includes(sortOrder)) {
+      res.status(400).json({ error: '올바른 정렬 순서를 지정하세요.' });
+      return;
+    }
 
     const questionTotalCount = await Question.count();
     const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
-    // 페이지별 Question 데이터 조회
-    const paginatedQuestion = await Question.findAll({
-      order: [['createdAt', 'DESC']], // 정렬 기준
-      limit: pageSize,
-      offset: (page - 1) * pageSize,
-    });
+    // 시퀄라이즈에 SQL 쿼리 그대로 사용
+    // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
+    const sql = `
+    SELECT q.qId, u.uName, u.uId, u.userImgPath, q.title, q.content, q.viewCount, q.likeCount, q.createdAt, q.updatedAt, COALESCE(count(a.aId), 0) as answerCount
+      FROM question q
+      LEFT JOIN answer a ON q.qId = a.qId
+      LEFT JOIN user u ON q.uId = u.uId
+      GROUP BY q.qId
+      ORDER BY ${sortField} ${sortOrder} 
+      LIMIT ${offset}, ${pageSize};`;
 
-    // Question createdAt 포맷 변경 후 배열에 저장
+    const [paginatedQuestion, metadata] = await sequelize.query(sql);
+
+    // 날짜 데이터 포맷 변경
     const questionCreateAt = [];
     for (q of paginatedQuestion) {
-      questionCreateAt.push(moment(q.dataValues.createdAt).format('YYYY-MM-DD'));
-    }
-
-    // Question uNname 배열에 저장
-    const questionUserName = [];
-    for (q of paginatedQuestion) {
-      // User 모델로 uid가지고 uName 가져오기
-      const user = await User.findByPk(q.uId);
-      questionUserName.push(user.uName);
-    }
-
-    // Question Comment 배열에 저장 후 총 갯수 계산
-    const questionCommentCount = [];
-    for (q of paginatedQuestion) {
-      // Comment 모델로 qid가지고 count 세기
-      const count = await Comment.count({
-        where: {
-          qId: q.qId,
-        },
-      });
-      questionCommentCount.push(count);
+      questionCreateAt.push(moment(q.createdAt).format('YYYY-MM-DD'));
     }
 
     // 데이터 응답
     res.send({
       questionData: paginatedQuestion, // question 데이터(20개씩)
       questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
-      questionUserName, // question 데이터에서 uname을 가져와서
-      questionCommentCount, // question 데이터에서 CommentCount을 가져와서
-      questionPageCount,
+      questionPageCount, // 총 몇페이지인지
       success: true,
       msg: '페이지별 QnA 질문 호출 처리 완료',
     });
@@ -317,26 +340,22 @@ exports.getCreateQuestion = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    if (!isLogin) {
-      // 로그인 안한상태에서 QnA 글쓰기 페이지를 요청하면 로그인 페이지로 리다이렉트
-      res.status(301).redirect('/login');
-    } else {
-      const uId = req.session.user;
+    const uId = req.session.user;
 
-      const user = await User.findOne({
-        where: { uId },
-      });
-      // 로그인 되어있을때 페이지 렌더링
-      res.status(200).render('post', {
-        isLogin,
-        currentUser: req.session.user,
-        userData: user,
+    const user = await User.findOne({
+      where: { uId },
+    });
 
-        data: {
-          type: 'qna',
-        },
-      });
-    }
+    // 로그인 되어있을때 페이지 렌더링
+    res.status(200).render('post', {
+      isLogin,
+      currentUser: req.session.user,
+      userData: user,
+
+      data: {
+        type: 'qna',
+      },
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send(err); // 상태 코드가 500이면 프론트의 catch에서 처리된다.

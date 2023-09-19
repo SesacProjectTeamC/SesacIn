@@ -1,70 +1,81 @@
-const {
-  Board,
-  Comment,
-  uLike,
-  User,
-  Sequelize,
-  sequelize,
-} = require('../models/index');
+const { Board, Comment, uLike, User, sequelize } = require('../models/index');
 const { Op } = require('sequelize');
 const moment = require('moment');
+const session = require('express-session');
 
 // 게시글 메인
 exports.getBoardMain = async (req, res) => {
+  // 세션 확인
   let isLogin = req.session.user ? true : false;
-  console.log(req.params);
-  let page = parseInt(req.params.page) || 1;
-  let pageSize = parseInt(req.params.pageSize) || 20;
+
   try {
-    // 전체 게시글 개수 계산
-    const totalPage = await Board.count();
+    let page = parseInt(req.params.page) || 1;
+    let pageSize = parseInt(req.params.pageSize) || 20;
+    let offset = (page - 1) * pageSize;
+    let sortField = req.params.sortField || 'createdAt';
+    let sortOrder = req.params.sortOrder || 'desc';
 
-    // 페이지 수 (올림처리)
-    const pageCount = parseInt(Math.ceil(totalPage / pageSize));
+    // params 검사
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'commentCount'].includes(sortField)) {
+      res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
+      return;
+    }
+    if (!sortOrder || !['desc', 'asc'].includes(sortOrder)) {
+      res.status(400).json({ error: '올바른 정렬 순서를 지정하세요.' });
+      return;
+    }
 
-    // 페이지에 해당하는 게시글 데이터 조회
-    // limit = 가져올 데이터 양
-    // offset = 가져올 첫 데이터 위치
-    const paginatedBoards = await Board.findAll({
-      //최신글 정렬
-      order: [['createdAt', 'DESC']],
-      limit: pageSize,
-      offset: (page - 1) * pageSize,
-    });
+    const boardTotalCount = await Board.count();
+    const boardPageCount = parseInt(Math.ceil(boardTotalCount / pageSize)); // 페이지 수 (올림처리)
+
+    // 시퀄라이즈에 SQL 쿼리 그대로 사용
+    // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
+    const sql = `
+    SELECT b.bId, u.uName, u.uId, u.userImgPath, b.title, b.content, b.viewCount, b.likeCount, b.createdAt, b.updatedAt, COALESCE(count(c.cId), 0) as commentCount 
+      FROM board b 
+      LEFT JOIN comment c ON b.bId = c.bId 
+      LEFT JOIN user u ON b.uId = u.uId 
+      GROUP BY b.bId 
+      ORDER BY ${sortField} ${sortOrder} 
+      LIMIT ${offset}, ${pageSize};`;
+
+    const [paginatedBoard, metadata] = await sequelize.query(sql);
 
     // 날짜 데이터 포맷 변경
-    const create = [];
-    for (b of paginatedBoards) {
-      create.push(moment(b.dataValues.createdAt).format('YYYY-MM-DD'));
+    const boardCreateAt = [];
+    for (b of paginatedBoard) {
+      boardCreateAt.push(moment(b.createdAt).format('YYYY-MM-DD'));
     }
+
+    // 로그인시 처리
     if (isLogin) {
       const uId = req.session.user;
 
-      const user = await User.findOne({
+      const userData = await User.findOne({
         where: { uId },
       });
 
       res.render('listMain', {
         type: 'board',
-        boards: paginatedBoards,
-        // paginatedCount: pageSize,
-        pageCount,
-        isLogin,
-        cDate: create,
-        userData: user,
-
+        boardData: paginatedBoard, // Board 데이터(20개씩)
+        boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+        pageCount: boardPageCount, // 총 몇페이지인지
+        success: true,
         msg: '페이지별 게시글 호출 처리 완료',
+        isLogin,
+        currentLoginUser: uId,
+        userData: { userImgPath: req.session.userImgPath },
       });
     } else {
+      // 비로그인시 처리
       res.render('listMain', {
         type: 'board',
-        boards: paginatedBoards,
-        // paginatedCount: pageSize,
-        pageCount,
-        isLogin,
-        cDate: create,
-
+        boardData: paginatedBoard, // Board 데이터(20개씩)
+        boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
+        pageCount: boardPageCount, // 총 몇페이지인지
+        success: true,
         msg: '페이지별 게시글 호출 처리 완료',
+        isLogin,
       });
     }
   } catch (error) {
@@ -83,25 +94,12 @@ exports.newBoardPage = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    // 로그인 여부 검사
-    if (!isLogin) {
-      // 백엔드에서 처리하는 경우 (로그인 안한상태에서 글쓰기 페이지를 요청하면 로그인 페이지로 리다이렉트)
-      res.status(301).redirect('/login');
-
-      // 프론트엔드에서 처리하는 경우
-      // res.status(401).send({
-      //   success: false,
-      //   isLogin,
-      //   msg: "로그인 되어있지 않습니다.",
-      // });
-      return;
-    }
-
     const uId = req.session.user;
 
     const user = await User.findOne({
       where: { uId },
     });
+
     res.status(200).render('post', {
       success: true,
       isLogin,
@@ -182,6 +180,7 @@ exports.detailBoard = async (req, res) => {
           uId: req.session.user, // 로그인 유저
         },
       });
+
       res.status(200).render('boardDetailTest', {
         success: true,
         isLogin,
@@ -193,6 +192,9 @@ exports.detailBoard = async (req, res) => {
         cDate: create,
         commentData: allComment,
         bResult: resultLike, // 좋아요 히스토리 결과 (T/F)
+        userData: {
+          userImgPath: req.session.userImgPath,
+        },
       });
     } else {
       res.status(200).render('boardDetailTest', {
@@ -229,10 +231,7 @@ exports.viewBoard = async (req, res) => {
     const eachBoard = await getBoard(bId);
 
     // 조회수 업데이트 +1
-    await Board.update(
-      { viewCount: eachBoard.viewCount + 1 },
-      { where: { bId } }
-    );
+    await Board.update({ viewCount: eachBoard.viewCount + 1 }, { where: { bId } });
     res.status(200).send({ boardData: eachBoard });
   } catch (error) {
     console.error(error);
@@ -275,10 +274,7 @@ exports.likeBoard = async (req, res) => {
       });
 
       // (2) 자유게시글 likeCount +1 업데이트
-      await Board.update(
-        { likeCount: eachBoard.likeCount + 1 },
-        { where: { bId } }
-      );
+      await Board.update({ likeCount: eachBoard.likeCount + 1 }, { where: { bId } });
     } else if (uLikeFind) {
       // 3-2. uLike findOne -> bId 있으면,
       // (1) 좋아요 히스토리 삭제 : uLike에 해당 bId 삭제함
@@ -287,10 +283,7 @@ exports.likeBoard = async (req, res) => {
       });
 
       // (2) 자유게시글 likeCount -1 업데이트
-      await Board.update(
-        { likeCount: eachBoard.likeCount - 1 },
-        { where: { bId } }
-      );
+      await Board.update({ likeCount: eachBoard.likeCount - 1 }, { where: { bId } });
     }
 
     res.status(200).send({
@@ -363,7 +356,7 @@ const getComment = async (bId) => {
 exports.paginateBoard = async (req, res) => {
   // 세션 확인
   let isLogin = req.session.user ? true : false;
-
+  console.log('@@@@@@@@@@@@@@@');
   try {
     let page = parseInt(req.params.page) || 1;
     let pageSize = parseInt(req.params.pageSize) || 20;
@@ -372,15 +365,8 @@ exports.paginateBoard = async (req, res) => {
     let sortField = req.params.sortField || 'createdAt';
     let sortOrder = req.params.sortOrder || 'desc';
 
-    console.log(req.params);
-
     // params 검사
-    if (
-      !sortField ||
-      !['createdAt', 'likeCount', 'viewCount', 'commentCount'].includes(
-        sortField
-      )
-    ) {
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'commentCount'].includes(sortField)) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -395,7 +381,7 @@ exports.paginateBoard = async (req, res) => {
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
     // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
     const sql = `
-    SELECT b.bId, u.uName, u.uid, u.userImgPath, b.title, b.content, b.viewCount, b.likeCount, b.createdAt, b.updatedAt, COALESCE(count(c.cId), 0) as commentCount 
+    SELECT b.bId, u.uName, u.uId, u.userImgPath, b.title, b.content, b.viewCount, b.likeCount, b.createdAt, b.updatedAt, COALESCE(count(c.cId), 0) as commentCount 
       FROM board b 
       LEFT JOIN comment c ON b.bId = c.bId 
       LEFT JOIN user u ON b.uId = u.uId 
@@ -415,7 +401,7 @@ exports.paginateBoard = async (req, res) => {
     res.send({
       boardData: paginatedBoard, // Board 데이터(20개씩)
       boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
-      boardPageCount, // 총 몇페이지인지
+      pageCount: boardPageCount, // 총 몇페이지인지
       success: true,
       msg: '페이지별 게시글 호출 처리 완료',
     });
@@ -587,8 +573,7 @@ exports.editBoard = async (req, res) => {
 };
 
 // 자유게시판 게시글 내용/제목 변경여부 확인 함수
-const hasChanged = (before, after) =>
-  before.title !== after.title || before.content !== after.content;
+const hasChanged = (before, after) => before.title !== after.title || before.content !== after.content;
 
 // 게시글 삭제 처리
 // /board/delete/:bId
@@ -750,10 +735,7 @@ exports.editComment = async (req, res) => {
     }
 
     // 댓글 수정
-    const isUpdatedComment = await Comment.update(
-      { content: content },
-      { where: { cId: cId } }
-    );
+    const isUpdatedComment = await Comment.update({ content: content }, { where: { cId: cId } });
 
     // 댓글이 달린 게시글의 총 댓글수 확인
     const commentCount = await getCommentCount(cId);

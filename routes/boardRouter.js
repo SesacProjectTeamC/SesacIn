@@ -5,6 +5,7 @@ const { needToLogin } = require('../util/middleware');
 
 // 자유게시판 메인 페이지 렌더링
 router.get('/main', Cboard.getBoardMain);
+router.get('/main/:page&:pageSize&:sortField&:sortOrder', Cboard.getBoardMain); // 파라미터에 따른 정렬기능 추가
 
 // 개별 게시글 페이지 렌더링
 // /board/detail/:bId
