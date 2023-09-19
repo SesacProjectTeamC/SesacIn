@@ -1,0 +1,66 @@
+<form action="/users/email" method="POST">
+  <div class="mb-3">
+    <label class="form-label" for="email">Email</label>
+    <input class="form-control" type="email" id="email" name="email" required />
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="verificationCode">인증 코드</label>
+    <input class="form-control" type="text" id="verificationCode" name="verificationCode" />
+  </div>
+  <input type="submit" value="메일보내기" id="sendEmailButton"/>
+</form>
+
+
+
+  </div>
+  <input type="submit" value="인증 하기" id="verifyCodeButton" />
+
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // 인증 코드 입력란을 초기에 숨김
+    $("#verificationCode").hide();
+
+    // 메일 보내기 버튼을 클릭할 때
+$("#sendEmailButton").click(function() {
+  const email = $("#email").val();
+
+  // 서버로 이메일을 보냄
+  $.post("/email", { email }, function(data) {
+    if (data.ok) {
+      alert(data.msg); // 성공 메시지를 표시
+      // 이메일 전송이 성공하면 인증 코드 입력란을 보이게 함
+      $("#verificationCode").show();
+    } else {
+      alert(data.msg); // 실패 메시지를 표시
+    }
+  });
+
+  // 기본 제출 동작을 막음
+  return false;
+});
+
+
+    // 인증하기 버튼을 클릭할 때
+$("#verifyCodeButton").click(function() {
+  const verificationCode = $("#verificationCode").val();
+  console.log(`$("#verificationCode").val()`)
+
+  // 서버로 인증 코드를 보냄
+  $.post("/verify", { verificationCode }, function(data) {
+    alert(data.msg); // 결과 메시지를 표시
+    if (data.ok) {
+          // 인증에 성공하면 메인 페이지로 이동
+          window.location.href = "/"; // 여기에 메인 페이지의 URL을 넣으세요
+        }
+  });
+
+  // 기본 제출 동작을 막음
+  return false;
+});
+
+  });
+</script>
+

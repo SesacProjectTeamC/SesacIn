@@ -21,12 +21,15 @@
 </head>
   <body>
     <header>
-      <img class="logo" src="/static/img/logo.png" ></img>
+      <div class="header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goTohome()">
+          <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
+          <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>
+      <img class="logo" onclick="goTohome()" src="/static/img/logo.png" ></img>
+      <button class="logout" onclick="userLogout()">로그아웃</button>
+    </div>
       <div>
-    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" class="bi-arrow-left" onclick="goTohome()">
-      <circle cx="10" cy="10" r="9.5" fill="transparent" class="hover-circle" />
-      <path fill="black" fill-rule="evenodd" transform="translate(2, 2)" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-    </svg>
     </div>
     </header>
     <main>
@@ -57,7 +60,7 @@
 
     <!-- 프로필 정보 -->
     <% if (userData) { %>
-      <div class="name"> 내 이름: <%= userData.uName %></div>
+      <h3 class="name"> 닉네임 : <%= userData.uName %></h3>
       <!-- <div class="campus"> 캠퍼스 : <%= userData.campus %></div> -->
       <% }  %>
   </form>

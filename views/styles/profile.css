@@ -1,5 +1,5 @@
 body {
-  font-size: large;
+  font-size: medium;
   margin: 0;
   padding: 0;
   height: 100vh;
@@ -10,11 +10,32 @@ body {
 header {
   width: 100%;
   text-align: start;
-  margin: 20px 30px;
+  padding: 40px 40px;
 
   cursor: pointer;
 }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
+.logo {
+  cursor: pointer;
+  margin-left: 55px;
+}
+
+.logout {
+  font-size: large;
+  font-weight: bold;
+}
+.logout:hover {
+  border: none;
+}
+
+.header button {
+  justify-content: end;
+}
 .bi-arrow-left:hover > .hover-circle {
   fill: var(--hover-color);
   cursor: pointer;
@@ -39,7 +60,7 @@ img.profile {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
-  font-size: 14px;
+  font-size: 11px;
   /* background-color: blue; */
   /* padding-top: 30px; */
 }
@@ -87,38 +108,22 @@ button {
   outline: none;
   text-align: center;
   display: block;
-  width: 60%;
+  /* width: 60%; */
 }
-
-/* 모바일 화면: 화면 너비가 480px 이하일 때 */
-@media (max-width: 480px) {
-  button {
-    padding: 8px 15px;
-    width: 80%; 
-  }
+.header button {
+  display: flex;
+  flex-direction: flex-end;
 }
-
-/* 태블릿 화면: 화면 너비가 481px ~ 768px일 때 */
-@media (min-width: 481px) and (max-width: 768px) {
-  button {
-    padding: 9px 18px;
-    width: 70%; 
-  }
-}
-
-
-
-
 button:hover,
 button:focus {
   border-bottom-color: var(--hover-color2);
-  width: fit-content;
 }
 
 .row {
   display: flex;
   justify-content: center;
   align-items: start;
+  font-size: large;
 }
 
 button:active,
@@ -138,10 +143,7 @@ button:focus {
   border: none;
 } */
 #content {
-  width: calc(
-    100% - 400px
-  ); /* 전체 너비에서 400px(양쪽 200px씩)을 뺀 크기로 설정 */
-  margin: 0 200px; /* 상하로는 0, 좌우로는 200px의 마진 설정 */
+  margin: 0 200px;
   display: flex;
   align-items: stretch;
   flex-direction: column;
@@ -178,3 +180,36 @@ button:focus {
   font-size: medium;
 }
 
+/* 모바일 화면: 화면 너비가 480px 이하일 때 */
+@media (max-width: 480px) {
+  button {
+    padding: 8px 15px;
+  }
+  .row {
+    display: flex;
+    direction: row;
+    font-size: small;
+  }
+  #content {
+    margin: 0 50px;
+    display: flex;
+    align-items: stretch;
+  }
+}
+
+/* 태블릿 화면: 화면 너비가 481px ~ 768px일 때 */
+@media (min-width: 481px) and (max-width: 768px) {
+  button {
+    padding: 9px 18px;
+  }
+  .row {
+    display: flex;
+    direction: row;
+    font-size: medium;
+  }
+  #content {
+    margin: 0 100px;
+    display: flex;
+    align-items: stretch;
+  }
+}

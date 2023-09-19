@@ -4,6 +4,8 @@ const Cprofile = require('../controller/Cprofile');
 const Cuser = require('../controller/Cuser');
 const { needToLogin } = require('../util/middleware');
 
+
+
 // 마이페이지 렌더링
 // /users/profile
 router.get('/profile', needToLogin, Cprofile.getUser);

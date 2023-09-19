@@ -35,13 +35,18 @@ const User = (Sequelize, DataTypes) => {
       userImg: {
         type: DataTypes.STRING(500),
         allowNull: true,
-        // defaultValue: 'NULL',
+        defaultValue: 'NULL',
       },
       userImgPath: {
         type: DataTypes.STRING(500),
         allowNull: true,
-        // defaultValue: 'NULL',
+        defaultValue: 'NULL',
       },
+      // emailVerify: {
+      //   type: DataTypes.BOOLEAN,
+      //   allowNull: true,
+      //   defaultValue: false,
+      // },
     },
     {
       tableName: 'user', // 실제 db 테이블명
