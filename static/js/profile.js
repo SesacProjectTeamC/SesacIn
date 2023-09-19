@@ -38,7 +38,7 @@ const liked = (data, contentDiv) => {
   for (let question of data.likeQuestionData) {
     contentDiv.innerHTML += [
       `<div class="question">
-            <a href="/question/${data.qId}">
+            <a href="/question/${question.qId}">
             <div class="likedList">
             <h2>${question.title}</h2>
             <p>${question.content}</p>
@@ -60,7 +60,7 @@ const liked = (data, contentDiv) => {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
-                <a href="/board/detail/${data.bId}">
+                <a href="/board/detail/${boards.bId}">
                 <div class="likedList">
                 <h2>${boards.title}</h2>
                 <h3>${boards.content}</h3>
@@ -86,7 +86,7 @@ const commented = (data, contentDiv) => {
     contentDiv.innerHTML += [
       `
       <div class="answer">
-      <a href="/question/${data.qId}">
+      <a href="/question/${answer.qId}">
         <h2>${answer.title}</h2>
         <h3>${answer.content}</h3>
         </div>
@@ -99,7 +99,7 @@ const commented = (data, contentDiv) => {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
-                <a href="/board/detail/${data.bId}">
+                <a href="/board/detail/${boards.bId}">
                 <div class="commentedList">
                 <h2>${boards.title}</h2>
                 <h3>${boards.content}</h3>
@@ -125,7 +125,7 @@ const qna = (data, contentDiv) => {
     contentDiv.innerHTML += [
       `
       <div class="postedQuestion">
-      <a href ="/question/${data.qId}">
+      <a href ="/question/${post.qId}">
         <div class="qnaList">
         <h2>${post.title}</h2>
         <h3>${post.content}</h3>
@@ -165,7 +165,7 @@ const free = (data, contentDiv) => {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
-                <a href="/board/detail/${data.bId}">
+                <a href="/board/detail/${boards.bId}">
                 <div class="freeList">
                 <h2>${boards.title}</h2>
                 <h3>${boards.content}</h3>

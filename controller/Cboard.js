@@ -451,12 +451,12 @@ exports.createBoard = async (req, res) => {
       content: req.body.content,
       uId: req.session.user,
     });
-    res.status(401).send({
-      success: false,
-      isLogin,
-      currentLoginUser: req.session.user,
-      msg: '로그인 되어있지 않습니다.',
-    });
+    // res.status(401).send({
+    //   success: false,
+    //   isLogin,
+    //   currentLoginUser: req.session.user,
+    //   msg: '로그인 되어있지 않습니다.',
+    // });
     const uId = req.session.user;
 
     const user = await User.findOne({
