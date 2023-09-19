@@ -12,13 +12,16 @@
   <body class="container">
     <%- include('./components/header', { isLogin: isLogin }) %>
     <div id="bWrapper">
-      <div id="bTitle"><%= boardData.title %></div>
+      <div id="bTitle">
+        <div class="ques_type"><%= data.qType %></div>
+        <%= data.title %>
+      </div>
       <div id="bUserC">
         <div style="display: flex; align-items: center">
           <div id="bUser">
-            <%console.log(boardData.title)%> <%if(boardData.userImgPath){%>
+            <%console.log(data)%> <%if(data.userImgPath){%>
             <img
-              src="/<%= boardData.userImgPath%>"
+              src="/<%= data.userImgPath%>"
               alt="프로필"
               width="36px"
               height="36px"
@@ -34,12 +37,12 @@
               style="border-radius: 999px"
               class="profileImg"
             />
-            <%}%> <%= boardData.uName %>
+            <%}%> <%= data.uName %>
           </div>
-          | <% if(!bResult) { %>
+          | <% if(!qResult) { %>
           <div
             class="viewImg likeImg"
-            onclick="bLikeHandler('<%= boardData.bId %>')"
+            onclick="bLikeHandler('<%= data.qId %>')"
           >
             <img
               src="/static/svg/heart.svg"
@@ -47,14 +50,14 @@
               width="24px"
               class="svg"
             />
-            <%= boardData.likeCount%>
+            <%= data.likeCount%>
           </div>
 
-          <% } else if(bResult) { %>
+          <% } else if(qResult) { %>
 
           <div
             class="viewImg likeImg"
-            onclick="bLikeHandler('<%= boardData.bId %>')"
+            onclick="bLikeHandler('<%= data.qId %>')"
           >
             <img
               src="/static/svg/heart-fill.svg"
@@ -62,7 +65,7 @@
               width="24px"
               class="svg"
             />
-            <%= boardData.likeCount %>
+            <%= data.likeCount %>
           </div>
 
           <% } %>
@@ -74,18 +77,25 @@
               width="24px"
               class="svg"
             />
-            <%= boardData.viewCount%>
+            <%= data.viewCount%>
           </div>
         </div>
 
-        <div id="bTime"><%= cDate %></div>
+        <div id="bTime"><%= 'cDate' %></div>
       </div>
 
-      <div class="bContent ck-content"><%- boardData.content %></div>
-      <%if(isLogin && boardData.uId === userData.uId){%>
+      <div class="bContent ck-content"><%- data.content %></div>
+
+      <div class="answerContainer">
+        <div>당신의 답변을 알려주세요 !</div>
+        <hr />
+      </div>
+
+      <button type="button" class="btn btn-primary answerBtn">답변하기</button>
+      <%if(isLogin && data.uId === userData.uId){%>
       <div style="display: flex; justify-content: flex-end">
         <a
-          href="/board/edit/<%= boardData.bId %>"
+          href="/board/edit/<%= data.qId %>"
           style="cursor: pointer; margin-right: 10px"
         >
           <div style="color: darkgray; font-size: 18px; font-weight: 300">
@@ -100,7 +110,7 @@
             font-weight: 300;
             cursor: pointer;
           "
-          onclick="openModal('정말 삭제하시겠어요?', 'deletePost(<%= boardData.bId %>)');"
+          onclick="openModal('정말 삭제하시겠어요?', 'deletePost(<%= data.qId %>)');"
         >
           삭제하기
         </div>
@@ -139,7 +149,7 @@
         <button
           type="button"
           class="btn btn-primary"
-          onclick="addComment('<%= boardData.bId %>')"
+          onclick="addComment('<%= data.qId %>')"
         >
           작성하기
         </button>
@@ -192,14 +202,14 @@
         >
           <div
             style="cursor: pointer; margin-right: 10px"
-            onclick="fixComment('<%= commentData[i].cId %>', '<%= boardData.bId %>')"
+            onclick="fixComment('<%= commentData[i].cId %>', '<%= data.qId %>')"
           >
             수정
           </div>
 
           <div
             style="cursor: pointer"
-            onclick="openModal('정말 삭제하시겠어요?', 'deleteComment(<%= commentData[i].cId %>, <%= boardData.bId %>)');"
+            onclick="openModal('정말 삭제하시겠어요?', 'deleteComment(<%= commentData[i].cId %>, <%= data.qId %>)');"
           >
             삭제
           </div>
@@ -245,14 +255,14 @@
   <script>
     //=== 세화 ===
     // 좋아요 기능
-    const bLikeHandler = (bId) => {
+    const bLikeHandler = (qId) => {
       axios({
         method: 'PATCH',
-        url: `/board/detail/like/${bId}`,
+        url: `/board/detail/like/${qId}`,
       })
         .then((res) => {
           if (res) {
-            document.location.href = `/board/detail/${bId}`;
+            document.location.href = `/board/detail/${qId}`;
           }
         })
         .catch((err) => {
