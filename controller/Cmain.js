@@ -27,7 +27,7 @@ exports.getMainPage = async (req, res) => {
     // 데이터 조회
     // 1. 질문
     const questionSql = `
-    SELECT q.qId, u.uName, u.uId, u.userImgPath, q.title, q.content, q.viewCount, q.likeCount, q.createdAt, q.updatedAt, COALESCE(count(a.aId), 0) as answerCount
+    SELECT q.qId, u.uName, u.uId, u.userImgPath, q.title, q.content, q.viewCount, q.qType, q.likeCount, q.createdAt, q.updatedAt, COALESCE(count(a.aId), 0) as answerCount
       FROM question q
       LEFT JOIN answer a ON q.qId = a.qId
       LEFT JOIN user u ON q.uId = u.uId
