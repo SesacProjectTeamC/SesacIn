@@ -12,7 +12,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
     />
-    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
   </head>
@@ -50,8 +50,7 @@
           <%for(let i = 0; i < questionData.length; i++){%>
           <div class="swiper-slide">
             <%-include('./components/questionBoardCard', { data:
-            questionData[i], cDate: questionCreateAt[i], uName:
-            questionUserName[i], commentCount: questionCommentCount[i] })%>
+            questionData[i], cDate: questionCreateAt[i] })%>
           </div>
           <%}%>
         </div>
@@ -84,8 +83,7 @@
           <%for(let i = 0; i < boardData.length; i++){%>
           <div class="swiper-slide">
             <%-include('./components/freeBoardCard', { data: boardData[i],
-            cDate: boardCreateAt[i], uName: boardUserName[i], commentCount:
-            boardCommentCount[i] })%>
+            cDate: boardCreateAt[i] })%>
           </div>
           <%}%>
         </div>
