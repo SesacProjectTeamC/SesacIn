@@ -1,11 +1,4 @@
-const {
-  Question,
-  Answer,
-  Comment,
-  uLike,
-  User,
-  sequelize,
-} = require('../models');
+const { Question, Answer, Comment, uLike, User, sequelize } = require('../models');
 const moment = require('moment');
 
 //=== 메인페이지,질문 목록 가져오기 ===
@@ -23,12 +16,7 @@ exports.getQuestions = async (req, res) => {
     let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (
-      !sortField ||
-      !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(
-        sortField
-      )
-    ) {
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -38,9 +26,7 @@ exports.getQuestions = async (req, res) => {
     }
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(
-      Math.ceil(questionTotalCount / pageSize)
-    ); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
     // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
@@ -181,12 +167,7 @@ exports.paginateQuestion = async (req, res) => {
     let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (
-      !sortField ||
-      !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(
-        sortField
-      )
-    ) {
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -196,9 +177,7 @@ exports.paginateQuestion = async (req, res) => {
     }
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(
-      Math.ceil(questionTotalCount / pageSize)
-    ); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
     // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
@@ -584,10 +563,7 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 +1
-        await Question.update(
-          { likeCount: getQuestion.likeCount + 1 },
-          { where: { qId } }
-        );
+        await Question.update({ likeCount: getQuestion.likeCount + 1 }, { where: { qId } });
 
         console.log('성공 !!');
 
@@ -600,10 +576,7 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 -1
-        await Question.update(
-          { likeCount: getQuestion.likeCount - 1 },
-          { where: { qId } }
-        );
+        await Question.update({ likeCount: getQuestion.likeCount - 1 }, { where: { qId } });
 
         res.send({ data: getQuestion, qResult: false });
       }
