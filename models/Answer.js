@@ -1,5 +1,5 @@
 // 비속어 필터링 모듈 가져오기
-const { filterBadWords, isBadWords } = require('../util/badWordsFilter');
+const { filterBadWords, isBadWords } = require('../middlewares/badWordsFilter/badWordsFilter');
 
 // Answer 모델 정의
 const Answer = (Sequelize, DataTypes) => {

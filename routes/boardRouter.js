@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
+// 컨트롤러
 const Cboard = require('../controller/Cboard');
-const { needToLogin } = require('../util/middleware');
+
+// 로그인 검사 미들웨어
+const { needToLogin } = require('../middlewares/needToLogin');
 
 // 자유게시판 메인 페이지 렌더링
 router.get('/main', Cboard.getBoardMain);

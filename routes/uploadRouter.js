@@ -1,9 +1,15 @@
 const express = require('express');
 const router = express.Router();
+
+// Multer 설정 가져오기
 const multer = require('multer');
-const { upload, editorUploader } = require('../multerConfig'); // Multer 설정 가져오기
-const Cupload = require('../controller/Cupload'); // 업로드 컨트롤러 가져오기
-const { needToLogin } = require('../util/middleware');
+const { upload, editorUploader } = require('../middlewares/multer/multerConfig');
+
+// 업로드 컨트롤러 가져오기
+const Cupload = require('../controller/Cupload');
+
+// 로그인 검사 미들웨어
+const { needToLogin } = require('../middlewares/needToLogin');
 
 // 사용자 프로필 이미지 업로드 처리 라우터
 // /upload/image/user
@@ -13,7 +19,7 @@ router.post('/image/user', needToLogin, upload.single('userImgFile'), Cupload.up
 // /upload/editor/file
 router.post('/editor/file', needToLogin, editorUploader.single('file'), Cupload.uploadEditImageFile);
 
-// 에러 처리 미들웨어 (Multer에서 발생한 오류 처리)
+// Multer에서 발생한 오류 처리 미들웨어
 router.use((err, req, res, next) => {
   console.log(err.code);
   if (err instanceof multer.MulterError) {

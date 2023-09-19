@@ -1,11 +1,10 @@
-// 'use strict';
-
 // 시퀄라이즈 모듈 호출
 const Sequelize = require('sequelize');
 
 // config.json 파일을 불러와서 환경설정
-const env = 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const { DB_ENV } = process.env;
+// DB 연결 정보를 제공
+const config = require(__dirname + '/../config/config.json')[DB_ENV];
 const db = {};
 
 // config를 이용해서 시퀄라이즈 객체 설정 및 생성

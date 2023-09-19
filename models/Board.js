@@ -1,5 +1,5 @@
 // 비속어 필터링 모듈 가져오기
-const { filterBadWords, isBadWords } = require('../util/badWordsFilter');
+const { filterBadWords, isBadWords } = require('../middlewares/badWordsFilter/badWordsFilter');
 
 const Board = (Sequelize, DataTypes) => {
   // Sequelize: models/index.js에서 sequelize

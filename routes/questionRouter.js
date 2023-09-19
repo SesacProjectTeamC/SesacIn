@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
+
+// 컨트롤러
 const Cquestion = require('../controller/Cquestion');
 const Canswer = require('../controller/Canswer');
 const Ccomment = require('../controller/Ccomment');
-const { needToLogin } = require('../util/middleware'); // 꼭 로그인 해야하는 API에만 적용하면 됨
+
+// 로그인 검사 미들웨어
+const { needToLogin } = require('../middlewares/needToLogin');
 
 // QnA 메인 페이지 렌더링
 router.get('/main', Cquestion.getQuestions);
