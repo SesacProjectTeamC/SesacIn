@@ -142,17 +142,22 @@ exports.detailBoard = async (req, res) => {
     }
 
     // 게시글 데이터 조회
-    const eachBoard = await getBoard(bId);
+    const boardSql = `SELECT b.*, u.uId, u.uName, u.userImgPath
+    FROM board b
+    INNER JOIN user u ON b.uId = u.uId
+    WHERE b.bId = ${bId};`;
+    const [eachBoard] = await sequelize.query(boardSql);
+
     // 게시글의 날짜 데이터 포맷 변경
     const create = moment(eachBoard.createdAt).format('YYYY-MM-DD');
 
     // 댓글 데이터 조회
-    const sql = `SELECT c.*, u.uId, u.uName, u.userImgPath
+    const commentSql = `SELECT c.*, u.uId, u.uName, u.userImgPath
     FROM comment c
-    INNER JOIN user u ON c.uid = u.uid
+    INNER JOIN user u ON c.uId = u.uId
     WHERE c.bId = ${bId}
     ORDER BY c.createdAt desc;`;
-    const [allComment, metadata] = await sequelize.query(sql);
+    const [allComment] = await sequelize.query(commentSql);
 
     // 댓글의 날짜 데이터 포맷 변경
     const commentCreateAt = [];
