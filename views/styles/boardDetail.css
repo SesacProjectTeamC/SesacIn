@@ -89,3 +89,7 @@ textarea {
 .userC {
   font-size: 21px;
 }
+.cancelBtn {
+  cursor: pointer;
+  margin-right: 10px;
+}

@@ -64,3 +64,63 @@ function addComment(bId) {
       console.log(error);
     });
 }
+
+const fixComment = (cId, bId) => {
+  document.querySelector(`#fixCommentC${cId}`).style.display = 'none';
+  const commentContent = document.querySelector(`#comment${cId}`);
+  const beforeC = commentContent.innerHTML;
+  commentContent.innerHTML = `<textarea autofocus id="fixC" class="form-control aria-label="With textarea" style="height: 80px"">${beforeC.trim()}</textarea>`;
+  commentContent.innerHTML += [
+    '<div style="display: flex; justify-content: flex-end; color: darkgray; margin-top: 10px">',
+    `<div class="cancelBtn" onclick="fixCancel('${beforeC.trim()}', '${cId}');">취소</div>`,
+    `<div style="cursor: pointer" onclick="fixFinish('${cId}', '${bId}');">완료</div>`,
+    '</div>',
+  ].join('');
+};
+
+const fixCancel = (content, cId) => {
+  const commentContent = document.querySelector(`#comment${cId}`);
+  commentContent.innerHTML = content;
+  document.querySelector(`#fixCommentC${cId}`).style.display = 'flex';
+};
+
+const fixFinish = (cId, bId) => {
+  const commentContent = document.querySelector('#fixC').innerHTML;
+  axios({
+    method: 'patch',
+    url: `/board/comment/edit/${cId}`,
+    data: {
+      content: commentContent,
+    },
+  })
+    .then((response) => {
+      document.location.href = `/board/detail/${bId}`;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+function deleteComment(cId, bId) {
+  // 댓글 삭제 요청을 서버로 보내고, 성공하면 화면에서 삭제
+  axios({
+    method: 'delete',
+    url: `/board/comment/delete/${cId}`,
+  })
+    .then((response) => {
+      console.log(response.data);
+      document.location.href = `/board/detail/${bId}`;
+      // refreshComments(); // 댓글 목록 업데이트
+    })
+    .catch((error) => {
+      console.error(error.message);
+      console.error(error.response.data.msg);
+    });
+}
+
+const openModal = (msg, func) => {
+  const confirmBtn = document.querySelector('#deletebtn');
+  document.querySelector('#cautionText').innerHTML = msg;
+  confirmBtn.setAttribute('onClick', func);
+  $('#myModal').modal('show');
+};
