@@ -90,7 +90,6 @@
     }
   </style>
 </head>
-
 <div class="cHeader">
   <div class="left-content">
     <a href="/">
@@ -98,8 +97,8 @@
     </a>
   </div>
   <div class="right-content">
+    <a onclick="moveToMakePost()" style="margin-right: 15px; cursor: pointer">작성하기</a>
     <% if (isLogin === true) { %>
-    <a onclick="moveToMakePost()" style="margin-right: 5px; cursor: pointer">새 글 쓰기</a>
     <div class="dropdown">
       <button
         class="btn btn-light dropdown-toggle btnHeader"
