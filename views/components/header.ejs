@@ -3,10 +3,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
 
   <!-- <link rel="stylesheet" href="views/styles/globalstyle.css" /> -->
@@ -43,6 +40,7 @@
     .dropdownImg {
       width: 2rem;
       height: 2rem;
+      border-radius: 50%;
     }
     .dropdown {
       margin-left: 1.5rem;
@@ -101,9 +99,7 @@
   </div>
   <div class="right-content">
     <% if (isLogin === true) { %>
-    <a onclick="moveToMakePost()" style="margin-right: 5px; cursor: pointer"
-      >새 글 쓰기</a
-    >
+    <a onclick="moveToMakePost()" style="margin-right: 5px; cursor: pointer">새 글 쓰기</a>
     <div class="dropdown">
       <button
         class="btn btn-light dropdown-toggle btnHeader"
@@ -114,11 +110,7 @@
       >
         <% if (userData && userData.userImgPath) { %>
         <!-- 프로필 이미지가 있을 때 -->
-        <img
-          src="/<%= userData.userImgPath %>"
-          alt="프로필 이미지"
-          class="dropdownImg"
-        />
+        <img src="/<%= userData.userImgPath %>" alt="프로필 이미지" class="dropdownImg" />
         <% } else { %>
         <!-- 프로필 이미지가 없을 때 기본 이미지 -->
         <img src="/static/img/user.png" alt="사용자 메뉴" class="dropdownImg" />
