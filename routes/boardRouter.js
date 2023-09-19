@@ -45,7 +45,7 @@ router.get('/list/:page&:pageSize&:sortField&:sortOrder', Cboard.paginateBoard);
 
 // 게시글 댓글 생성 처리
 // /board/comment/create/:bId
-router.post('/comment/create/:bId', Cboard.createComment);
+router.post('/comment/create/:bId', needToLogin, Cboard.createComment);
 
 // 게시글 댓글 수정 처리
 // /board/comment/edit/:cId
