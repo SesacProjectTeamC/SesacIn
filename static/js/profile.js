@@ -35,85 +35,83 @@ function change(buttonType) {
 // 좋아요 선택한 글
 const liked = (data, contentDiv) => {
   contentDiv.innerHTML = "";
-  for (let question of data.likeQuestionData) {
-    contentDiv.innerHTML += [
-      `<div class="question">
-            <a href="/question/${question.qId}">
-            <div class="likedList">
-            <h2>${question.title}</h2>
-            <p>${question.content}</p>
-            <div class="like">
-                <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-                <p>${question.likeCount}</p>
-                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
-                <p>${question.viewCount}</p>
-            </div>
-            </div>
-            </div>
-            <hr>
-            `,
-    ];
-    console.log("liked");
-  }
-
-  for (let boards of data.boardsData) {
+  for (let i = 0; i < data.postData.length; i++) {
     contentDiv.innerHTML += [
       `
-                <div class="freeBoards">
-                <a href="/board/detail/${boards.bId}">
-                <div class="likedList">
-                <h2>${boards.title}</h2>
-                <h3>${boards.content}</h3>
-                <div class="like">
-                <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-                <p>${boards.likeCount}</p>
-                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
-                <p>${boards.viewCount}</p>
-                </div>
-                </div>
-                </div>
-                <hr>
-                `,
-    ];
-    console.log("liked");
-  }
-};
-//댓글 단 글
-const commented = (data, contentDiv) => {
-  console.log(data);
-  contentDiv.innerHTML = "";
-  for (let answer of data.likeAnswerData) {
-    contentDiv.innerHTML += [
-      `
-      <div class="answer">
-      <a href="/question/${answer.qId}">
-        <h2>${answer.title}</h2>
-        <h3>${answer.content}</h3>
+      <div class="postedQuestion">
+      <a href ="/question/${data.postData[i].qId}">
+        <div class="qnaList">
+        <h2>${data.postData[i].title}</h2>
+        <h3>${data.postData[i].content}</h3>
+        <div class="like">
+        <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
+        <p>${data.postData[i].likeCount}</p>
+        <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
+        <p>${data.postAnswerCount[i]}</p>
+        </div>
+        </div>
         </div>
         <hr>
         `,
     ];
-    console.log("commented");
+    console.log("qna");
   }
-  for (let boards of data.boardsData) {
+
+  for (let i = 0; data.boardsData.length; i++) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
-                <a href="/board/detail/${boards.bId}">
-                <div class="commentedList">
-                <h2>${boards.title}</h2>
-                <h3>${boards.content}</h3>
+                <a href="/board/detail/${data.boardsData[i].bId}">
+                <div class="freeList">
+                <h2>${data.boardsData[i].title}</h2>
+                <h3>${data.boardsData[i].content}</h3>
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-                <p>${boards.likeCount}</p>
-                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
-                <p>${boards.viewCount}</p>
+                <p>${data.boardsData[i].likeCount}</p>
+                <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
+                <p>${data.commentsCount[i]}</p>
                 </div>
                 </div>
                 </div>
                 <hr>
                 `,
     ];
+    console.log("free");
+  }
+};
+//댓글 단 글 (전체 qna랑 free 둘다 가져옴)
+const commented = (data, contentDiv) => {
+  console.log(data);
+  contentDiv.innerHTML = "";
+
+  for (let comment of data.commentData) {
+    if (!comment.qId) {
+      //free
+      contentDiv.innerHTML += [
+        `
+                    <div class="question">
+                    <a href="/board/detail/${comment.bId}">
+                    <div class="commentedList">
+                    <h3>${comment.bId}</h3>
+                    </div>
+                    </div>
+                    <hr>
+                    `,
+      ];
+    } else {
+      //qna
+      contentDiv.innerHTML += [
+        `
+                    <div class="freeBoards">
+                    <a href="/question/${comment.qId}">
+                    <div class="commentedList">
+                    <h3>${comment.qId ? comment.qId : comment.bId}</h3>
+                    </div>
+                    </div>
+                    <hr>
+                    `,
+      ];
+    }
     console.log("commented");
   }
 };
@@ -121,19 +119,38 @@ const commented = (data, contentDiv) => {
 // qna 게시글
 const qna = (data, contentDiv) => {
   contentDiv.innerHTML = "";
-  for (let post of data.postData) {
+  // for (let post of data.postData) {
+  //   contentDiv.innerHTML += [
+  //     `
+  //     <div class="postedQuestion">
+  //     <a href ="/question/${post.qId}">
+  //       <div class="qnaList">
+  //       <h2>${post.title}</h2>
+  //       <h3>${post.content}</h3>
+  //       <div class="like">
+  //       <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
+  //       <p>${post.likeCount}</p>
+  //       <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
+  //       <p>${postAnswerCount}</p>
+  //       </div>
+  //       </div>
+  //       </div>
+  //       <hr>
+  //       `,
+  //   ];
+  for (let i = 0; i < data.postData.length; i++) {
     contentDiv.innerHTML += [
       `
       <div class="postedQuestion">
-      <a href ="/question/${post.qId}">
+      <a href ="/question/${data.postData[i].qId}">
         <div class="qnaList">
-        <h2>${post.title}</h2>
-        <h3>${post.content}</h3>
+        <h2>${data.postData[i].title}</h2>
+        <h3>${data.postData[i].content}</h3>
         <div class="like">
         <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-        <p>${post.likeCount}</p>
-        <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
-        <p>${post.viewCount}</p>
+        <p>${data.postData[i].likeCount}</p>
+        <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
+        <p>${data.postAnswerCount[i]}</p>
         </div>
         </div>
         </div>
@@ -161,19 +178,19 @@ const qna = (data, contentDiv) => {
 // 자유 게시판
 const free = (data, contentDiv) => {
   contentDiv.innerHTML = "";
-  for (let boards of data.boardsData) {
+  for (let i = 0; data.boardsData.length; i++) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
-                <a href="/board/detail/${boards.bId}">
+                <a href="/board/detail/${data.boardsData[i].bId}">
                 <div class="freeList">
-                <h2>${boards.title}</h2>
-                <h3>${boards.content}</h3>
+                <h2>${data.boardsData[i].title}</h2>
+                <h3>${data.boardsData[i].content}</h3>
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-                <p>${boards.likeCount}</p>
-                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
-                <p>${boards.viewCount}</p>
+                <p>${data.boardsData[i].likeCount}</p>
+                <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
+                <p>${data.commentsCount[i]}</p>
                 </div>
                 </div>
                 </div>
@@ -258,4 +275,19 @@ async function userProfileImgUpload() {
 
 function goTohome() {
   window.location.href = "/";
+}
+
+function userLogout() {
+  axios({
+    method: "post",
+    url: "/logout",
+  })
+    .then((response) => {
+      window.location.href = "/";
+    })
+    .catch((error) => {
+      // 에러발생시 프론트에서 처리
+      console.log(error.response.data);
+      window.location.href = "/404";
+    });
 }
