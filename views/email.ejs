@@ -28,7 +28,7 @@ $("#sendEmailButton").click(function() {
   const email = $("#email").val();
 
   // 서버로 이메일을 보냄
-  $.post("/users/email", { email }, function(data) {
+  $.post("/email", { email }, function(data) {
     if (data.ok) {
       alert(data.msg); // 성공 메시지를 표시
       // 이메일 전송이 성공하면 인증 코드 입력란을 보이게 함
@@ -49,8 +49,12 @@ $("#verifyCodeButton").click(function() {
   console.log(`$("#verificationCode").val()`)
 
   // 서버로 인증 코드를 보냄
-  $.post("/users/verify", { verificationCode }, function(data) {
+  $.post("/verify", { verificationCode }, function(data) {
     alert(data.msg); // 결과 메시지를 표시
+    if (data.ok) {
+          // 인증에 성공하면 메인 페이지로 이동
+          window.location.href = "/"; // 여기에 메인 페이지의 URL을 넣으세요
+        }
   });
 
   // 기본 제출 동작을 막음
