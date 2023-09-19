@@ -32,18 +32,36 @@
 
 .carousel-c2-img {
   height: 380px;
+  width: 100%;
   margin: auto;
+  display: flex;
+  justify-content: center;
 }
 
 .carousel-c3-img {
   height: 380px;
   margin: auto;
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 .carousel-c3-codingon {
   margin: auto;
   width: 300px;
+  height: 70px;
+
+  display: flex;
+  left: 200px;
+  top: 100px;
+  flex-direction: column;
+
   position: absolute;
+}
+
+.c3-title {
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
 }
 
 header {
