@@ -49,10 +49,10 @@
           </ul>
         </div>
       </div>
-
+      <%if(type !== 'board'){%>
       <div
         id="dpContainer"
-        style="display: none; margin-bottom: 15px; align-items: center"
+        style="display: flex; margin-bottom: 15px; align-items: center"
       >
         <div class="qcTitle">카테고리</div>
         <div class="dropdown">
@@ -75,6 +75,7 @@
           </ul>
         </div>
       </div>
+      <%}%>
     </div>
 
     <div class="editor"></div>
@@ -91,6 +92,7 @@
       >
         취소
       </button>
+      <%if(type === 'board'){%>
       <button
         type="button"
         class="btn btn-outline-success"
@@ -98,6 +100,15 @@
       >
         수정
       </button>
+      <%} else {%>
+      <button
+        type="button"
+        class="btn btn-outline-success"
+        onclick="editBoard('<%= data.qId%>')"
+      >
+        수정
+      </button>
+      <%}%>
     </div>
     <script src="/static/editor/ckeditor.js"></script>
   </body>
