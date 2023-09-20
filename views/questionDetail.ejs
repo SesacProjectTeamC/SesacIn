@@ -346,24 +346,66 @@
       </div>
       <%}%>
     </div>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="myModal"
+      tabindex="-1"
+      aria-labelledby="cautionModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cautionModalLabel">경고</h5>
+          </div>
+          <div class="modal-body">
+            <p id="cautionText"></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+              data-bs-dismiss="modal"
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="deletebtn"
+              data-dismiss="modal"
+              data-bs-dismiss="modal"
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
   <script>
-    //=== 세화 ===
+    // === 세화 ===
     // 좋아요 기능
     const bLikeHandler = (qId) => {
       axios({
         method: 'PATCH',
-        url: `/board/detail/like/${qId}`,
+        url: `/question/${qId}`,
       })
         .then((res) => {
           if (res) {
-            document.location.href = `/board/detail/${qId}`;
+            console.log(res);
+            document.location.href = `/question/${qId}`;
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.log(err.response.status);
           if (err.response.status === 401) {
-            document.location.href = '/';
+            openModal(err.response.data);
+          } else {
+            openModal('서버오류 발생');
           }
         });
     };

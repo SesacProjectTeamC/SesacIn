@@ -178,10 +178,7 @@ exports.likeAnswer = async (req, res) => {
       });
 
       // (2) 답변 likeCount 업데이트 +1
-      await Answer.update(
-        { likeCount: getAnswer.likeCount + 1 },
-        { where: { aId } }
-      );
+      await Answer.update({ likeCount: getAnswer.likeCount + 1 }, { where: { aId } });
     } else if (uLikeFind) {
       // 2) uLike findOne -> 있으면,
       // (1) 좋아요 -> uLike 해당 aId 삭제함
@@ -193,10 +190,7 @@ exports.likeAnswer = async (req, res) => {
       });
 
       // (2) 답변 likeCount 업데이트 -1
-      await Answer.update(
-        { likeCount: getAnswer.likeCount - 1 },
-        { where: { aId } }
-      );
+      await Answer.update({ likeCount: getAnswer.likeCount - 1 }, { where: { aId } });
     }
 
     const answers = await Answer.findAll({
@@ -227,6 +221,6 @@ exports.likeAnswer = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.status(500).send('Internet Server Error!!!');
   }
 };
