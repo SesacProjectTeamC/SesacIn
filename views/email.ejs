@@ -1,66 +1,184 @@
-<form action="/users/email" method="POST">
-  <div class="mb-3">
-    <label class="form-label" for="email">Email</label>
-    <input class="form-control" type="email" id="email" name="email" required />
-  </div>
-  <div class="mb-3">
-    <label class="form-label" for="verificationCode">인증 코드</label>
-    <input class="form-control" type="text" id="verificationCode" name="verificationCode" />
-  </div>
-  <input type="submit" value="메일보내기" id="sendEmailButton"/>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+    <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="views/componets/cdn.ejs" />
+    <link rel="stylesheet" href="views/styles/email.css" />
+    <link rel="stylesheet" href="views/styles/globalstyle.css" />
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
+  </head>
 
+  <body>
+    <header>
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="30"
+          height="30"
+          viewBox="0 0 20 20"
+          class="bi-arrow-left"
+          onclick="goBack()"
+        >
+          <circle
+            cx="10"
+            cy="10"
+            r="9.5"
+            fill="transparent"
+            class="hover-circle"
+          />
+          <path
+            fill="black"
+            fill-rule="evenodd"
+            transform="translate(2, 2)"
+            d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+          />
+        </svg>
+      </div>
+    </header>
+    <div class="content">
+      <img src="/static/img/logo.png" alt="logo" class="logo" />
+      <main>
+        <h2>이메일 인증하기</h2>
+        <form action="/users/email" method="POST">
+          <div class="mb-3 emailInput">
+            <label class="form-label" for="email">Email</label>
+            <input
+              class="form-control"
+              type="email"
+              id="email"
+              name="email"
+              required
+            />
+          </div>
+          <input type="submit" value="메일전송" id="sendEmailButton" />
 
-  </div>
-  <input type="submit" value="인증 하기" id="verifyCodeButton" />
+          <div class="mb-3 codeInput">
+            <label class="form-label" for="verificationCode" id="sencCodeBtn"
+              >인증코드</label
+            >
+            <input
+              class="form-control"
+              type="text"
+              id="verificationCode"
+              name="verificationCode"
+            />
+          </div>
+        </form>
+        <input type="submit" value="인증하기" id="verifyCodeButton" />
+        <!-- Modal -->
+        <div
+          class="modal fade"
+          id="cautionModal"
+          tabindex="-1"
+          aria-labelledby="cautionModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="cautionModalLabel">경고</h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p id="cautionText"></p>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
 
-</form>
+    <script>
+      function setModalTextAndShow(message) {
+        const modalText = document.getElementById('cautionText');
+        modalText.textContent = message;
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $(document).ready(function() {
-    // 인증 코드 입력란을 초기에 숨김
-    $("#verificationCode").hide();
+        // 모달 창 표시
+        $('#cautionModal').modal('show');
+      }
 
-    // 메일 보내기 버튼을 클릭할 때
-$("#sendEmailButton").click(function() {
-  const email = $("#email").val();
+      let loggedInUserEmail = '';
+      $(document).ready(function () {
+        // 인증 코드 입력란을 초기에 숨김
+        $('#verificationCode').hide();
+        $('#sencCodeBtn').hide();
+        $('#verifyCodeButton').hide();
 
-  // 서버로 이메일을 보냄
-  $.post("/email", { email }, function(data) {
-    if (data.ok) {
-      alert(data.msg); // 성공 메시지를 표시
-      // 이메일 전송이 성공하면 인증 코드 입력란을 보이게 함
-      $("#verificationCode").show();
-    } else {
-      alert(data.msg); // 실패 메시지를 표시
-    }
-  });
+        // 메일 보내기 버튼을 클릭할 때
+        $('#sendEmailButton').click(function () {
+          const email = $('#email').val();
 
-  // 기본 제출 동작을 막음
-  return false;
-});
+          // 서버로 이메일을 보냄
+          $.post('/email', { email }, function (data) {
+            if (data.ok) {
+              alert(data.msg); // 성공 메시지를 표시
+              // 이메일 전송이 성공하면 인증 코드 입력란을 보이게 함
+              $('#verificationCode').show();
+              $('#sencCodeBtn').show();
+              $('#verifyCodeButton').show();
+            } else {
+              if (email !== loggedInUserEmail) {
+                setModalTextAndShow(
+                  '이메일 정보가 올바르지 않습니다. 회원 정보 수정 후 다시 시도해주세요.'
+                );
+              } else {
+                setModalTextAndShow('오류가 발생했습니다. 다시 시도해주세요.');
+              }
+            }
+          });
 
+          // 기본 제출 동작을 막음
+          return false;
+        });
 
-    // 인증하기 버튼을 클릭할 때
-$("#verifyCodeButton").click(function() {
-  const verificationCode = $("#verificationCode").val();
-  console.log(`$("#verificationCode").val()`)
+        // 인증하기 버튼을 클릭할 때
+        $('#verifyCodeButton').click(function () {
+          const verificationCode = $('#verificationCode').val();
 
-  // 서버로 인증 코드를 보냄
-  $.post("/verify", { verificationCode }, function(data) {
-    alert(data.msg); // 결과 메시지를 표시
-    if (data.ok) {
-          // 인증에 성공하면 메인 페이지로 이동
-          window.location.href = "/"; // 여기에 메인 페이지의 URL을 넣으세요
-        }
-  });
+          // 서버로 인증 코드를 보냄
+          $.post('/verify', { verificationCode }, function (data) {
+            alert(data.msg); // 결과 메시지를 표시
+            if (data.ok) {
+              // 인증에 성공하면 메인 페이지로 이동
+              window.location.href = '/'; // 여기에 메인 페이지의 URL을 넣으세요
+            }
+          });
 
-  // 기본 제출 동작을 막음
-  return false;
-});
-
-  });
-</script>
-
+          // 기본 제출 동작을 막음
+          return false;
+        });
+      });
+      function goBack() {
+        window.history.back();
+      }
+    </script>
+  </body>
+</html>
