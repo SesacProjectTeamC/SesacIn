@@ -110,7 +110,7 @@ const commented = (data, contentDiv) => {
                     <div class="question">
                     <a href="/board/detail/${comment.bId}">
                     <div class="commentedList">
-                    <h3>${comment.bId}</h3>
+                    <h3>${comment.content}</h3>
                     </div>
                     </div>
                     <hr>
@@ -123,7 +123,7 @@ const commented = (data, contentDiv) => {
                     <div class="freeBoards">
                     <a href="/question/${comment.qId}">
                     <div class="commentedList">
-                    <h3>${comment.qId ? comment.qId : comment.bId}</h3>
+                    <he>${comment.content}</h3>
                     </div>
                     </div>
                     <hr>
