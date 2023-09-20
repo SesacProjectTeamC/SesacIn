@@ -114,7 +114,7 @@ button {
   display: flex;
   flex-direction: flex-end;
 }
-button:hover,
+
 button:focus {
   border-bottom-color: var(--hover-color2);
 }
@@ -143,10 +143,14 @@ button:focus {
   border: none;
 } */
 #content {
-  margin: 0 200px;
+  margin: 0px 200px;
   display: flex;
   align-items: stretch;
   flex-direction: column;
+  border: 5px solid rgb(192, 187, 187);
+  border-radius: 25px;
+  background-color: white;
+  display: none;
 }
 
 .freeBoards,
@@ -155,6 +159,8 @@ button:focus {
 .answer {
   display: flex;
   justify-content: flex-start;
+  margin-top: 30px;
+  margin-left: 30px;
 }
 
 .freeBoards a,
@@ -163,6 +169,7 @@ button:focus {
 .answer a {
   text-decoration: none;
   color: black;
+  translate: color 0.3s;
   /* background-color: aliceblue; */
 }
 

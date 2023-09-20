@@ -1,6 +1,7 @@
 function change(buttonType) {
   console.log(buttonType);
   const contentDiv = document.getElementById("content");
+  contentDiv.style.display = "flex";
   axios({
     method: "GET",
     url: `/users/profile/${buttonType}`,
@@ -8,7 +9,8 @@ function change(buttonType) {
     .then((response) => {
       console.log("백엔드로부터 전달받은 데이터", response);
       const data = response.data;
-      if (buttonType === "liked") {
+      console.log(data);
+     if (buttonType === "liked") {
         liked(data, contentDiv);
         return;
       } else if (buttonType === "commented") {
@@ -29,7 +31,7 @@ function change(buttonType) {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      cautionA.innerHTML = "작성하신 글이 없습니다.";
+      contentDiv.innerHTML = "작성하신 글이 없습니다.";
     });
 }
 // 좋아요 선택한 글
@@ -118,7 +120,7 @@ const commented = (data, contentDiv) => {
 
 // qna 게시글
 const qna = (data, contentDiv) => {
-  contentDiv.innerHTML = "";
+  // contentDiv.innerHTML = "";
   // for (let post of data.postData) {
   //   contentDiv.innerHTML += [
   //     `
