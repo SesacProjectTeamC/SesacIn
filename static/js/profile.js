@@ -1,6 +1,7 @@
 function change(buttonType) {
   console.log(buttonType);
   const contentDiv = document.getElementById("content");
+  const cautionDiv = document.getElementById("caution");
   axios({
     method: "GET",
     url: `/users/profile/${buttonType}`,
@@ -8,14 +9,12 @@ function change(buttonType) {
     .then((response) => {
       console.log("백엔드로부터 전달받은 데이터", response);
       const data = response.data;
+      console.log(data);
       if (buttonType === "liked") {
         liked(data, contentDiv);
         return;
       } else if (buttonType === "commented") {
         commented(data, contentDiv);
-        return;
-      } else if (buttonType === "answered") {
-        answered(data, contentDiv);
         return;
       } else if (buttonType === "qna") {
         qna(data, contentDiv);
@@ -24,24 +23,31 @@ function change(buttonType) {
         free(data, contentDiv);
         return;
       } else {
-        contentDiv.innerHTML = "선택된 내용이 없습니다.";
+        contentDiv.classList.add("hidden");
       }
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      cautionA.innerHTML = "작성하신 글이 없습니다.";
+      contentDiv.classList.add("hidden");
     });
 }
+
 // 좋아요 선택한 글
 const liked = (data, contentDiv) => {
   contentDiv.innerHTML = "";
+  const cautionDiv = document.getElementById("caution");
+
+  if (data.boardsData.length === 0 || data.postData.length === 0) {
+    cautionDiv.innerHTML = "🙏🏻 작성한 게시글이 없습니다.🙏🏻";
+    return;
+  }
   for (let i = 0; i < data.postData.length; i++) {
     contentDiv.innerHTML += [
       `
       <div class="postedQuestion">
       <a href ="/question/${data.postData[i].qId}">
         <div class="qnaList">
-        <h2>${data.postData[i].title}</h2>
+        <h3>${data.postData[i].title}</h3>
         <h3>${data.postData[i].content}</h3>
         <div class="like">
         <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
@@ -63,7 +69,7 @@ const liked = (data, contentDiv) => {
                 <div class="freeBoards">
                 <a href="/board/detail/${data.boardsData[i].bId}">
                 <div class="freeList">
-                <h2>${data.boardsData[i].title}</h2>
+                <h3>${data.boardsData[i].title}</h3>
                 <h3>${data.boardsData[i].content}</h3>
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
@@ -83,7 +89,12 @@ const liked = (data, contentDiv) => {
 const commented = (data, contentDiv) => {
   console.log(data);
   contentDiv.innerHTML = "";
+  const cautionDiv = document.getElementById("caution");
 
+  if (data.boardsData.length === 0 || data.postData.length === 0) {
+    cautionDiv.innerHTML = "🙏🏻 작성한 게시글이 없습니다.🙏🏻";
+    return;
+  }
   for (let comment of data.commentData) {
     if (!comment.qId) {
       //free
@@ -119,32 +130,20 @@ const commented = (data, contentDiv) => {
 // qna 게시글
 const qna = (data, contentDiv) => {
   contentDiv.innerHTML = "";
-  // for (let post of data.postData) {
-  //   contentDiv.innerHTML += [
-  //     `
-  //     <div class="postedQuestion">
-  //     <a href ="/question/${post.qId}">
-  //       <div class="qnaList">
-  //       <h2>${post.title}</h2>
-  //       <h3>${post.content}</h3>
-  //       <div class="like">
-  //       <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-  //       <p>${post.likeCount}</p>
-  //       <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
-  //       <p>${postAnswerCount}</p>
-  //       </div>
-  //       </div>
-  //       </div>
-  //       <hr>
-  //       `,
-  //   ];
+  const cautionDiv = document.getElementById("caution");
+
+  if (data.postData.length === 0) {
+    cautionDiv.innerHTML = "🙏🏻 작성한 게시글이 없습니다.🙏🏻";
+    return;
+  }
+
   for (let i = 0; i < data.postData.length; i++) {
     contentDiv.innerHTML += [
       `
       <div class="postedQuestion">
       <a href ="/question/${data.postData[i].qId}">
         <div class="qnaList">
-        <h2>${data.postData[i].title}</h2>
+        <h3>${data.postData[i].title}</h3>
         <h3>${data.postData[i].content}</h3>
         <div class="like">
         <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
@@ -160,6 +159,7 @@ const qna = (data, contentDiv) => {
     console.log("qna");
   }
 };
+
 // const answered = (data, contentDiv) => {
 //   contentDiv.innerHTML = "";
 //   for (let answer of data.answerData) {
@@ -178,13 +178,19 @@ const qna = (data, contentDiv) => {
 // 자유 게시판
 const free = (data, contentDiv) => {
   contentDiv.innerHTML = "";
+  const cautionDiv = document.getElementById("caution");
+
+  if (data.boardsData.length === 0) {
+    cautionDiv.innerHTML = "🙏🏻 작성한 게시글이 없습니다.🙏🏻";
+    return;
+  }
   for (let i = 0; data.boardsData.length; i++) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
                 <a href="/board/detail/${data.boardsData[i].bId}">
                 <div class="freeList">
-                <h2>${data.boardsData[i].title}</h2>
+                <h3>${data.boardsData[i].title}</h3>
                 <h3>${data.boardsData[i].content}</h3>
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
