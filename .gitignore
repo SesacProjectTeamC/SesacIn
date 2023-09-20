@@ -15,8 +15,8 @@ package-lock.json
 /sql
 
 # 유저가 업로드한 이미지 파일
-/static/editorImg/*
-/static/profileImg/*
+static/editorImg/**
+static/profileImg/**
 
 # 맥북
 .DS_Store
