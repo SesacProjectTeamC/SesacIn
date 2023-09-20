@@ -76,7 +76,7 @@ img.profile {
   display: none;
 }
 
-form[name="profile"] {
+form[name='profile'] {
   /* background-color: aqua; */
   display: flex;
   flex-direction: column;
@@ -143,7 +143,7 @@ button:focus {
   border: none;
 } */
 #content {
-  margin: 30px 200px;
+  margin: 30px;
   display: flex;
   align-items: space-around;
   flex-direction: column;
@@ -154,7 +154,7 @@ button:focus {
 }
 
 #caution {
-  margin: 30px 200px;
+  margin: 30px;
   display: flex;
   align-items: center;
   border: 2px solid var(--border-color);
