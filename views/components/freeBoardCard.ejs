@@ -22,7 +22,11 @@
           <div><%= data.viewCount%></div>
         </div>
       </div>
-      <div class="ellipsis"><div class="content"><%= data.content%></div></div>
+      <div class="ellipsis">
+        <div class="content">
+          <%= data.content.replace(/<[^>]*>|&nbsp;/g, '') %>
+        </div>
+      </div>
       <user>
         <div style="display: flex; align-items: center">
           <%if(data.userImgPath){%>

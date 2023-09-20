@@ -1,5 +1,13 @@
 <a onclick="moveToDetailQuestion('<%= data.qId %>')">
-  <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center">
+  <div
+    style="
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
+  >
     <div id="cardContainer">
       <ques_header>
         <div><%= cDate%></div>
@@ -9,12 +17,21 @@
         <div class="ellipsis"><%= data.title%></div>
 
         <div class="viewImg">
-          <img src="../../static/svg/eye.svg" alt="조회수" width="24px" class="svg" color="gray" />
+          <img
+            src="../../static/svg/eye.svg"
+            alt="조회수"
+            width="24px"
+            class="svg"
+            color="gray"
+          />
           <%= data.viewCount%>
         </div>
       </div>
       <div class="ellipsis">
-        <div class="content"><%= data.content%></div>
+        <!-- 프론트에서 가져오는 부분 -->
+        <div class="content">
+          <%= data.content.replace(/<[^>]*>|&nbsp;/g, '') %>
+        </div>
       </div>
       <user>
         <div style="display: flex; align-items: center">
@@ -39,9 +56,19 @@
           <%}%> <%= data.uName %>
         </div>
         <div class="like">
-          <img src="../../static/svg/heart.svg" alt="좋아요" width="24px" class="svg" />
+          <img
+            src="../../static/svg/heart.svg"
+            alt="좋아요"
+            width="24px"
+            class="svg"
+          />
           <%= data.likeCount%>
-          <img src="../../static/svg/question-and-answer.svg" alt="좋아요" width="24px" class="svg" />
+          <img
+            src="../../static/svg/question-and-answer.svg"
+            alt="좋아요"
+            width="24px"
+            class="svg"
+          />
           <%= data.answerCount %>
         </div>
       </user>
