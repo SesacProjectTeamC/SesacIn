@@ -1,4 +1,5 @@
 const { Question, Answer, Comment } = require('../models');
+const moment = require('moment');
 
 //=== 댓글 등록 GET ===
 exports.getCreateComment = async (req, res) => {
@@ -16,8 +17,6 @@ exports.getCreateComment = async (req, res) => {
 // question/:qId/:aId/comment/create
 exports.postComment = async (req, res) => {
   try {
-    // console.log('받은값', req.body);
-
     let loginUser = req.session.user;
 
     const { qId, aId } = req.params;
@@ -30,11 +29,13 @@ exports.postComment = async (req, res) => {
       aId,
     });
 
-    // console.log('보내는값:', newComment);
+    // 날짜 데이터 포맷 변경
+    const commentCreateAt = moment(newComment.createdAt).format('YYYY-MM-DD HH:mm');
 
     res.status(200).send({
       result: true,
       commentData: newComment,
+      commentCreateAt,
     });
   } catch (err) {
     console.error(err);
@@ -75,24 +76,30 @@ exports.patchComment = async (req, res) => {
     const { cId } = req.params;
 
     const { content } = req.body;
-    const updatedComment = await Comment.update(
+    const updatedCommentResult = await Comment.update(
       { content },
       {
         where: { cId },
       }
     );
 
-    if (updatedComment) {
-      return res.send({
+    const updatedComment = await Comment.findByPk(cId);
+
+    if (updatedCommentResult[0]) {
+      // 날짜데이터 포맷 수정
+      commentCreateAt = moment(commentCreateAt.createdAt).format('YYYY-MM-DD HH:mm');
+
+      res.send({
         result: true,
         commentData: updatedComment,
+        commentCreateAt,
       });
     } else {
-      return res.send({ result: false });
+      return res.status(500).send({ result: false, msg: 'DB에 댓글 업데이트 되지 않음' });
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.status(500).send('Internet Server Error!!!');
   }
 };
 

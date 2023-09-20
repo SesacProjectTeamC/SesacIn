@@ -16,12 +16,7 @@ function addComment(qId, aId, userName, img) {
         // response.status에 의해서 판단한다.
         const container = document.querySelector(`#commentC${aId}`);
         console.log(container);
-        container.innerHTML += commentCard(
-          response.data.commentData,
-          '2023-01-01',
-          userName,
-          img
-        );
+        container.innerHTML += commentCard(response.data.commentData, response.data.commentCreateAt, userName, img);
 
         // commentsContainer.appendChild(commentDiv);
       })
@@ -178,7 +173,5 @@ const postAnswer = (qId) => {
 const toggleComment = (component, aId) => {
   component.classList.toggle('commentActive');
   document.querySelector(`#commentC${aId}`).classList.toggle('answerCommentC');
-  document
-    .querySelector(`#commentC${aId}`)
-    .classList.toggle('answerCommentCShow');
+  document.querySelector(`#commentC${aId}`).classList.toggle('answerCommentCShow');
 };
