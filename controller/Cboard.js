@@ -12,6 +12,7 @@ exports.getBoardMain = async (req, res) => {
     let page = parseInt(req.params.page) || 1;
     let pageSize = parseInt(req.params.pageSize) || 20;
     let offset = (page - 1) * pageSize;
+
     let sortField = req.params.sortField || 'createdAt';
     let sortOrder = req.params.sortOrder || 'desc';
 

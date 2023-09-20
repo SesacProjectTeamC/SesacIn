@@ -1,5 +1,19 @@
+# npm
 /node_modules
 package-lock.json
+
+# 환경변수
 .env
+
+# sequelize <--> DB 연결정보
 /config/config.json
+
+# SMTP 
 /config/email.js
+
+# sql문 
+/sql
+
+# 유저가 업로드한 이미지 파일
+/static/editorImg/*
+/static/profileImg/*

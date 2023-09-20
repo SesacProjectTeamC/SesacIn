@@ -82,6 +82,7 @@
       </div>
 
       <div class="bContent ck-content"><%- boardData.content %></div>
+
       <%if(isLogin && boardData.uId === userData.uId){%>
       <div style="display: flex; justify-content: flex-end">
         <a
@@ -234,7 +235,13 @@
             >
               취소
             </button>
-            <button type="button" class="btn btn-danger" id="deletebtn">
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="deletebtn"
+              data-dismiss="modal"
+              data-bs-dismiss="modal"
+            >
               확인
             </button>
           </div>
@@ -256,9 +263,10 @@
           }
         })
         .catch((err) => {
-          console.log(err);
           if (err.response.status === 401) {
-            document.location.href = '/';
+            openModal(err.response.data);
+          } else {
+            openModal('서버오류 발생');
           }
         });
     };

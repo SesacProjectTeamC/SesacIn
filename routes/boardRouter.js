@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
+// 컨트롤러
 const Cboard = require('../controller/Cboard');
-const { needToLogin } = require('../util/middleware');
+
+// 로그인 검사 미들웨어
+const { needToLogin } = require('../middlewares/needToLogin');
 
 // 자유게시판 메인 페이지 렌더링
 router.get('/main', Cboard.getBoardMain);
@@ -45,7 +48,7 @@ router.get('/list/:page&:pageSize&:sortField&:sortOrder', Cboard.paginateBoard);
 
 // 게시글 댓글 생성 처리
 // /board/comment/create/:bId
-router.post('/comment/create/:bId', Cboard.createComment);
+router.post('/comment/create/:bId', needToLogin, Cboard.createComment);
 
 // 게시글 댓글 수정 처리
 // /board/comment/edit/:cId

@@ -1,4 +1,11 @@
-const { Question, Answer, Comment, uLike, User, sequelize } = require('../models');
+const {
+  Question,
+  Answer,
+  Comment,
+  uLike,
+  User,
+  sequelize,
+} = require('../models');
 const moment = require('moment');
 
 //=== 메인페이지,질문 목록 가져오기 ===
@@ -16,7 +23,12 @@ exports.getQuestions = async (req, res) => {
     let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
+    if (
+      !sortField ||
+      !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(
+        sortField
+      )
+    ) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -26,7 +38,9 @@ exports.getQuestions = async (req, res) => {
     }
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(
+      Math.ceil(questionTotalCount / pageSize)
+    ); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
     // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
@@ -167,7 +181,12 @@ exports.paginateQuestion = async (req, res) => {
     let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
+    if (
+      !sortField ||
+      !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(
+        sortField
+      )
+    ) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -177,7 +196,9 @@ exports.paginateQuestion = async (req, res) => {
     }
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(
+      Math.ceil(questionTotalCount / pageSize)
+    ); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
     // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
@@ -228,17 +249,59 @@ exports.getQuestion = async (req, res) => {
   try {
     const { qId } = req.params;
 
+    // 태균 수정
     const question = await Question.findOne({
       where: { qId },
+      include: [
+        {
+          model: User,
+          attributes: ['uId', 'uName', 'userImgPath'],
+        },
+      ],
     });
+    console.log('>>>>>>>>>>>>>>>>>>', question.createdAt);
 
+    // 날짜 데이터 포맷 변경
+    const questionCreateAt = moment(question.createdAt).format(
+      'YYYY-MM-DD HH:mm'
+    );
+
+    // 태균 수정
     const answers = await Answer.findAll({
       where: { qId },
+      include: [
+        {
+          model: User,
+          attributes: ['uId', 'uName', 'userImgPath'],
+        },
+      ],
+      attributes: { exclude: ['title'] }, // title 컬럼을 제외
     });
+    // console.log('>>>>>>>>>>>>>>>>>>', answersTest[0]);
 
+    // 날짜 데이터 포맷 변경
+    const answersCreateAt = [];
+    for (a of answers) {
+      answersCreateAt.push(moment(a.createdAt).format('YYYY-MM-DD HH:mm'));
+    }
+
+    // 태균 수정
     const comments = await Comment.findAll({
       where: { qId },
+      include: [
+        {
+          model: User,
+          attributes: ['uId', 'uName', 'userImgPath'],
+        },
+      ],
     });
+    // console.log('>>>>>>>>>>>>>>>>>>', comments);
+
+    // 날짜 데이터 포맷 변경
+    const commentsCreateAt = [];
+    for (c of comments) {
+      commentsCreateAt.push(moment(c.createdAt).format('YYYY-MM-DD HH:mm'));
+    }
 
     let qResultLike = false; // 질문 좋아요 초기값을 false로 설정
     let uLikeAnswersResult = []; // 답변 좋아요 초기값을 빈 배열로 설정
@@ -279,10 +342,13 @@ exports.getQuestion = async (req, res) => {
         // (3) 결과 값 리스트에 담기
         uLikeAnswersResult.push(uLikeAnswerFindResult);
       }
-      return res.render('questionTest', {
-        data: question,
-        answerData: answers,
-        commentData: comments,
+      return res.render('questionDetail', {
+        data: question, // 질문의 데이터와 질문 작성자 데이터
+        questionCreateAt, // 질문의 생성일 (포맷을 변경)
+        answerData: answers, // 답변의 데이터와 답변 작성자 데이터
+        answersCreateAt, // 답변의 생성일 (포맷을 변경)
+        commentData: comments, // 질문에 달린 모든 답변에 대한 모든 댓글 데이터와 댓글의 작성자 데이터
+        commentsCreateAt, // 댓글의 생성일 (포맷을 변경)
         isLogin,
         currentUser: req.session.user,
         qResult: qResultLike, // 특정 질문에 대한 결과 (T/F)
@@ -293,16 +359,19 @@ exports.getQuestion = async (req, res) => {
     }
 
     // 비로그인 시 동작
-    return res.render('questionTest', {
-      data: question,
-      answerData: answers,
-      commentData: comments,
+    return res.render('questionDetail', {
+      data: question, // 질문의 데이터와 질문 작성자 데이터
+      questionCreateAt, // 질문의 생성일 (포맷을 변경)
+      answerData: answers, // 답변의 데이터와 답변 작성자 데이터
+      answersCreateAt, // 답변의 생성일 (포맷을 변경)
+      commentData: comments, // 질문에 달린 모든 답변에 대한 모든 댓글 데이터와 댓글의 작성자 데이터
+      commentsCreateAt, // 댓글의 생성일 (포맷을 변경)
       isLogin,
       currentUser: req.session.user,
       qResult: qResultLike, // 특정 질문에 대한 결과 (T/F)
       aResult: uLikeAnswersResult, // 특정 질문에 대한 답변의 결과
       //+ 답변은 여러 개이므로, 배열로 결과 값을 보냄 ---> ex. [ true, false, false ]
-      // userData: user,
+      userData: null,
     });
   } catch (err) {
     console.log(err);
@@ -563,7 +632,10 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 +1
-        await Question.update({ likeCount: getQuestion.likeCount + 1 }, { where: { qId } });
+        await Question.update(
+          { likeCount: getQuestion.likeCount + 1 },
+          { where: { qId } }
+        );
 
         console.log('성공 !!');
 
@@ -576,7 +648,10 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 -1
-        await Question.update({ likeCount: getQuestion.likeCount - 1 }, { where: { qId } });
+        await Question.update(
+          { likeCount: getQuestion.likeCount - 1 },
+          { where: { qId } }
+        );
 
         res.send({ data: getQuestion, qResult: false });
       }

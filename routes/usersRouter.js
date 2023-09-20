@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
+
+// 컨트롤러
 const Cprofile = require('../controller/Cprofile');
 const Cuser = require('../controller/Cuser');
-const { needToLogin } = require('../util/middleware');
 
-
+// 로그인 검사 미들웨어
+const { needToLogin } = require('../middlewares/needToLogin');
 
 // 마이페이지 렌더링
 // /users/profile

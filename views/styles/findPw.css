@@ -1,0 +1,148 @@
+body {
+  font-size: large;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  position: relative;
+}
+
+header {
+  padding: 2rem;
+  width: 100%;
+  text-align: start;
+  cursor: pointer;
+}
+
+h2 {
+  margin-bottom: 3rem;
+  font-weight: bold;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
+
+.bi-arrow-left:hover .hover-circle {
+  fill: var(--hover-color);
+  cursor: pointer;
+}
+
+img {
+  display: flex;
+  width: 17rem;
+  height: 6rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+main {
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 600px;
+  border-radius: 20px;
+  padding: 30px;
+  flex-wrap: wrap;
+}
+
+form#findPw_form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.findPw_form_uId,
+.findPw_form_password,
+.findPw_form_email,
+.findPw_form_email_verification {
+  display: flex;
+  flex-direction: column;
+}
+label[for='findPw_form_uId']:hover,
+label[for='findPw_form_password']:hover,
+label[for='findPw_form_email']:hover,
+label[for='findPw_form_email_verification']:hover {
+  color: var(--hover-color2);
+}
+
+input[class='findPw_form_uId'],
+input[class='findPw_form_password'],
+input[class='findPw_form_email'],
+input[class='findPw_form_email_verification'] {
+  border: none;
+  outline: none;
+  box-shadow: 0px 2px 0px 0px var(--main-color);
+  padding: 5px 15px;
+  transition: box-shadow 0.3s ease-in-out;
+  min-width: 371px;
+}
+input[class='findPw_form_uId']:hover,
+input[class='findPw_form_password']:hover,
+input[class='findPw_form_email']:hover,
+input[class='findPw_form_email_verification']:hover {
+  border: none;
+  outline: none;
+  box-shadow: 0px 0px 0px 1px var(--hover-color);
+  padding: 5px 15px;
+}
+
+/* form#findPw_form a {
+  display: inline-block;
+}
+
+form#findPw_form a:last-of-type {
+  margin-right: 0;
+} */
+
+.btn-primary {
+  margin: auto;
+  width: 120px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--main-color);
+  color: black;
+  border: none;
+  outline: none;
+  align-self: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  align-items: center;
+  margin-top: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background-color: var(--border-color);
+  cursor: pointer;
+}
+
+.btn-primary.focus,
+.btn-primary:focus {
+  color: #fff;
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+  box-shadow: 0 0 0 0.2rem var(--main-color);
+}
+
+#resetPassword,
+#verifyEmailCodeBtn,
+#sendVerificationCodeBtn {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 10rem;
+}
+
+.alert {
+  margin-top: 10px;
+  font-size: small;
+  color: red;
+  background-color: transparent;
+  border: none;
+}

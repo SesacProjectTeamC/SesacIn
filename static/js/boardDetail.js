@@ -59,9 +59,11 @@ function addComment(bId) {
     .catch((error) => {
       // 실패했을때 처리
       // response.status에 의해서 판단되어 catch 문에서 실행된다.
-
-      // 에러 객체 전체
-      console.log(error);
+      if (error.response.status === 401) {
+        openModal(error.response.data);
+      } else {
+        openModal('서버오류 발생');
+      }
     });
 }
 
