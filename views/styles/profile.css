@@ -161,7 +161,7 @@ button:focus {
   border-radius: 25px;
   background-color: var(--main-color);
   font-size: x-large;
-  padding: 0px 150px;
+  padding: 0px 70px;
 }
 
 .hidden {
@@ -251,5 +251,14 @@ button:focus {
     display: flex;
     align-items: stretch;
   }
- 
+  #caution {
+    margin: 30px 100px;
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--border-color);
+    border-radius: 25px;
+    background-color: var(--main-color);
+    font-size: large;
+    padding: 0px 70px;
+  }
 }
