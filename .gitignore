@@ -13,3 +13,7 @@ package-lock.json
 
 # sql문 
 /sql
+
+# 유저가 업로드한 이미지 파일
+/static/editorImg/*
+/static/profileImg/*
