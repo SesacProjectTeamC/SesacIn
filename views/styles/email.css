@@ -73,7 +73,7 @@ label {
   padding: 5px 10px;
   border-radius: 8px;
   display: block; /* Make the button a block-level element */
-  margin: 0 auto; /* Center-align the button horizontally */
+  margin: 3rem auto; /* Center-align the button horizontally */
 }
 
 #sendEmailButton:hover,
