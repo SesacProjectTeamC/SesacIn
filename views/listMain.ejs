@@ -43,7 +43,8 @@
           onclick="moveToDetailQuestion('<%=questionData[i].qId%>')"
           style="cursor: pointer"
         >
-          <th><%= questionData[i].qId%></th>
+          <!-- <th><%= questionData[i].qId%></th> -->
+          <th><%= questionTotalCount - i %></th>
           <td style="text-align: start"><%= questionData[i].title%></td>
           <td><%= questionData[i].uName%></td>
           <td><%= questionData[i].likeCount%></td>
