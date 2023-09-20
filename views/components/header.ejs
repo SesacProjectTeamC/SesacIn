@@ -3,7 +3,10 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
   <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
 
   <!-- <link rel="stylesheet" href="views/styles/globalstyle.css" /> -->
@@ -32,7 +35,7 @@
       text-decoration-line: none;
       color: black;
       font-weight: 700;
-      font-size: 25px;
+      font-size: 1.35rem;
     }
 
     /* 드롭다운 및 사용자 메뉴 */
@@ -41,8 +44,8 @@
     }
 
     .dropdownImg {
-      width: 4rem;
-      height: 4rem;
+      width: 3rem;
+      height: 3rem;
       border-radius: 50%;
     }
     .dropdown {
@@ -96,11 +99,18 @@
 <div class="cHeader">
   <div class="left-content">
     <a href="/">
-      <img src="/static/img/logo_header.png" alt="logo" class="logo" height="50em" />
+      <img
+        src="/static/img/logo_header.png"
+        alt="logo"
+        class="logo"
+        height="45em"
+      />
     </a>
   </div>
   <div class="right-content">
-    <a class="header-font" onclick="moveToMakePost()" style="margin-right: 3rem; cursor: pointer">작성하기</a>
+    <a class="header-font" onclick="moveToMakePost()" style="cursor: pointer"
+      >작성하기</a
+    >
     <% if (isLogin === true) { %>
     <div class="dropdown">
       <button
@@ -112,10 +122,18 @@
       >
         <% if (userData && userData.userImgPath) { %>
         <!-- 프로필 이미지가 있을 때 -->
-        <img src="/<%= userData.userImgPath %>" alt="프로필 이미지" class="dropdownImg" />
+        <img
+          src="/<%= userData.userImgPath %>"
+          alt="프로필 이미지"
+          class="dropdownImg"
+        />
         <% } else { %>
         <!-- 프로필 이미지가 없을 때 기본 이미지 -->
-        <img src="/static/svg/person.svg" alt="사용자 메뉴" class="dropdownImg" />
+        <img
+          src="/static/svg/person.svg"
+          alt="사용자 메뉴"
+          class="dropdownImg"
+        />
         <% } %>
         <!-- 화살표 아이콘 -->
         <i class="fa-solid fa-chevron-up fa-sm"></i>
@@ -133,7 +151,9 @@
         </li>
       </ul>
       <% } else { %>
-      <a href="/login" class="header-font">로그인</a>
+      <a href="/login" class="header-font" style="margin-left: 1.5rem"
+        >로그인</a
+      >
       <% } %>
     </div>
   </div>
