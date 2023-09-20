@@ -28,7 +28,7 @@
       align-items: center;
     }
 
-    a {
+    .header-font {
       text-decoration-line: none;
       color: black;
       font-weight: 700;
@@ -100,7 +100,7 @@
     </a>
   </div>
   <div class="right-content">
-    <a onclick="moveToMakePost()" style="margin-right: 3rem; cursor: pointer">작성하기</a>
+    <a class="header-font" onclick="moveToMakePost()" style="margin-right: 3rem; cursor: pointer">작성하기</a>
     <% if (isLogin === true) { %>
     <div class="dropdown">
       <button
@@ -133,7 +133,7 @@
         </li>
       </ul>
       <% } else { %>
-      <a href="/login">로그인</a>
+      <a href="/login" class="header-font">로그인</a>
       <% } %>
     </div>
   </div>
