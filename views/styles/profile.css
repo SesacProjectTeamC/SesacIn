@@ -143,13 +143,28 @@ button:focus {
   border: none;
 } */
 #content {
-  margin: 0px 200px;
+  margin: 30px 200px;
   display: flex;
-  align-items: stretch;
+  align-items: space-around;
   flex-direction: column;
-  border: 5px solid rgb(192, 187, 187);
+  border: 2px solid var(--border-color);
   border-radius: 25px;
-  background-color: white;
+  background-color: var(--main-color);
+  font-size: x-large;
+}
+
+#caution {
+  margin: 30px 200px;
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--border-color);
+  border-radius: 25px;
+  background-color: var(--main-color);
+  font-size: x-large;
+  padding: 0px 150px;
+}
+
+.hidden {
   display: none;
 }
 
@@ -185,6 +200,13 @@ button:focus {
 .question p,
 .answer p {
   font-size: medium;
+}
+
+.freeBoards > h3:first-child,
+.postedQuestion > h3:first-child,
+.question > h3:first-child,
+.answer > h3:first-child {
+  font-size: 0.75rem;
 }
 
 /* 모바일 화면: 화면 너비가 480px 이하일 때 */
