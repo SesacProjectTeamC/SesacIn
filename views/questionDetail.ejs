@@ -228,6 +228,7 @@
             if(commentData[k].aId === answerData[i].aId) { %> <%
             answerCommentList.push(commentData[k]); %> <%
             answerDateList.push(commentsCreateAt[k]); %> <% } %> <% } %>
+
             <img
               src="/static/svg/message.svg"
               alt="댓글"
@@ -264,7 +265,7 @@
             </div>
             <div
               style="font-size: 14px; cursor: pointer"
-              onclick="addComment('<%= data.qId %>', '<%= answerData[i].aId%>', '<%= userData%>')"
+              onclick="addComment('<%= data.qId %>', '<%= answerData[i].aId%>', '<%= userData && userData.uName%>', '<%= userData && userData.userImgPath%>')"
             >
               댓글 등록
             </div>
@@ -278,7 +279,10 @@
             placeholder="댓글을 입력하세요"
           ></textarea>
           <%for(let j = 0; j < answerCommentList.length; j++){%>
-          <div class="commentContainer" style="padding: 0px">
+          <div
+            class="commentContainer<%= answerCommentList[j].cId%>"
+            style="padding: 0px"
+          >
             <div class="input-group commentUser">
               <div class="userC">
                 <%if(answerCommentList[j].User.userImgPath){%>
@@ -306,14 +310,14 @@
               </div>
             </div>
             <div
-              id="comment<%= commentData[i].cId%>"
+              id="comment<%= answerCommentList[j].cId%>"
               style="margin-left: 15px; font-size: 14px; margin-bottom: 12px"
             >
-              <%= commentData[i].content %>
+              <%= answerCommentList[j].content %>
             </div>
-            <%if(isLogin && commentData[i].uId === userData.uId){%>
+            <%if(isLogin && answerCommentList[j].uId === userData.uId){%>
             <div
-              id="fixCommentC<%= commentData[i].cId %>"
+              id="fixCommentC<%= answerCommentList[j].cId %>"
               style="
                 display: flex;
                 justify-content: flex-end;
@@ -323,14 +327,14 @@
             >
               <div
                 style="cursor: pointer; margin-right: 10px; font-size: 14px"
-                onclick="fixComment('<%= commentData[i].cId %>')"
+                onclick="fixComment('<%= data.qId %>', '<%= answerCommentList[j].cId %>','<%= answerData[i].aId%>')"
               >
                 수정
               </div>
 
               <div
                 style="cursor: pointer; font-size: 14px"
-                onclick="openModal('정말 삭제하시겠어요?', 'deleteComment(<%= commentData[i].cId %>)');"
+                onclick="openModal('정말 삭제하시겠어요?', 'deleteComment(<%= data.qId %>, <%= answerCommentList[j].cId %>, <%= answerData[i].aId%>)');"
               >
                 삭제
               </div>
