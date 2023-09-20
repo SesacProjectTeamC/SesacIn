@@ -13,14 +13,11 @@ exports.getCreateComment = async (req, res) => {
 };
 
 //=== 댓글 등록 POST ===
+// question/:qId/:aId/comment/create
 exports.postComment = async (req, res) => {
   try {
-    // test login
-    // req.session.user = 1;
+    // console.log('받은값', req.body);
 
-    if (!req.session.user) {
-      res.redirect('/');
-    }
     let loginUser = req.session.user;
 
     const { qId, aId } = req.params;
@@ -33,17 +30,18 @@ exports.postComment = async (req, res) => {
       aId,
     });
 
-    if (newComment) {
-      return res.send({
-        result: true,
-        commentData: newComment,
-      });
-    } else {
-      return res.send({ result: false });
-    }
+    // console.log('보내는값:', newComment);
+
+    res.status(200).send({
+      result: true,
+      commentData: newComment,
+    });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.status(500).send({
+      result: false,
+      msg: 'Internal Server Error',
+    });
   }
 };
 
