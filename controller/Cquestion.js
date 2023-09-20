@@ -1,12 +1,5 @@
-const {
-  Question,
-  Answer,
-  Comment,
-  uLike,
-  User,
-  sequelize,
-} = require("../models");
-const moment = require("moment");
+const { Question, Answer, Comment, uLike, User, sequelize } = require('../models');
+const moment = require('moment');
 
 //=== 메인페이지,질문 목록 가져오기 ===
 
@@ -19,28 +12,21 @@ exports.getQuestions = async (req, res) => {
     let pageSize = parseInt(req.params.pageSize) || 20;
     let offset = (page - 1) * pageSize;
 
-    let sortField = req.params.sortField || "createdAt";
-    let sortOrder = req.params.sortOrder || "desc";
+    let sortField = req.params.sortField || 'createdAt';
+    let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (
-      !sortField ||
-      !["createdAt", "likeCount", "viewCount", "answerCount"].includes(
-        sortField,
-      )
-    ) {
-      res.status(400).send({ error: "올바른 정렬 필드를 지정하세요." });
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
+      res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
-    if (!sortOrder || !["desc", "asc"].includes(sortOrder)) {
-      res.status(400).json({ error: "올바른 정렬 순서를 지정하세요." });
+    if (!sortOrder || !['desc', 'asc'].includes(sortOrder)) {
+      res.status(400).json({ error: '올바른 정렬 순서를 지정하세요.' });
       return;
     }
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(
-      Math.ceil(questionTotalCount / pageSize),
-    ); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
     // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
@@ -58,25 +44,25 @@ exports.getQuestions = async (req, res) => {
     // 날짜 데이터 포맷 변경
     const questionCreateAt = [];
     for (q of paginatedQuestion) {
-      questionCreateAt.push(moment(q.createdAt).format("YYYY-MM-DD"));
+      questionCreateAt.push(moment(q.createdAt).format('YYYY-MM-DD'));
     }
 
     if (isLogin) {
-      console.log("로그인O 사용자 >>>", req.session.user);
+      console.log('로그인O 사용자 >>>', req.session.user);
       const uId = req.session.user;
 
       const user = await User.findOne({
         where: { uId },
       });
       console.log(user);
-      res.status(200).render("listMain", {
-        type: "qna",
+      res.status(200).render('listMain', {
+        type: 'qna',
         questionData: paginatedQuestion, // question 데이터(20개씩)
         questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
         pageCount: questionPageCount, // 총 몇페이지인지
         questionTotalCount, // 총 질문 개수
         success: true,
-        msg: "QnA 호출 처리 완료",
+        msg: 'QnA 호출 처리 완료',
         // data: paginatedQuestions,
         // pageCount: pageCount,
         // cDate: create,
@@ -87,22 +73,22 @@ exports.getQuestions = async (req, res) => {
         },
       });
     } else {
-      console.log("로그인X");
+      console.log('로그인X');
 
-      res.render("listMain", {
-        type: "qna",
+      res.render('listMain', {
+        type: 'qna',
         questionData: paginatedQuestion, // question 데이터(20개씩)
         questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
         pageCount: questionPageCount, // 총 몇페이지인지
         questionTotalCount, // 총 질문 개수
         success: true,
-        msg: "QnA 호출 처리 완료",
+        msg: 'QnA 호출 처리 완료',
         isLogin,
       });
     }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -123,7 +109,7 @@ exports.getQuestionsMain = async (req, res) => {
 
     // 페이지별 Question호출
     const paginatedQuestions = await Question.findAll({
-      order: [["createdAt", "DESC"]], // 정렬 기준
+      order: [['createdAt', 'DESC']], // 정렬 기준
       limit: pageSize,
       offset: (page - 1) * pageSize,
     });
@@ -132,19 +118,19 @@ exports.getQuestionsMain = async (req, res) => {
     const create = [];
 
     for (q of paginatedQuestions) {
-      create.push(moment(q.createdAt).format("YYYY-MM-DD"));
+      create.push(moment(q.createdAt).format('YYYY-MM-DD'));
     }
 
     if (isLogin) {
-      console.log("로그인O 사용자 >>>", req.session.user);
+      console.log('로그인O 사용자 >>>', req.session.user);
       const uId = req.session.user;
 
       const user = await User.findOne({
         where: { uId },
       });
 
-      res.status(200).render("listMain", {
-        type: "qna",
+      res.status(200).render('listMain', {
+        type: 'qna',
         data: paginatedQuestions,
         pageCount: pageCount,
         questionTotalCount,
@@ -153,10 +139,10 @@ exports.getQuestionsMain = async (req, res) => {
         userData: user,
       });
     } else {
-      console.log("로그인X");
+      console.log('로그인X');
 
-      res.render("listMain", {
-        type: "qna",
+      res.render('listMain', {
+        type: 'qna',
         data: paginatedQuestions,
         pageCount: pageCount,
         questionTotalCount,
@@ -166,7 +152,7 @@ exports.getQuestionsMain = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -181,28 +167,21 @@ exports.paginateQuestion = async (req, res) => {
     let pageSize = parseInt(req.params.pageSize) || 20;
     let offset = (page - 1) * pageSize;
 
-    let sortField = req.params.sortField || "createdAt";
-    let sortOrder = req.params.sortOrder || "desc";
+    let sortField = req.params.sortField || 'createdAt';
+    let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (
-      !sortField ||
-      !["createdAt", "likeCount", "viewCount", "answerCount"].includes(
-        sortField,
-      )
-    ) {
-      res.status(400).send({ error: "올바른 정렬 필드를 지정하세요." });
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
+      res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
-    if (!sortOrder || !["desc", "asc"].includes(sortOrder)) {
-      res.status(400).json({ error: "올바른 정렬 순서를 지정하세요." });
+    if (!sortOrder || !['desc', 'asc'].includes(sortOrder)) {
+      res.status(400).json({ error: '올바른 정렬 순서를 지정하세요.' });
       return;
     }
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(
-      Math.ceil(questionTotalCount / pageSize),
-    ); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
     // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
@@ -220,7 +199,7 @@ exports.paginateQuestion = async (req, res) => {
     // 날짜 데이터 포맷 변경
     const questionCreateAt = [];
     for (q of paginatedQuestion) {
-      questionCreateAt.push(moment(q.createdAt).format("YYYY-MM-DD"));
+      questionCreateAt.push(moment(q.createdAt).format('YYYY-MM-DD'));
     }
 
     // 데이터 응답
@@ -229,13 +208,13 @@ exports.paginateQuestion = async (req, res) => {
       questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
       pageCount: questionPageCount, // 총 몇페이지인지
       success: true,
-      msg: "페이지별 QnA 질문 호출 처리 완료",
+      msg: '페이지별 QnA 질문 호출 처리 완료',
     });
   } catch (error) {
     console.error(error);
     res.status(500).send({
       success: false,
-      error: "서버 에러",
+      error: '서버 에러',
     });
   }
 };
@@ -248,7 +227,7 @@ exports.getQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
-  console.log("isLogin - getQuestion", isLogin);
+  console.log('isLogin - getQuestion', isLogin);
 
   try {
     const { qId } = req.params;
@@ -259,16 +238,14 @@ exports.getQuestion = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["uId", "uName", "userImgPath"],
+          attributes: ['uId', 'uName', 'userImgPath'],
         },
       ],
     });
-    console.log(">>>>>>>>>>>>>>>>>>", question.createdAt);
+    console.log('>>>>>>>>>>>>>>>>>>', question.createdAt);
 
     // 날짜 데이터 포맷 변경
-    const questionCreateAt = moment(question.createdAt).format(
-      "YYYY-MM-DD HH:mm",
-    );
+    const questionCreateAt = moment(question.createdAt).format('YYYY-MM-DD HH:mm');
 
     // 태균 수정
     const answers = await Answer.findAll({
@@ -276,17 +253,17 @@ exports.getQuestion = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["uId", "uName", "userImgPath"],
+          attributes: ['uId', 'uName', 'userImgPath'],
         },
       ],
-      attributes: { exclude: ["title"] }, // title 컬럼을 제외
+      attributes: { exclude: ['title'] }, // title 컬럼을 제외
     });
     // console.log('>>>>>>>>>>>>>>>>>>', answersTest[0]);
 
     // 날짜 데이터 포맷 변경
     const answersCreateAt = [];
     for (a of answers) {
-      answersCreateAt.push(moment(a.createdAt).format("YYYY-MM-DD HH:mm"));
+      answersCreateAt.push(moment(a.createdAt).format('YYYY-MM-DD HH:mm'));
     }
 
     // 태균 수정
@@ -295,7 +272,7 @@ exports.getQuestion = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["uId", "uName", "userImgPath"],
+          attributes: ['uId', 'uName', 'userImgPath'],
         },
       ],
     });
@@ -304,7 +281,7 @@ exports.getQuestion = async (req, res) => {
     // 날짜 데이터 포맷 변경
     const commentsCreateAt = [];
     for (c of comments) {
-      commentsCreateAt.push(moment(c.createdAt).format("YYYY-MM-DD HH:mm"));
+      commentsCreateAt.push(moment(c.createdAt).format('YYYY-MM-DD HH:mm'));
     }
 
     let qResultLike = false; // 질문 좋아요 초기값을 false로 설정
@@ -346,7 +323,7 @@ exports.getQuestion = async (req, res) => {
         // (3) 결과 값 리스트에 담기
         uLikeAnswersResult.push(uLikeAnswerFindResult);
       }
-      return res.render("questionDetail", {
+      return res.render('questionDetail', {
         data: question, // 질문의 데이터와 질문 작성자 데이터
         questionCreateAt, // 질문의 생성일 (포맷을 변경)
         answerData: answers, // 답변의 데이터와 답변 작성자 데이터
@@ -363,7 +340,7 @@ exports.getQuestion = async (req, res) => {
     }
 
     // 비로그인 시 동작
-    return res.render("questionDetail", {
+    return res.render('questionDetail', {
       data: question, // 질문의 데이터와 질문 작성자 데이터
       questionCreateAt, // 질문의 생성일 (포맷을 변경)
       answerData: answers, // 답변의 데이터와 답변 작성자 데이터
@@ -379,7 +356,7 @@ exports.getQuestion = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -396,13 +373,13 @@ exports.viewQuestion = async (req, res) => {
       { viewCount: question.viewCount + 1 },
       {
         where: { qId },
-      },
+      }
     );
 
     res.send({ data: question });
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -420,13 +397,13 @@ exports.getCreateQuestion = async (req, res) => {
     });
 
     // 로그인 되어있을때 페이지 렌더링
-    res.status(200).render("post", {
+    res.status(200).render('post', {
       isLogin,
       currentUser: req.session.user,
       userData: user,
 
       data: {
-        type: "qna",
+        type: 'qna',
       },
     });
   } catch (err) {
@@ -438,7 +415,7 @@ exports.getCreateQuestion = async (req, res) => {
 //=== 질문 생성 POST ===
 exports.postQuestion = async (req, res) => {
   if (!req.session.user) {
-    res.redirect("/");
+    res.redirect('/');
   }
   let loginUser = req.session.user;
 
@@ -456,7 +433,7 @@ exports.postQuestion = async (req, res) => {
     res.send({ result: newQuestion });
   } catch (err) {
     console.error(err);
-    res.send("Internal Server Error");
+    res.send('Internal Server Error');
   }
 };
 
@@ -466,6 +443,12 @@ exports.getEditQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
+  const uId = req.session.user;
+
+  const user = await User.findOne({
+    where: { uId },
+  });
+
   try {
     const { qId } = req.params;
 
@@ -473,10 +456,12 @@ exports.getEditQuestion = async (req, res) => {
       where: { qId },
     });
 
-    res.status(200).render("questionEditTest", {
+    res.status(200).render('edit', {
+      type: 'qna',
       data: question,
       isLogin,
       success: true,
+      userData: user,
       currentUser: req.session.user,
     });
   } catch (err) {
@@ -484,7 +469,7 @@ exports.getEditQuestion = async (req, res) => {
     res.status(500).send({
       isLogin,
       success: false,
-      msg: "Internal Server Error",
+      msg: 'Internal Server Error',
     });
   }
 };
@@ -518,7 +503,7 @@ exports.patchQuestion = async (req, res) => {
         isLogin,
         userData: user,
         currentLoginUser: req.session.user,
-        msg: "로그인 되어있지 않습니다.",
+        msg: '로그인 되어있지 않습니다.',
       });
       return;
     }
@@ -530,7 +515,7 @@ exports.patchQuestion = async (req, res) => {
         isLogin,
         userData: user,
         currentLoginUser: req.session.user,
-        msg: "데이터에 빈값이 있습니다.",
+        msg: '데이터에 빈값이 있습니다.',
       });
     }
 
@@ -538,7 +523,7 @@ exports.patchQuestion = async (req, res) => {
       { title, content },
       {
         where: { qId },
-      },
+      }
     );
 
     //% qType 변경
@@ -546,7 +531,7 @@ exports.patchQuestion = async (req, res) => {
     res.send({ data: updatedQuestion });
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };
 
@@ -571,7 +556,7 @@ exports.deleteQuestion = async (req, res) => {
         result: false,
         isLogin,
         currentUser: req.session.user,
-        msg: "질문 게시글이 삭제되지 않았습니다.",
+        msg: '질문 게시글이 삭제되지 않았습니다.',
       });
       return;
     }
@@ -605,6 +590,8 @@ exports.deleteQuestion = async (req, res) => {
 };
 
 //=== 질문 좋아요 누르기 ===
+// PATCH
+// /question/:qId
 exports.likeQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -636,12 +623,9 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 +1
-        await Question.update(
-          { likeCount: getQuestion.likeCount + 1 },
-          { where: { qId } },
-        );
+        await Question.update({ likeCount: getQuestion.likeCount + 1 }, { where: { qId } });
 
-        console.log("성공 !!");
+        console.log('성공 !!');
 
         res.send({ data: getQuestion, qResult: true });
       } else {
@@ -652,10 +636,7 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 -1
-        await Question.update(
-          { likeCount: getQuestion.likeCount - 1 },
-          { where: { qId } },
-        );
+        await Question.update({ likeCount: getQuestion.likeCount - 1 }, { where: { qId } });
 
         res.send({ data: getQuestion, qResult: false });
       }
@@ -664,6 +645,6 @@ exports.likeQuestion = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send("Internet Server Error!!!");
+    res.send('Internet Server Error!!!');
   }
 };

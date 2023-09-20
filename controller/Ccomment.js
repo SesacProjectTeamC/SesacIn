@@ -1,4 +1,5 @@
 const { Question, Answer, Comment } = require('../models');
+const moment = require('moment');
 
 //=== 댓글 등록 GET ===
 exports.getCreateComment = async (req, res) => {
@@ -13,14 +14,9 @@ exports.getCreateComment = async (req, res) => {
 };
 
 //=== 댓글 등록 POST ===
+// question/:qId/:aId/comment/create
 exports.postComment = async (req, res) => {
   try {
-    // test login
-    // req.session.user = 1;
-
-    if (!req.session.user) {
-      res.redirect('/');
-    }
     let loginUser = req.session.user;
 
     const { qId, aId } = req.params;
@@ -33,17 +29,20 @@ exports.postComment = async (req, res) => {
       aId,
     });
 
-    if (newComment) {
-      return res.send({
-        result: true,
-        commentData: newComment,
-      });
-    } else {
-      return res.send({ result: false });
-    }
+    // 날짜 데이터 포맷 변경
+    const commentCreateAt = moment(newComment.createdAt).format('YYYY-MM-DD HH:mm');
+
+    res.status(200).send({
+      result: true,
+      commentData: newComment,
+      commentCreateAt,
+    });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.status(500).send({
+      result: false,
+      msg: 'Internal Server Error',
+    });
   }
 };
 
@@ -77,24 +76,39 @@ exports.patchComment = async (req, res) => {
     const { cId } = req.params;
 
     const { content } = req.body;
-    const updatedComment = await Comment.update(
+    const updatedCommentResult = await Comment.update(
       { content },
       {
         where: { cId },
       }
     );
 
-    if (updatedComment) {
-      return res.send({
-        result: true,
-        commentData: updatedComment,
-      });
-    } else {
-      return res.send({ result: false });
+    const updatedComment = await Comment.findByPk(cId);
+
+    // 댓글 내용에 빈값이 왔을때
+    if (!content) {
+      res.status(501).send({ result: false, msg: '댓글에 내용을 입력해 주세요' });
+      return;
     }
+
+    // 업데이트 처리 확인 (변경값이 없어도 처리는 된다.)
+    if (!updatedCommentResult[0]) {
+      res.status(502).send({ result: false, msg: 'DB 업데이트 서버 에러 발생' });
+      return;
+    }
+
+    // 날짜데이터 포맷 수정
+    const commentCreateAt = moment(updatedComment.createdAt).format('YYYY-MM-DD HH:mm');
+
+    // 정상 처리
+    res.status(200).send({
+      result: true,
+      commentData: updatedComment,
+      commentCreateAt,
+    });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.status(500).send('Internet Server Error!!!');
   }
 };
 

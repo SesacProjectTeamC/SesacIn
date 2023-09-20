@@ -1,10 +1,9 @@
-function addComment(qId, aId, userData) {
+function addComment(qId, aId, userName, img) {
   const content = document.querySelector(`#commentArea${aId}`).value;
   if (content.length < 10) {
     alert('10자 이상 입력바랍니다');
   } else {
     console.log(content);
-
     axios({
       method: 'post',
       url: `/question/${qId}/${aId}/comment/create`,
@@ -15,39 +14,38 @@ function addComment(qId, aId, userData) {
       .then((response) => {
         // 성공했을때 처리.
         // response.status에 의해서 판단한다.
-        console.log(response.data.commentData);
         const container = document.querySelector(`#commentC${aId}`);
         console.log(container);
         container.innerHTML += commentCard(
           response.data.commentData,
-          '2023-01-01',
-          userData
+          response.data.commentCreateAt,
+          userName,
+          img,
+          aId,
+          qId
         );
 
         // commentsContainer.appendChild(commentDiv);
       })
-      .catch((error) => {
-        // 실패했을때 처리
-        // response.status에 의해서 판단되어 catch 문에서 실행된다.
-
-        // 에러 객체 전체
-        console.log(error);
+      .catch((err) => {
+        console.log(err.response.status);
+        if (err.response.status === 401) {
+          openModal(err.response.data);
+        } else {
+          openModal('서버오류 발생');
+        }
       });
   }
 }
 
-const commentCard = (commentData, cDate, userData) => {
+const commentCard = (commentData, cDate, userName, img, aId, qId) => {
   return [
-    '<div class="commentContainer" style="padding: 0px">',
+    `<div class="commentContainer${commentData.cId}" style="padding: 0px">`,
     '<div class="input-group commentUser">',
     '<div class="userC">',
     '<img alt="프로필" width="24px" height="24px" style="border-radius: 999px" class="profileImg"',
-    `src="${
-      userData.userImgPath
-        ? '/' + userData.userImgPath
-        : '/static/svg/person.svg'
-    }"/>`,
-    `${userData.uName}</div>`,
+    `src="${img ? '/' + img : '/static/svg/person.svg'}"/>`,
+    `${userName}</div>`,
     '<div style="font-size: 14px; color: lightgray">',
     `${cDate}`,
     '</div>',
@@ -55,14 +53,42 @@ const commentCard = (commentData, cDate, userData) => {
     `<div id="comment${commentData.cId}" style="margin-left: 15px; font-size: 14px; margin-bottom: 12px">`,
     `${commentData.content}</div>`,
     `<div id="fixCommentC${commentData.cId}" style="display: flex; justify-content: flex-end; color: darkgray; margin-bottom: 7px;">`,
-    `<div style="cursor: pointer; margin-right: 10px; font-size: 14px" onclick="fixComment('${commentData.cId}')">수정</div>`,
+    `<div style="cursor: pointer; margin-right: 10px; font-size: 14px" onclick="fixComment('${qId}','${commentData.cId}','${aId}')">수정</div>`,
     `<div style="cursor: pointer; font-size: 14px" onclick="openModal('정말 삭제하시겠어요?', 'deleteComment('${commentData.cId}')');">삭제</div>`,
     '</div>',
     '</div>',
   ].join('');
 };
 
-const fixComment = (cId, bId) => {
+const likeComment = (qId, aId) => {
+  axios({
+    method: 'patch',
+    url: `/question/${qId}/like/${aId}`,
+  })
+    .then((response) => {
+      const like = document.querySelector('.aLike');
+      const clikeC = document.querySelector('#cLikeC');
+      if (like.getAttribute('src') === '/static/svg/heart.svg') {
+        like.setAttribute('src', '/static/svg/heart-fill.svg');
+        clikeC.innerHTML = Number(clikeC.innerHTML.trim()) + 1;
+      } else {
+        like.setAttribute('src', '/static/svg/heart.svg');
+        clikeC.innerHTML = Number(clikeC.innerHTML.trim()) - 1;
+      }
+      const likeC = document.querySelector('.likeC');
+      likeC.classList.toggle('likeActive');
+    })
+    .catch((err) => {
+      console.log(err.response.status);
+      if (err.response.status === 401) {
+        openModal(err.response.data);
+      } else {
+        openModal('서버오류 발생');
+      }
+    });
+};
+
+const fixComment = (qId, cId, aId) => {
   document.querySelector(`#fixCommentC${cId}`).style.display = 'none';
   const commentContent = document.querySelector(`#comment${cId}`);
   const beforeC = commentContent.innerHTML;
@@ -70,7 +96,7 @@ const fixComment = (cId, bId) => {
   commentContent.innerHTML += [
     '<div style="display: flex; justify-content: flex-end; color: darkgray; margin-top: 10px">',
     `<div class="cancelBtn" onclick="fixCancel('${beforeC.trim()}', '${cId}');">취소</div>`,
-    `<div style="cursor: pointer" onclick="fixFinish('${cId}', '${bId}');">완료</div>`,
+    `<div style="cursor: pointer" onclick="fixFinish('${qId}', '${cId}', '${aId}');">완료</div>`,
     '</div>',
   ].join('');
 };
@@ -81,34 +107,43 @@ const fixCancel = (content, cId) => {
   document.querySelector(`#fixCommentC${cId}`).style.display = 'flex';
 };
 
-const fixFinish = (cId, bId) => {
+const fixFinish = (qId, cId, aId) => {
   const commentContent = document.querySelector('#fixC').value;
   console.log(commentContent);
   axios({
     method: 'patch',
-    url: `/board/comment/edit/${cId}`,
+    url: `/question/${qId}/${aId}/comment/${cId}/edit`,
     data: {
       content: commentContent,
     },
   })
     .then((response) => {
-      document.location.href = `/board/detail/${bId}`;
+      const content = document.querySelector(`#comment${cId}`);
+      content.innerHTML = commentContent;
+      document.querySelector(`#fixCommentC${cId}`).style.display = 'flex';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      // console.log(err.response);
+      if (err.response.status === 501) {
+        // openModal(err.response.data.msg);
+        openModal('내용을 입력해주세요! 혹은 내용을 변경해주세요!');
+      } else {
+        openModal('서버오류 발생');
+      }
     });
 };
 
-function deleteComment(cId, bId) {
+function deleteComment(qId, cId, aId) {
   // 댓글 삭제 요청을 서버로 보내고, 성공하면 화면에서 삭제
   axios({
     method: 'delete',
-    url: `/board/comment/delete/${cId}`,
+    url: `/question/${qId}/${aId}/comment/${cId}/delete`,
   })
     .then((response) => {
-      console.log(response.data);
-      document.location.href = `/board/detail/${bId}`;
-      // refreshComments(); // 댓글 목록 업데이트
+      const content = document.querySelector(`#comment${cId}`);
+      let myDiv = document.querySelector(`.commentContainer${cId}`);
+      let parent = myDiv.parentElement; // 부모 객체 알아내기
+      parent.removeChild(myDiv);
     })
     .catch((error) => {
       console.error(error.message);
@@ -116,14 +151,13 @@ function deleteComment(cId, bId) {
     });
 }
 
-const deletePost = (bId) => {
+const deletePost = (qId) => {
   axios({
     method: 'delete',
-    url: `/board/delete/${bId}`,
+    url: `/question/${qId}/delete`,
   })
     .then((response) => {
       document.location.href = `/`;
-      // refreshComments(); // 댓글 목록 업데이트
     })
     .catch((error) => {
       console.error(error.message);
@@ -166,11 +200,21 @@ const postAnswer = (qId) => {
         method: 'POST',
         url: `/question/${qId}/answer/create`,
         data: { title: '답변입니다', content: content },
-      }).then((res) => {
-        if (res) {
-          document.location.href = `/question/${qId}`;
-        }
-      });
+      })
+        .then((res) => {
+          if (res) {
+            console.log(res);
+            document.location.href = `/question/${qId}`;
+          }
+        })
+        .catch((err) => {
+          console.log(err.response.status);
+          if (err.response.status === 401) {
+            openModal(err.response.data);
+          } else {
+            openModal('서버오류 발생');
+          }
+        });
     }
   } else {
     toggleAnswerContainer();
