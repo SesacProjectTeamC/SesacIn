@@ -18,6 +18,9 @@ package-lock.json
 !static/editorImg/.gitkeep
 !static/profileImg/.gitkeep
 
+# 설정파일 폴더
+!config/.gitkeep
+
 # 맥북
 .DS_Store
 
