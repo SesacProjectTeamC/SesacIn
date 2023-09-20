@@ -87,7 +87,9 @@
       <div class="bContent ck-content"><%- data.content %></div>
 
       <%if(isLogin && data.uId === userData.uId){%>
-      <div style="display: flex; justify-content: flex-end">
+      <div
+        style="display: flex; justify-content: flex-end; margin-bottom: 15px"
+      >
         <a
           href="/board/edit/<%= data.qId %>"
           style="cursor: pointer; margin-right: 10px"
@@ -221,9 +223,11 @@
             class="commentC"
             onclick="toggleComment(this, '<%= answerData[i].aId%>')"
           >
-            <% const answerCommentList = [] %> <% for(let comment of
-            commentData) { %> <% if(comment.aId === answerData[i].aId) { %> <%
-            answerCommentList.push(comment); %> <% } %> <% } %>
+            <% const answerCommentList = [] %> <% const answerDateList = [] %>
+            <% for(let k = 0; k < commentData.length; k++) { %> <%
+            if(commentData[k].aId === answerData[i].aId) { %> <%
+            answerCommentList.push(commentData[k]); %> <%
+            answerDateList.push(commentsCreateAt[k]); %> <% } %> <% } %>
             <img
               src="/static/svg/message.svg"
               alt="댓글"
@@ -256,18 +260,84 @@
                 style="border-radius: 999px; margin-right: 10px"
                 class="profileImg"
               />
-              <%}%> <%= userData && userData.uName%>
+              <%}%> <%= userData ? userData.uName : '로그인 해주세요'%>
             </div>
-            <div style="font-size: 14px; cursor: pointer">댓글 등록</div>
+            <div
+              style="font-size: 14px; cursor: pointer"
+              onclick="addComment('<%= data.qId %>', '<%= answerData[i].aId%>', '<%= userData%>')"
+            >
+              댓글 등록
+            </div>
           </div>
 
           <textarea
-            id="commentArea"
+            id="commentArea<%= answerData[i].aId%>"
             class="form-control shadow-none"
             aria-label="With textarea"
             style="height: 70px; margin-top: 10px; font-size: 14px"
             placeholder="댓글을 입력하세요"
           ></textarea>
+          <%for(let j = 0; j < answerCommentList.length; j++){%>
+          <div class="commentContainer" style="padding: 0px">
+            <div class="input-group commentUser">
+              <div class="userC">
+                <%if(answerCommentList[j].User.userImgPath){%>
+                <img
+                  src="/<%= answerCommentList[j].User.userImgPath %>"
+                  alt="프로필"
+                  width="24px"
+                  height="24px"
+                  style="border-radius: 999px"
+                  class="profileImg"
+                />
+                <%}else{%>
+                <img
+                  src="../../static/svg/person.svg"
+                  alt="프로필"
+                  width="24px"
+                  height="24px"
+                  style="border-radius: 999px"
+                  class="profileImg"
+                />
+                <%}%> <%= answerCommentList[j].User.uName %>
+              </div>
+              <div style="font-size: 14px; color: lightgray">
+                <%= answerDateList[i] %>
+              </div>
+            </div>
+            <div
+              id="comment<%= commentData[i].cId%>"
+              style="margin-left: 15px; font-size: 14px; margin-bottom: 12px"
+            >
+              <%= commentData[i].content %>
+            </div>
+            <%if(isLogin && commentData[i].uId === userData.uId){%>
+            <div
+              id="fixCommentC<%= commentData[i].cId %>"
+              style="
+                display: flex;
+                justify-content: flex-end;
+                color: darkgray;
+                margin-bottom: 7px;
+              "
+            >
+              <div
+                style="cursor: pointer; margin-right: 10px; font-size: 14px"
+                onclick="fixComment('<%= commentData[i].cId %>')"
+              >
+                수정
+              </div>
+
+              <div
+                style="cursor: pointer; font-size: 14px"
+                onclick="openModal('정말 삭제하시겠어요?', 'deleteComment(<%= commentData[i].cId %>)');"
+              >
+                삭제
+              </div>
+            </div>
+            <%}%>
+          </div>
+          <%}%>
         </div>
       </div>
       <%}%>

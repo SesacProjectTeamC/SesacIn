@@ -1,69 +1,66 @@
-function addComment(bId) {
-  const comment = document.querySelector('.form-control');
+function addComment(qId, aId, userData) {
+  const content = document.querySelector(`#commentArea${aId}`).value;
+  if (content.length < 10) {
+    alert('10자 이상 입력바랍니다');
+  } else {
+    console.log(content);
 
-  axios({
-    method: 'post',
-    url: `/board/comment/create/${bId}`, //bId가 params로 넘어갑니다.
-    data: {
-      bId,
-      content: comment.value,
-    },
-  })
-    .then((response) => {
-      // 성공했을때 처리.
-      // response.status에 의해서 판단한다.
-      console.log(response.data);
-      if (response.data.success) {
-        document.location.href = `/board/detail/${bId}`;
-      }
-      // 새로운 댓글 엘리먼트 생성 및 추가
-      //   const commentsContainer = document.getElementById('commentsContainer');
-      //   const newComment = response.data.commentData; // 새로운 댓글 데이터
-
-      //   const commentDiv = document.createElement('div');
-      //   commentDiv.innerHTML = `
-      //   ${newComment.cId}. 댓글 작성자: ${newComment.uId}
-      //   <button
-      //     type="button"
-      //     onclick="editComment('${newComment.cId}')"
-      //   >
-      //     수정하기
-      //   </button>
-      //   <button
-      //     type="button"
-      //     onclick="deleteComment('${newComment.cId}')"
-      //   >
-      //     삭제하기
-      //   </button>
-      // </div>
-      // <div id="comment${newComment.cId}">
-      //   ${newComment.cId}. 댓글 내용: ${newComment.content}
-      // </div>
-      // <div id="editComment${newComment.cId}" style="display: none">
-      //   <input
-      //     type="text"
-      //     id="editedComment${newComment.cId}"
-      //     value="${newComment.cId}"
-      //   />
-      //   <button
-      //     type="button"
-      //     onclick="applyEdit('${newComment.cId}')"
-      //   >
-      //     적용
-      //   </button>
-      //   <button type="button" onclick="cancelEdit('${newComment.cId}')">취소</button>
-      // </div>`;
-
-      //   commentsContainer.appendChild(commentDiv);
+    axios({
+      method: 'post',
+      url: `/question/${qId}/${aId}/comment/create`,
+      data: {
+        content: content,
+      },
     })
-    .catch((error) => {
-      // 실패했을때 처리
-      // response.status에 의해서 판단되어 catch 문에서 실행된다.
+      .then((response) => {
+        // 성공했을때 처리.
+        // response.status에 의해서 판단한다.
+        console.log(response.data.commentData);
+        const container = document.querySelector(`#commentC${aId}`);
+        console.log(container);
+        container.innerHTML += commentCard(
+          response.data.commentData,
+          '2023-01-01',
+          userData
+        );
 
-      // 에러 객체 전체
-      console.log(error);
-    });
+        // commentsContainer.appendChild(commentDiv);
+      })
+      .catch((error) => {
+        // 실패했을때 처리
+        // response.status에 의해서 판단되어 catch 문에서 실행된다.
+
+        // 에러 객체 전체
+        console.log(error);
+      });
+  }
 }
+
+const commentCard = (commentData, cDate, userData) => {
+  return [
+    '<div class="commentContainer" style="padding: 0px">',
+    '<div class="input-group commentUser">',
+    '<div class="userC">',
+    '<img alt="프로필" width="24px" height="24px" style="border-radius: 999px" class="profileImg"',
+    `src="${
+      userData.userImgPath
+        ? '/' + userData.userImgPath
+        : '/static/svg/person.svg'
+    }"/>`,
+    `${userData.uName}</div>`,
+    '<div style="font-size: 14px; color: lightgray">',
+    `${cDate}`,
+    '</div>',
+    '</div>',
+    `<div id="comment${commentData.cId}" style="margin-left: 15px; font-size: 14px; margin-bottom: 12px">`,
+    `${commentData.content}</div>`,
+    `<div id="fixCommentC${commentData.cId}" style="display: flex; justify-content: flex-end; color: darkgray; margin-bottom: 7px;">`,
+    `<div style="cursor: pointer; margin-right: 10px; font-size: 14px" onclick="fixComment('${commentData.cId}')">수정</div>`,
+    `<div style="cursor: pointer; font-size: 14px" onclick="openModal('정말 삭제하시겠어요?', 'deleteComment('${commentData.cId}')');">삭제</div>`,
+    '</div>',
+    '</div>',
+  ].join('');
+};
 
 const fixComment = (cId, bId) => {
   document.querySelector(`#fixCommentC${cId}`).style.display = 'none';

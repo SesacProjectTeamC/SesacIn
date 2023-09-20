@@ -28,7 +28,7 @@ const changeList = (res, findType) => {
   container.innerHTML = '';
   for (let i = 0; i < arrayData.length; i++) {
     let include;
-    if (findType === '📋 Sesac 자유게시판') {
+    if (findType === '🌱 Sesac 자유게시판') {
       include = freeboardlist(
         arrayData[i],
         res.data.boardCreateAt[i]
