@@ -86,16 +86,18 @@ exports.patchComment = async (req, res) => {
     const updatedComment = await Comment.findByPk(cId);
 
     if (updatedCommentResult[0]) {
+      res.status(501).send({ result: false, msg: 'DB에 댓글 업데이트 되지 않음' });
+      return;
+    } else {
       // 날짜데이터 포맷 수정
-      commentCreateAt = moment(commentCreateAt.createdAt).format('YYYY-MM-DD HH:mm');
+      const commentCreateAt = moment(updatedComment.createdAt).format('YYYY-MM-DD HH:mm');
 
       res.send({
         result: true,
         commentData: updatedComment,
         commentCreateAt,
       });
-    } else {
-      return res.status(500).send({ result: false, msg: 'DB에 댓글 업데이트 되지 않음' });
+      return;
     }
   } catch (err) {
     console.log(err);

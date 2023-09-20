@@ -20,12 +20,13 @@ function addComment(qId, aId, userName, img) {
 
         // commentsContainer.appendChild(commentDiv);
       })
-      .catch((error) => {
-        // 실패했을때 처리
-        // response.status에 의해서 판단되어 catch 문에서 실행된다.
-
-        // 에러 객체 전체
-        console.log(error);
+      .catch((err) => {
+        console.log(err.response.status);
+        if (err.response.status === 401) {
+          openModal(err.response.data);
+        } else {
+          openModal('서버오류 발생');
+        }
       });
   }
 }
@@ -70,8 +71,13 @@ const likeComment = (qId, aId) => {
       const likeC = document.querySelector('.likeC');
       likeC.classList.toggle('likeActive');
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      console.log(err.response.status);
+      if (err.response.status === 401) {
+        openModal(err.response.data);
+      } else {
+        openModal('서버오류 발생');
+      }
     });
 };
 
@@ -109,8 +115,14 @@ const fixFinish = (qId, cId, aId) => {
       content.innerHTML = commentContent;
       document.querySelector(`#fixCommentC${cId}`).style.display = 'flex';
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      // console.log(err.response);
+      if (err.response.status === 501) {
+        // openModal(err.response.data.msg);
+        openModal('내용을 입력해주세요! 혹은 내용을 변경해주세요!');
+      } else {
+        openModal('서버오류 발생');
+      }
     });
 };
 
@@ -181,11 +193,21 @@ const postAnswer = (qId) => {
         method: 'POST',
         url: `/question/${qId}/answer/create`,
         data: { title: '답변입니다', content: content },
-      }).then((res) => {
-        if (res) {
-          document.location.href = `/question/${qId}`;
-        }
-      });
+      })
+        .then((res) => {
+          if (res) {
+            console.log(res);
+            document.location.href = `/question/${qId}`;
+          }
+        })
+        .catch((err) => {
+          console.log(err.response.status);
+          if (err.response.status === 401) {
+            openModal(err.response.data);
+          } else {
+            openModal('서버오류 발생');
+          }
+        });
     }
   } else {
     toggleAnswerContainer();
