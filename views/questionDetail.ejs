@@ -19,9 +19,9 @@
       <div id="bUserC">
         <div style="display: flex; align-items: center">
           <div id="bUser">
-            <%if(data.userImgPath){%>
+            <%if(data.User.userImgPath){%>
             <img
-              src="/<%= data.userImgPath%>"
+              src="/<%= data.User.userImgPath%>"
               alt="프로필"
               width="36px"
               height="36px"
@@ -91,7 +91,7 @@
         style="display: flex; justify-content: flex-end; margin-bottom: 15px"
       >
         <a
-          href="/board/edit/<%= data.qId %>"
+          href="/question/<%= data.qId %>/edit"
           style="cursor: pointer; margin-right: 10px"
         >
           <div style="color: darkgray; font-size: 18px; font-weight: 300">
@@ -195,27 +195,32 @@
         <%}%>
         <div style="display: flex">
           <% if (!aResult[i]) { %>
-          <div class="likeC" onclick="bLikeHandler('<%= data.qId %>')">
+          <div
+            class="likeC"
+            onclick="likeComment('<%= data.qId %>', '<%= answerData[i].aId%>')"
+          >
             <img
               src="/static/svg/heart.svg"
               alt="좋아요수"
               width="24px"
-              class="svg"
+              class="svg aLike"
             />
-            좋아요 <%= answerData[i].likeCount%>
+            좋아요
+            <div id="cLikeC"><%= answerData[i].likeCount%></div>
           </div>
           <% } else if (aResult[i]) { %>
           <div
             class="likeC likeActive"
-            onclick="bLikeHandler('<%= data.qId %>')"
+            onclick="likeComment('<%= data.qId %>', '<%= answerData[i].aId%>')"
           >
             <img
               src="/static/svg/heart-fill.svg"
               alt="좋아요수"
               width="24px"
-              class="svg"
+              class="svg aLike"
             />
-            좋아요 <%= answerData[i].likeCount%>
+            좋아요
+            <div id="cLikeC"><%= answerData[i].likeCount%></div>
           </div>
           <% } %>
 
@@ -228,6 +233,7 @@
             if(commentData[k].aId === answerData[i].aId) { %> <%
             answerCommentList.push(commentData[k]); %> <%
             answerDateList.push(commentsCreateAt[k]); %> <% } %> <% } %>
+
             <img
               src="/static/svg/message.svg"
               alt="댓글"
@@ -264,7 +270,7 @@
             </div>
             <div
               style="font-size: 14px; cursor: pointer"
-              onclick="addComment('<%= data.qId %>', '<%= answerData[i].aId%>', '<%= userData%>')"
+              onclick="addComment('<%= data.qId %>', '<%= answerData[i].aId%>', '<%= userData && userData.uName%>', '<%= userData && userData.userImgPath%>')"
             >
               댓글 등록
             </div>
@@ -278,7 +284,10 @@
             placeholder="댓글을 입력하세요"
           ></textarea>
           <%for(let j = 0; j < answerCommentList.length; j++){%>
-          <div class="commentContainer" style="padding: 0px">
+          <div
+            class="commentContainer<%= answerCommentList[j].cId%>"
+            style="padding: 0px"
+          >
             <div class="input-group commentUser">
               <div class="userC">
                 <%if(answerCommentList[j].User.userImgPath){%>
@@ -306,14 +315,14 @@
               </div>
             </div>
             <div
-              id="comment<%= commentData[i].cId%>"
+              id="comment<%= answerCommentList[j].cId%>"
               style="margin-left: 15px; font-size: 14px; margin-bottom: 12px"
             >
-              <%= commentData[i].content %>
+              <%= answerCommentList[j].content %>
             </div>
-            <%if(isLogin && commentData[i].uId === userData.uId){%>
+            <%if(isLogin && answerCommentList[j].uId === userData.uId){%>
             <div
-              id="fixCommentC<%= commentData[i].cId %>"
+              id="fixCommentC<%= answerCommentList[j].cId %>"
               style="
                 display: flex;
                 justify-content: flex-end;
@@ -323,14 +332,14 @@
             >
               <div
                 style="cursor: pointer; margin-right: 10px; font-size: 14px"
-                onclick="fixComment('<%= commentData[i].cId %>')"
+                onclick="fixComment('<%= data.qId %>', '<%= answerCommentList[j].cId %>','<%= answerData[i].aId%>')"
               >
                 수정
               </div>
 
               <div
                 style="cursor: pointer; font-size: 14px"
-                onclick="openModal('정말 삭제하시겠어요?', 'deleteComment(<%= commentData[i].cId %>)');"
+                onclick="openModal('정말 삭제하시겠어요?', 'deleteComment(<%= data.qId %>, <%= answerCommentList[j].cId %>, <%= answerData[i].aId%>)');"
               >
                 삭제
               </div>
@@ -342,24 +351,66 @@
       </div>
       <%}%>
     </div>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="myModal"
+      tabindex="-1"
+      aria-labelledby="cautionModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cautionModalLabel">경고</h5>
+          </div>
+          <div class="modal-body">
+            <p id="cautionText"></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+              data-bs-dismiss="modal"
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="deletebtn"
+              data-dismiss="modal"
+              data-bs-dismiss="modal"
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
   <script>
-    //=== 세화 ===
+    // === 세화 ===
     // 좋아요 기능
     const bLikeHandler = (qId) => {
       axios({
         method: 'PATCH',
-        url: `/board/detail/like/${qId}`,
+        url: `/question/${qId}`,
       })
         .then((res) => {
           if (res) {
-            document.location.href = `/board/detail/${qId}`;
+            console.log(res);
+            document.location.href = `/question/${qId}`;
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.log(err.response.status);
           if (err.response.status === 401) {
-            document.location.href = '/';
+            openModal(err.response.data);
+          } else {
+            openModal('서버오류 발생');
           }
         });
     };

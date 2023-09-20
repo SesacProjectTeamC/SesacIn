@@ -515,6 +515,7 @@ const verificationCodes = {};
 exports.getEmail = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
+  console.log(req.session.user);
 
   try {
     if (isLogin) {
@@ -564,41 +565,115 @@ var generateRandomNumber = function (min, max) {
 
 // 인증 이메일 발신
 exports.postEmail = async (req, res) => {
-  const number = generateRandomNumber(111111, 999999);
+  console.log(req.session);
+  let isLogin = req.session.user ? true : false;
 
-  const { email } = req.body; //사용자가 입력한 이메일
+  if (isLogin) {
+    try {
+      // 세션에서 사용자 아이디 가져오기
+      const loggedInUserId = req.session.user;
 
-  verificationCodes[email] = {
-    code: number,
-    timestamp: Date.now(),
-  };
+      // 사용자 아이디를 기반으로 User 모델을 조회하여 이메일을 가져오기
+      const loggedInUser = await User.findOne({
+        where: { uId: loggedInUserId },
+      });
 
-  const mailOptions = {
-    from: 'oliviamoon1124@naver.com ', // 발신자 이메일 주소.
-    to: email, //사용자가 입력한 이메일 -> 목적지 주소 이메일
-    subject: ' 인증 관련 메일 입니다. ',
-    html: '<h1>인증번호를 입력해주세요 \n\n\n\n\n\n</h1>' + number,
-  };
-  smtpTransport.sendMail(mailOptions, (err, response) => {
-    if (err) {
-      res.json({ ok: false, msg: '메일 전송에 실패하였습니다.' });
-    } else {
-      // 서버에서 만든 인증코드를 세션에 저장
-      req.session.email = email;
+      // 사용자가 로그인한 경우에만 이메일 전송
+      if (loggedInUser && loggedInUser.email === req.body.email) {
+        // 랜덤 인증 코드 생성
+        const number = generateRandomNumber(111111, 999999);
 
-      req.session.verificationCodes = number;
-      res.json({ ok: true, msg: '메일 전송에 성공하였습니다.' });
+        // 이메일 주소
+        const email = req.body.email;
+
+        // verificationCodes 객체에 인증 정보 저장
+        verificationCodes[email] = {
+          code: number,
+          timestamp: Date.now(),
+        };
+
+        // 이메일 옵션 설정
+        const mailOptions = {
+          from: 'oliviamoon1124@naver.com', // 발신자 이메일 주소
+          to: email, // 목적지 이메일 주소
+          subject: '인증 관련 메일입니다.',
+          html: '<h1>인증번호를 입력해주세요\n\n\n\n\n\n</h1>' + number,
+        };
+
+        // 이메일 전송
+        smtpTransport.sendMail(mailOptions, (err, response) => {
+          if (err) {
+            return res.status(402).json({
+              ok: false,
+              error: '메일 전송에 실패하였습니다.!!!!!!!!!!!!!!',
+            });
+          } else {
+            // 서버에서 만든 인증코드를 세션에 저장
+            req.session.verificationCode = number;
+            req.session.email = email;
+
+            return res.status(200).json({
+              ok: true,
+              msg: '메일 전송에 성공하였습니다.!!!!!!!!!!!!!',
+            });
+          }
+        });
+      } else {
+        // 사용자 정보가 올바르지 않은 경우
+        return res
+          .status(401)
+          .json({ error: '이메일 정보가 올바르지 않습니다.!!' });
+      }
+    } catch (error) {
+      console.error('이메일 전송 중 오류 발생:', error);
+      return res.status(500).json({ ok: false, error: '서버 오류' });
     }
-  });
+  } else {
+    const number = generateRandomNumber(111111, 999999);
+
+    // 이메일 주소
+    const email = req.body.email;
+
+    // verificationCodes 객체에 인증 정보 저장
+    verificationCodes[email] = {
+      code: number,
+      timestamp: Date.now(),
+    };
+
+    // 이메일 옵션 설정
+    const mailOptions = {
+      from: 'oliviamoon1124@naver.com', // 발신자 이메일 주소
+      to: email, // 목적지 이메일 주소
+      subject: '인증 관련 메일입니다.',
+      html: '<h1>인증번호를 입력해주세요\n\n\n\n\n\n</h1>' + number,
+    };
+
+    // 이메일 전송
+    smtpTransport.sendMail(mailOptions, (err, response) => {
+      if (err) {
+        res
+          .status(402)
+          .json({ ok: false, error: '메일 전송에 실패하였습니다.' });
+      } else {
+        // 서버에서 만든 인증코드를 세션에 저장
+        req.session.verificationCode = number;
+        req.session.email = email;
+        res
+          .status(200)
+          .json({ ok: true, error: '메일 전송에 성공하였습니다.' });
+      }
+    });
+  }
 };
 
-// '/users/verify' 엔드포인트를 생성
+// '/verify' 엔드포인트를 생성
 exports.postVerify = async (req, res) => {
   const { verificationCode } = req.body;
+  console.log(req.session.email);
 
-  if (req.session.verificationCodes == verificationCode) {
+  if (req.session.verificationCode == verificationCode) {
     // 클라이언트에서 보낸 인증 코드와 저장된 코드를 비교
-    req.session.verificationCodes = null; // 코드 일치 시 세션에서 코드를 제거
+    req.session.verificationCode = null; // 코드 일치 시 세션에서 코드를 제거
 
     try {
       // 사용자 ID를 기반으로 User 모델을 조회합니다.
