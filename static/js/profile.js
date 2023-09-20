@@ -74,7 +74,7 @@ const liked = (data, contentDiv) => {
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
                 <p>${data.boardsData[i].likeCount}</p>
-                <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
+                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
                 <p>${data.commentsCount[i]}</p>
                 </div>
                 </div>
@@ -195,7 +195,7 @@ const free = (data, contentDiv) => {
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
                 <p>${data.boardsData[i].likeCount}</p>
-                <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
+                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
                 <p>${data.commentsCount[i]}</p>
                 </div>
                 </div>
