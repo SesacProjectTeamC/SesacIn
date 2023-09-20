@@ -52,6 +52,29 @@ const commentCard = (commentData, cDate, userName, img) => {
   ].join('');
 };
 
+const likeComment = (qId, aId) => {
+  axios({
+    method: 'patch',
+    url: `/question/${qId}/like/${aId}`,
+  })
+    .then((response) => {
+      const like = document.querySelector('.aLike');
+      const clikeC = document.querySelector('#cLikeC');
+      if (like.getAttribute('src') === '/static/svg/heart.svg') {
+        like.setAttribute('src', '/static/svg/heart-fill.svg');
+        clikeC.innerHTML = Number(clikeC.innerHTML.trim()) + 1;
+      } else {
+        like.setAttribute('src', '/static/svg/heart.svg');
+        clikeC.innerHTML = Number(clikeC.innerHTML.trim()) - 1;
+      }
+      const likeC = document.querySelector('.likeC');
+      likeC.classList.toggle('likeActive');
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 const fixComment = (qId, cId, aId) => {
   document.querySelector(`#fixCommentC${cId}`).style.display = 'none';
   const commentContent = document.querySelector(`#comment${cId}`);
@@ -109,14 +132,13 @@ function deleteComment(qId, cId, aId) {
     });
 }
 
-const deletePost = (qId, cId, aId) => {
+const deletePost = (qId) => {
   axios({
     method: 'delete',
-    url: `/${qId}/${aId}/comment/${cId}/delete`,
+    url: `/question/${qId}/delete`,
   })
     .then((response) => {
       document.location.href = `/`;
-      // refreshComments(); // 댓글 목록 업데이트
     })
     .catch((error) => {
       console.error(error.message);

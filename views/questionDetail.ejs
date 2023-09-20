@@ -19,9 +19,9 @@
       <div id="bUserC">
         <div style="display: flex; align-items: center">
           <div id="bUser">
-            <%if(data.userImgPath){%>
+            <%if(data.User.userImgPath){%>
             <img
-              src="/<%= data.userImgPath%>"
+              src="/<%= data.User.userImgPath%>"
               alt="프로필"
               width="36px"
               height="36px"
@@ -91,7 +91,7 @@
         style="display: flex; justify-content: flex-end; margin-bottom: 15px"
       >
         <a
-          href="/board/edit/<%= data.qId %>"
+          href="/question/<%= data.qId %>/edit"
           style="cursor: pointer; margin-right: 10px"
         >
           <div style="color: darkgray; font-size: 18px; font-weight: 300">
@@ -195,27 +195,32 @@
         <%}%>
         <div style="display: flex">
           <% if (!aResult[i]) { %>
-          <div class="likeC" onclick="bLikeHandler('<%= data.qId %>')">
+          <div
+            class="likeC"
+            onclick="likeComment('<%= data.qId %>', '<%= answerData[i].aId%>')"
+          >
             <img
               src="/static/svg/heart.svg"
               alt="좋아요수"
               width="24px"
-              class="svg"
+              class="svg aLike"
             />
-            좋아요 <%= answerData[i].likeCount%>
+            좋아요
+            <div id="cLikeC"><%= answerData[i].likeCount%></div>
           </div>
           <% } else if (aResult[i]) { %>
           <div
             class="likeC likeActive"
-            onclick="bLikeHandler('<%= data.qId %>')"
+            onclick="likeComment('<%= data.qId %>', '<%= answerData[i].aId%>')"
           >
             <img
               src="/static/svg/heart-fill.svg"
               alt="좋아요수"
               width="24px"
-              class="svg"
+              class="svg aLike"
             />
-            좋아요 <%= answerData[i].likeCount%>
+            좋아요
+            <div id="cLikeC"><%= answerData[i].likeCount%></div>
           </div>
           <% } %>
 

@@ -117,13 +117,13 @@ const editBoard = (bId) => {
       const dpLabel = document.querySelector('#dpLabel').innerHTML.trim();
       console.log({ title: title.value, content: content, qType: dpLabel });
       axios({
-        method: 'POST',
-        url: '/question/create',
+        method: 'PATCH',
+        url: `/question/${bId}/edit`,
         data: { title: title.value, content: content, qType: dpLabel },
       }).then((res) => {
         if (res) {
           console.log(res.data);
-          document.location.href = `/question/${res.data.result.qId}`;
+          document.location.href = `/question/${bId}`;
         }
       });
     }
