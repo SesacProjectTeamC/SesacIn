@@ -11,7 +11,7 @@
     <div id="cardContainer">
       <board_header><%= cDate%></board_header>
       <div class="title">
-        <div class="ellipsis"><%= data.title %></div>
+        <div class="title-ellipsis"><%= data.title %></div>
         <div class="viewImg">
           <img
             src="../../static/svg/eye.svg"
@@ -22,10 +22,8 @@
           <div><%= data.viewCount%></div>
         </div>
       </div>
-      <div class="ellipsis">
-        <div class="content">
-          <%= data.content.replace(/<[^>]*>|&nbsp;/g, '') %>
-        </div>
+      <div class="content">
+        <div class="content-ellipsis"><%= data.content.replace(/<[^>]*>|&nbsp;/g, '') %></div>
       </div>
       <user>
         <div style="display: flex; align-items: center">

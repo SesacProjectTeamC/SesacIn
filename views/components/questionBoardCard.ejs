@@ -14,7 +14,7 @@
         <div class="ques_type"><%= data.qType %></div>
       </ques_header>
       <div class="title">
-        <div class="ellipsis"><%= data.title%></div>
+        <div class="title-ellipsis"><%= data.title%></div>
 
         <div class="viewImg">
           <img
@@ -27,11 +27,8 @@
           <%= data.viewCount%>
         </div>
       </div>
-      <div class="ellipsis">
-        <!-- 프론트에서 가져오는 부분 -->
-        <div class="content">
-          <%= data.content.replace(/<[^>]*>|&nbsp;/g, '') %>
-        </div>
+      <div class="content">
+        <div class="content-ellipsis"><%= data.content.replace(/<[^>]*>|&nbsp;/g, '') %></div>
       </div>
       <user>
         <div style="display: flex; align-items: center">
