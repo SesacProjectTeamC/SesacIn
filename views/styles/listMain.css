@@ -3,6 +3,7 @@ td {
   text-align: center;
 }
 a {
+  text-decoration: none;
   cursor: pointer;
 }
 #listType {
