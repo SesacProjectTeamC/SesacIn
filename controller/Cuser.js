@@ -323,6 +323,143 @@ exports.findId = async (req, res) => {
   }
 };
 
+// controllers/emailVerificationController.js
+
+async function checkIfEmailVerified(uId) {
+  try {
+    // 사용자 아이디를 기반으로 User 모델을 조회합니다.
+    const user = await User.findOne({
+      where: {
+        uId,
+      },
+    });
+
+    if (user) {
+      // 사용자를 찾은 경우, emailVerify 필드 값을 확인합니다.
+      const isEmailVerified = user.emailVerify;
+
+      return isEmailVerified;
+    } else {
+      // 사용자를 찾지 못한 경우
+      return false;
+    }
+  } catch (error) {
+    console.error('이메일 인증 여부 확인 중 오류 발생:', error);
+    throw new Error('이메일 인증 여부 확인 중 오류가 발생했습니다.');
+  }
+}
+
+exports.checkEmailVerify = async (req, res) => {
+  const { uId } = req.body;
+
+  try {
+    const user = await User.findOne({
+      where: {
+        uId: uId,
+      },
+    });
+
+    if (!user) {
+      // 사용자를 찾지 못한 경우 404 Not Found 상태 코드를 응답으로 보냅니다.
+      return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+    }
+
+    const isEmailVerified = await checkIfEmailVerified(uId);
+    console.log('>>>>>>>>>>>>>>>>>>>>', isEmailVerified);
+    res.json({ isEmailVerified });
+  } catch (error) {
+    console.error('이메일 인증 여부 확인 중 오류 발생:', error);
+    res.status(500).json({ error: '서버 오류' });
+  }
+};
+
+// 비밀번호찾기 페이지 렌더링
+exports.pw = (req, res) => {
+  // 세션 검사
+  let isLogin = req.session.user ? true : false;
+  console.log(req.session.user);
+  try {
+    if (isLogin) {
+      // res.status(301).send({
+      //   isLogin,
+      //   currentUser: req.session.user,
+      //   success: false,
+      //   msg: '이미 로그인 되어 있습니다.',
+      // });
+      // return;
+
+      // 이 경우 세션 삭제 후
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        res.redirect('/findPw');
+      });
+    } else {
+      res.render('findPw', {
+        title: 'test',
+        uId: req.body,
+        pw: req.body,
+        isLogin,
+        currentUser: req.session.user,
+        success: true,
+        msg: '비밀번호찾기 페이지 렌더링 정상 처리',
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      isLogin,
+      currentUser: req.session.user,
+      success: false,
+      msg: '비밀번호찾기 페이지 렌더링 중 서버 에러 발생',
+      error,
+    });
+  }
+};
+
+// 비밀번호 재설정 기능
+exports.updatePassword = async (req, res) => {
+  const { uId, pw } = req.body;
+  console.log(req.body);
+
+  try {
+    // 데이터베이스에서 일치하는 사용자를 조회
+    const user = await User.findOne({
+      where: {
+        uId: uId,
+      },
+    });
+
+    if (!user) {
+      // 사용자를 찾지 못한 경우
+      return res.status(401).json({ error: '사용자를 찾을 수 없습니다.' });
+    } else {
+      if (!pw) {
+        return res.status(400).json({
+          OK: false,
+          msg: '입력 필드 중 하나 이상이 누락되었습니다.',
+        });
+      }
+      const hashedPw = hashPassword(pw); // 새 변수에 할당
+
+      const updatedUser = await User.update(
+        { pw: hashedPw },
+        {
+          where: { uId: uId },
+        }
+      );
+
+      return res
+        .status(200)
+        .json({ message: '비밀번호가 업데이트되었습니다.' });
+    }
+  } catch (error) {
+    console.error('비밀번호 재설정 오류:', error);
+    res.status(500).send('비밀번호 재설정 도중 오류가 발생했습니다.');
+  }
+};
+
 // 로그인 페이지 렌더링
 exports.login = (req, res) => {
   // 세션 검사
@@ -373,20 +510,34 @@ const smtpTransport = require('../config/email.js');
 
 const verificationCodes = {};
 
+/////////////////////////////////////////////////
 // 이메일 인층 창 렌더링
-exports.getEmail = (req, res) => {
+exports.getEmail = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
   try {
     if (isLogin) {
-      req.session.destroy((err) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        res.redirect('/email');
+      // 로그인 되어있는 상태에서 이메일 인증창 가면 세션에 있는 사용자에게 저장되어있는 이메일과 일치하는지 조회
+      const loggedInUserId = req.session.user;
+
+      const loggedInUser = await User.findOne({
+        where: { uId: loggedInUserId },
       });
+
+      if (loggedInUser) {
+        loggedInUserEmail = loggedInUser.email;
+
+        res.render('email', {
+          isLogin,
+          currentUser: req.session.user,
+          loggedInUserEmail, // 현재 로그인된 사용자의 이메일을 뷰에 전달
+          success: true,
+          msg: '페이지 렌더링 처리 성공',
+        });
+      } else {
+        res.status(404).json({ ok: false, msg: '사용자를 찾을 수 없습니다.' });
+      }
     } else {
       res.render('email', {
         isLogin,
@@ -441,56 +592,43 @@ exports.postEmail = async (req, res) => {
   });
 };
 
-// 기존 코드와 함께
-
 // '/users/verify' 엔드포인트를 생성
 exports.postVerify = async (req, res) => {
-  // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>', req.body);
-  // const number = generateRandomNumber(111111, 999999);
+  const { verificationCode } = req.body;
 
-  // const { email, verificationCode } = req.body; //사용자가 입력한 이메일
-  const { verificationCode } = req.body; //사용자가 입력한 이메일
   if (req.session.verificationCodes == verificationCode) {
     // 클라이언트에서 보낸 인증 코드와 저장된 코드를 비교
-    req.session.verificationCodes == null;
+    req.session.verificationCodes = null; // 코드 일치 시 세션에서 코드를 제거
 
-    // 사용자 ID를 기반으로 User 모델을 업데이트합니다.
     try {
-      const updatedUser = await User.update(
-        { emailVerify: true }, // 업데이트할 필드와 값을 설정합니다.
-        { where: { email: req.session.email } } // 어떤 사용자를 업데이트할지 설정합니다.
-      );
-      console.log(updatedUser[0])
+      // 사용자 ID를 기반으로 User 모델을 조회합니다.
+      const user = await User.findOne({ where: { email: req.session.email } });
 
-      if (updatedUser) {
-        res.json({ ok: true, msg: '인증에 성공하였습니다.' });
+      if (user) {
+        // 사용자가 존재하는 경우, emailVerify 필드를 업데이트합니다.
+        await User.update(
+          { emailVerify: true },
+          { where: { email: req.session.email } }
+        );
+
+        // 인증에 성공한 경우, 현재 로그인 세션을 유지합니다.
+        req.session.user = user.uId;
+        req.session.userImgPath = user.userImgPath;
+
+        res.status(200).json({ ok: true, msg: '인증에 성공하였습니다.' });
       } else {
-        res.json({ ok: false, msg: '사용자를 찾을 수 없습니다.' });
+        res.status(401).json({ ok: false, msg: '사용자를 찾을 수 없습니다.' });
       }
     } catch (error) {
       console.error('인증 업데이트 오류:', error);
-      res.json({ ok: false, msg: '인증 업데이트 중 오류가 발생했습니다.' });
+      res
+        .status(402)
+        .json({ ok: false, msg: '인증 업데이트 중 오류가 발생했습니다.' });
     }
   } else {
-    res.json({
+    res.status(404).json({
       ok: false,
       msg: '인증에 실패하였습니다. 올바른 코드를 입력하세요.',
     });
   }
-  // verificationCodes[email] = {
-  //   code: number,
-  //   timestamp: Date.now(),
-  // };
-
-  // if (verificationCodes[email].code === Number(verificationCode)) {
-  //   // 클라이언트에서 보낸 인증 코드와 저장된 코드를 비교
-  //   res.json({ ok: true, msg: '인증에 성공하였습니다.' });
-  //   // 인증에 성공했으므로, 저장된 코드를 삭제할 수도 있습니다.
-  //   delete verificationCodes[email];
-  // } else {
-  //   res.json({
-  //     ok: false,
-  //     msg: '인증에 실패하였습니다. 올바른 코드를 입력하세요.',
-  //   });
-  // }
 };
