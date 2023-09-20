@@ -23,6 +23,8 @@ header {
 .logo {
   cursor: pointer;
   margin-left: 55px;
+  width: 135px;
+  height: 45px;
 }
 
 .logout {
@@ -42,8 +44,8 @@ header {
 }
 
 img {
-  width: 135px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
 }
 
 img.person {
