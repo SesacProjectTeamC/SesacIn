@@ -16,7 +16,14 @@ function addComment(qId, aId, userName, img) {
         // response.status에 의해서 판단한다.
         const container = document.querySelector(`#commentC${aId}`);
         console.log(container);
-        container.innerHTML += commentCard(response.data.commentData, response.data.commentCreateAt, userName, img);
+        container.innerHTML += commentCard(
+          response.data.commentData,
+          response.data.commentCreateAt,
+          userName,
+          img,
+          aId,
+          qId
+        );
 
         // commentsContainer.appendChild(commentDiv);
       })
@@ -31,9 +38,9 @@ function addComment(qId, aId, userName, img) {
   }
 }
 
-const commentCard = (commentData, cDate, userName, img) => {
+const commentCard = (commentData, cDate, userName, img, aId, qId) => {
   return [
-    '<div class="commentContainer${commentData.cId}" style="padding: 0px">',
+    `<div class="commentContainer${commentData.cId}" style="padding: 0px">`,
     '<div class="input-group commentUser">',
     '<div class="userC">',
     '<img alt="프로필" width="24px" height="24px" style="border-radius: 999px" class="profileImg"',
@@ -46,7 +53,7 @@ const commentCard = (commentData, cDate, userName, img) => {
     `<div id="comment${commentData.cId}" style="margin-left: 15px; font-size: 14px; margin-bottom: 12px">`,
     `${commentData.content}</div>`,
     `<div id="fixCommentC${commentData.cId}" style="display: flex; justify-content: flex-end; color: darkgray; margin-bottom: 7px;">`,
-    `<div style="cursor: pointer; margin-right: 10px; font-size: 14px" onclick="fixComment('${commentData.cId}')">수정</div>`,
+    `<div style="cursor: pointer; margin-right: 10px; font-size: 14px" onclick="fixComment('${qId}','${commentData.cId}','${aId}')">수정</div>`,
     `<div style="cursor: pointer; font-size: 14px" onclick="openModal('정말 삭제하시겠어요?', 'deleteComment('${commentData.cId}')');">삭제</div>`,
     '</div>',
     '</div>',
@@ -217,5 +224,7 @@ const postAnswer = (qId) => {
 const toggleComment = (component, aId) => {
   component.classList.toggle('commentActive');
   document.querySelector(`#commentC${aId}`).classList.toggle('answerCommentC');
-  document.querySelector(`#commentC${aId}`).classList.toggle('answerCommentCShow');
+  document
+    .querySelector(`#commentC${aId}`)
+    .classList.toggle('answerCommentCShow');
 };
