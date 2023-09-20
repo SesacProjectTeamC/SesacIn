@@ -51,7 +51,7 @@
       <img src="/static/img/logo.png" alt="logo" class="logo" />
       <main>
         <h2>이메일 인증하기</h2>
-        <form action="/users/email" method="POST">
+        <form>
           <div class="mb-3 emailInput">
             <label class="form-label" for="email">Email</label>
             <input
@@ -62,7 +62,12 @@
               required
             />
           </div>
-          <input type="submit" value="메일전송" id="sendEmailButton" />
+          <input
+            type="button"
+            value="메일전송"
+            id="sendEmailButton"
+            onclick="sendVerificationCode();"
+          />
 
           <div class="mb-3 codeInput">
             <label class="form-label" for="verificationCode" id="sencCodeBtn"
@@ -76,7 +81,12 @@
             />
           </div>
         </form>
-        <input type="submit" value="인증하기" id="verifyCodeButton" />
+        <input
+          type="submit"
+          value="인증하기"
+          id="verifyCodeButton"
+          onclick="verifyEmailCode()"
+        />
         <!-- Modal -->
         <div
           class="modal fade"
@@ -125,57 +135,70 @@
         $('#cautionModal').modal('show');
       }
 
-      let loggedInUserEmail = '';
-      $(document).ready(function () {
-        // 인증 코드 입력란을 초기에 숨김
-        $('#verificationCode').hide();
-        $('#sencCodeBtn').hide();
-        $('#verifyCodeButton').hide();
+      function sendVerificationCode() {
+        const emailInput = document.getElementById('email');
+        const emailForm = document.querySelector('.findPw_form_email');
+        const verificationCodeForm = document.querySelector(
+          '.findPw_form_email_verification'
+        );
 
-        // 메일 보내기 버튼을 클릭할 때
-        $('#sendEmailButton').click(function () {
-          const email = $('#email').val();
+        // 이메일을 서버로 보내 인증 코드를 요청
+        axios({
+          method: 'POST',
+          url: '/email',
+          data: {
+            email: emailInput.value,
+          },
+        })
+          .then((response) => {
+            // 이메일을 성공적으로 보냈을 때, 인증 코드 입력란을 표시
 
-          // 서버로 이메일을 보냄
-          $.post('/email', { email }, function (data) {
-            if (data.ok) {
-              alert(data.msg); // 성공 메시지를 표시
-              // 이메일 전송이 성공하면 인증 코드 입력란을 보이게 함
-              $('#verificationCode').show();
-              $('#sencCodeBtn').show();
-              $('#verifyCodeButton').show();
+            setModalTextAndShow('인증 코드가 이메일로 전송되었습니다.');
+          })
+          .catch((error) => {
+            console.error(error);
+            const status = error.response.status;
+            if (status === 401) {
+              setModalTextAndShow('이메일 정보가 올바르지 않습니다.');
             } else {
-              if (email !== loggedInUserEmail) {
-                setModalTextAndShow(
-                  '이메일 정보가 올바르지 않습니다. 회원 정보 수정 후 다시 시도해주세요.'
-                );
-              } else {
-                setModalTextAndShow('오류가 발생했습니다. 다시 시도해주세요.');
-              }
+              setModalTextAndShow(
+                '이메일 전송 중 오류 발생. 다시 시도해주세요.'
+              );
             }
           });
+      }
 
-          // 기본 제출 동작을 막음
-          return false;
-        });
+      function verifyEmailCode() {
+        const verificationCodeInput =
+          document.getElementById('verificationCode');
 
-        // 인증하기 버튼을 클릭할 때
-        $('#verifyCodeButton').click(function () {
-          const verificationCode = $('#verificationCode').val();
-
-          // 서버로 인증 코드를 보냄
-          $.post('/verify', { verificationCode }, function (data) {
-            alert(data.msg); // 결과 메시지를 표시
-            if (data.ok) {
-              // 인증에 성공하면 메인 페이지로 이동
-              window.location.href = '/'; // 여기에 메인 페이지의 URL을 넣으세요
+        axios({
+          method: 'POST',
+          url: `/verify`,
+          data: {
+            verificationCode: verificationCodeInput.value,
+          },
+        })
+          .then((response) => {
+            // 서버에서의 인증이 성공하면 사용자에게 메시지를 표시하고, 다음 단계로 진행
+            setModalTextAndShow('이메일 인증이 성공적으로 완료되었습니다.');
+            // 여기에 다음 단계로 넘어가는 코드를 추가
+          })
+          .catch((error) => {
+            const status = error.response.status;
+            if (status === 401) {
+              setModalTextAndShow('사용자를 찾을 수 없습니다.');
+            } else if (status === 402) {
+              setModalTextAndShow('인증 업데이트 중 오류가 발생했습니다.');
+            } else if (status === 404) {
+              setModalTextAndShow(
+                '인증에 실패하였습니다. 올바른 코드를 입력하세요'
+              );
+            } else {
+              setModalTextAndShow('인증 업데이트 중 오류가 발생했습니다.');
             }
           });
-
-          // 기본 제출 동작을 막음
-          return false;
-        });
-      });
+      }
       function goBack() {
         window.history.back();
       }
