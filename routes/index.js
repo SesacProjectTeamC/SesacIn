@@ -34,8 +34,16 @@ router.get('/id', Cuser.id);
 // 아이디찾기 기능
 router.post('/id', Cuser.findId);
 
-// 이메일 인증 페이지 렌더링
+// 비밀번호 찾기 페이지 렌더링
+router.get('/pw', Cuser.pw);
 
+// 비밀번호 재설정 기능
+router.patch('/pw', Cuser.updatePassword);
+
+// 인증여부 확인 기능
+router.post('/checkEmailVerify', Cuser.checkEmailVerify);
+
+// 이메일 인증 페이지 렌더링
 router.get('/email', Cuser.getEmail);
 
 // 이메일 인증
