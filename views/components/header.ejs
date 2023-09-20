@@ -15,6 +15,8 @@
       align-items: center;
       margin-top: 10px;
       margin-bottom: 10px;
+      padding-left: 1em;
+      padding-right: 2em;
     }
     .left-content {
       display: flex;
@@ -26,10 +28,11 @@
       align-items: center;
     }
 
-    a {
+    .header-font {
       text-decoration-line: none;
       color: black;
       font-weight: 700;
+      font-size: 25px;
     }
 
     /* 드롭다운 및 사용자 메뉴 */
@@ -38,8 +41,8 @@
     }
 
     .dropdownImg {
-      width: 2rem;
-      height: 2rem;
+      width: 4rem;
+      height: 4rem;
       border-radius: 50%;
     }
     .dropdown {
@@ -93,11 +96,11 @@
 <div class="cHeader">
   <div class="left-content">
     <a href="/">
-      <img src="/static/img/logo.png" alt="logo" class="logo" height="45px" />
+      <img src="/static/img/logo_header.png" alt="logo" class="logo" height="50em" />
     </a>
   </div>
   <div class="right-content">
-    <a onclick="moveToMakePost()" style="margin-right: 15px; cursor: pointer">작성하기</a>
+    <a class="header-font" onclick="moveToMakePost()" style="margin-right: 3rem; cursor: pointer">작성하기</a>
     <% if (isLogin === true) { %>
     <div class="dropdown">
       <button
@@ -130,7 +133,7 @@
         </li>
       </ul>
       <% } else { %>
-      <a href="/login">로그인</a>
+      <a href="/login" class="header-font">로그인</a>
       <% } %>
     </div>
   </div>

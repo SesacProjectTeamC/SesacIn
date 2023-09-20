@@ -85,18 +85,27 @@ exports.patchComment = async (req, res) => {
 
     const updatedComment = await Comment.findByPk(cId);
 
-    if (updatedCommentResult[0]) {
-      // 날짜데이터 포맷 수정
-      commentCreateAt = moment(commentCreateAt.createdAt).format('YYYY-MM-DD HH:mm');
-
-      res.send({
-        result: true,
-        commentData: updatedComment,
-        commentCreateAt,
-      });
-    } else {
-      return res.status(500).send({ result: false, msg: 'DB에 댓글 업데이트 되지 않음' });
+    // 댓글 내용에 빈값이 왔을때
+    if (!content) {
+      res.status(501).send({ result: false, msg: '댓글에 내용을 입력해 주세요' });
+      return;
     }
+
+    // 업데이트 처리 확인 (변경값이 없어도 처리는 된다.)
+    if (!updatedCommentResult[0]) {
+      res.status(502).send({ result: false, msg: 'DB 업데이트 서버 에러 발생' });
+      return;
+    }
+
+    // 날짜데이터 포맷 수정
+    const commentCreateAt = moment(updatedComment.createdAt).format('YYYY-MM-DD HH:mm');
+
+    // 정상 처리
+    res.status(200).send({
+      result: true,
+      commentData: updatedComment,
+      commentCreateAt,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).send('Internet Server Error!!!');
