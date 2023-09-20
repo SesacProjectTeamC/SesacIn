@@ -32,7 +32,7 @@
           onclick="moveToDetailBoard('<%= boardData[i].bId%>')"
           style="cursor: pointer"
         >
-          <th><%= boardData[i].bId%></th>
+          <th><%= i + 1 %></th>
           <td style="text-align: start"><%= boardData[i].title%></td>
           <td><%= boardData[i].uName%></td>
           <td><%= boardData[i].likeCount%></td>
@@ -43,8 +43,7 @@
           onclick="moveToDetailQuestion('<%=questionData[i].qId%>')"
           style="cursor: pointer"
         >
-          <!-- <th><%= questionData[i].qId%></th> -->
-          <th><%= questionTotalCount - i %></th>
+          <th><%= i + 1 %></th>
           <td style="text-align: start"><%= questionData[i].title%></td>
           <td><%= questionData[i].uName%></td>
           <td><%= questionData[i].likeCount%></td>

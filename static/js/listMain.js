@@ -8,7 +8,7 @@ const getPageData = (page) => {
   axios({
     method: "GET",
     url:
-      findType === "📋 Sesac 자유게시판"
+      findType === "🌱 Sesac 자유게시판"
         ? `/board/list/${formattedPage}&20&createdAt&desc`
         : `/question/list/${formattedPage}&20&createdAt&desc`,
   }).then((res) => {
@@ -21,7 +21,7 @@ const getPageData = (page) => {
 
 const changeList = (res, findType) => {
   const arrayData =
-    findType === "📋 Sesac 자유게시판"
+    findType === "🌱 Sesac 자유게시판"
       ? res.data.boardData
       : res.data.questionData;
   const container = document.querySelector(".listC");
@@ -30,13 +30,14 @@ const changeList = (res, findType) => {
     let include;
     if (findType === "🌱 Sesac 자유게시판") {
       include = freeboardlist(
+        i + 1 + (savedPage - 1) * 20, // [세화]
         arrayData[i],
         res.data.boardCreateAt[i],
         // res.data.boardUserName[i]
       );
     } else {
       include = qnalist(
-        arrayData.length - i, // [세화]
+        i + 1 + (savedPage - 1) * 20, // [세화]
         arrayData[i],
         res.data.questionCreateAt[i],
         res.data.questionData[i].uName, // [태균]
@@ -87,11 +88,10 @@ const pagination = (page, pageCount) => {
   return result;
 };
 
-// const freeboardlist = (data, cDate, uName) => {
-const freeboardlist = (data, cDate) => {
+const freeboardlist = (count, data, cDate) => {
   const result = [
     `<tr  onclick="moveToDetailBoard('${data.bId}')" style="cursor: pointer">`,
-    `<th>${data.bId}</th>`,
+    `<th>${count}</th>`,
     `<td style="text-align: start">${data.title}</td>`,
     `<td>${data.uName}</td>`, // [태균]
     `<td>${data.likeCount}</td>`,
@@ -102,7 +102,6 @@ const freeboardlist = (data, cDate) => {
   return result;
 };
 
-// const qnalist = (data, cDate, uName) => {
 const qnalist = (count, data, cDate) => {
   const result = [
     `<tr  onclick="moveToDetailQuestion('${data.qId}')" style="cursor: pointer">`,
