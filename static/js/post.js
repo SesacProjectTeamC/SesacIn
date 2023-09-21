@@ -38,7 +38,9 @@ class UploadAdapter {
       console.log(response);
       if (!response || response.error) {
         alert(response.error);
-        return reject(response && response.error ? response.error.message : genericErrorText);
+        return reject(
+          response && response.error ? response.error.message : genericErrorText
+        );
       }
 
       resolve({
@@ -66,6 +68,10 @@ function MyCustomUploadAdapterPlugin(editor) {
 
 ClassicEditor.create(document.querySelector('.editor'), {
   extraPlugins: [MyCustomUploadAdapterPlugin],
+  link: {
+    defaultProtocol: 'http://',
+  },
+  placeholder: '내용을 입력해주세요.',
 })
   .then((newEditor) => {
     editor = newEditor;
@@ -73,15 +79,6 @@ ClassicEditor.create(document.querySelector('.editor'), {
   .catch((error) => {
     console.error(error);
   });
-
-function temp() {
-  const data = editor.getData();
-  console.log(data);
-}
-
-const temp2 = () => {
-  editor.setData('<p>Some text.</p>');
-};
 
 const changeType = (t) => {
   const typeLabel = document.querySelector('#typeLabel');
