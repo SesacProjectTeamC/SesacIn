@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
     <link rel="stylesheet" href="/views/styles/profile.css" />
     <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
-    <script src="../static/js/profile.js"></script>
+    <script src="/static/js/profile.js"></script>
   </head>
   <body>
     <header>
@@ -54,11 +54,7 @@
       <!-- 프로필 -->
       <form name="profile">
         <!-- 배지 -->
-        <img
-          class="sesac_badge"
-          onclick=""
-          src="../static/img/leaf.png"
-        /><br />
+        <img class="sesac_badge" onclick="" src="/static/img/leaf.png" /><br />
 
         <!-- 이미지 업로드 -->
         <% if (userData && userData.userImgPath) { %>
@@ -70,11 +66,7 @@
           />
         </div>
         <% } else { %>
-        <img
-          src="/../static/svg/person.svg"
-          class="person"
-          alt="Default Image"
-        />
+        <img src="/static/svg/person.svg" class="person" alt="Default Image" />
         <% } %><br />
 
         <!-- 이미지 업로드 버튼(이미지) -->
@@ -98,7 +90,7 @@
         >
           <img
             class="uploadBtn"
-            src="/../static/img/uploadIcon.png"
+            src="/static/img/uploadIcon.png"
             alt="클릭하여 파일 찾기"
             onclick="document.getElementById('fileInput').click();"
             style="

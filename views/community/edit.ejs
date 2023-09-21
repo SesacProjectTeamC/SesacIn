@@ -4,17 +4,16 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <%- include('./components/cdn', { title: '메인' }) %>
-    <script defer src="https://unpkg.com/@popperjs/core@2"></script>
+    <%- include('../components/cdn', { title: '메인' }) %>
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
     <link rel="stylesheet" href="/views/styles/post.css" />
     <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
 
     <!-- <script src="https://cdn.ckeditor.com/ckeditor5/39.0.2/super-build/ckeditor.js"></script> -->
-    <script defer src="/static/js/post.js"></script>
+    <script defer src="/static/js/edit.js"></script>
   </head>
   <body class="container">
-    <%- include('./components/header', { isLogin: isLogin }) %>
+    <%- include('../components/header', { isLogin: isLogin }) %>
     <div id="alertC"></div>
     <div class="qcTitle">제목</div>
     <div class="input-group mb-3 qcTitleContainer">
@@ -25,6 +24,7 @@
         placeholder="제목을 입력해 주세요"
         aria-label="title"
         aria-describedby="basic-addon1"
+        value="<%= type === 'board' ? boards.title : data.title%>"
       />
     </div>
     <div style="display: flex; width: 500px; justify-content: space-between">
@@ -33,15 +33,15 @@
         <div class="dropdown">
           <button
             id="typeLabel"
-            class="btn dropdown-toggle"
+            class="btn dropdown-toggle disabled"
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            Q&A
+            <%= type === 'board' ? '자유' : 'Q&A'%>
           </button>
           <ul class="dropdown-menu">
-            <%for(d of ['Q&A','자유']){%>
+            <%for(d of ['자유', 'Q&A']){%>
             <li class="dropdown-item" onclick="changeType('<%= d%>')">
               <%= d%>
             </li>
@@ -49,7 +49,7 @@
           </ul>
         </div>
       </div>
-
+      <%if(type !== 'board'){%>
       <div
         id="dpContainer"
         style="display: flex; margin-bottom: 15px; align-items: center"
@@ -75,9 +75,13 @@
           </ul>
         </div>
       </div>
+      <%}%>
     </div>
 
     <div class="editor"></div>
+    <div id="editContent" style="display: none">
+      <%= type === 'board' ? boards.content : data.content%>
+    </div>
 
     <div class="qcWrite">
       <button
@@ -88,13 +92,23 @@
       >
         취소
       </button>
+      <%if(type === 'board'){%>
       <button
         type="button"
         class="btn btn-outline-success"
-        onclick="postBoard()"
+        onclick="editBoard('<%= boards.bId%>')"
       >
-        작성
+        수정
       </button>
+      <%} else {%>
+      <button
+        type="button"
+        class="btn btn-outline-success"
+        onclick="editBoard('<%= data.qId%>')"
+      >
+        수정
+      </button>
+      <%}%>
     </div>
     <script src="/static/editor/ckeditor.js"></script>
   </body>
