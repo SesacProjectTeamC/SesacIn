@@ -371,3 +371,25 @@ user {
     width: 20%;
   }
 }
+
+.btn.focus,
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem #71bd6685;
+  outline: 0px;
+}
+
+.btn-check:checked + .btn,
+.btn.active,
+.btn.show,
+.btn:first-child:active,
+:not(.btn-check) + .btn:active {
+  color: var(--bs-btn-active-color);
+  background-color: #19875442;
+  border-color: #19875400;
+}
+
+.btn:hover {
+  color: var(--bs-btn-hover-color);
+  background-color: #19875442;
+  border-color: #19875400;
+}
