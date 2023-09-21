@@ -175,7 +175,7 @@ exports.login = (req, res) => {
         res.redirect('/login');
       });
     } else {
-      res.render('login', {
+      res.render('user/login', {
         title: 'test',
         uId: req.body,
         pw: req.body,
@@ -484,7 +484,7 @@ exports.login = (req, res) => {
         res.redirect('/login');
       });
     } else {
-      res.render('login', {
+      res.render('user/login', {
         title: 'test',
         uId: req.body,
         pw: req.body,
