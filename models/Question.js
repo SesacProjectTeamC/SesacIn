@@ -14,11 +14,11 @@ const Question = (Sequelize, DataTypes) => {
         autoIncrement: true,
       },
       title: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.DataTypes.TEXT,
         allowNull: false,
       },
       content: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       viewCount: {
