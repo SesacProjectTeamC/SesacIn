@@ -56,3 +56,7 @@
   background-color: #72bd66cb;
   border-color: #19875400;
 }
+
+.dropdown-menu {
+  --bs-dropdown-link-active-bg: #71bd66;
+}
