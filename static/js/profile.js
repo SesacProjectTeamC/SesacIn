@@ -1,50 +1,50 @@
 function change(buttonType) {
   console.log(buttonType);
-  const contentDiv = document.getElementById('content');
-  const cautionDiv = document.getElementById('caution');
-  cautionDiv.style.display = 'none';
+  const contentDiv = document.getElementById("content");
+  const cautionDiv = document.getElementById("caution");
+  cautionDiv.style.display = "none";
   axios({
-    method: 'GET',
+    method: "GET",
     url: `/users/profile/${buttonType}`,
   })
     .then((response) => {
-      console.log('백엔드로부터 전달받은 데이터', response);
+      console.log("백엔드로부터 전달받은 데이터", response);
       const data = response.data;
       console.log(data);
-      if (buttonType === 'liked') {
+      if (buttonType === "liked") {
         liked(data, contentDiv);
         return;
-      } else if (buttonType === 'commented') {
+      } else if (buttonType === "commented") {
         commented(data, contentDiv);
         return;
-      } else if (buttonType === 'qna') {
+      } else if (buttonType === "qna") {
         qna(data, contentDiv);
         return;
-      } else if (buttonType === 'free') {
+      } else if (buttonType === "free") {
         free(data, contentDiv);
         return;
       } else {
-        contentDiv.style.display = 'none';
+        contentDiv.style.display = "none";
       }
     })
     .catch((error) => {
-      console.error('Error fetching data:', error);
-      contentDiv.style.display = 'none';
+      console.error("Error fetching data:", error);
+      contentDiv.style.display = "none";
     });
 }
 
 // 좋아요 선택한 글
 const liked = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.getElementById('caution');
+  contentDiv.innerHTML = "";
+  const cautionDiv = document.getElementById("caution");
 
   if (data.boardsData.length === 0 || data.postData.length === 0) {
-    cautionDiv.style.display = 'block';
-    cautionDiv.innerHTML = '🙏🏻 작성한 게시글이 없습니다.🙏🏻';
-    contentDiv.style.display = 'none';
+    cautionDiv.style.display = "block";
+    cautionDiv.innerHTML = "🙏🏻 작성한 게시글이 없습니다.🙏🏻";
+    contentDiv.style.display = "none";
     return;
   }
-  contentDiv.style.display = 'block';
+  contentDiv.style.display = "block";
   for (let i = 0; i < data.postData.length; i++) {
     contentDiv.innerHTML += [
       `
@@ -64,10 +64,10 @@ const liked = (data, contentDiv) => {
         <hr>
         `,
     ];
-    console.log('qna');
+    console.log("qna");
   }
 
-  for (let i = 0; data.boardsData.length; i++) {
+  for (let i = 0; i < data.boardsData.length; i++) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
@@ -86,22 +86,22 @@ const liked = (data, contentDiv) => {
                 <hr>
                 `,
     ];
-    console.log('free');
+    console.log("free");
   }
 };
 //댓글 단 글 (전체 qna랑 free 둘다 가져옴)
 const commented = (data, contentDiv) => {
   console.log(data);
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.getElementById('caution');
+  contentDiv.innerHTML = "";
+  const cautionDiv = document.getElementById("caution");
 
   if (data.boardsData.length === 0 || data.postData.length === 0) {
-    cautionDiv.style.display = 'block';
-    cautionDiv.innerHTML = '🙏🏻 작성한 게시글이 없습니다.🙏🏻';
-    contentDiv.style.display = 'none';
+    cautionDiv.style.display = "block";
+    cautionDiv.innerHTML = "🙏🏻 작성한 게시글이 없습니다.🙏🏻";
+    contentDiv.style.display = "none";
     return;
   }
-  contentDiv.style.display = 'block';
+  contentDiv.style.display = "block";
   for (let comment of data.commentData) {
     if (!comment.qId) {
       //free
@@ -130,22 +130,22 @@ const commented = (data, contentDiv) => {
                     `,
       ];
     }
-    console.log('commented');
+    console.log("commented");
   }
 };
 
 // qna 게시글
 const qna = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.getElementById('caution');
+  contentDiv.innerHTML = "";
+  const cautionDiv = document.getElementById("caution");
 
   if (data.postData.length === 0) {
-    cautionDiv.style.display = 'block';
-    content.style.display = 'none';
-    cautionDiv.innerHTML = '🙏🏻 작성한 게시글이 없습니다.🙏🏻';
+    cautionDiv.style.display = "block";
+    content.style.display = "none";
+    cautionDiv.innerHTML = "🙏🏻 작성한 게시글이 없습니다.🙏🏻";
     return;
   }
-  content.style.display = 'block';
+  content.style.display = "block";
 
   for (let i = 0; i < data.postData.length; i++) {
     contentDiv.innerHTML += [
@@ -166,7 +166,7 @@ const qna = (data, contentDiv) => {
         <hr>
         `,
     ];
-    console.log('qna');
+    console.log("qna");
   }
 };
 
@@ -187,17 +187,17 @@ const qna = (data, contentDiv) => {
 
 // 자유 게시판
 const free = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.querySelector('#caution');
+  contentDiv.innerHTML = "";
+  const cautionDiv = document.querySelector("#caution");
 
   if (data.boardsData.length === 0) {
-    cautionDiv.style.display = 'block';
-    cautionDiv.innerHTML = '🙏🏻 작성한 게시글이 없습니다.🙏🏻';
-    contentDiv.style.display = 'none';
+    cautionDiv.style.display = "block";
+    cautionDiv.innerHTML = "🙏🏻 작성한 게시글이 없습니다.🙏🏻";
+    contentDiv.style.display = "none";
     return;
   }
-  contentDiv.style.display = 'block';
-  for (let i = 0; data.boardsData.length; i++) {
+  contentDiv.style.display = "block";
+  for (let i = 0; i < data.boardsData.length; i++) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
@@ -216,37 +216,37 @@ const free = (data, contentDiv) => {
                 <hr>
                 `,
     ];
-    console.log('free');
+    console.log("free");
   }
 };
 
 function isSesac(data) {
-  const sesacElements = document.getElementsByClassName('sesac_badge');
+  const sesacElements = document.getElementsByClassName("sesac_badge");
   axios({
-    method: 'GET',
-    url: '/users/profile',
+    method: "GET",
+    url: "/users/profile",
   })
     .then((response) => {
       const data = response.data;
       if (data.isSesac === true) {
         for (let element of sesacElements) {
-          element.style.display = ''; // 기본값으로 재설정하여 엘리먼트를 보이게 합니다.
+          element.style.display = ""; // 기본값으로 재설정하여 엘리먼트를 보이게 합니다.
         }
       } else {
         for (let element of sesacElements) {
-          element.style.display = 'none'; // 엘리먼트를 숨깁니다.
+          element.style.display = "none"; // 엘리먼트를 숨깁니다.
         }
       }
     })
     .catch((error) => {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     });
 }
 
 function editProfile() {
   axios({
-    method: 'GET',
-    url: '/users/editprofile',
+    method: "GET",
+    url: "/users/editprofile",
   }).then((res) => {
     if (res) {
     }
@@ -276,16 +276,16 @@ function editProfile() {
 
 async function userProfileImgUpload() {
   const formData = new FormData();
-  const file = document.getElementById('fileInput');
+  const file = document.getElementById("fileInput");
 
-  formData.append('userImgFile', file.files[0]);
+  formData.append("userImgFile", file.files[0]);
 
   await axios({
-    method: 'post',
-    url: '/upload/image/user',
+    method: "post",
+    url: "/upload/image/user",
     data: formData,
     header: {
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "multipart/form-data",
     },
   }).then((res) => {
     location.href = location.href;
@@ -293,20 +293,20 @@ async function userProfileImgUpload() {
 }
 
 function goTohome() {
-  window.location.href = '/';
+  window.location.href = "/";
 }
 
 function userLogout() {
   axios({
-    method: 'post',
-    url: '/logout',
+    method: "post",
+    url: "/logout",
   })
     .then((response) => {
-      window.location.href = '/';
+      window.location.href = "/";
     })
     .catch((error) => {
       // 에러발생시 프론트에서 처리
       console.log(error.response.data);
-      window.location.href = '/404';
+      window.location.href = "/404";
     });
 }
