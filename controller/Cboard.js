@@ -150,7 +150,7 @@ exports.detailBoard = async (req, res) => {
     const [eachBoard] = await sequelize.query(boardSql);
 
     // 게시글의 날짜 데이터 포맷 변경
-    const create = moment(eachBoard.createdAt).format('YYYY-MM-DD');
+    const create = moment(eachBoard.createdAt).format('YYYY-MM-DD HH:mm');
 
     // 댓글 데이터 조회
     const commentSql = `SELECT c.*, u.uId, u.uName, u.userImgPath
@@ -163,7 +163,7 @@ exports.detailBoard = async (req, res) => {
     // 댓글의 날짜 데이터 포맷 변경
     const commentCreateAt = [];
     for (c of allComment) {
-      commentCreateAt.push(moment(c.createdAt).format('YYYY-MM-DD'));
+      commentCreateAt.push(moment(c.createdAt).format('YYYY-MM-DD HH:mm'));
     }
 
     //=== [ 세화 ] ===
@@ -556,11 +556,12 @@ exports.editBoard = async (req, res) => {
     const hasChangedResult = hasChanged(before.dataValues, after.dataValues);
     isUpdated = hasChangedResult ? true : false;
 
-    if (!isUpdated) {
-      isUpdated = false;
-      throw new Error('게시글의 제목, 내용 모두 변경된게 없습니다.'); // 에러를 던짐(catch에서 수행)
-      return;
-    }
+    // 게시글의 수정이 없을때 처리
+    // if (!isUpdated) {
+    //   isUpdated = false;
+    //   throw new Error('게시글의 제목, 내용 모두 변경된게 없습니다.'); // 에러를 던짐(catch에서 수행)
+    //   return;
+    // }
 
     // 정상 처리
     res.status(200).send({
