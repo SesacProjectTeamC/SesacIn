@@ -1,4 +1,11 @@
-const { Question, Answer, Comment, uLike, User, sequelize } = require('../models');
+const {
+  Question,
+  Answer,
+  Comment,
+  uLike,
+  User,
+  sequelize,
+} = require('../models');
 const moment = require('moment');
 
 //=== 메인페이지,질문 목록 가져오기 ===
@@ -16,7 +23,12 @@ exports.getQuestions = async (req, res) => {
     let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
+    if (
+      !sortField ||
+      !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(
+        sortField
+      )
+    ) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -26,7 +38,9 @@ exports.getQuestions = async (req, res) => {
     }
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(
+      Math.ceil(questionTotalCount / pageSize)
+    ); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
     // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
@@ -55,7 +69,7 @@ exports.getQuestions = async (req, res) => {
         where: { uId },
       });
       console.log(user);
-      res.status(200).render('listMain', {
+      res.status(200).render('community/listMain', {
         type: 'qna',
         questionData: paginatedQuestion, // question 데이터(20개씩)
         questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
@@ -75,7 +89,7 @@ exports.getQuestions = async (req, res) => {
     } else {
       console.log('로그인X');
 
-      res.render('listMain', {
+      res.render('community/listMain', {
         type: 'qna',
         questionData: paginatedQuestion, // question 데이터(20개씩)
         questionCreateAt, // question 데이터에서 CreateAt의 포맷팅을 변경한 데이터
@@ -129,7 +143,7 @@ exports.getQuestionsMain = async (req, res) => {
         where: { uId },
       });
 
-      res.status(200).render('listMain', {
+      res.status(200).render('community/listMain', {
         type: 'qna',
         data: paginatedQuestions,
         pageCount: pageCount,
@@ -141,7 +155,7 @@ exports.getQuestionsMain = async (req, res) => {
     } else {
       console.log('로그인X');
 
-      res.render('listMain', {
+      res.render('community/listMain', {
         type: 'qna',
         data: paginatedQuestions,
         pageCount: pageCount,
@@ -171,7 +185,12 @@ exports.paginateQuestion = async (req, res) => {
     let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
+    if (
+      !sortField ||
+      !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(
+        sortField
+      )
+    ) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -181,7 +200,9 @@ exports.paginateQuestion = async (req, res) => {
     }
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(
+      Math.ceil(questionTotalCount / pageSize)
+    ); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
     // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
@@ -245,7 +266,9 @@ exports.getQuestion = async (req, res) => {
     console.log('>>>>>>>>>>>>>>>>>>', question.createdAt);
 
     // 날짜 데이터 포맷 변경
-    const questionCreateAt = moment(question.createdAt).format('YYYY-MM-DD HH:mm');
+    const questionCreateAt = moment(question.createdAt).format(
+      'YYYY-MM-DD HH:mm'
+    );
 
     // 태균 수정
     const answers = await Answer.findAll({
@@ -323,7 +346,7 @@ exports.getQuestion = async (req, res) => {
         // (3) 결과 값 리스트에 담기
         uLikeAnswersResult.push(uLikeAnswerFindResult);
       }
-      return res.render('questionDetail', {
+      return res.render('community/questionDetail', {
         data: question, // 질문의 데이터와 질문 작성자 데이터
         questionCreateAt, // 질문의 생성일 (포맷을 변경)
         answerData: answers, // 답변의 데이터와 답변 작성자 데이터
@@ -340,7 +363,7 @@ exports.getQuestion = async (req, res) => {
     }
 
     // 비로그인 시 동작
-    return res.render('questionDetail', {
+    return res.render('community/questionDetail', {
       data: question, // 질문의 데이터와 질문 작성자 데이터
       questionCreateAt, // 질문의 생성일 (포맷을 변경)
       answerData: answers, // 답변의 데이터와 답변 작성자 데이터
@@ -397,7 +420,7 @@ exports.getCreateQuestion = async (req, res) => {
     });
 
     // 로그인 되어있을때 페이지 렌더링
-    res.status(200).render('post', {
+    res.status(200).render('community/post', {
       isLogin,
       currentUser: req.session.user,
       userData: user,
@@ -456,7 +479,7 @@ exports.getEditQuestion = async (req, res) => {
       where: { qId },
     });
 
-    res.status(200).render('edit', {
+    res.status(200).render('community/edit', {
       type: 'qna',
       data: question,
       isLogin,
@@ -623,7 +646,10 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 +1
-        await Question.update({ likeCount: getQuestion.likeCount + 1 }, { where: { qId } });
+        await Question.update(
+          { likeCount: getQuestion.likeCount + 1 },
+          { where: { qId } }
+        );
 
         console.log('성공 !!');
 
@@ -636,7 +662,10 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 -1
-        await Question.update({ likeCount: getQuestion.likeCount - 1 }, { where: { qId } });
+        await Question.update(
+          { likeCount: getQuestion.likeCount - 1 },
+          { where: { qId } }
+        );
 
         res.send({ data: getQuestion, qResult: false });
       }

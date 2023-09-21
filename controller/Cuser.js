@@ -28,7 +28,7 @@ exports.getJoin = (req, res) => {
         res.redirect('/join');
       });
     } else {
-      res.render('join', {
+      res.render('user/join', {
         isLogin,
         currentUser: req.session.user,
         success: true,
@@ -175,7 +175,7 @@ exports.login = (req, res) => {
         res.redirect('/login');
       });
     } else {
-      res.render('login', {
+      res.render('user/login', {
         title: 'test',
         uId: req.body,
         pw: req.body,
@@ -276,7 +276,7 @@ exports.id = (req, res) => {
         res.redirect('/findId');
       });
     } else {
-      res.render('findId', {
+      res.render('user/findId', {
         title: 'test',
         uId: req.body,
         pw: req.body,
@@ -397,7 +397,7 @@ exports.pw = (req, res) => {
         res.redirect('/findPw');
       });
     } else {
-      res.render('findPw', {
+      res.render('user/findPw', {
         title: 'test',
         uId: req.body,
         pw: req.body,
@@ -484,7 +484,7 @@ exports.login = (req, res) => {
         res.redirect('/login');
       });
     } else {
-      res.render('login', {
+      res.render('user/login', {
         title: 'test',
         uId: req.body,
         pw: req.body,
@@ -529,7 +529,7 @@ exports.getEmail = async (req, res) => {
       if (loggedInUser) {
         loggedInUserEmail = loggedInUser.email;
 
-        res.render('email', {
+        res.render('user/email', {
           isLogin,
           currentUser: req.session.user,
           loggedInUserEmail, // 현재 로그인된 사용자의 이메일을 뷰에 전달
@@ -540,7 +540,7 @@ exports.getEmail = async (req, res) => {
         res.status(404).json({ ok: false, msg: '사용자를 찾을 수 없습니다.' });
       }
     } else {
-      res.render('email', {
+      res.render('user/email', {
         isLogin,
         currentUser: req.session.user,
         success: true,
