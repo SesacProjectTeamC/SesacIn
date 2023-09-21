@@ -556,11 +556,12 @@ exports.editBoard = async (req, res) => {
     const hasChangedResult = hasChanged(before.dataValues, after.dataValues);
     isUpdated = hasChangedResult ? true : false;
 
-    if (!isUpdated) {
-      isUpdated = false;
-      throw new Error('게시글의 제목, 내용 모두 변경된게 없습니다.'); // 에러를 던짐(catch에서 수행)
-      return;
-    }
+    // 게시글의 수정이 없을때 처리
+    // if (!isUpdated) {
+    //   isUpdated = false;
+    //   throw new Error('게시글의 제목, 내용 모두 변경된게 없습니다.'); // 에러를 던짐(catch에서 수행)
+    //   return;
+    // }
 
     // 정상 처리
     res.status(200).send({
