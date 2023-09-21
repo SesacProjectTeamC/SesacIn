@@ -1,172 +1,50 @@
 function change(buttonType) {
   console.log(buttonType);
-  const contentDiv = document.getElementById('content');
-  const cautionDiv = document.getElementById('caution');
-  cautionDiv.style.display = 'none';
+  const contentDiv = document.getElementById("content");
+  const cautionDiv = document.getElementById("caution");
+  cautionDiv.style.display = "none";
   axios({
-    method: 'GET',
+    method: "GET",
     url: `/users/profile/${buttonType}`,
   })
     .then((response) => {
-      console.log('백엔드로부터 전달받은 데이터', response);
+      console.log("백엔드로부터 전달받은 데이터", response);
       const data = response.data;
       console.log(data);
-      if (buttonType === 'liked') {
+      if (buttonType === "liked") {
         liked(data, contentDiv);
         return;
-      } else if (buttonType === 'commented') {
+      } else if (buttonType === "commented") {
         commented(data, contentDiv);
         return;
-      } else if (buttonType === 'qna') {
+      } else if (buttonType === "qna") {
         qna(data, contentDiv);
         return;
-      } else if (buttonType === 'free') {
+      } else if (buttonType === "free") {
         free(data, contentDiv);
         return;
       } else {
-        contentDiv.style.display = 'none';
+        contentDiv.style.display = "none";
       }
     })
     .catch((error) => {
-      console.error('Error fetching data:', error);
-      contentDiv.style.display = 'none';
+      console.error("Error fetching data:", error);
+      contentDiv.style.display = "none";
     });
 }
 
-// 좋아요 선택한 글
-const liked = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.getElementById('caution');
-
-  if (data.boardsData.length === 0 || data.postData.length === 0) {
-    cautionDiv.style.display = 'block';
-    cautionDiv.innerHTML = '🙏🏻 작성한 게시글이 없습니다.🙏🏻';
-    contentDiv.style.display = 'none';
-    return;
-  }
-  contentDiv.style.display = 'block';
-  for (let i = 0; i < data.likeQuestionData.length; i++) {
-    contentDiv.innerHTML += [
-      `
-      <div class="postedQuestion">
-      <a href ="/question/${data.likeQuestionData[i].qId}">
-        <div class="qnaList">
-        <h3>${data.likeQuestionData[i].title}</h3>
-        <h3>${data.likeQuestionData[i].content}</h3>
-        <div class="like">
-        <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-        <p>${data.likeQuestionData[i].likeCount}</p>
-        <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
-        <p>${data.postAnswerCount[i]}</p>
-        </div>
-        </div>
-        </div>
-        <hr>
-        `,
-    ];
-    console.log('qna');
-  }
-
-  for (let i = 0; i < data.likeAnswerData.length; i++) {
-    contentDiv.innerHTML += [
-      `
-                <div class="freeBoards">
-                <a href="/board/detail/${data.likeAnswerData[i].bId}">
-                <div class="freeList">
-                <h3>${data.likeAnswerData[i].title}</h3>
-                <h3>${data.likeAnswerData[i].content}</h3>
-                <div class="like">
-                <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-                <p>${data.likeAnswerData[i].likeCount}</p>
-                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
-                <p>${data.commentsCount[i]}</p>
-                </div>
-                </div>
-                </div>
-                <hr>
-                `,
-    ];
-    console.log('free');
-  }
-  for (let i = 0; i < data.likeBoardData.length; i++) {
-    contentDiv.innerHTML += [
-      `
-                <div class="freeBoards">
-                <a href="/board/detail/${data.likeBoardData[i].bId}">
-                <div class="freeList">
-                <h3>${data.likeBoardData[i].title}</h3>
-                <h3>${data.likeBoardData[i].content}</h3>
-                <div class="like">
-                <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-                <p>${data.likeBoardData[i].likeCount}</p>
-                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
-                <p>${data.commentsCount[i]}</p>
-                </div>
-                </div>
-                </div>
-                <hr>
-                `,
-    ];
-    console.log('free');
-  }
-};
-//댓글 단 글 (전체 qna랑 free 둘다 가져옴)
-const commented = (data, contentDiv) => {
-  console.log(data);
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.getElementById('caution');
-
-  if (data.boardsData.length === 0 || data.postData.length === 0) {
-    cautionDiv.style.display = 'block';
-    cautionDiv.innerHTML = '🙏🏻 작성한 게시글이 없습니다.🙏🏻';
-    contentDiv.style.display = 'none';
-    return;
-  }
-  contentDiv.style.display = 'block';
-  for (let comment of data.commentData) {
-    if (!comment.qId) {
-      //free
-      contentDiv.innerHTML += [
-        `
-                    <div class="question">
-                    <a href="/board/detail/${comment.bId}">
-                    <div class="commentedList">
-                    <h3>${comment.content}</h3>
-                    </div>
-                    </div>
-                    <hr>
-                    `,
-      ];
-    } else {
-      //qna
-      contentDiv.innerHTML += [
-        `
-                    <div class="freeBoards">
-                    <a href="/question/${comment.qId}">
-                    <div class="commentedList">
-                    <he>${comment.content}</h3>
-                    </div>
-                    </div>
-                    <hr>
-                    `,
-      ];
-    }
-    console.log('commented');
-  }
-};
-
-// qna 게시글
+//=== 1. qna 게시글 ===
 const qna = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.getElementById('caution');
+  contentDiv.innerHTML = "";
+  const cautionDiv = document.getElementById("caution");
 
   if (data.postData.length === 0) {
-    cautionDiv.style.display = 'block';
-    content.style.display = 'none';
-    cautionDiv.innerHTML = '🙏🏻 작성한 게시글이 없습니다.🙏🏻';
+    cautionDiv.style.display = "block";
+    content.style.display = "none";
+    cautionDiv.innerHTML = "작성한 게시글이 없습니다.";
     return;
   }
-  content.style.display = 'block';
+  content.style.display = "block";
 
   for (let i = 0; i < data.postData.length; i++) {
     contentDiv.innerHTML += [
@@ -174,8 +52,8 @@ const qna = (data, contentDiv) => {
       <div class="postedQuestion">
       <a href ="/question/${data.postData[i].qId}">
         <div class="qnaList">
-        <h3>${data.postData[i].title}</h3>
-        <h3>${data.postData[i].content}</h3>
+        <div class="question title">${data.postData[i].title}</div>
+        <div class="question content">${data.postData[i].content}</div>
         <div class="like">
         <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
         <p>${data.postData[i].likeCount}</p>
@@ -183,49 +61,36 @@ const qna = (data, contentDiv) => {
         <p>${data.postAnswerCount[i]}</p>
         </div>
         </div>
+        </a> 
         </div>
         <hr>
         `,
     ];
-    console.log('qna');
+    console.log("qna");
   }
 };
 
-// const answered = (data, contentDiv) => {
-//   contentDiv.innerHTML = "";
-//   for (let answer of data.answerData) {
-//     contentDiv.innerHTML = [
-//             `<div class="postedAnswer">
-//            <a href ="/question/${data.qId}">
-//             <h3>${answer.title}</h3>
-//             <p>${answer.content}</p>
-//             </div>
-//             `,
-//     ];
-//   }
-//   console.log("answered");
-// };
-
-// 자유 게시판
+//=== 2. 자유 게시판 ===
 const free = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.querySelector('#caution');
+  contentDiv.innerHTML = "";
+  const cautionDiv = document.querySelector("#caution");
 
   if (data.boardsData.length === 0) {
-    cautionDiv.style.display = 'block';
-    cautionDiv.innerHTML = '🙏🏻 작성한 게시글이 없습니다.🙏🏻';
-    contentDiv.style.display = 'none';
+    cautionDiv.style.display = "block";
+    cautionDiv.innerHTML = "작성한 게시글이 없습니다.";
+    contentDiv.style.display = "none";
     return;
   }
-  contentDiv.style.display = 'block';
+
+  contentDiv.style.display = "block";
   for (let i = 0; i < data.boardsData.length; i++) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
                 <a href="/board/detail/${data.boardsData[i].bId}">
                 <div class="freeList">
-                <h3>${data.boardsData[i].title}</h3>
-                <h3>${data.boardsData[i].content}</h3>
+                <div class="board title">${data.boardsData[i].title}</div>
+                <div class="board content">${data.boardsData[i].content}</div>
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
                 <p>${data.boardsData[i].likeCount}</p>
@@ -233,80 +98,201 @@ const free = (data, contentDiv) => {
                 <p>${data.commentsCount[i]}</p>
                 </div>
                 </div>
+        </a> 
                 </div>
                 <hr>
                 `,
     ];
-    console.log('free');
+    console.log("free");
+  }
+};
+
+//=== 3. 좋아요 선택한 글 ===
+const liked = (data, contentDiv) => {
+  contentDiv.innerHTML = "";
+  const cautionDiv = document.getElementById("caution");
+
+  contentDiv.style.display = "block";
+
+  if (data.likeQuestionData || data.likeBoardData || data.likeAnswerData) {
+    if (data.likeQuestionData) {
+      for (let i = 0; i < data.likeQuestionData.length; i++) {
+        contentDiv.innerHTML += [
+          `
+      <div class="answer">
+      <a href ="/question/${data.likeQuestionData[i].qId}">
+        <div class="qnaList">
+        <div class="likeQ title">${data.likeQuestionData[i].title}</div>
+        <div class="likeQ content">${data.likeQuestionData[i].content}</div>
+        <div class="like">
+        <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
+        <p>${data.likeQuestionData[i].likeCount}</p>
+        <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
+        <p>${data.likeQuestionAnswerCount[i]}</p>
+        </div>
+        </div>
+        </a> 
+        </div>
+        <hr>
+        `,
+        ];
+        console.log("liked");
+      }
+    }
+
+    if (data.likeAnswerData) {
+      for (let i = 0; i < data.likeAnswerData.length; i++) {
+        contentDiv.innerHTML += [
+          `
+                <div class="answer">
+                <a href="/question/${data.likeAnswerData[i].qId}">
+                <div class="freeList">
+                <div class="likeA title">${data.likeAnswerData[i].title}</div>
+                <div class="likeA content">${data.likeAnswerData[i].content}</div>
+                <div class="like">
+                <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
+                <p>${data.likeAnswerData[i].likeCount}</p>
+                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
+                <p>${data.likeAnswerCommentCount[i]}</p>
+                </div>
+                </div>
+                </a> 
+                </div>
+                <hr>
+                `,
+        ];
+        console.log("liked");
+      }
+    }
+
+    if (data.likeBoardData.length > 0) {
+      for (let i = 0; i < data.likeBoardData.length; i++) {
+        contentDiv.innerHTML += [
+          `
+          <div class="freeBoards">
+          <a href="/board/detail/${data.likeBoardData[i].bId}">
+                <div class="freeList">
+                <div class="likeB title">${data.likeBoardData[i].title}</di>
+                <div class="likeB content">${data.likeBoardData[i].content}</div>
+                <div class="like">
+                <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
+                <p>${data.likeBoardData[i].likeCount}</p>
+                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
+                <p>${data.likeBoardCommentCount[i]}</p>
+                </div>
+                </div>
+                </a> 
+                </div>
+                <hr>
+                `,
+        ];
+        console.log("liked");
+      }
+    }
+  } else if (
+    data.likeAnswerData.length === 0 &&
+    data.likeBoardData.length === 0 &&
+    data.likeAnswerData.length === 0
+  ) {
+    cautionDiv.style.display = "block";
+    cautionDiv.innerHTML = "좋아요 누른 글이 없습니다.";
+    contentDiv.style.display = "none";
+    return;
+  }
+};
+
+//=== 4. 댓글 단 글 (전체 qna랑 free 둘다 가져옴) ===
+const commented = (data, contentDiv) => {
+  console.log(data);
+  contentDiv.innerHTML = "";
+  const cautionDiv = document.getElementById("caution");
+
+  contentDiv.style.display = "block";
+
+  if (data.commentData.length > 0) {
+    for (let i = 0; i < data.commentData.length; i++) {
+      if (data.commentData[i].aId) {
+        contentDiv.innerHTML += [
+          `
+                    <div class="answer">
+                    <a href="/question/${data.commentData[i].qId}">
+                    <div class="commentedList">
+                    <div class="comment content">${data.commentData[i].content}</div>
+                    </div>
+                    </div>
+                    <hr>
+                    `,
+        ];
+      }
+
+      if (data.commentData[i].bId) {
+        contentDiv.innerHTML += [
+          `
+                  <div class="answer">
+                  <a href="/board/detail/${data.commentData[i].bId}">
+                  <div class="commentedList">
+                  <div class="comment content">${data.commentData[i].content}</div>
+                  </div>
+                  </div>
+                  <hr>
+                  `,
+        ];
+      }
+      console.log("commented");
+    }
+  } else if (data.commentData.length === 0) {
+    cautionDiv.style.display = "block";
+    cautionDiv.innerHTML = "작성한 댓글이 없습니다.";
+    contentDiv.style.display = "none";
+    return;
   }
 };
 
 function isSesac(data) {
-  const sesacElements = document.getElementsByClassName('sesac_badge');
+  const sesacElements = document.getElementsByClassName("sesac_badge");
   axios({
-    method: 'GET',
-    url: '/users/profile',
+    method: "GET",
+    url: "/users/profile",
   })
     .then((response) => {
       const data = response.data;
       if (data.isSesac === true) {
         for (let element of sesacElements) {
-          element.style.display = ''; // 기본값으로 재설정하여 엘리먼트를 보이게 합니다.
+          element.style.display = ""; // 기본값으로 재설정하여 엘리먼트를 보이게 합니다.
         }
       } else {
         for (let element of sesacElements) {
-          element.style.display = 'none'; // 엘리먼트를 숨깁니다.
+          element.style.display = "none"; // 엘리먼트를 숨깁니다.
         }
       }
     })
     .catch((error) => {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     });
 }
 
 function editProfile() {
   axios({
-    method: 'GET',
-    url: '/users/editprofile',
+    method: "GET",
+    url: "/users/editprofile",
   }).then((res) => {
     if (res) {
     }
   });
 }
 
-// function handleFileInput() {
-//   // 파일 입력 요소 가져오기
-//   // var fileInput = document.getElementById('fileInput');
-
-//   // 파일이 선택되었는지 확인
-//   // if (fileInput.files.length > 0) {
-//   //   // 선택한 파일의 정보를 가져와서 표시
-//   //   var selectedFile = fileInput.files[0];
-//   //   alert('선택한 파일: ' + selectedFile.name);
-//   // } else {
-//   //   alert('파일을 선택하지 않았습니다.');
-//   // }
-
-//   const formData = new FormData();
-//   const file = document.getElementById('fileInput');
-//   // const file = document.querySelector('#dynamic-file');
-//   // console.dir(file);
-//   // console.dir(file.files);
-//   // console.dir(file.files[0]);
-// }
-
 function userProfileImgUpload() {
   const formData = new FormData();
-  const file = document.getElementById('fileInput');
+  const file = document.getElementById("fileInput");
   console.log(file);
-  formData.append('userImgFile', file.files[0]);
+  formData.append("userImgFile", file.files[0]);
 
   axios({
-    method: 'post',
-    url: '/upload/image/user',
+    method: "post",
+    url: "/upload/image/user",
     data: formData,
     header: {
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "multipart/form-data",
     },
   })
     .then((res) => {
@@ -315,28 +301,28 @@ function userProfileImgUpload() {
     .catch((err) => {
       console.log(err);
       if (err.response.status) {
-        alert('err.response.data.error');
+        alert("err.response.data.error");
       } else {
-        alert('지원하지 않는 파일 형식입니다.');
+        alert("지원하지 않는 파일 형식입니다.");
       }
     });
 }
 
 function goTohome() {
-  window.location.href = '/';
+  window.location.href = "/";
 }
 
 function userLogout() {
   axios({
-    method: 'post',
-    url: '/logout',
+    method: "post",
+    url: "/logout",
   })
     .then((response) => {
-      window.location.href = '/';
+      window.location.href = "/";
     })
     .catch((error) => {
       // 에러발생시 프론트에서 처리
       console.log(error.response.data);
-      window.location.href = '/404';
+      window.location.href = "/404";
     });
 }
