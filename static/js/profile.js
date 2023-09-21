@@ -197,7 +197,7 @@ const free = (data, contentDiv) => {
     return;
   }
   contentDiv.style.display = "block";
-  for (let i = 0; data.boardsData.length; i++) {
+  for (let i = 0; i < data.boardsData.length; i++) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
