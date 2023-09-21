@@ -16,11 +16,11 @@ const Answer = (Sequelize, DataTypes) => {
         autoIncrement: true,
       },
       title: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING(1000),
         allowNull: true,
       },
       content: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       likeCount: {
