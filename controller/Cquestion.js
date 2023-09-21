@@ -505,7 +505,7 @@ exports.patchQuestion = async (req, res) => {
 
   try {
     const { qId } = req.params;
-    const { title, content } = req.body;
+    const { title, content, qType } = req.body;
 
     // 업데이트 전 질문 데이터 조회
     // const before = await Question.findByPk(qId);
@@ -543,7 +543,7 @@ exports.patchQuestion = async (req, res) => {
     }
 
     const updatedQuestion = await Question.update(
-      { title, content },
+      { title, content, qType },
       {
         where: { qId },
       }

@@ -37,6 +37,7 @@ class UploadAdapter {
       const requestUrl = window.location.origin;
 
       if (!response || response.error) {
+        alert(response.error);
         return reject(response && response.error ? response.error.message : genericErrorText);
       }
 
