@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <%- include('./components/cdn', { title: 'SesacIn 자유게시글 상세' }) %>
+    <%- include('../components/cdn', { title: 'SesacIn 자유게시글 상세' }) %>
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
     <link rel="stylesheet" href="/views/styles/boardDetail.css" />
     <script defer src="/static/js/questionDetail.js"></script>
     <link rel="stylesheet" href="/static/editor/editorStyle.css" />
   </head>
   <body class="container">
-    <%- include('./components/header', { isLogin: isLogin }) %>
+    <%- include('../components/header', { isLogin: isLogin }) %>
     <div id="bWrapper">
       <div id="bTitle">
         <div class="ques_type"><%= data.qType %></div>

@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <%- include('./components/cdn', { title: 'SesacIn 자유게시글 상세' }) %>
+    <%- include('../components/cdn', { title: 'SesacIn 자유게시글 상세' }) %>
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
     <link rel="stylesheet" href="/views/styles/boardDetail.css" />
     <script defer src="/static/js/boardDetail.js"></script>
     <link rel="stylesheet" href="/static/editor/editorStyle.css" />
   </head>
   <body class="container">
-    <%- include('./components/header', { isLogin: isLogin }) %>
+    <%- include('../components/header', { isLogin: isLogin }) %>
     <div id="bWrapper">
       <div id="bTitle"><%= boardData.title %></div>
       <div id="bUserC">
@@ -37,22 +37,43 @@
             <%}%> <%= boardData.uName %>
           </div>
           | <% if(!bResult) { %>
-          <div class="viewImg likeImg" onclick="bLikeHandler('<%= boardData.bId %>')">
-            <img src="/static/svg/heart.svg" alt="좋아요수" width="24px" class="svg" />
+          <div
+            class="viewImg likeImg"
+            onclick="bLikeHandler('<%= boardData.bId %>')"
+          >
+            <img
+              src="/static/svg/heart.svg"
+              alt="좋아요수"
+              width="24px"
+              class="svg"
+            />
             <%= boardData.likeCount%>
           </div>
 
           <% } else if(bResult) { %>
 
-          <div class="viewImg likeImg" onclick="bLikeHandler('<%= boardData.bId %>')">
-            <img src="/static/svg/heart-fill.svg" alt="좋아요수" width="24px" class="svg" />
+          <div
+            class="viewImg likeImg"
+            onclick="bLikeHandler('<%= boardData.bId %>')"
+          >
+            <img
+              src="/static/svg/heart-fill.svg"
+              alt="좋아요수"
+              width="24px"
+              class="svg"
+            />
             <%= boardData.likeCount %>
           </div>
 
           <% } %>
 
           <div class="viewImg">
-            <img src="../../static/svg/eye.svg" alt="조회수" width="24px" class="svg" />
+            <img
+              src="../../static/svg/eye.svg"
+              alt="조회수"
+              width="24px"
+              class="svg"
+            />
             <%= boardData.viewCount%>
           </div>
         </div>
@@ -64,12 +85,22 @@
 
       <%if(isLogin && boardData.uId === userData.uId){%>
       <div style="display: flex; justify-content: flex-end">
-        <a href="/board/edit/<%= boardData.bId %>" style="cursor: pointer; margin-right: 10px">
-          <div style="color: darkgray; font-size: 18px; font-weight: 300">수정하기</div>
+        <a
+          href="/board/edit/<%= boardData.bId %>"
+          style="cursor: pointer; margin-right: 10px"
+        >
+          <div style="color: darkgray; font-size: 18px; font-weight: 300">
+            수정하기
+          </div>
         </a>
 
         <div
-          style="color: darkgray; font-size: 18px; font-weight: 300; cursor: pointer"
+          style="
+            color: darkgray;
+            font-size: 18px;
+            font-weight: 300;
+            cursor: pointer;
+          "
           onclick="openModal('정말 삭제하시겠어요?', 'deletePost(<%= boardData.bId %>)');"
         >
           삭제하기
@@ -100,9 +131,19 @@
             class="profileImg"
           />
           <%}%>
-          <textarea class="form-control" aria-label="With textarea" style="height: 100px"></textarea>
+          <textarea
+            class="form-control"
+            aria-label="With textarea"
+            style="height: 100px"
+          ></textarea>
         </div>
-        <button type="button" class="btn btn-primary" onclick="addComment('<%= boardData.bId %>')">작성하기</button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="addComment('<%= boardData.bId %>')"
+        >
+          작성하기
+        </button>
       </div>
 
       <%for (let i = 0; i < commentData.length; i++) {%>
@@ -110,7 +151,12 @@
       <div class="commentContainer">
         <div
           class="input-group"
-          style="display: flex; margin: 15px 0px 15px 0px; align-items: center; justify-content: space-between"
+          style="
+            display: flex;
+            margin: 15px 0px 15px 0px;
+            align-items: center;
+            justify-content: space-between;
+          "
         >
           <div class="userC">
             <%if(commentData[i].userImgPath){%>
@@ -133,9 +179,13 @@
             />
             <%}%> <%= commentData[i].uName %>
           </div>
-          <div style="font-size: 14px; color: lightgray"><%= commentCreateAt[i] %></div>
+          <div style="font-size: 14px; color: lightgray">
+            <%= commentCreateAt[i] %>
+          </div>
         </div>
-        <div id="comment<%= commentData[i].cId%>" style="margin-left: 15px"><%= commentData[i].content %></div>
+        <div id="comment<%= commentData[i].cId%>" style="margin-left: 15px">
+          <%= commentData[i].content %>
+        </div>
         <%if(isLogin && commentData[i].uId === userData.uId){%>
         <div
           id="fixCommentC<%= commentData[i].cId %>"
@@ -161,7 +211,13 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="cautionModalLabel" aria-hidden="true">
+    <div
+      class="modal fade"
+      id="myModal"
+      tabindex="-1"
+      aria-labelledby="cautionModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -171,8 +227,21 @@
             <p id="cautionText"></p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">취소</button>
-            <button type="button" class="btn btn-danger" id="deletebtn" data-dismiss="modal" data-bs-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+              data-bs-dismiss="modal"
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="deletebtn"
+              data-dismiss="modal"
+              data-bs-dismiss="modal"
+            >
               확인
             </button>
           </div>

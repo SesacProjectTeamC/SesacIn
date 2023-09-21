@@ -4,9 +4,9 @@
 // 3. 수정 버튼 -> 회원정보 PATCH, DELETE
 
 //////////////////////////////////////////////
-const {User, Question, Answer, Comment, Board, uLike} = require("../models");
-const {Op} = require("sequelize");
-const bcrypt = require("bcrypt");
+const { User, Question, Answer, Comment, Board, uLike } = require('../models');
+const { Op } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 // 마이페이지 렌더링
 exports.getUser = async (req, res) => {
@@ -21,56 +21,58 @@ exports.getUser = async (req, res) => {
 
     // 데이터베이스에서 해당 사용자 정보를 조회합니다.
     const user = await User.findOne({
-      where: {uId},
+      where: { uId },
     });
 
     // 좋아요 히스토리 가져오기
-    const likes = await uLike.findAll({where: {uId}});
+    const likes = await uLike.findAll({ where: { uId } });
 
     // 좋아요 누른 질문
     const likeQuestion = await Question.findAll({
-      where: {qId: likes.map((like) => like.qId)},
+      where: { qId: likes.map((like) => like.qId) },
     });
 
     // 좋아요 누른 답변
     const likeAnswer = await Answer.findAll({
-      where: {aId: likes.map((like) => like.aId)},
+      where: { aId: likes.map((like) => like.aId) },
     });
 
     // 좋아요 누른 자유게시글
     const likeBoard = await Answer.findAll({
-      where: {aId: likes.map((like) => like.aId)},
+      where: { aId: likes.map((like) => like.aId) },
     });
 
     // 작성한 질문
-    const posts = await Question.findAll({where: {uId}});
+    const posts = await Question.findAll({ where: { uId } });
 
     // 작성한 질문에 대한 답변
     let postAnswerCount = [];
     for (let i = 0; i < posts.length; i++) {
-      const postAnswers = await Answer.findAll({where: {qId: posts[i].qId}});
+      const postAnswers = await Answer.findAll({
+        where: { qId: posts[i].qId },
+      });
       postAnswerCount.push(postAnswers.length);
     }
 
     console.log(postAnswerCount);
 
     // 작성한 답변
-    const answers = await Answer.findAll({where: {uId}});
+    const answers = await Answer.findAll({ where: { uId } });
 
     // 작성한 댓글
-    const comments = await Comment.findAll({where: {uId}});
+    const comments = await Comment.findAll({ where: { uId } });
 
     let commentsCount = [];
     for (let i = 0; i < comments.length; i++) {
       const boardComments = await Comment.findAll({
-        where: {bId: comments[i].bId},
+        where: { bId: comments[i].bId },
       });
       commentsCount.push(boardComments.length);
     }
     // 내가 작성한 자유게시글 데이터
     const boards = await Board.findAll({
-      where: {uId},
-      order: [["createdAt", "DESC"]], // createdAt 기준으로 내림차순으로 정렬
+      where: { uId },
+      order: [['createdAt', 'DESC']], // createdAt 기준으로 내림차순으로 정렬
     });
 
     if (isButton) {
@@ -94,7 +96,7 @@ exports.getUser = async (req, res) => {
     }
 
     // 마이페이지 렌더링
-    res.render("profile", {
+    res.render('user/profile', {
       userData: user,
       likeQuestionData: likeQuestion, // 좋아요 누른 질문
       likeAnswerData: likeAnswer, // 좋아요 누른 답변
@@ -108,7 +110,7 @@ exports.getUser = async (req, res) => {
       commentsCount,
       currentUser: req.session.user,
       success: true,
-      msg: "마이페이지 렌더링 정상 처리",
+      msg: '마이페이지 렌더링 정상 처리',
     });
   } catch (err) {
     console.log(err);
@@ -116,7 +118,7 @@ exports.getUser = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "마이페이지 렌더링 중 서버에러 발생",
+      msg: '마이페이지 렌더링 중 서버에러 발생',
     });
   }
 };
@@ -134,7 +136,7 @@ exports.getUserInfo = (req, res) => {
       };
 
       // ********** 추후에 어떤 화면으로 이동할 지 이름 수정 필요할수도 있음
-      res.status(200).render("editprofile", {
+      res.status(200).render('user/editprofile', {
         userData,
       });
       return;
@@ -147,7 +149,7 @@ exports.getUserInfo = (req, res) => {
       //   mgs: '로그인 정보 다름. 권한 없음.',
       // });
       // return;
-      res.redirect("/404");
+      res.redirect('/404');
     }
   } catch (error) {
     console.log(error);
@@ -156,7 +158,7 @@ exports.getUserInfo = (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "회원정보 수정 페이지 렌더링 중 서버에러 발생",
+      msg: '회원정보 수정 페이지 렌더링 중 서버에러 발생',
     });
   }
 };
@@ -170,23 +172,23 @@ exports.patchUser = async (req, res) => {
     const uId = req.session.user;
     console.log(uId);
 
-    const userData = {uId: uId};
-    let {email, pw, uName} = req.body;
+    const userData = { uId: uId };
+    let { email, pw, uName } = req.body;
     console.log(req.body);
 
-    const uNameIsDuplicate = await User.count({where: {uName}});
+    const uNameIsDuplicate = await User.count({ where: { uName } });
 
     if (uNameIsDuplicate) {
       return res.status(409).json({
         OK: false,
         uNameIsDuplicate,
-        msg: "닉네임이 이미 존재합니다.",
+        msg: '닉네임이 이미 존재합니다.',
       });
     }
     if (!pw) {
       return res.status(400).json({
         OK: false,
-        msg: "입력 필드 중 하나 이상이 누락되었습니다.",
+        msg: '입력 필드 중 하나 이상이 누락되었습니다.',
       });
     }
 
@@ -194,13 +196,13 @@ exports.patchUser = async (req, res) => {
 
     // 사용자가 둘 다 빈 값으로 넘기면 닉네임, 이메일 수정 X
     if (!uName && !email) {
-      const currentUser = await User.findOne({where: {uId: uId}});
+      const currentUser = await User.findOne({ where: { uId: uId } });
 
-      const posts = await Question.findAll({where: {uId: uId}});
-      const answers = await Answer.findAll({where: {uId: uId}});
-      const comments = await Comment.findAll({where: {uId: uId}});
+      const posts = await Question.findAll({ where: { uId: uId } });
+      const answers = await Answer.findAll({ where: { uId: uId } });
+      const comments = await Comment.findAll({ where: { uId: uId } });
 
-      return res.render("profile", {
+      return res.render('user/profile', {
         userData: currentUser,
         postData: posts,
         answerData: answers,
@@ -211,34 +213,34 @@ exports.patchUser = async (req, res) => {
       });
     }
 
-    const currentUser = await User.findOne({where: {uId: uId}});
+    const currentUser = await User.findOne({ where: { uId: uId } });
     const updateData = {};
     // uName 바꾸면 uName 업데이트
-    if (uName !== "") {
+    if (uName !== '') {
       updateData.uName = uName;
     }
 
     // email 바꾸면 email 업데이트
-    if (email !== "") {
+    if (email !== '') {
       if (!isValidEmail(email)) {
         return res.status(401).json({
           OK: false,
-          msg: "올바른 이메일 형식을 입력해주세요.",
+          msg: '올바른 이메일 형식을 입력해주세요.',
         });
       }
       updateData.email = email;
     }
 
     const updatedUser = await User.update(
-      {email: updateData.email, pw: pw, uName: updateData.uName},
+      { email: updateData.email, pw: pw, uName: updateData.uName },
       {
-        where: {uId: uId},
+        where: { uId: uId },
       }
     );
 
-    const posts = await Question.findAll({where: {uId: uId}});
-    const answers = await Answer.findAll({where: {uId: uId}});
-    const comments = await Comment.findAll({where: {uId: uId}});
+    const posts = await Question.findAll({ where: { uId: uId } });
+    const answers = await Answer.findAll({ where: { uId: uId } });
+    const comments = await Comment.findAll({ where: { uId: uId } });
 
     // 세션 지우는 로직 (이로직을 수행하면 로그인이 풀려버린다.)
     // console.log('>>>>>>>', updatedUser);
@@ -250,7 +252,7 @@ exports.patchUser = async (req, res) => {
     //   }
     // });
 
-    res.render("profile", {
+    res.render('user/profile', {
       userData: updatedUser,
       postData: posts,
       answerData: answers,
@@ -281,18 +283,18 @@ function isValidEmail(email) {
 // 회원 탈퇴할 때 비밀번호 체크 위한 로직
 exports.checkPassword = async (req, res) => {
   try {
-    const {password} = req.body;
+    const { password } = req.body;
     const uId = req.session.user;
 
     const user = await User.findOne({
-      where: {uId},
+      where: { uId },
     });
 
     if (!user) {
       // 사용자가 존재하지 않는 경우
       res
         .status(400)
-        .json({success: false, message: "사용자가 존재하지 않습니다."});
+        .json({ success: false, message: '사용자가 존재하지 않습니다.' });
       return;
     }
 
@@ -303,15 +305,15 @@ exports.checkPassword = async (req, res) => {
       // 비밀번호가 일치하지 않는 경우
       res
         .status(401)
-        .json({success: false, message: "비밀번호가 일치하지 않습니다."});
+        .json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
       return;
     }
 
     // 비밀번호가 일치하는 경우
-    res.status(200).json({success: true, message: "비밀번호가 일치합니다."});
+    res.status(200).json({ success: true, message: '비밀번호가 일치합니다.' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({success: false, message: "서버 오류 발생"});
+    res.status(500).json({ success: false, message: '서버 오류 발생' });
   }
 };
 
@@ -324,7 +326,7 @@ exports.deleteUser = async (req, res) => {
   try {
     const uId = req.session.user;
     const isDeleted = await User.destroy({
-      where: {uId: uId},
+      where: { uId: uId },
     });
 
     if (isDeleted) {
@@ -336,7 +338,7 @@ exports.deleteUser = async (req, res) => {
           res.status(301).send({
             isLogin,
             success: false,
-            msg: "세션 삭제 실패",
+            msg: '세션 삭제 실패',
           });
           return;
         }
@@ -354,7 +356,7 @@ exports.deleteUser = async (req, res) => {
         isLogin,
         currentUser: req.session.user,
         success: false,
-        msg: "서버 에러 발생",
+        msg: '서버 에러 발생',
       });
     }
   } catch (err) {
@@ -363,7 +365,7 @@ exports.deleteUser = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "서버 오류 발생",
+      msg: '서버 오류 발생',
     });
   }
 };

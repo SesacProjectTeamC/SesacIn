@@ -7,6 +7,10 @@
   /* padding: 1.5rem 1.5rem 5rem; */
 }
 
+img {
+  max-width: 100%;
+}
+
 a {
   text-decoration: none;
 }
@@ -250,6 +254,24 @@ textarea {
   width: 100%;
   height: 50px;
   background-color: #71bd66;
+}
+
+.btnContainer .dblock:hover {
+  color: white;
+  background-color: #dc3545;
+  border-color: #19875400;
+}
+
+.btnContainer .dblock:active {
+  color: white;
+  background-color: #dc3545;
+  border-color: #19875400;
+}
+
+.btnContainer .dblock.focus,
+.btnContainer .dblock:focus {
+  box-shadow: 0 0 0 0.2rem #dc354641;
+  outline: 0px;
 }
 
 .btn-primary {
