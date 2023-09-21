@@ -35,12 +35,10 @@ class UploadAdapter {
     xhr.addEventListener('load', () => {
       const response = xhr.response;
       const requestUrl = window.location.origin;
-      console.log(response);
+      // console.log(response);
       if (!response || response.error) {
         alert(response.error);
-        return reject(
-          response && response.error ? response.error.message : genericErrorText
-        );
+        return reject(response && response.error ? response.error.message : genericErrorText);
       }
 
       resolve({
