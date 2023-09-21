@@ -292,8 +292,11 @@ function userProfileImgUpload() {
       location.href = location.href;
     })
     .catch((err) => {
+      console.log(err);
       if (err.response.status) {
-        alert(err.response.data.error);
+        alert('err.response.data.error');
+      } else {
+        alert('지원하지 않는 파일 형식입니다.');
       }
     });
 }
