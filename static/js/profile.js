@@ -45,17 +45,17 @@ const liked = (data, contentDiv) => {
     return;
   }
   contentDiv.style.display = 'block';
-  for (let i = 0; i < data.postData.length; i++) {
+  for (let i = 0; i < data.likeQuestionData.length; i++) {
     contentDiv.innerHTML += [
       `
       <div class="postedQuestion">
-      <a href ="/question/${data.postData[i].qId}">
+      <a href ="/question/${data.likeQuestionData[i].qId}">
         <div class="qnaList">
-        <h3>${data.postData[i].title}</h3>
-        <h3>${data.postData[i].content}</h3>
+        <h3>${data.likeQuestionData[i].title}</h3>
+        <h3>${data.likeQuestionData[i].content}</h3>
         <div class="like">
         <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-        <p>${data.postData[i].likeCount}</p>
+        <p>${data.likeQuestionData[i].likeCount}</p>
         <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
         <p>${data.postAnswerCount[i]}</p>
         </div>
@@ -67,17 +67,38 @@ const liked = (data, contentDiv) => {
     console.log('qna');
   }
 
-  for (let i = 0; i < data.boardsData.length; i++) {
+  for (let i = 0; i < data.likeAnswerData.length; i++) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
-                <a href="/board/detail/${data.boardsData[i].bId}">
+                <a href="/board/detail/${data.likeAnswerData[i].bId}">
                 <div class="freeList">
-                <h3>${data.boardsData[i].title}</h3>
-                <h3>${data.boardsData[i].content}</h3>
+                <h3>${data.likeAnswerData[i].title}</h3>
+                <h3>${data.likeAnswerData[i].content}</h3>
                 <div class="like">
                 <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-                <p>${data.boardsData[i].likeCount}</p>
+                <p>${data.likeAnswerData[i].likeCount}</p>
+                <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
+                <p>${data.commentsCount[i]}</p>
+                </div>
+                </div>
+                </div>
+                <hr>
+                `,
+    ];
+    console.log('free');
+  }
+  for (let i = 0; i < data.likeBoardData.length; i++) {
+    contentDiv.innerHTML += [
+      `
+                <div class="freeBoards">
+                <a href="/board/detail/${data.likeBoardData[i].bId}">
+                <div class="freeList">
+                <h3>${data.likeBoardData[i].title}</h3>
+                <h3>${data.likeBoardData[i].content}</h3>
+                <div class="like">
+                <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
+                <p>${data.likeBoardData[i].likeCount}</p>
                 <img src="../../static/svg/message.svg" alt="답변개수" width="5px" class="svg"/>
                 <p>${data.commentsCount[i]}</p>
                 </div>
