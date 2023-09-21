@@ -220,6 +220,12 @@ exports.patchUser = async (req, res) => {
 
     // email 바꾸면 email 업데이트
     if (email !== "") {
+      if (!isValidEmail(email)) {
+        return res.status(401).json({
+          OK: false,
+          msg: "올바른 이메일 형식을 입력해주세요.",
+        });
+      }
       updateData.email = email;
     }
 
@@ -263,6 +269,14 @@ exports.patchUser = async (req, res) => {
     });
   }
 };
+
+// 이메일 형식 검사 함수
+function isValidEmail(email) {
+  // 이메일 형식 검사 로직을 추가하세요.
+  // 예를 들어, 정규식을 사용하여 이메일 형식을 확인할 수 있습니다.
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  return emailRegex.test(email);
+}
 
 // 회원 탈퇴할 때 비밀번호 체크 위한 로직
 exports.checkPassword = async (req, res) => {
