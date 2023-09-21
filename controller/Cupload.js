@@ -5,7 +5,7 @@ const { Op } = require('sequelize');
 // /upload/image/user
 exports.uploadImageFile = async (req, res) => {
   // 세션 확인
-  let isLogin = req.session.user ? true : false;
+  let isLogin = req.session.user; // ? true : false;
 
   try {
     // path == 이미지를 받을 수 있는 URL

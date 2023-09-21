@@ -35,8 +35,9 @@ class UploadAdapter {
     xhr.addEventListener('load', () => {
       const response = xhr.response;
       const requestUrl = window.location.origin;
-
+      console.log(response);
       if (!response || response.error) {
+        alert(response.error);
         return reject(
           response && response.error ? response.error.message : genericErrorText
         );
@@ -52,7 +53,7 @@ class UploadAdapter {
   _sendRequest(file) {
     const data = new FormData();
     data.append('file', file);
-    console.log(data);
+    // console.log('@@@@@@@', data);
     this.xhr.send(data);
   }
 }
