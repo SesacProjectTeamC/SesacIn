@@ -3,7 +3,6 @@ function addComment(qId, aId, userName, img) {
   if (content.length < 10) {
     alert('10자 이상 입력바랍니다');
   } else {
-    console.log(content);
     axios({
       method: 'post',
       url: `/question/${qId}/${aId}/comment/create`,
@@ -15,7 +14,6 @@ function addComment(qId, aId, userName, img) {
         // 성공했을때 처리.
         // response.status에 의해서 판단한다.
         const container = document.querySelector(`#commentC${aId}`);
-        console.log(container);
         container.innerHTML += commentCard(
           response.data.commentData,
           response.data.commentCreateAt,
@@ -24,16 +22,24 @@ function addComment(qId, aId, userName, img) {
           aId,
           qId
         );
+        const count = document.querySelector(`.commentCount${aId}`);
+        console.log(count);
+        const newCount =
+          '댓글 ' +
+          String(Number(count.innerHTML.replace('댓글', '').trim()) + 1);
+        count.innerHTML = newCount;
+        console.log(count);
 
         // commentsContainer.appendChild(commentDiv);
       })
       .catch((err) => {
-        console.log(err.response.status);
-        if (err.response.status === 401) {
-          openModal(err.response.data);
-        } else {
-          openModal('서버오류 발생');
-        }
+        console.log(err);
+        // console.log(err.response.status);
+        // if (err.response.status === 401) {
+        //   openModal(err.response.data);
+        // } else {
+        //   openModal('서버오류 발생');
+        // }
       });
   }
 }
@@ -187,6 +193,14 @@ function deleteComment(qId, cId, aId) {
       let myDiv = document.querySelector(`.commentContainer${cId}`);
       let parent = myDiv.parentElement; // 부모 객체 알아내기
       parent.removeChild(myDiv);
+
+      const count = document.querySelector(`.commentCount${aId}`);
+      console.log(count);
+      const newCount =
+        '댓글 ' +
+        String(Number(count.innerHTML.replace('댓글', '').trim()) - 1);
+      count.innerHTML = newCount;
+      console.log(count);
     })
     .catch((error) => {
       console.error(error.message);
