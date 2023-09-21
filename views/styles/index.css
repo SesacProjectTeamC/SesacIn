@@ -321,6 +321,10 @@ user {
   transform: scale(1.05);
 }
 
+.dropdown-menu {
+  --bs-dropdown-link-active-bg: #71bd66;
+}
+
 @media (max-width: 800px) {
   /* viewport width가 480px 이하일 때 */
   .qnaMenu {
@@ -370,7 +374,7 @@ user {
 
 .btn.focus,
 .btn:focus {
-  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 0.2rem #71bd6685;
   outline: 0px;
 }
 
