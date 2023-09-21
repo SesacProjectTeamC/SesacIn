@@ -256,6 +256,10 @@ textarea {
   background-color: #71bd66;
 }
 
+.commentBtn {
+  background-color: #71bd66;
+}
+
 .btnContainer .dblock:hover {
   color: white;
   background-color: #dc3545;

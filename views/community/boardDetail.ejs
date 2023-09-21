@@ -139,7 +139,7 @@
         </div>
         <button
           type="button"
-          class="btn btn-primary"
+          class="btn btn-primary commentBtn"
           onclick="addComment('<%= boardData.bId %>')"
         >
           작성하기
@@ -254,7 +254,7 @@
     // 좋아요 기능
     const bLikeHandler = (bId) => {
       axios({
-        method: 'PATCH',
+        method: "PATCH",
         url: `/board/detail/like/${bId}`,
       })
         .then((res) => {
@@ -267,7 +267,7 @@
           if (err.response.status === 401) {
             openModal(err.response.data);
           } else {
-            openModal('서버오류 발생');
+            openModal("서버오류 발생");
           }
         });
     };
