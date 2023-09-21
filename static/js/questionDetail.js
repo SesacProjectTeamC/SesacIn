@@ -60,7 +60,7 @@ const commentCard = (commentData, cDate, userName, img, aId, qId) => {
     `${commentData.content}</div>`,
     `<div id="fixCommentC${commentData.cId}" style="display: flex; justify-content: flex-end; color: darkgray; margin-bottom: 7px;">`,
     `<div style="cursor: pointer; margin-right: 10px; font-size: 14px" onclick="fixComment('${qId}','${commentData.cId}','${aId}')">수정</div>`,
-    `<div style="cursor: pointer; font-size: 14px" onclick="openModal('정말 삭제하시겠어요?', 'deleteComment('${commentData.cId}')');">삭제</div>`,
+    `<div style="cursor: pointer; font-size: 14px" onclick="openModal('정말 삭제하시겠어요?', 'deleteComment(${qId},${commentData.cId},${aId})');">삭제</div>`,
     '</div>',
     '</div>',
   ].join('');
