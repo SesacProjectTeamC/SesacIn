@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <%- include('./components/cdn', { title: 'SesacIn' }) %>
+    <%- include('../components/cdn', { title: 'SesacIn' }) %>
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
     <link rel="stylesheet" href="/views/styles/listMain.css" />
     <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
@@ -11,7 +11,7 @@
     <script defer src="../static/js/listMain.js"></script>
   </head>
   <body class="container">
-    <%- include('./components/header', { isLogin: isLogin }) %>
+    <%- include('../components/header', { isLogin: isLogin }) %>
     <div id="listType">
       <%= type === 'board' ? '🌱 Sesac 자유게시판' : '🙋‍♂️ Sesac Q&A'%>
     </div>

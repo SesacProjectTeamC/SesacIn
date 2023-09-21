@@ -7,6 +7,10 @@
   /* padding: 1.5rem 1.5rem 5rem; */
 }
 
+img {
+  max-width: 100%;
+}
+
 a {
   text-decoration: none;
 }
@@ -244,4 +248,49 @@ textarea {
   margin: 7px 0px 7px 0px;
   align-items: center;
   justify-content: space-between;
+}
+
+.answerBtn {
+  width: 100%;
+  height: 50px;
+  background-color: #71bd66;
+}
+
+.commentBtn {
+  background-color: #71bd66;
+}
+
+.btnContainer .dblock:hover {
+  color: white;
+  background-color: #dc3545;
+  border-color: #19875400;
+}
+
+.btnContainer .dblock:active {
+  color: white;
+  background-color: #dc3545;
+  border-color: #19875400;
+}
+
+.btnContainer .dblock.focus,
+.btnContainer .dblock:focus {
+  box-shadow: 0 0 0 0.2rem #dc354641;
+  outline: 0px;
+}
+
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: ##71bd66;
+  --bs-btn-border-color: ##71bd66;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: ##71bd66;
+  --bs-btn-hover-border-color: ##71bd66;
+  --bs-btn-focus-shadow-rgb: 49, 132, 253;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #41894e;
+  --bs-btn-active-border-color: ##71bd66;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: ##71bd66;
+  --bs-btn-disabled-border-color: ##71bd66;
 }

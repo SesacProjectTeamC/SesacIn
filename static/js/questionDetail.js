@@ -3,7 +3,6 @@ function addComment(qId, aId, userName, img) {
   if (content.length < 10) {
     alert('10자 이상 입력바랍니다');
   } else {
-    console.log(content);
     axios({
       method: 'post',
       url: `/question/${qId}/${aId}/comment/create`,
@@ -15,7 +14,6 @@ function addComment(qId, aId, userName, img) {
         // 성공했을때 처리.
         // response.status에 의해서 판단한다.
         const container = document.querySelector(`#commentC${aId}`);
-        console.log(container);
         container.innerHTML += commentCard(
           response.data.commentData,
           response.data.commentCreateAt,
@@ -24,16 +22,24 @@ function addComment(qId, aId, userName, img) {
           aId,
           qId
         );
+        const count = document.querySelector(`.commentCount${aId}`);
+        console.log(count);
+        const newCount =
+          '댓글 ' +
+          String(Number(count.innerHTML.replace('댓글', '').trim()) + 1);
+        count.innerHTML = newCount;
+        console.log(count);
 
         // commentsContainer.appendChild(commentDiv);
       })
       .catch((err) => {
-        console.log(err.response.status);
-        if (err.response.status === 401) {
-          openModal(err.response.data);
-        } else {
-          openModal('서버오류 발생');
-        }
+        console.log(err);
+        // console.log(err.response.status);
+        // if (err.response.status === 401) {
+        //   openModal(err.response.data);
+        // } else {
+        //   openModal('서버오류 발생');
+        // }
       });
   }
 }
@@ -66,8 +72,8 @@ const likeComment = (qId, aId) => {
     url: `/question/${qId}/like/${aId}`,
   })
     .then((response) => {
-      const like = document.querySelector('.aLike');
-      const clikeC = document.querySelector('#cLikeC');
+      const like = document.querySelector(`.aLike${aId}`);
+      const clikeC = document.querySelector(`#cLikeC${aId}`);
       if (like.getAttribute('src') === '/static/svg/heart.svg') {
         like.setAttribute('src', '/static/svg/heart-fill.svg');
         clikeC.innerHTML = Number(clikeC.innerHTML.trim()) + 1;
@@ -75,7 +81,7 @@ const likeComment = (qId, aId) => {
         like.setAttribute('src', '/static/svg/heart.svg');
         clikeC.innerHTML = Number(clikeC.innerHTML.trim()) - 1;
       }
-      const likeC = document.querySelector('.likeC');
+      const likeC = document.querySelector(`.likeC${aId}`);
       likeC.classList.toggle('likeActive');
     })
     .catch((err) => {
@@ -101,10 +107,29 @@ const fixComment = (qId, cId, aId) => {
   ].join('');
 };
 
+const fixAnswer = (qId, aId) => {
+  document.querySelector(`#fixAnswerC${aId}`).style.display = 'none';
+  const answerContent = document.querySelector(`#answer${aId}`);
+  const beforeA = answerContent.innerHTML;
+  answerContent.innerHTML = `<textarea autofocus id="fixA" class="form-control aria-label="With textarea" style="height: 140px"">${beforeA.trim()}</textarea>`;
+  answerContent.innerHTML += [
+    '<div style="display: flex; justify-content: flex-end; color: darkgray; margin-top: 10px">',
+    `<div class="cancelBtn" onclick="fixAnswerCancel('${beforeA.trim()}', '${aId}');">취소</div>`,
+    `<div style="cursor: pointer" onclick="fixAnswerFinish('${qId}', '${aId}');">완료</div>`,
+    '</div>',
+  ].join('');
+};
+
 const fixCancel = (content, cId) => {
   const commentContent = document.querySelector(`#comment${cId}`);
   commentContent.innerHTML = content;
   document.querySelector(`#fixCommentC${cId}`).style.display = 'flex';
+};
+
+const fixAnswerCancel = (content, aId) => {
+  const commentContent = document.querySelector(`#answer${aId}`);
+  commentContent.innerHTML = content;
+  document.querySelector(`#fixAnswerC${aId}`).style.display = 'flex';
 };
 
 const fixFinish = (qId, cId, aId) => {
@@ -133,6 +158,30 @@ const fixFinish = (qId, cId, aId) => {
     });
 };
 
+const fixAnswerFinish = (qId, aId) => {
+  const answerContent = document.querySelector('#fixA').value;
+  axios({
+    method: 'patch',
+    url: `/question/${qId}/answer/${aId}/edit`,
+    data: {
+      content: answerContent,
+    },
+  })
+    .then((response) => {
+      const content = document.querySelector(`#answer${aId}`);
+      content.innerHTML = answerContent;
+      document.querySelector(`#fixAnswerC${aId}`).style.display = 'flex';
+    })
+    .catch((err) => {
+      if (err.response.status === 501) {
+        // openModal(err.response.data.msg);
+        openModal('내용을 입력해주세요! 혹은 내용을 변경해주세요!');
+      } else {
+        openModal('서버오류 발생');
+      }
+    });
+};
+
 function deleteComment(qId, cId, aId) {
   // 댓글 삭제 요청을 서버로 보내고, 성공하면 화면에서 삭제
   axios({
@@ -144,6 +193,29 @@ function deleteComment(qId, cId, aId) {
       let myDiv = document.querySelector(`.commentContainer${cId}`);
       let parent = myDiv.parentElement; // 부모 객체 알아내기
       parent.removeChild(myDiv);
+
+      const count = document.querySelector(`.commentCount${aId}`);
+      console.log(count);
+      const newCount =
+        '댓글 ' +
+        String(Number(count.innerHTML.replace('댓글', '').trim()) - 1);
+      count.innerHTML = newCount;
+      console.log(count);
+    })
+    .catch((error) => {
+      console.error(error.message);
+      console.error(error.response.data.msg);
+    });
+}
+
+function deleteAnswer(qId, aId) {
+  // 댓글 삭제 요청을 서버로 보내고, 성공하면 화면에서 삭제
+  axios({
+    method: 'delete',
+    url: `/question/${qId}/answer/${aId}/delete`,
+  })
+    .then((response) => {
+      document.location.href = `/question/${qId}`;
     })
     .catch((error) => {
       console.error(error.message);

@@ -34,7 +34,10 @@ class UploadAdapter {
     xhr.addEventListener('abort', () => reject());
     xhr.addEventListener('load', () => {
       const response = xhr.response;
+      const requestUrl = window.location.origin;
+      console.log(response);
       if (!response || response.error) {
+        alert(response.error);
         return reject(
           response && response.error ? response.error.message : genericErrorText
         );
@@ -42,7 +45,7 @@ class UploadAdapter {
 
       resolve({
         // response = { "success": true, "msg": "파일이 성공적으로 업로드되었습니다.", url: "http://localhost:8000/static/profileImg/qwodqwo.jpg"}
-        default: response.url, //업로드된 파일 주소
+        default: `${requestUrl}/${response.path}`, //업로드된 파일 주소
       });
     });
   }
@@ -50,7 +53,7 @@ class UploadAdapter {
   _sendRequest(file) {
     const data = new FormData();
     data.append('file', file);
-    console.log(data);
+    // console.log('@@@@@@@', data);
     this.xhr.send(data);
   }
 }
@@ -65,6 +68,10 @@ function MyCustomUploadAdapterPlugin(editor) {
 
 ClassicEditor.create(document.querySelector('.editor'), {
   extraPlugins: [MyCustomUploadAdapterPlugin],
+  link: {
+    defaultProtocol: 'http://',
+  },
+  placeholder: '내용을 입력해주세요.',
 })
   .then((newEditor) => {
     editor = newEditor;
@@ -72,15 +79,6 @@ ClassicEditor.create(document.querySelector('.editor'), {
   .catch((error) => {
     console.error(error);
   });
-
-function temp() {
-  const data = editor.getData();
-  console.log(data);
-}
-
-const temp2 = () => {
-  editor.setData('<p>Some text.</p>');
-};
 
 const changeType = (t) => {
   const typeLabel = document.querySelector('#typeLabel');

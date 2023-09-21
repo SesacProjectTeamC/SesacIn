@@ -1,5 +1,5 @@
 * {
-  font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', 'Sans-serif';
+  font-family: "Spoqa Han Sans", "Spoqa Han Sans JP", "Sans-serif";
 }
 :root {
   --main-color: #ddecca;
@@ -22,9 +22,41 @@
   border-color: var(--border-color);
 }
 
-.btn-secondary:hover{
+.btn-secondary:hover {
   font-weight: bold;
   color: #fff;
   background-color: darkgreen;
   border-color: darkgreen;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active:focus,
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem #71bd6685;
+}
+
+.btn.focus,
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem #71bd6685;
+  outline: 0px;
+}
+
+.btn-check:checked + .btn,
+.btn.active,
+.btn.show,
+.btn:first-child:active,
+:not(.btn-check) + .btn:active {
+  color: white;
+  background-color: #71bd66;
+  border-color: #19875400;
+}
+
+.btn:hover {
+  color: white;
+  background-color: #72bd66cb;
+  border-color: #19875400;
+}
+
+.dropdown-menu {
+  --bs-dropdown-link-active-bg: #71bd66;
 }

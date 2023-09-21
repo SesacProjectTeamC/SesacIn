@@ -67,7 +67,7 @@ const liked = (data, contentDiv) => {
     console.log('qna');
   }
 
-  for (let i = 0; data.boardsData.length; i++) {
+  for (let i = 0; i < data.boardsData.length; i++) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
@@ -197,7 +197,7 @@ const free = (data, contentDiv) => {
     return;
   }
   contentDiv.style.display = 'block';
-  for (let i = 0; data.boardsData.length; i++) {
+  for (let i = 0; i < data.boardsData.length; i++) {
     contentDiv.innerHTML += [
       `
                 <div class="freeBoards">
@@ -274,22 +274,28 @@ function editProfile() {
 //   // console.dir(file.files[0]);
 // }
 
-async function userProfileImgUpload() {
+function userProfileImgUpload() {
   const formData = new FormData();
   const file = document.getElementById('fileInput');
-
+  console.log(file);
   formData.append('userImgFile', file.files[0]);
 
-  await axios({
+  axios({
     method: 'post',
     url: '/upload/image/user',
     data: formData,
     header: {
       'Content-Type': 'multipart/form-data',
     },
-  }).then((res) => {
-    location.href = location.href;
-  });
+  })
+    .then((res) => {
+      location.href = location.href;
+    })
+    .catch((err) => {
+      if (err.response.status) {
+        alert(err.response.data.error);
+      }
+    });
 }
 
 function goTohome() {
