@@ -63,21 +63,21 @@ form#login_form {
   display: flex;
   flex-direction: column;
 }
-label[for='login_form_id']:hover,
-label[for='login_form_pw']:hover {
+label[for="login_form_id"]:hover,
+label[for="login_form_pw"]:hover {
   color: var(--hover-color2);
 }
 
-input[class='login_form_id'],
-input[class='login_form_pw'] {
+input[class="login_form_id"],
+input[class="login_form_pw"] {
   border: none;
   outline: none;
   box-shadow: 0px 2px 0px 0px var(--main-color);
   padding: 5px 10px;
   transition: box-shadow 0.3s ease-in-out;
 }
-input[class='login_form_id']:hover,
-input[class='login_form_pw']:hover {
+input[class="login_form_id"]:hover,
+input[class="login_form_pw"]:hover {
   border: none;
   outline: none;
   box-shadow: 0px 0px 0px 1px var(--hover-color);
@@ -139,4 +139,60 @@ form#login_form a:last-of-type {
   margin-top: 10px;
   font-size: small;
   color: red;
+}
+
+.btn-p .btn-primary {
+  border-color: #71bd66;
+}
+
+.btn-primary.focus {
+  color: #fff;
+  background-color: #71bd66;
+  border-color: #71bd66;
+  box-shadow: 0 0 0 0.2rem #71bd66;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.show > .btn-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #71bd66;
+  border-color: #71bd66;
+}
+
+.btn-primary:focus {
+  color: #fff;
+  background-color: #71bd66;
+  border-color: #71bd66;
+  box-shadow: 0 0 0 0.2rem #71bd66;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #71bd66;
+  border-color: #71bd66;
+}
+
+/* .btn:hover {
+  color: white;
+  background-color: #71bd66;
+  border-color: #71bd66;
+} */
+
+.btn:hover {
+  color: white;
+  background-color: #71bd66;
+  border-color: #19875400;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active:focus,
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem #71bd6685;
+}
+
+.btn.focus,
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem #71bd6685;
+  outline: 0px;
 }
