@@ -15,8 +15,12 @@ package-lock.json
 /sql
 
 # 유저가 업로드한 이미지 파일
-/static/editorImg/*
-/static/profileImg/*
+!static/editorImg/.gitkeep
+!static/profileImg/.gitkeep
+
+# 설정파일 폴더
+!config/.gitkeep
 
 # 맥북
 .DS_Store
+

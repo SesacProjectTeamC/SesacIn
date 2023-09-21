@@ -5,9 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('./components/cdn', { title: '메인' }) %>
+    <script defer src="https://unpkg.com/@popperjs/core@2"></script>
     <link rel="stylesheet" href="/views/styles/globalstyle.css" />
     <link rel="stylesheet" href="/views/styles/post.css" />
-    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
 
     <!-- <script src="https://cdn.ckeditor.com/ckeditor5/39.0.2/super-build/ckeditor.js"></script> -->
     <script defer src="/static/js/post.js"></script>
@@ -37,10 +38,10 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            자유
+            Q&A
           </button>
           <ul class="dropdown-menu">
-            <%for(d of ['자유', 'Q&A']){%>
+            <%for(d of ['Q&A','자유']){%>
             <li class="dropdown-item" onclick="changeType('<%= d%>')">
               <%= d%>
             </li>
@@ -51,7 +52,7 @@
 
       <div
         id="dpContainer"
-        style="display: none; margin-bottom: 15px; align-items: center"
+        style="display: flex; margin-bottom: 15px; align-items: center"
       >
         <div class="qcTitle">카테고리</div>
         <div class="dropdown">

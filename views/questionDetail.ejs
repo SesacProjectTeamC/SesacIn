@@ -177,7 +177,7 @@
         <hr />
 
         <div
-          id="comment<%= answerData[i].aId%>"
+          id="answer<%= answerData[i].aId%>"
           style="margin-left: 15px; min-height: 100px"
         >
           <%= answerData[i].content %>
@@ -185,42 +185,56 @@
 
         <%if(isLogin && answerData[i].uId === userData.uId){%>
         <div
-          id="fixCommentC<%= answerData[i].aId %>"
+          id="fixAnswerC<%= answerData[i].aId %>"
           style="display: flex; justify-content: flex-end; color: darkgray"
         >
-          <div style="cursor: pointer; margin-right: 10px">수정</div>
+          <div
+            style="cursor: pointer; margin-right: 10px"
+            onclick="fixAnswer('<%= data.qId %>', '<%= answerData[i].aId%>')"
+          >
+            수정
+          </div>
 
-          <div style="cursor: pointer">삭제</div>
+          <div
+            style="cursor: pointer"
+            onclick="openModal('정말 삭제하시겠어요?', 'deleteAnswer(<%= data.qId %>, <%= answerData[i].aId%>)');"
+          >
+            삭제
+          </div>
         </div>
         <%}%>
         <div style="display: flex">
           <% if (!aResult[i]) { %>
           <div
-            class="likeC"
+            class="likeC likeC<%= answerData[i].aId%>"
             onclick="likeComment('<%= data.qId %>', '<%= answerData[i].aId%>')"
           >
             <img
               src="/static/svg/heart.svg"
               alt="좋아요수"
               width="24px"
-              class="svg aLike"
+              class="svg aLike<%= answerData[i].aId%>"
             />
             좋아요
-            <div id="cLikeC"><%= answerData[i].likeCount%></div>
+            <div id="cLikeC<%= answerData[i].aId%>">
+              <%= answerData[i].likeCount%>
+            </div>
           </div>
           <% } else if (aResult[i]) { %>
           <div
-            class="likeC likeActive"
+            class="likeC likeC<%= answerData[i].aId%> likeActive"
             onclick="likeComment('<%= data.qId %>', '<%= answerData[i].aId%>')"
           >
             <img
               src="/static/svg/heart-fill.svg"
               alt="좋아요수"
               width="24px"
-              class="svg aLike"
+              class="svg aLike<%= answerData[i].aId%>"
             />
             좋아요
-            <div id="cLikeC"><%= answerData[i].likeCount%></div>
+            <div id="cLikeC<%= answerData[i].aId%>">
+              <%= answerData[i].likeCount%>
+            </div>
           </div>
           <% } %>
 
@@ -240,7 +254,9 @@
               width="24px"
               style="margin-right: 5px; margin-top: 2px"
             />
-            댓글 <%= answerCommentList.length %>
+            <div class="commentCount<%= answerData[i].aId%>">
+              댓글 <%= answerCommentList.length %>
+            </div>
           </div>
         </div>
 

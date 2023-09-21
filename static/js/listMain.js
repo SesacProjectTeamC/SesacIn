@@ -2,13 +2,13 @@ let savedPage = 1;
 
 const getPageData = (page) => {
   const formattedPage =
-    page === "next" ? savedPage + 1 : page === "prev" ? savedPage - 1 : page;
+    page === 'next' ? savedPage + 1 : page === 'prev' ? savedPage - 1 : page;
   savedPage = Number(formattedPage);
-  const findType = document.querySelector("#listType").innerHTML.trim();
+  const findType = document.querySelector('#listType').innerHTML.trim();
   axios({
-    method: "GET",
+    method: 'GET',
     url:
-      findType === "📋 Sesac 자유게시판"
+      findType === '🌱 Sesac 자유게시판'
         ? `/board/list/${formattedPage}&20&createdAt&desc`
         : `/question/list/${formattedPage}&20&createdAt&desc`,
   }).then((res) => {
@@ -21,25 +21,26 @@ const getPageData = (page) => {
 
 const changeList = (res, findType) => {
   const arrayData =
-    findType === "📋 Sesac 자유게시판"
+    findType === '🌱 Sesac 자유게시판'
       ? res.data.boardData
       : res.data.questionData;
-  const container = document.querySelector(".listC");
-  container.innerHTML = "";
+  const container = document.querySelector('.listC');
+  container.innerHTML = '';
   for (let i = 0; i < arrayData.length; i++) {
     let include;
-    if (findType === "🌱 Sesac 자유게시판") {
+    if (findType === '🌱 Sesac 자유게시판') {
       include = freeboardlist(
+        i + 1 + (savedPage - 1) * 20, // [세화]
         arrayData[i],
-        res.data.boardCreateAt[i],
+        res.data.boardCreateAt[i]
         // res.data.boardUserName[i]
       );
     } else {
       include = qnalist(
-        arrayData.length - i, // [세화]
+        i + 1 + (savedPage - 1) * 20, // [세화]
         arrayData[i],
         res.data.questionCreateAt[i],
-        res.data.questionData[i].uName, // [태균]
+        res.data.questionData[i].uName // [태균]
         // res.data.questionUserName[i]
       );
     }
@@ -48,36 +49,36 @@ const changeList = (res, findType) => {
 };
 
 const changePagination = (res, page, findType) => {
-  const container = document.querySelector(".pagination");
-  container.innerHTML = "";
+  const container = document.querySelector('.pagination');
+  container.innerHTML = '';
   container.innerHTML = pagination(Number(page), res.data.pageCount);
 };
 
 const pagination = (page, pageCount) => {
-  let result = "";
+  let result = '';
   const prev = [
-    `<li id="prev" class="page-item ${page === 1 ? "disabled" : ""}">`,
+    `<li id="prev" class="page-item ${page === 1 ? 'disabled' : ''}">`,
     `<a class="page-link" tabindex="-1" onclick="getPageData('prev')"><</a>`,
-    "</li>",
-  ].join("");
+    '</li>',
+  ].join('');
 
   const next = [
     `<li id="next" class="page-item ${
-      page === pageCount ? "disabled" : ""
-    }" style="cursor: ${page === pageCount ? "" : "pointer"}">`,
+      page === pageCount ? 'disabled' : ''
+    }" style="cursor: ${page === pageCount ? '' : 'pointer'}">`,
     `<a class="page-link" onclick="getPageData('next')">></a>`,
-    "</li>",
-  ].join("");
+    '</li>',
+  ].join('');
 
-  let content = "";
-  const startNum = Number(String(Math.ceil(page / 10) - 1) + "1");
-  const endNum = pageCount - startNum > 10 ? startNum + 9 : pageCount;
+  let content = '';
+  const startNum = Number(String(Math.ceil(page / 10) - 1) + '1');
+  const endNum = pageCount - startNum > 9 ? startNum + 9 : pageCount;
   for (let i = startNum; i <= endNum; i++) {
     const result = [
-      `<li class="page-item ${i === page ? "active" : ""}">`,
+      `<li class="page-item ${i === page ? 'active' : ''}">`,
       `<a class="page-link" onclick="getPageData('${i}')" >${i}</a>`,
-      "</li>",
-    ].join("");
+      '</li>',
+    ].join('');
     content += result;
   }
 
@@ -87,22 +88,20 @@ const pagination = (page, pageCount) => {
   return result;
 };
 
-// const freeboardlist = (data, cDate, uName) => {
-const freeboardlist = (data, cDate) => {
+const freeboardlist = (count, data, cDate) => {
   const result = [
     `<tr  onclick="moveToDetailBoard('${data.bId}')" style="cursor: pointer">`,
-    `<th>${data.bId}</th>`,
+    `<th>${count}</th>`,
     `<td style="text-align: start">${data.title}</td>`,
     `<td>${data.uName}</td>`, // [태균]
     `<td>${data.likeCount}</td>`,
     // `<td>${data.commentCount}</td>`, // [태균]
     `<td>${cDate}</td>`,
-    "</tr>",
-  ].join("");
+    '</tr>',
+  ].join('');
   return result;
 };
 
-// const qnalist = (data, cDate, uName) => {
 const qnalist = (count, data, cDate) => {
   const result = [
     `<tr  onclick="moveToDetailQuestion('${data.qId}')" style="cursor: pointer">`,
@@ -112,14 +111,14 @@ const qnalist = (count, data, cDate) => {
     `<td>${data.likeCount}</td>`,
     // `<td>${data.answerCount}</td>`, // [태균]
     `<td>${cDate}</td>`,
-    "</tr>",
-  ].join("");
+    '</tr>',
+  ].join('');
   return result;
 };
 
 const moveToDetailBoard = (bId) => {
   axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `/board/detail/view/${bId}`,
   })
     .then((res) => {
@@ -132,7 +131,7 @@ const moveToDetailBoard = (bId) => {
 
 const moveToDetailQuestion = (qId) => {
   axios({
-    method: "PATCH",
+    method: 'PATCH',
     url: `/question/${qId}/view`,
   })
     .then((res) => {
