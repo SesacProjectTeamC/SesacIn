@@ -34,15 +34,15 @@ class UploadAdapter {
     xhr.addEventListener('abort', () => reject());
     xhr.addEventListener('load', () => {
       const response = xhr.response;
+      const requestUrl = window.location.origin;
+
       if (!response || response.error) {
-        return reject(
-          response && response.error ? response.error.message : genericErrorText
-        );
+        return reject(response && response.error ? response.error.message : genericErrorText);
       }
 
       resolve({
         // response = { "success": true, "msg": "파일이 성공적으로 업로드되었습니다.", url: "http://localhost:8000/static/profileImg/qwodqwo.jpg"}
-        default: response.url, //업로드된 파일 주소
+        default: `${requestUrl}/${response.path}`, //업로드된 파일 주소
       });
     });
   }
@@ -68,9 +68,7 @@ ClassicEditor.create(document.querySelector('.editor'), {
 })
   .then((newEditor) => {
     editor = newEditor;
-    newEditor.setData(
-      String(document.querySelector('#editContent').textContent.trim())
-    );
+    newEditor.setData(String(document.querySelector('#editContent').textContent.trim()));
   })
   .catch((error) => {
     console.error(error);

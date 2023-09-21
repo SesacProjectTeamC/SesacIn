@@ -4,9 +4,8 @@
   "description": "새싹 팀프로젝트",
   "main": "app.js",
   "scripts": {
-    "local": "cross-env NODE_ENV=local DB_ENV=local URL=http://localhost:8000 PORT=8000 nodemon app",
-    "dev": "cross-env NODE_ENV=development DB_ENV=development URL=http://52.79.181.24 PORT=80 node app",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "local": "cross-env NODE_ENV=local DB_ENV=local PORT=8000 nodemon app",
+    "dev": "cross-env NODE_ENV=development DB_ENV=development PORT=8000 pm2 start app.js "
   },
   "keywords": [],
   "author": "",
