@@ -65,7 +65,7 @@ function MyCustomUploadAdapterPlugin(editor) {
 ClassicEditor.create(document.querySelector('.editor'), {
   extraPlugins: [MyCustomUploadAdapterPlugin],
   link: {
-    defaultProtocol: 'http://',
+    defaultProtocol: 'http://', // 링크 삽입 시 기본 프로토콜
   },
   placeholder: '내용을 입력해주세요.',
 })

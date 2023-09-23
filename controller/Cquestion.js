@@ -1,8 +1,7 @@
 const { Question, Answer, Comment, uLike, User, sequelize } = require('../models');
 const moment = require('moment');
 
-//=== 메인페이지,질문 목록 가져오기 ===
-
+// QnA 메인 페이지 렌더링
 exports.getQuestions = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -29,7 +28,6 @@ exports.getQuestions = async (req, res) => {
     const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
-    // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
     const sql = `
     SELECT q.qId, u.uName, u.uId, u.userImgPath, q.title, q.qType, q.content, q.viewCount, q.likeCount, q.createdAt, q.updatedAt, COALESCE(count(a.aId), 0) as answerCount
       FROM question q
@@ -62,9 +60,6 @@ exports.getQuestions = async (req, res) => {
         questionTotalCount, // 총 질문 개수
         success: true,
         msg: 'QnA 호출 처리 완료',
-        // data: paginatedQuestions,
-        // pageCount: pageCount,
-        // cDate: create,
         isLogin,
         currentLoginUser: uId,
         userData: {
@@ -179,7 +174,6 @@ exports.paginateQuestion = async (req, res) => {
     const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
-    // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
     const sql = `
     SELECT q.qId, u.uName, u.uId, u.userImgPath, q.title, q.content, q.viewCount, q.likeCount, q.createdAt, q.updatedAt, COALESCE(count(a.aId), 0) as answerCount
       FROM question q
@@ -214,10 +208,11 @@ exports.paginateQuestion = async (req, res) => {
   }
 };
 
-//=== QnA 특정 질문 상세 페이지 렌더링 GET ===
+// QnA 특정 질문 상세 페이지 렌더링
+// GET
+// /question/:qId
 // 1. 특정 질문과 그 질문에 대한 답변 전체 리스트 가져오기 (Cquestion)
 // 2. 특정 답변에 대한 전체 댓글 리스트 가져오기 (Ccomment)
-// /question/:qId
 exports.getQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -285,7 +280,7 @@ exports.getQuestion = async (req, res) => {
         where: { uId },
       });
       // 1) 질문 좋아요
-      // [태균] uLike 테이블에서 해당하는 qId에 대한 row데이터를 가져옴
+      // uLike 테이블에서 해당하는 qId에 대한 row데이터를 가져옴
       const uLikeQuestionFind = await uLike.findOne({
         where: {
           qId,
@@ -325,7 +320,7 @@ exports.getQuestion = async (req, res) => {
         currentUser: req.session.user,
         qResult: qResultLike, // 특정 질문에 대한 결과 (T/F)
         aResult: uLikeAnswersResult, // 특정 질문에 대한 답변의 결과
-        //+ 답변은 여러 개이므로, 배열로 결과 값을 보냄 ---> ex. [ true, false, false ]
+        // 답변은 여러 개이므로, 배열로 결과 값을 보냄 ---> ex. [ true, false, false ]
         userData: user,
       });
     }
@@ -342,7 +337,7 @@ exports.getQuestion = async (req, res) => {
       currentUser: req.session.user,
       qResult: qResultLike, // 특정 질문에 대한 결과 (T/F)
       aResult: uLikeAnswersResult, // 특정 질문에 대한 답변의 결과
-      //+ 답변은 여러 개이므로, 배열로 결과 값을 보냄 ---> ex. [ true, false, false ]
+      // 답변은 여러 개이므로, 배열로 결과 값을 보냄 ---> ex. [ true, false, false ]
       userData: null,
     });
   } catch (err) {
@@ -399,7 +394,7 @@ exports.getCreateQuestion = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send(err); // 상태 코드가 500이면 프론트의 catch에서 처리된다.
+    res.status(500).send(err);
   }
 };
 
@@ -475,19 +470,6 @@ exports.patchQuestion = async (req, res) => {
     const { qId } = req.params;
     const { title, content, qType } = req.body;
 
-    // 업데이트 전 질문 데이터 조회
-    // const before = await Question.findByPk(qId);
-
-    // uid로 게시글 소유자 여부 확인(권한 확인)
-    // if (before.dataValues.uId !== req.session.user) {
-    //   res.status(401).send({
-    //     success: false,
-    //     currentLoginUser: req.session.user,
-    //     msg: "게시글의 소유자가 아님",
-    //   });
-    //   return;
-    // }
-
     if (!isLogin) {
       res.status(401).send({
         success: false,
@@ -516,8 +498,6 @@ exports.patchQuestion = async (req, res) => {
         where: { qId },
       }
     );
-
-    //% qType 변경
 
     res.send({ data: updatedQuestion });
   } catch (err) {

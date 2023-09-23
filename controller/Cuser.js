@@ -1,8 +1,6 @@
 const { User } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
-// const Filter = require('bad-words');
-// const filter = new Filter();
 
 // 회원가입 창 렌더링
 exports.getJoin = (req, res) => {
@@ -11,15 +9,6 @@ exports.getJoin = (req, res) => {
 
   try {
     if (isLogin) {
-      // res.status(301).send({
-      //   isLogin,
-      //   currentUser: req.session.user,
-      //   success: false,
-      //   msg: '이미 로그인되어있어서 회원가입 페이지로 이동시키면 안됨',
-      // });
-      // return;
-
-      // 이 경우 세션 삭제 후 다시 회원가입 할 수 있도록 함
       req.session.destroy((err) => {
         if (err) {
           console.log(err);
@@ -124,16 +113,7 @@ exports.postUser = async (req, res) => {
     });
     res.status(200).send(newUser);
   } catch (err) {
-    // 기타 데이터베이스 오류
     console.log(err);
-    // res.status(500).send({
-    //   OK: false,
-    //   msg: '데이터베이스 오류 발생',
-    // });
-    // return;
-
-    // [태균] 비속어 관련
-    // 미들웨어에서 던진 에러를 처리 : 닉네임에만 적용. 비속어있을 경우 status 코드 400 발생
     res.status(err.statusCode || 500).send({
       msg: err.message,
       OK: false,
@@ -295,8 +275,7 @@ exports.findId = async (req, res) => {
   }
 };
 
-// controllers/emailVerificationController.js
-
+// 이메일 인증여부 확인 함수
 async function checkIfEmailVerified(uId) {
   try {
     // 사용자 아이디를 기반으로 User 모델을 조회합니다.
@@ -321,6 +300,9 @@ async function checkIfEmailVerified(uId) {
   }
 }
 
+// 인증여부 확인 처리
+// POST
+// /checkEmailVerify
 exports.checkEmailVerify = async (req, res) => {
   const { uId } = req.body;
 
@@ -463,7 +445,6 @@ const smtpTransport = require('../config/email.js');
 
 const verificationCodes = {};
 
-/////////////////////////////////////////////////
 // 이메일 인층 창 렌더링
 exports.getEmail = async (req, res) => {
   // 세션 검사

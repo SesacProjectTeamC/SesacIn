@@ -91,7 +91,7 @@ exports.patchAnswer = async (req, res) => {
 
     const { content } = req.body;
 
-    // 비어 있는 경우
+    // 답변 내용이 비어 있는 경우
     if (!content) {
       res.status(400).send({
         success: false,

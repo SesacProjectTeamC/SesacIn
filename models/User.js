@@ -40,7 +40,6 @@ const User = (Sequelize, DataTypes) => {
       userImgPath: {
         type: DataTypes.STRING(500),
         allowNull: true,
-        // defaultValue: 'NULL',
       },
       emailVerify: {
         type: DataTypes.BOOLEAN,

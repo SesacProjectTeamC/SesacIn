@@ -27,10 +27,10 @@ exports.getBoardMain = async (req, res) => {
     }
 
     const boardTotalCount = await Board.count();
-    const boardPageCount = parseInt(Math.ceil(boardTotalCount / pageSize)); // 페이지 수 (올림처리)
+    // 페이지 수 (올림처리)
+    const boardPageCount = parseInt(Math.ceil(boardTotalCount / pageSize));
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
-    // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
     const sql = `
     SELECT b.bId, u.uName, u.uId, u.userImgPath, b.title, b.content, b.viewCount, b.likeCount, b.createdAt, b.updatedAt, COALESCE(count(c.cId), 0) as commentCount 
       FROM board b 
@@ -40,6 +40,7 @@ exports.getBoardMain = async (req, res) => {
       ORDER BY ${sortField} ${sortOrder} 
       LIMIT ${offset}, ${pageSize};`;
 
+    // 페이징 처리된 Board 데이터 조회
     const [paginatedBoard, metadata] = await sequelize.query(sql);
 
     // 날짜 데이터 포맷 변경
@@ -58,7 +59,7 @@ exports.getBoardMain = async (req, res) => {
 
       res.render('community/listMain', {
         type: 'board',
-        boardData: paginatedBoard, // Board 데이터(20개씩)
+        boardData: paginatedBoard, // 페이징 처리된 Board 데이터
         boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
         pageCount: boardPageCount, // 총 몇페이지인지
         success: true,
@@ -71,7 +72,7 @@ exports.getBoardMain = async (req, res) => {
       // 비로그인시 처리
       res.render('community/listMain', {
         type: 'board',
-        boardData: paginatedBoard, // Board 데이터(20개씩)
+        boardData: paginatedBoard, // 페이징 처리된 Board 데이터
         boardCreateAt, // Board 데이터에서 CreateAt의 포맷팅을 변경한 데이터
         pageCount: boardPageCount, // 총 몇페이지인지
         success: true,
@@ -165,7 +166,6 @@ exports.detailBoard = async (req, res) => {
       commentCreateAt.push(moment(c.createdAt).format('YYYY-MM-DD HH:mm'));
     }
 
-    //=== [ 세화 ] ===
     // 1. 좋아요
     // 1) 좋아요 히스토리 찾기
     let uLikeFind;
@@ -223,7 +223,6 @@ exports.detailBoard = async (req, res) => {
   }
 };
 
-//=== [ 세화 ] ===
 // 조회수 처리 (메인페이지에서 자유게시글 상세페이지 클릭 시, 조회수 + 1)
 // PATCH
 // board/detail/view/:bId
@@ -242,7 +241,6 @@ exports.viewBoard = async (req, res) => {
   }
 };
 
-//=== [ 세화 ] ===
 // 좋아요 버튼 클릭 시, 게시글 좋아요 추가 및 삭제 처리
 // PATCH
 // board/detail/like/:bId
@@ -259,7 +257,7 @@ exports.likeBoard = async (req, res) => {
     const uLikeFind = await uLike.findOne({
       where: {
         bId,
-        uId: req.session.user, // 로그인 현재 로그인 된 유저
+        uId: req.session.user, // 현재 로그인 된 유저
       },
     });
 
@@ -342,10 +340,6 @@ exports.getCommentList = async (req, res) => {
 // Board-댓글. 게시글의 모든 댓글 조회 함수
 const getComment = async (bId) => {
   try {
-    // const comment = await Comment.findAll({
-    //   where: { bId: bId },
-    // });
-
     const comment = await Comment.findAll({
       where: { bId: bId },
       include: [
@@ -391,7 +385,6 @@ exports.paginateBoard = async (req, res) => {
     const boardPageCount = parseInt(Math.ceil(boardTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
-    // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
     const sql = `
     SELECT b.bId, u.uName, u.uId, u.userImgPath, b.title, b.content, b.viewCount, b.likeCount, b.createdAt, b.updatedAt, COALESCE(count(c.cId), 0) as commentCount 
       FROM board b 
@@ -451,11 +444,8 @@ exports.createBoard = async (req, res) => {
         currentLoginUser: req.session.user,
         msg: '데이터에 빈값이 있습니다.',
       });
-      return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
+      return;
     }
-
-    // 게시글 제목과 내용에 부적절한 단어 사용에 대한 처리
-    // ~~~~
 
     // DB작업
     const newBoard = await Board.create({
@@ -499,16 +489,6 @@ exports.editBoard = async (req, res) => {
   let isLogin = req.session.user ? true : false;
 
   try {
-    // if (!isLogin) {
-    //   res.status(401).send({
-    //     success: false,
-    //     isLogin,
-    //     currentLoginUser: req.session.user,
-    //     msg: '로그인 되어있지 않습니다.',
-    //   });
-    //   return;
-    // }
-
     const { bId } = req.params;
     const { title, content } = req.body;
 
@@ -584,8 +564,8 @@ exports.deleteBoard = async (req, res) => {
       },
     });
 
-    // 삭제 실패 처리
     if (!isDeleted) {
+      // 삭제 실패 처리
       res.status(404).send({
         isDeleted: false,
         currentLoginUser: req.session.user,
@@ -593,15 +573,13 @@ exports.deleteBoard = async (req, res) => {
       });
       return;
     } else {
+      // 정상 삭제 처리
       res.status(200).send({
         isDeleted: true,
         currentLoginUser: req.session.user,
         msg: '게시글이 정상적으로 삭제되었습니다.',
       });
     }
-
-    // 정상 삭제 처리
-    // res.redirect('/');
   } catch (error) {
     console.log(error);
     // 에러 처리
@@ -639,7 +617,7 @@ exports.createComment = async (req, res) => {
         currentLoginUser: req.session.user,
         msg: '데이터에 빈값이 있습니다.',
       });
-      return; // res.send 만 있어도 함수가 종료되지만 return으로 코드 가독성을 높임
+      return;
     }
 
     // 댓글이 달릴 게시판 = bId
@@ -877,9 +855,6 @@ exports.editBoardPage = async (req, res) => {
 
 // 댓글이 달린 게시글의 총 댓글수를 확인하기 위한 함수
 const getCommentCount = async (bId) => {
-  // const cIdRow = await Comment.findOne({ where: { bId: bId } });
-  // const bId = cIdRow.dataValues.bId;
-
   const boardCommentCount = await Comment.count({ where: { bId: bId } });
   return boardCommentCount;
 };

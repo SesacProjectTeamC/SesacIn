@@ -55,8 +55,6 @@ const changePagination = (res, page) => {
 const freeboardcard = (data, cDate) => {
   const result = [
     `<a href="/board/detail/${data.bId}">`,
-    // `<button onclick="moveToDetailBoard('<%= data.bId %>')">`,
-    // [ BE ] 변경 부탁드립니다 !
     `<div id="cardContainer">`,
     `<type> 자유 | ${cDate} </type>`,
     '<div class="ques  boards">자유.',
@@ -111,14 +109,6 @@ const qnaCard = (data, cDate) => {
   ].join('');
   return result;
 };
-
-// const moveToMakePost = () => {
-//     if (document.querySelector(".activeM").innerHTML.trim() === "자유게시판") {
-//         window.location.href = "/board/create";
-//     } else {
-//         window.location.href = "/question/create";
-//     }
-// };
 
 //=== 0. 버튼 클릭 시 url 이동 ===
 // 1) 질문

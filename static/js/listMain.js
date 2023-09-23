@@ -25,17 +25,17 @@ const changeList = (res, findType) => {
     let include;
     if (findType === '🌱 Sesac 자유게시판') {
       include = freeboardlist(
-        i + 1 + (savedPage - 1) * 20, // [세화]
+        i + 1 + (savedPage - 1) * 20,
         arrayData[i],
         res.data.boardCreateAt[i]
         // res.data.boardUserName[i]
       );
     } else {
       include = qnalist(
-        i + 1 + (savedPage - 1) * 20, // [세화]
+        i + 1 + (savedPage - 1) * 20,
         arrayData[i],
         res.data.questionCreateAt[i],
-        res.data.questionData[i].uName // [태균]
+        res.data.questionData[i].uName
         // res.data.questionUserName[i]
       );
     }
@@ -88,9 +88,9 @@ const freeboardlist = (count, data, cDate) => {
     `<tr  onclick="moveToDetailBoard('${data.bId}')" style="cursor: pointer">`,
     `<th>${count}</th>`,
     `<td style="text-align: start">${data.title}</td>`,
-    `<td>${data.uName}</td>`, // [태균]
+    `<td>${data.uName}</td>`,
     `<td>${data.likeCount}</td>`,
-    // `<td>${data.commentCount}</td>`, // [태균]
+    // `<td>${data.commentCount}</td>`,
     `<td>${cDate}</td>`,
     '</tr>',
   ].join('');
@@ -102,9 +102,9 @@ const qnalist = (count, data, cDate) => {
     `<tr  onclick="moveToDetailQuestion('${data.qId}')" style="cursor: pointer">`,
     `<th>${count}</th>`,
     `<td style="text-align: start">${data.title}</td>`,
-    `<td>${data.uName}</td>`, // [태균]
+    `<td>${data.uName}</td>`,
     `<td>${data.likeCount}</td>`,
-    // `<td>${data.answerCount}</td>`, // [태균]
+    // `<td>${data.answerCount}</td>`,
     `<td>${cDate}</td>`,
     '</tr>',
   ].join('');

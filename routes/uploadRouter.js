@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-// Multer 설정 가져오기
+// Multer
 const multer = require('multer');
 const { upload, editorUploader } = require('../middlewares/multer/multerConfig');
 
-// 업로드 컨트롤러 가져오기
+// 컨트롤러
 const Cupload = require('../controller/Cupload');
 
 // 로그인 검사 미들웨어

@@ -1,9 +1,3 @@
-//=== 마이 페이지 ===
-// 1. 좋아요 / 작성한 게시글 / 답변 / 댓글
-// 2. 회원정보 GET
-// 3. 수정 버튼 -> 회원정보 PATCH, DELETE
-
-//////////////////////////////////////////////
 const { User, Question, Answer, Comment, Board, uLike } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
@@ -102,7 +96,6 @@ exports.getUser = async (req, res) => {
     }
 
     if (isButton) {
-      // send
       res.send({
         userData: user,
         likeQuestionData: likeQuestion, // 좋아요 누른 질문
@@ -155,8 +148,7 @@ exports.getUser = async (req, res) => {
   }
 };
 
-/////////////////////////////////////////////////// 사용자 정보 수정 페이지
-// 정보 수정 창 렌더링
+// 사용자 정보 수정 페이지 렌더링
 exports.getUserInfo = (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -167,20 +159,12 @@ exports.getUserInfo = (req, res) => {
         uId: req.session.user, // 세션에서 사용자 ID 가져오기
       };
 
-      // ********** 추후에 어떤 화면으로 이동할 지 이름 수정 필요할수도 있음
       res.status(200).render('user/editprofile', {
         userData,
       });
       return;
     } else {
       // 로그인 되어있지 않은 상태에서의 요청시
-      // res.status(401).send({
-      //   isLogin,
-      //   currentUser: req.session.user,
-      //   success: false,
-      //   mgs: '로그인 정보 다름. 권한 없음.',
-      // });
-      // return;
       res.redirect('/404');
     }
   } catch (error) {
@@ -195,7 +179,7 @@ exports.getUserInfo = (req, res) => {
   }
 };
 
-// 회원 정보 수정 - 비밀번호, 이름 (이미지는 후순위)
+// 회원 정보 수정 처리
 exports.patchUser = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -245,6 +229,7 @@ exports.patchUser = async (req, res) => {
 
     const currentUser = await User.findOne({ where: { uId: uId } });
     const updateData = {};
+
     // uName 바꾸면 uName 업데이트
     if (uName !== '') {
       updateData.uName = uName;
@@ -294,8 +279,7 @@ exports.patchUser = async (req, res) => {
 
 // 이메일 형식 검사 함수
 function isValidEmail(email) {
-  // 이메일 형식 검사 로직을 추가하세요.
-  // 예를 들어, 정규식을 사용하여 이메일 형식을 확인할 수 있습니다.
+  // 정규식으로 이메일 형식 검사
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
   return emailRegex.test(email);
 }
