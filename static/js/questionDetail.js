@@ -11,8 +11,6 @@ function addComment(qId, aId, userName, img) {
       },
     })
       .then((response) => {
-        // 성공했을때 처리.
-        // response.status에 의해서 판단한다.
         const container = document.querySelector(`#commentC${aId}`);
         container.innerHTML += commentCard(
           response.data.commentData,
@@ -23,23 +21,13 @@ function addComment(qId, aId, userName, img) {
           qId
         );
         const count = document.querySelector(`.commentCount${aId}`);
-        console.log(count);
-        const newCount =
-          '댓글 ' +
-          String(Number(count.innerHTML.replace('댓글', '').trim()) + 1);
-        count.innerHTML = newCount;
-        console.log(count);
 
-        // commentsContainer.appendChild(commentDiv);
+        const newCount = '댓글 ' + String(Number(count.innerHTML.replace('댓글', '').trim()) + 1);
+        count.innerHTML = newCount;
       })
       .catch((err) => {
-        console.log(err);
-        // console.log(err.response.status);
-        // if (err.response.status === 401) {
-        //   openModal(err.response.data);
-        // } else {
-        //   openModal('서버오류 발생');
-        // }
+        openModal(err.response.status);
+        //openModal('서버오류 발생');
       });
   }
 }
@@ -85,7 +73,6 @@ const likeComment = (qId, aId) => {
       likeC.classList.toggle('likeActive');
     })
     .catch((err) => {
-      console.log(err.response.status);
       if (err.response.status === 401) {
         openModal(err.response.data);
       } else {
@@ -134,7 +121,7 @@ const fixAnswerCancel = (content, aId) => {
 
 const fixFinish = (qId, cId, aId) => {
   const commentContent = document.querySelector('#fixC').value;
-  console.log(commentContent);
+
   axios({
     method: 'patch',
     url: `/question/${qId}/${aId}/comment/${cId}/edit`,
@@ -148,7 +135,6 @@ const fixFinish = (qId, cId, aId) => {
       document.querySelector(`#fixCommentC${cId}`).style.display = 'flex';
     })
     .catch((err) => {
-      // console.log(err.response);
       if (err.response.status === 501) {
         // openModal(err.response.data.msg);
         openModal('내용을 입력해주세요! 혹은 내용을 변경해주세요!');
@@ -195,12 +181,9 @@ function deleteComment(qId, cId, aId) {
       parent.removeChild(myDiv);
 
       const count = document.querySelector(`.commentCount${aId}`);
-      console.log(count);
-      const newCount =
-        '댓글 ' +
-        String(Number(count.innerHTML.replace('댓글', '').trim()) - 1);
+
+      const newCount = '댓글 ' + String(Number(count.innerHTML.replace('댓글', '').trim()) - 1);
       count.innerHTML = newCount;
-      console.log(count);
     })
     .catch((error) => {
       console.error(error.message);
@@ -257,8 +240,6 @@ const toggleAnswerContainer = () => {
     const target = document.querySelector('.btnContainer'); // 요소의 id 값이 target이라 가정
     const clientRect = target.getBoundingClientRect(); // DomRect 구하기 (각종 좌표값이 들어있는 객체)
     const relativeTop = clientRect.top; // Viewport의 시작지점을 기준으로한 상대좌표 Y 값.
-    console.log(clientRect);
-    // window.scrollTo(0, relativeTop);
   }, 250);
 };
 
@@ -275,12 +256,10 @@ const postAnswer = (qId) => {
       })
         .then((res) => {
           if (res) {
-            console.log(res);
             document.location.href = `/question/${qId}`;
           }
         })
         .catch((err) => {
-          console.log(err.response.status);
           if (err.response.status === 401) {
             openModal(err.response.data);
           } else {
@@ -296,7 +275,5 @@ const postAnswer = (qId) => {
 const toggleComment = (component, aId) => {
   component.classList.toggle('commentActive');
   document.querySelector(`#commentC${aId}`).classList.toggle('answerCommentC');
-  document
-    .querySelector(`#commentC${aId}`)
-    .classList.toggle('answerCommentCShow');
+  document.querySelector(`#commentC${aId}`).classList.toggle('answerCommentCShow');
 };

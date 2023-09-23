@@ -21,7 +21,7 @@ router.post('/editor/file', needToLogin, editorUploader.single('file'), Cupload.
 
 // Multer에서 발생한 오류 처리 미들웨어
 router.use((err, req, res, next) => {
-  console.log(err.code);
+  console.log('Multer에서 발생한 오류', err.code);
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       res.status(400).send({ error: '파일 크기가 너무 큽니다. (최대 5MB)' });

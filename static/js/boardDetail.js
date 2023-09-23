@@ -10,16 +10,11 @@ function addComment(bId) {
     },
   })
     .then((response) => {
-      // 성공했을때 처리.
-      // response.status에 의해서 판단한다.
-      console.log(response.data);
       if (response.data.success) {
         document.location.href = `/board/detail/${bId}`;
       }
     })
     .catch((error) => {
-      // 실패했을때 처리
-      // response.status에 의해서 판단되어 catch 문에서 실행된다.
       if (error.response.status === 401) {
         openModal(error.response.data);
       } else {
@@ -49,7 +44,7 @@ const fixCancel = (content, cId) => {
 
 const fixFinish = (cId, bId) => {
   const commentContent = document.querySelector('#fixC').value;
-  console.log(commentContent);
+
   axios({
     method: 'patch',
     url: `/board/comment/edit/${cId}`,
@@ -72,7 +67,6 @@ function deleteComment(cId, bId) {
     url: `/board/comment/delete/${cId}`,
   })
     .then((response) => {
-      console.log(response.data);
       document.location.href = `/board/detail/${bId}`;
       // refreshComments(); // 댓글 목록 업데이트
     })

@@ -8,7 +8,6 @@ exports.getMainPage = async (req, res) => {
   // 세션 확인
   let isLogin = req.session.user ? true : false;
   let currentUserId = req.session.user || null;
-  console.log('로그인 유저 >>>', req.session.user);
 
   try {
     // 페이지 설정

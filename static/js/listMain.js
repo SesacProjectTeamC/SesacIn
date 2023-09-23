@@ -1,8 +1,7 @@
 let savedPage = 1;
 
 const getPageData = (page) => {
-  const formattedPage =
-    page === 'next' ? savedPage + 1 : page === 'prev' ? savedPage - 1 : page;
+  const formattedPage = page === 'next' ? savedPage + 1 : page === 'prev' ? savedPage - 1 : page;
   savedPage = Number(formattedPage);
   const findType = document.querySelector('#listType').innerHTML.trim();
   axios({
@@ -12,7 +11,6 @@ const getPageData = (page) => {
         ? `/board/list/${formattedPage}&20&createdAt&desc`
         : `/question/list/${formattedPage}&20&createdAt&desc`,
   }).then((res) => {
-    console.log(res.data);
     changeList(res, findType);
     changePagination(res, formattedPage, findType);
     window.scrollTo(0, 0);
@@ -20,10 +18,7 @@ const getPageData = (page) => {
 };
 
 const changeList = (res, findType) => {
-  const arrayData =
-    findType === '🌱 Sesac 자유게시판'
-      ? res.data.boardData
-      : res.data.questionData;
+  const arrayData = findType === '🌱 Sesac 자유게시판' ? res.data.boardData : res.data.questionData;
   const container = document.querySelector('.listC');
   container.innerHTML = '';
   for (let i = 0; i < arrayData.length; i++) {
@@ -63,9 +58,9 @@ const pagination = (page, pageCount) => {
   ].join('');
 
   const next = [
-    `<li id="next" class="page-item ${
-      page === pageCount ? 'disabled' : ''
-    }" style="cursor: ${page === pageCount ? '' : 'pointer'}">`,
+    `<li id="next" class="page-item ${page === pageCount ? 'disabled' : ''}" style="cursor: ${
+      page === pageCount ? '' : 'pointer'
+    }">`,
     `<a class="page-link" onclick="getPageData('next')">></a>`,
     '</li>',
   ].join('');

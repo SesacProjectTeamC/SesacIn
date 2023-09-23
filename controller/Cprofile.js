@@ -4,9 +4,9 @@
 // 3. 수정 버튼 -> 회원정보 PATCH, DELETE
 
 //////////////////////////////////////////////
-const { User, Question, Answer, Comment, Board, uLike } = require("../models");
-const { Op } = require("sequelize");
-const bcrypt = require("bcrypt");
+const { User, Question, Answer, Comment, Board, uLike } = require('../models');
+const { Op } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 // 마이페이지 렌더링
 exports.getUser = async (req, res) => {
@@ -90,7 +90,7 @@ exports.getUser = async (req, res) => {
     // 내가 작성한 자유게시글 데이터
     const boards = await Board.findAll({
       where: { uId },
-      order: [["createdAt", "DESC"]], // createdAt 기준으로 내림차순으로 정렬
+      order: [['createdAt', 'DESC']], // createdAt 기준으로 내림차순으로 정렬
     });
 
     let commentsCount = [];
@@ -125,7 +125,7 @@ exports.getUser = async (req, res) => {
     }
 
     // 마이페이지 렌더링
-    res.render("user/profile", {
+    res.render('user/profile', {
       userData: user,
       likeQuestionData: likeQuestion, // 좋아요 누른 질문
       likeAnswerData: likeAnswer, // 좋아요 누른 답변
@@ -142,7 +142,7 @@ exports.getUser = async (req, res) => {
       commentsCount,
       currentUser: req.session.user,
       success: true,
-      msg: "마이페이지 렌더링 정상 처리",
+      msg: '마이페이지 렌더링 정상 처리',
     });
   } catch (err) {
     console.log(err);
@@ -150,7 +150,7 @@ exports.getUser = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "마이페이지 렌더링 중 서버에러 발생",
+      msg: '마이페이지 렌더링 중 서버에러 발생',
     });
   }
 };
@@ -168,7 +168,7 @@ exports.getUserInfo = (req, res) => {
       };
 
       // ********** 추후에 어떤 화면으로 이동할 지 이름 수정 필요할수도 있음
-      res.status(200).render("user/editprofile", {
+      res.status(200).render('user/editprofile', {
         userData,
       });
       return;
@@ -181,7 +181,7 @@ exports.getUserInfo = (req, res) => {
       //   mgs: '로그인 정보 다름. 권한 없음.',
       // });
       // return;
-      res.redirect("/404");
+      res.redirect('/404');
     }
   } catch (error) {
     console.log(error);
@@ -190,7 +190,7 @@ exports.getUserInfo = (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "회원정보 수정 페이지 렌더링 중 서버에러 발생",
+      msg: '회원정보 수정 페이지 렌더링 중 서버에러 발생',
     });
   }
 };
@@ -202,11 +202,9 @@ exports.patchUser = async (req, res) => {
 
   try {
     const uId = req.session.user;
-    console.log(uId);
 
     const userData = { uId: uId };
     let { email, pw, uName } = req.body;
-    console.log(req.body);
 
     const uNameIsDuplicate = await User.count({ where: { uName } });
 
@@ -214,13 +212,13 @@ exports.patchUser = async (req, res) => {
       return res.status(409).json({
         OK: false,
         uNameIsDuplicate,
-        msg: "닉네임이 이미 존재합니다.",
+        msg: '닉네임이 이미 존재합니다.',
       });
     }
     if (!pw) {
       return res.status(400).json({
         OK: false,
-        msg: "입력 필드 중 하나 이상이 누락되었습니다.",
+        msg: '입력 필드 중 하나 이상이 누락되었습니다.',
       });
     }
 
@@ -234,7 +232,7 @@ exports.patchUser = async (req, res) => {
       const answers = await Answer.findAll({ where: { uId: uId } });
       const comments = await Comment.findAll({ where: { uId: uId } });
 
-      return res.render("user/profile", {
+      return res.render('user/profile', {
         userData: currentUser,
         postData: posts,
         answerData: answers,
@@ -248,16 +246,16 @@ exports.patchUser = async (req, res) => {
     const currentUser = await User.findOne({ where: { uId: uId } });
     const updateData = {};
     // uName 바꾸면 uName 업데이트
-    if (uName !== "") {
+    if (uName !== '') {
       updateData.uName = uName;
     }
 
     // email 바꾸면 email 업데이트
-    if (email !== "") {
+    if (email !== '') {
       if (!isValidEmail(email)) {
         return res.status(401).json({
           OK: false,
-          msg: "올바른 이메일 형식을 입력해주세요.",
+          msg: '올바른 이메일 형식을 입력해주세요.',
         });
       }
       updateData.email = email;
@@ -267,24 +265,14 @@ exports.patchUser = async (req, res) => {
       { email: updateData.email, pw: pw, uName: updateData.uName },
       {
         where: { uId: uId },
-      },
+      }
     );
 
     const posts = await Question.findAll({ where: { uId: uId } });
     const answers = await Answer.findAll({ where: { uId: uId } });
     const comments = await Comment.findAll({ where: { uId: uId } });
 
-    // 세션 지우는 로직 (이로직을 수행하면 로그인이 풀려버린다.)
-    // console.log('>>>>>>>', updatedUser);
-    // req.session.destroy((err) => {
-    //   if (err) {
-    //     console.log('세션 삭제 에러 >>> ', err);
-    //   } else {
-    //     console.log('세션 삭제 완료');
-    //   }
-    // });
-
-    res.render("user/profile", {
+    res.render('user/profile', {
       userData: updatedUser,
       postData: posts,
       answerData: answers,
@@ -324,9 +312,7 @@ exports.checkPassword = async (req, res) => {
 
     if (!user) {
       // 사용자가 존재하지 않는 경우
-      res
-        .status(400)
-        .json({ success: false, message: "사용자가 존재하지 않습니다." });
+      res.status(400).json({ success: false, message: '사용자가 존재하지 않습니다.' });
       return;
     }
 
@@ -335,17 +321,15 @@ exports.checkPassword = async (req, res) => {
 
     if (!passwordMatch) {
       // 비밀번호가 일치하지 않는 경우
-      res
-        .status(401)
-        .json({ success: false, message: "비밀번호가 일치하지 않습니다." });
+      res.status(401).json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
       return;
     }
 
     // 비밀번호가 일치하는 경우
-    res.status(200).json({ success: true, message: "비밀번호가 일치합니다." });
+    res.status(200).json({ success: true, message: '비밀번호가 일치합니다.' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "서버 오류 발생" });
+    res.status(500).json({ success: false, message: '서버 오류 발생' });
   }
 };
 
@@ -370,7 +354,7 @@ exports.deleteUser = async (req, res) => {
           res.status(301).send({
             isLogin,
             success: false,
-            msg: "세션 삭제 실패",
+            msg: '세션 삭제 실패',
           });
           return;
         }
@@ -388,7 +372,7 @@ exports.deleteUser = async (req, res) => {
         isLogin,
         currentUser: req.session.user,
         success: false,
-        msg: "서버 에러 발생",
+        msg: '서버 에러 발생',
       });
     }
   } catch (err) {
@@ -397,7 +381,7 @@ exports.deleteUser = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: "서버 오류 발생",
+      msg: '서버 오류 발생',
     });
   }
 };
