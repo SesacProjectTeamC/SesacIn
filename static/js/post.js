@@ -35,14 +35,13 @@ class UploadAdapter {
     xhr.addEventListener('load', () => {
       const response = xhr.response;
       const requestUrl = window.location.origin;
-      // console.log(response);
+
       if (!response || response.error) {
         alert(response.error);
         return reject(response && response.error ? response.error.message : genericErrorText);
       }
 
       resolve({
-        // response = { "success": true, "msg": "파일이 성공적으로 업로드되었습니다.", url: "http://localhost:8000/static/profileImg/qwodqwo.jpg"}
         default: `${requestUrl}/${response.path}`, //업로드된 파일 주소
       });
     });
@@ -51,7 +50,6 @@ class UploadAdapter {
   _sendRequest(file) {
     const data = new FormData();
     data.append('file', file);
-    // console.log('@@@@@@@', data);
     this.xhr.send(data);
   }
 }
@@ -67,7 +65,7 @@ function MyCustomUploadAdapterPlugin(editor) {
 ClassicEditor.create(document.querySelector('.editor'), {
   extraPlugins: [MyCustomUploadAdapterPlugin],
   link: {
-    defaultProtocol: 'http://',
+    defaultProtocol: 'http://', // 링크 삽입 시 기본 프로토콜
   },
   placeholder: '내용을 입력해주세요.',
 })
@@ -131,7 +129,7 @@ const postBoard = () => {
   const t = document.querySelector('#typeLabel').innerHTML.trim();
   const title = document.querySelector('#title');
   const content = editor.getData(); // 에디터 내부 데이터
-  console.log(t);
+
   if (title.value === '' || !title.value) {
     appendAlert('제목을 입력해 주세요');
   } else if (content === '' || !content) {
@@ -144,20 +142,18 @@ const postBoard = () => {
         data: { title: title.value, content: content },
       }).then((res) => {
         if (res) {
-          console.log(res.data.bId);
           document.location.href = `/board/detail/${res.data.bId}`;
         }
       });
     } else {
       const dpLabel = document.querySelector('#dpLabel').innerHTML.trim();
-      console.log({ title: title.value, content: content, qType: dpLabel });
+
       axios({
         method: 'POST',
         url: '/question/create',
         data: { title: title.value, content: content, qType: dpLabel },
       }).then((res) => {
         if (res) {
-          console.log(res.data);
           document.location.href = `/question/${res.data.result.qId}`;
         }
       });
@@ -177,7 +173,6 @@ const appendAlert = (message) => {
   ].join('');
 
   alertPlaceholder.append(wrapper);
-  console.log(alertPlaceholder);
   window.scrollTo(0, 0);
   $('#myAlert').fadeIn();
 };

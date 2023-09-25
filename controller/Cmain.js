@@ -3,12 +3,11 @@ const { Op } = require('sequelize');
 const moment = require('moment');
 
 //=== 메인페이지,질문 목록 가져오기 ===
-// URL : localhost:8000/
+// 메인페이지 렌더링
 exports.getMainPage = async (req, res) => {
   // 세션 확인
   let isLogin = req.session.user ? true : false;
   let currentUserId = req.session.user || null;
-  console.log('로그인 유저 >>>', req.session.user);
 
   try {
     // 페이지 설정
@@ -67,7 +66,7 @@ exports.getMainPage = async (req, res) => {
       });
 
       res.status(200).render('main', {
-        questionData: paginatedQuestion, // question 데이터(20개씩)
+        questionData: paginatedQuestion,
         questionCreateAt,
         questionPageCount,
         boardData: paginatedBoard,
@@ -80,7 +79,7 @@ exports.getMainPage = async (req, res) => {
       });
     } else {
       res.status(200).render('main', {
-        questionData: paginatedQuestion, // question 데이터(20개씩)
+        questionData: paginatedQuestion,
         questionCreateAt,
         questionPageCount,
         boardData: paginatedBoard,

@@ -33,7 +33,7 @@ const Comment = (Sequelize, DataTypes) => {
           }
           if (record.dataValues.uName) {
             const result = isBadWords(record.dataValues.uName);
-            console.log(result);
+
             if (result) {
               // 비속어가 발견되면 에러 객체를 생성
               const error = new Error('비속어가 포함된 uName입니다.');
