@@ -54,7 +54,6 @@ h2 {
 
 .input-group-text {
   display: inline-block;
-
   background-color: var(--main-color);
   border: none;
   margin-top: 1rem;
@@ -133,8 +132,7 @@ label.isSesac {
   margin-left: 0.5rem;
 }
 
-/* 예 아니오 버튼 */
-.form-check-input[type='radio'] {
+.form-check-input[type="radio"] {
   appearance: none;
   width: 20px;
   height: 20px;
@@ -145,7 +143,7 @@ label.isSesac {
   cursor: pointer;
 }
 
-.form-check-input[type='radio']:checked {
+.form-check-input[type="radio"]:checked {
   background-color: var(--border-color);
 }
 
@@ -154,7 +152,6 @@ label.isSesac {
   cursor: pointer;
 }
 
-/* 새싹 캠퍼스  */
 .form-select {
   background-color: transparent;
   border: 2px solid var(--form-color);
@@ -165,7 +162,6 @@ label.isSesac {
   background-color: var(--form-color);
 }
 
-/* 드롭다운 내부 항목 */
 .form-select option {
   background-color: var(--form-color);
   font-weight: bold;
@@ -182,8 +178,6 @@ label.isSesac {
 #basic-addon2 {
   width: 10rem;
 }
-
-/* button */
 
 .btn-primary {
   display: flex;
@@ -211,14 +205,11 @@ label.isSesac {
   cursor: pointer;
 }
 
-/* 비활성화된 버튼*/
 button[disabled] {
-  pointer-events: none; /* 마우스 이벤트 무시 */
+  pointer-events: none;
   opacity: 0.6;
   cursor: default;
 }
-
-/* alert */
 
 .alert {
   position: relative;

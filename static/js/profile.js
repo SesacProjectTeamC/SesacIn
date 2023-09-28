@@ -244,11 +244,11 @@ function isSesac(data) {
       const data = response.data;
       if (data.isSesac === true) {
         for (let element of sesacElements) {
-          element.style.display = ''; // 기본값으로 재설정하여 엘리먼트를 보이게 합니다.
+          element.style.display = ''; 
         }
       } else {
         for (let element of sesacElements) {
-          element.style.display = 'none'; // 엘리먼트를 숨깁니다.
+          element.style.display = 'none'; 
         }
       }
     })
