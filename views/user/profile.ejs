@@ -5,12 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
+    
     <link
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
@@ -51,16 +50,13 @@
       </div>
     </header>
     <main class="container">
-      <!-- 프로필 -->
       <form name="profile">
-        <!-- 배지 -->
         <img
           class="sesac_badge"
           onclick=""
           src="../static/img/leaf.png"
         /><br />
 
-        <!-- 이미지 업로드 -->
         <% if (userData && userData.userImgPath) { %>
         <div>
           <img
@@ -77,16 +73,12 @@
         />
         <% } %><br />
 
-        <!-- 이미지 업로드 버튼(이미지) -->
         <input
           type="file"
           id="fileInput"
           style="display: none"
           onchange="userProfileImgUpload()"
         />
-        <!-- <div class="uploadBtnBox"> -->
-        <!-- <img class="uploadBtn" src="/../static/img/uploadIcon.png" alt="클릭하여 파일 찾기" onclick="document.getElementById('fileInput').click();" style="cursor: pointer;"> -->
-        <!-- </div> -->
         <div
           class="uploadBtnBox"
           style="
@@ -116,13 +108,11 @@
         </div>
         <br />
 
-        <!-- 프로필 정보 -->
         <% if (userData) { %>
         <h3 class="name"><%= userData.uName %>님 환영합니다!</h3>
         <% } %>
       </form>
 
-      <!-- 게시판 -->
       <div class="container text-center">
         <div class="row row-cols-5">
           <button class="qna" onclick="change('qna')">Q&A 게시판</button>
@@ -133,7 +123,6 @@
           <button class="commented" onclick="change('commented')">
             작성한 댓글
           </button>
-          <!-- <button class="answered" onclick="change('answered')">답변 작성한 글</button> -->
         </div>
       </div>
 

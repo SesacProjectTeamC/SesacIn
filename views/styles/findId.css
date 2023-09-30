@@ -85,14 +85,6 @@ input[class='findId_form_email']:hover {
   padding: 5px 10px;
 }
 
-/* form#findId_form a {
-  display: inline-block;
-}
-
-form#findId_form a:last-of-type {
-  margin-right: 0;
-} */
-
 .btn-primary {
   margin: auto;
   width: 120px;

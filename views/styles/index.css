@@ -114,11 +114,6 @@ a {
   transition: 0.3s;
   background-color: white;
   border-radius: 30px;
-  /* border-width: 2px;
-  border: solid;
-  border-color var(--border-color);
-  background-color: var(--main-color);
-  border-radius: 30px; */
 }
 
 .menu:hover {
@@ -131,7 +126,6 @@ a {
 
 .index_container {
   display: flex;
-  /* max-width: 1500px; */
   margin-top: 40px;
   justify-content: center;
   flex-direction: row;
@@ -151,9 +145,8 @@ footer {
 }
 
 #cardContainer {
-  overflow: hidden; /* 부모 요소에서 내용이 넘치지 않도록 합니다. */
-  white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 합니다. */
-
+  overflow: hidden;
+  white-space: nowrap;
   display: flex;
   flex-direction: column;
   border: solid;
@@ -212,7 +205,6 @@ user {
   border-top-width: 1px;
   border-color: white;
   border-top-color: lightgrey;
-  /* margin-bottom: 18px; */
 }
 
 .title-ellipsis {
@@ -259,8 +251,6 @@ user {
   justify-content: center;
   align-items: center;
   font-size: 14px;
-
-  /* padding-top: 30px; */
 }
 .svg {
   margin-left: 5px;
@@ -322,7 +312,6 @@ user {
 }
 
 @media (max-width: 800px) {
-  /* viewport width가 480px 이하일 때 */
   .qnaMenu {
     font-size: 24px;
     margin: 0px 0px 10px;
@@ -349,7 +338,6 @@ user {
 }
 
 @media (max-width: 450px) {
-  /* viewport width가 480px 이하일 때 */
   .qnaMenu {
     font-size: 18px;
     margin: 0px 0px 8px;

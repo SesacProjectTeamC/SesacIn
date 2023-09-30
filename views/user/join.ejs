@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
+   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
+
     <link
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
@@ -53,7 +53,7 @@
       <img src="/static/img/logo.png" alt="logo" class="logo" />
 
       <main>
-        <!-- 회원가입 form -->
+   
         <form name="form_register" onsubmit="return register();">
           <h2>회원가입</h2>
           <div class="input-group mb-3">
@@ -174,7 +174,7 @@
               aria-describedby="basic-addon2"
               required
             />
-            <!-- <span class="input-group-text" id="basic-addon2">@example.com</span> -->
+       
             <select
               class="form-select"
               id="emailDropdown"
@@ -252,7 +252,6 @@
             style="display: none"
           ></div>
 
-          <!-- Modal -->
           <div
             class="modal fade"
             id="cautionModal"
@@ -336,13 +335,13 @@
       // 새싹 크루 -> 아니오
       function onNoSelected() {
         const campusDiv = document.getElementById('campusDiv');
-        campusDiv.style.display = 'none'; // 숨김
+        campusDiv.style.display = 'none'; 
       }
 
       // 새싹 크루 -> 예
       function onYesSelected() {
         const campusDiv = document.getElementById('campusDiv');
-        campusDiv.style.display = 'block'; // 보이게 함
+        campusDiv.style.display = 'block'; 
       }
 
       // 라디오 버튼의 변경 이벤트-> 이벤트 핸들러

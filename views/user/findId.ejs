@@ -3,13 +3,11 @@
   <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-      <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
       <link rel="stylesheet" href="views/componets/cdn.ejs">
       <link rel="stylesheet" href="views/styles/findId.css">
@@ -81,7 +79,6 @@
         const modalText = document.getElementById('cautionText');
         modalText.textContent = message;
 
-        // 모달 창 표시
         $('#cautionModal').modal('show');
       }
 

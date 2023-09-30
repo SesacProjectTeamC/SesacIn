@@ -97,7 +97,6 @@ h2 {
   margin-top: 1.5rem;
 }
 
-/* modal */
 .modal-content {
   font-weight: bold;
 }
@@ -111,7 +110,6 @@ h2 {
   border-color: #c82333;
 }
 
-/* alert */
 .alert {
   position: relative;
   margin: -1rem 0rem;
@@ -126,23 +124,19 @@ h2 {
   border-color: none;
 }
 
-/* placeholder */
-
 ::placeholder {
   font-size: 0.8em;
-  opacity: 1; /* Firefox */
+  opacity: 1;
 }
 
 :-ms-input-placeholder {
-  /* Internet Explorer 10-11 */
   font-size: 0.8em;
-  opacity: 1; /* Firefox */
+  opacity: 1;
 }
 
 ::-ms-input-placeholder {
-  /* Microsoft Edge */
   font-size: 0.8em;
-  opacity: 1; /* Firefox */
+  opacity: 1;
 }
 
 /* button */
@@ -185,9 +179,9 @@ button.profileDelete {
 button.profileDelete:hover {
   cursor: pointer;
 }
-/* 비활성화된 버튼*/
+
 button[disabled] {
-  pointer-events: none; /* 마우스 이벤트 무시 */
+  pointer-events: none;
   opacity: 0.6;
   cursor: default;
 }
