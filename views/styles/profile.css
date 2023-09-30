@@ -4,7 +4,7 @@ body {
   padding: 0;
   height: 100vh;
   position: relative;
-  background-color: var(--main-color);
+  background-color: white;
 }
 
 header {
@@ -233,7 +233,6 @@ button:focus {
   }
 }
 
-
 @media (min-width: 420px) and (max-width: 480px) {
   button {
     padding: 8px 15px;
@@ -255,7 +254,6 @@ button:focus {
     font-size: medium;
   }
 }
-
 
 @media (min-width: 481px) and (max-width: 768px) {
   button {
