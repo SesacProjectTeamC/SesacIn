@@ -91,7 +91,7 @@ exports.patchAnswer = async (req, res) => {
 
     const { content } = req.body;
 
-    // 비어 있는 경우
+    // 답변 내용이 비어 있는 경우
     if (!content) {
       res.status(400).send({
         success: false,
@@ -147,8 +147,6 @@ exports.likeAnswer = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user || false;
 
-  console.log('isLogin', isLogin);
-
   try {
     const { qId, aId } = req.params;
 
@@ -160,8 +158,6 @@ exports.likeAnswer = async (req, res) => {
     });
 
     const resultLike = !!uLikeFind;
-
-    console.log('답변 좋아요!!!!!!', resultLike);
 
     const getAnswer = await Answer.findOne({
       where: {
@@ -178,10 +174,7 @@ exports.likeAnswer = async (req, res) => {
       });
 
       // (2) 답변 likeCount 업데이트 +1
-      await Answer.update(
-        { likeCount: getAnswer.likeCount + 1 },
-        { where: { aId } }
-      );
+      await Answer.update({ likeCount: getAnswer.likeCount + 1 }, { where: { aId } });
     } else if (uLikeFind) {
       // 2) uLike findOne -> 있으면,
       // (1) 좋아요 -> uLike 해당 aId 삭제함
@@ -193,10 +186,7 @@ exports.likeAnswer = async (req, res) => {
       });
 
       // (2) 답변 likeCount 업데이트 -1
-      await Answer.update(
-        { likeCount: getAnswer.likeCount - 1 },
-        { where: { aId } }
-      );
+      await Answer.update({ likeCount: getAnswer.likeCount - 1 }, { where: { aId } });
     }
 
     const answers = await Answer.findAll({

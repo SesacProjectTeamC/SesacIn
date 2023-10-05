@@ -44,11 +44,6 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* width: 600px; */
-  /* height: 500px; */
-  /* border: 5px solid var(--border-color); */
-  /* border-radius: 20px; */
-  /* padding: 30px; */
   flex-wrap: wrap;
 }
 
@@ -72,8 +67,8 @@ label {
   border: none;
   padding: 5px 10px;
   border-radius: 8px;
-  display: block; /* Make the button a block-level element */
-  margin: 3rem auto; /* Center-align the button horizontally */
+  display: block;
+  margin: 3rem auto; 
 }
 
 #sendEmailButton:hover,

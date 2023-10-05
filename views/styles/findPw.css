@@ -91,14 +91,6 @@ input[class='findPw_form_email_verification']:hover {
   padding: 5px 15px;
 }
 
-/* form#findPw_form a {
-  display: inline-block;
-}
-
-form#findPw_form a:last-of-type {
-  margin-right: 0;
-} */
-
 .btn-primary {
   margin: auto;
   width: 120px;

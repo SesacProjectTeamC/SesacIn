@@ -1,15 +1,7 @@
-const {
-  Question,
-  Answer,
-  Comment,
-  uLike,
-  User,
-  sequelize,
-} = require('../models');
+const { Question, Answer, Comment, uLike, User, sequelize } = require('../models');
 const moment = require('moment');
 
-//=== 메인페이지,질문 목록 가져오기 ===
-
+// QnA 메인 페이지 렌더링
 exports.getQuestions = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
@@ -23,12 +15,7 @@ exports.getQuestions = async (req, res) => {
     let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (
-      !sortField ||
-      !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(
-        sortField
-      )
-    ) {
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -38,12 +25,9 @@ exports.getQuestions = async (req, res) => {
     }
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(
-      Math.ceil(questionTotalCount / pageSize)
-    ); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
-    // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
     const sql = `
     SELECT q.qId, u.uName, u.uId, u.userImgPath, q.title, q.qType, q.content, q.viewCount, q.likeCount, q.createdAt, q.updatedAt, COALESCE(count(a.aId), 0) as answerCount
       FROM question q
@@ -62,13 +46,12 @@ exports.getQuestions = async (req, res) => {
     }
 
     if (isLogin) {
-      console.log('로그인O 사용자 >>>', req.session.user);
       const uId = req.session.user;
 
       const user = await User.findOne({
         where: { uId },
       });
-      console.log(user);
+
       res.status(200).render('community/listMain', {
         type: 'qna',
         questionData: paginatedQuestion, // question 데이터(20개씩)
@@ -77,9 +60,6 @@ exports.getQuestions = async (req, res) => {
         questionTotalCount, // 총 질문 개수
         success: true,
         msg: 'QnA 호출 처리 완료',
-        // data: paginatedQuestions,
-        // pageCount: pageCount,
-        // cDate: create,
         isLogin,
         currentLoginUser: uId,
         userData: {
@@ -87,8 +67,6 @@ exports.getQuestions = async (req, res) => {
         },
       });
     } else {
-      console.log('로그인X');
-
       res.render('community/listMain', {
         type: 'qna',
         questionData: paginatedQuestion, // question 데이터(20개씩)
@@ -136,7 +114,6 @@ exports.getQuestionsMain = async (req, res) => {
     }
 
     if (isLogin) {
-      console.log('로그인O 사용자 >>>', req.session.user);
       const uId = req.session.user;
 
       const user = await User.findOne({
@@ -153,8 +130,7 @@ exports.getQuestionsMain = async (req, res) => {
         userData: user,
       });
     } else {
-      console.log('로그인X');
-
+      // 비로그인시 처리
       res.render('community/listMain', {
         type: 'qna',
         data: paginatedQuestions,
@@ -185,12 +161,7 @@ exports.paginateQuestion = async (req, res) => {
     let sortOrder = req.params.sortOrder || 'desc';
 
     // params 검사
-    if (
-      !sortField ||
-      !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(
-        sortField
-      )
-    ) {
+    if (!sortField || !['createdAt', 'likeCount', 'viewCount', 'answerCount'].includes(sortField)) {
       res.status(400).send({ error: '올바른 정렬 필드를 지정하세요.' });
       return;
     }
@@ -200,12 +171,9 @@ exports.paginateQuestion = async (req, res) => {
     }
 
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(
-      Math.ceil(questionTotalCount / pageSize)
-    ); // 페이지 수 (올림처리)
+    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize)); // 페이지 수 (올림처리)
 
     // 시퀄라이즈에 SQL 쿼리 그대로 사용
-    // offset부터 ~~ offset+pageSize 만큼의 데이터만 불러온다.
     const sql = `
     SELECT q.qId, u.uName, u.uId, u.userImgPath, q.title, q.content, q.viewCount, q.likeCount, q.createdAt, q.updatedAt, COALESCE(count(a.aId), 0) as answerCount
       FROM question q
@@ -240,20 +208,19 @@ exports.paginateQuestion = async (req, res) => {
   }
 };
 
-//=== QnA 특정 질문 상세 페이지 렌더링 GET ===
+// QnA 특정 질문 상세 페이지 렌더링
+// GET
+// /question/:qId
 // 1. 특정 질문과 그 질문에 대한 답변 전체 리스트 가져오기 (Cquestion)
 // 2. 특정 답변에 대한 전체 댓글 리스트 가져오기 (Ccomment)
-// /question/:qId
 exports.getQuestion = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
 
-  console.log('isLogin - getQuestion', isLogin);
-
   try {
     const { qId } = req.params;
 
-    // 태균 수정
+    // question 데이터 조회
     const question = await Question.findOne({
       where: { qId },
       include: [
@@ -263,14 +230,11 @@ exports.getQuestion = async (req, res) => {
         },
       ],
     });
-    console.log('>>>>>>>>>>>>>>>>>>', question.createdAt);
 
-    // 날짜 데이터 포맷 변경
-    const questionCreateAt = moment(question.createdAt).format(
-      'YYYY-MM-DD HH:mm'
-    );
+    // question 날짜 데이터 포맷 변경
+    const questionCreateAt = moment(question.createdAt).format('YYYY-MM-DD HH:mm');
 
-    // 태균 수정
+    // answers 데이터 조회
     const answers = await Answer.findAll({
       where: { qId },
       include: [
@@ -281,15 +245,14 @@ exports.getQuestion = async (req, res) => {
       ],
       attributes: { exclude: ['title'] }, // title 컬럼을 제외
     });
-    // console.log('>>>>>>>>>>>>>>>>>>', answersTest[0]);
 
-    // 날짜 데이터 포맷 변경
+    // answers 날짜 데이터 포맷 변경
     const answersCreateAt = [];
     for (a of answers) {
       answersCreateAt.push(moment(a.createdAt).format('YYYY-MM-DD HH:mm'));
     }
 
-    // 태균 수정
+    // comments 데이터 조회
     const comments = await Comment.findAll({
       where: { qId },
       include: [
@@ -299,15 +262,15 @@ exports.getQuestion = async (req, res) => {
         },
       ],
     });
-    // console.log('>>>>>>>>>>>>>>>>>>', comments);
 
-    // 날짜 데이터 포맷 변경
+    // comments 날짜 데이터 포맷 변경
     const commentsCreateAt = [];
     for (c of comments) {
       commentsCreateAt.push(moment(c.createdAt).format('YYYY-MM-DD HH:mm'));
     }
 
-    let qResultLike = false; // 질문 좋아요 초기값을 false로 설정
+    // 질문 좋아요 초기값을 false로 설정
+    let qResultLike = false;
     let uLikeAnswersResult = []; // 답변 좋아요 초기값을 빈 배열로 설정
 
     if (isLogin) {
@@ -317,7 +280,7 @@ exports.getQuestion = async (req, res) => {
         where: { uId },
       });
       // 1) 질문 좋아요
-      // [태균] uLike 테이블에서 해당하는 qId에 대한 row데이터를 가져옴
+      // uLike 테이블에서 해당하는 qId에 대한 row데이터를 가져옴
       const uLikeQuestionFind = await uLike.findOne({
         where: {
           qId,
@@ -357,7 +320,7 @@ exports.getQuestion = async (req, res) => {
         currentUser: req.session.user,
         qResult: qResultLike, // 특정 질문에 대한 결과 (T/F)
         aResult: uLikeAnswersResult, // 특정 질문에 대한 답변의 결과
-        //+ 답변은 여러 개이므로, 배열로 결과 값을 보냄 ---> ex. [ true, false, false ]
+        // 답변은 여러 개이므로, 배열로 결과 값을 보냄 ---> ex. [ true, false, false ]
         userData: user,
       });
     }
@@ -374,7 +337,7 @@ exports.getQuestion = async (req, res) => {
       currentUser: req.session.user,
       qResult: qResultLike, // 특정 질문에 대한 결과 (T/F)
       aResult: uLikeAnswersResult, // 특정 질문에 대한 답변의 결과
-      //+ 답변은 여러 개이므로, 배열로 결과 값을 보냄 ---> ex. [ true, false, false ]
+      // 답변은 여러 개이므로, 배열로 결과 값을 보냄 ---> ex. [ true, false, false ]
       userData: null,
     });
   } catch (err) {
@@ -431,7 +394,7 @@ exports.getCreateQuestion = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send(err); // 상태 코드가 500이면 프론트의 catch에서 처리된다.
+    res.status(500).send(err);
   }
 };
 
@@ -507,19 +470,6 @@ exports.patchQuestion = async (req, res) => {
     const { qId } = req.params;
     const { title, content, qType } = req.body;
 
-    // 업데이트 전 질문 데이터 조회
-    // const before = await Question.findByPk(qId);
-
-    // uid로 게시글 소유자 여부 확인(권한 확인)
-    // if (before.dataValues.uId !== req.session.user) {
-    //   res.status(401).send({
-    //     success: false,
-    //     currentLoginUser: req.session.user,
-    //     msg: "게시글의 소유자가 아님",
-    //   });
-    //   return;
-    // }
-
     if (!isLogin) {
       res.status(401).send({
         success: false,
@@ -548,8 +498,6 @@ exports.patchQuestion = async (req, res) => {
         where: { qId },
       }
     );
-
-    //% qType 변경
 
     res.send({ data: updatedQuestion });
   } catch (err) {
@@ -583,21 +531,6 @@ exports.deleteQuestion = async (req, res) => {
       });
       return;
     }
-
-    // 삭제 전 질문 데이터 조회
-    // const before = await Question.findByPk(qId);
-
-    // console.log("????????", before); // null
-
-    // uid로 게시글 소유자 여부 확인(권한 확인)
-    // if (before.uId !== req.session.user) {
-    //   res.status(401).send({
-    //     success: false,
-    //     currentLoginUser: req.session.user,
-    //     msg: "게시글의 소유자가 아님",
-    //   });
-    //   return;
-    // }
 
     // 정상 삭제 처리
     res.send({ result: true, data: question });
@@ -646,12 +579,7 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 +1
-        await Question.update(
-          { likeCount: getQuestion.likeCount + 1 },
-          { where: { qId } }
-        );
-
-        console.log('성공 !!');
+        await Question.update({ likeCount: getQuestion.likeCount + 1 }, { where: { qId } });
 
         res.send({ data: getQuestion, qResult: true });
       } else {
@@ -662,10 +590,7 @@ exports.likeQuestion = async (req, res) => {
         });
 
         // (2) 질문 likeCount 업데이트 -1
-        await Question.update(
-          { likeCount: getQuestion.likeCount - 1 },
-          { where: { qId } }
-        );
+        await Question.update({ likeCount: getQuestion.likeCount - 1 }, { where: { qId } });
 
         res.send({ data: getQuestion, qResult: false });
       }

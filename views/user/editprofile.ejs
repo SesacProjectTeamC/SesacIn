@@ -5,12 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
     <link
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
@@ -142,7 +140,6 @@
           </button>
         </form>
 
-        <!-- Modal -->
         <div
           class="modal fade"
           id="cautionModal"
@@ -179,7 +176,6 @@
           </div>
         </div>
 
-        <!-- 회원 탈퇴 확인용 모달 -->
         <div
           class="modal fade"
           id="confirmDeleteModal"
@@ -253,50 +249,41 @@
 
       const editButton = document.querySelector('.profileEdit');
 
-      // 닉네임 필드 포커스가 벗어났을 때
       function checkNameFormat() {
         const nameInput = document.getElementById('uName');
         const nameErrorMessage = document.getElementById('nameErrorMessage');
 
         if (!nameInput.validity.valid) {
-          // 형식이 올바르지 않은 경우 알림을 표시
           const errorMessage =
             '한글, 영문, 숫자로 2자 이상 12자 이하로 구성되어야 합니다.';
           nameErrorMessage.textContent = errorMessage;
           nameErrorMessage.style.display = 'block';
         } else {
-          // 형식이 올바른 경우 알림을 숨김
           nameErrorMessage.style.display = 'none';
         }
       }
-      // 이메일 필드 포커스가 벗어났을 때
       function checkEmailFormat() {
         const emailInput = document.getElementById('email');
         const emailErrorMessage = document.getElementById('emailErrorMessage');
 
         if (!emailInput.validity.valid) {
-          // 형식이 올바르지 않은 경우 알림을 표시
           const errorMessage = '올바른 이메일 형식을 입력해주세요.';
           emailErrorMessage.textContent = errorMessage;
           emailErrorMessage.style.display = 'block';
         } else {
-          // 형식이 올바른 경우 알림을 숨김
           emailErrorMessage.style.display = 'none';
         }
       }
-      // pw 필드 포커스가 벗어났을 때
       function checkPwFormat() {
         const pwInput = document.getElementById('pw');
         const pwErrorMessage = document.getElementById('pwErrorMessage');
 
         if (!pwInput.validity.valid) {
-          // 형식이 올바르지 않은 경우 알림을 표시
           const errorMessage =
             '비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다.';
           pwErrorMessage.textContent = errorMessage;
           pwErrorMessage.style.display = 'block';
         } else {
-          // 형식이 올바른 경우 알림을 숨김
           pwErrorMessage.style.display = 'none';
         }
       }
@@ -318,7 +305,6 @@
         const pwValid = pwInput.validity.valid;
         const pwCheckValid = pwCheckInput.validity.valid;
 
-        // 닉네임이나 이메일 필드가 비어있지 않다면 해당 필드의 유효성 검사 수행
         const uNameValid =
           uNameInput.value.trim() === '' || uNameInput.validity.valid;
         const emailValid =
@@ -334,7 +320,6 @@
       uNameInput.addEventListener('input', validateForm);
       emailInput.addEventListener('input', validateForm);
       pwCheckInput.addEventListener('input', validateForm);
-      // 초기화
       validateForm();
 
       function profileEdit() {
@@ -378,16 +363,13 @@
           });
       }
 
-      // 회원 탈퇴 확인용 모달 열기
       function openDeleteModal() {
         $('#confirmDeleteModal').modal('show');
       }
 
-      // 회원 탈퇴 확인
       function confirmDelete() {
         const deletePassword = document.getElementById('deletePassword').value;
 
-        // 비밀번호 서버 전송
         axios({
           method: 'POST',
           url: '/users/checkpassword',
@@ -396,9 +378,7 @@
           },
         })
           .then((result) => {
-            // 비번 체크하고 맞으면
             if (result.data.success) {
-              // 사용자 정보 삭제 요청 전송
               axios({
                 method: 'DELETE',
                 url: '/users/deleteprofile',
@@ -411,14 +391,13 @@
                   console.error(deleteError);
                 });
             } else {
-              // 비밀번호 불일치
               const errorMessage =
                 '비밀번호가 일치하지 않습니다. 다시 시도해주세요.';
               const errorMessageElement =
                 document.getElementById('pwModalMessage');
               errorMessageElement.textContent = errorMessage;
               errorMessageElement.style.display = 'block';
-              $('#deletePassword').val(''); // 비밀번호 입력창 초기화
+              $('#deletePassword').val(''); 
             }
           })
           .catch((error) => {
@@ -431,7 +410,7 @@
                 document.getElementById('pwModalMessage');
               errorMessageElement.textContent = errorMessage;
               errorMessageElement.style.display = 'block';
-              $('#deletePassword').val(''); // 비밀번호 입력창 초기화
+              $('#deletePassword').val('');
             } else {
               alert('서버 오류 발생');
               window.document.href = '/';
@@ -439,13 +418,11 @@
           });
       }
 
-      // 모달창
       function setModalTextAndShow(message) {
         $('#cautionText').text(message);
         $('#cautionModal').modal('show');
       }
 
-      //입력 항목 초기화
       function resetFormInputs() {
         const form_profile = document.forms['form_profile'];
         form_profile.uName.value = '';
@@ -453,7 +430,6 @@
         form_profile.pw.value = '';
         form_profile.pw_check.value = '';
       }
-      //뒤로가기 버튼 클릭시 사용자가 전에 머물던 페이지로 이동
       function goBack() {
         window.history.back();
       }

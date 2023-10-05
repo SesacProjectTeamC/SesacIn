@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-// 컨트롤러
 const Cmain = require('../controller/Cmain');
 const Cuser = require('../controller/Cuser');
 const Cquestion = require('../controller/Cquestion');
@@ -9,9 +8,6 @@ const Cprofile = require('../controller/Cprofile');
 
 // 메인 페이지 렌더링
 router.get('/', Cmain.getMainPage);
-
-/////////////////////////
-// 사용자 처리 관련 Route
 
 // 회원 가입 페이지 렌더링
 router.get('/join', Cuser.getJoin);
@@ -46,7 +42,7 @@ router.post('/checkEmailVerify', Cuser.checkEmailVerify);
 // 이메일 인증 페이지 렌더링
 router.get('/email', Cuser.getEmail);
 
-// 이메일 인증
+// 이메일 인증 처리
 router.post('/email', Cuser.postEmail);
 router.post('/verify', Cuser.postVerify);
 

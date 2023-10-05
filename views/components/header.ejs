@@ -3,13 +3,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
-
-  <!-- <link rel="stylesheet" href="views/styles/globalstyle.css" /> -->
 
   <style>
     .cHeader {
@@ -19,23 +14,34 @@
       margin-top: 10px;
       margin-bottom: 10px;
       padding-left: 1em;
-      padding-right: 2em;
+      padding-right: 1em;
     }
+
     .left-content {
       display: flex;
       align-items: center;
-      margin-right: auto;
     }
+
     .right-content {
       display: flex;
       align-items: center;
     }
 
     .header-font {
+      margin-left: 1.5rem;
       text-decoration-line: none;
       color: black;
       font-weight: 700;
       font-size: 1.35rem;
+      text-decoration: none;
+      color: black; /* 텍스트 색상 */
+      background-color: white; /* 배경색 */
+      /* padding: 10px 20px; */
+      padding: 10px 0px 10px 20px; /* 패딩 값 조절 */
+      border-radius: 5px; /* 버튼 모서리 둥글게 */
+      font-weight: 700;
+      font-size: 1.2rem;
+      transition: background-color 0.3s, color 0.3s; /* 애니메이션 효과 */
     }
 
     /* 드롭다운 및 사용자 메뉴 */
@@ -48,6 +54,7 @@
       height: 3rem;
       border-radius: 50%;
     }
+
     .dropdown {
       margin-left: 1.5rem;
     }
@@ -68,10 +75,12 @@
       background-color: transparent;
       border: 0;
     }
+
     /* 기존 부트스트랩에 달려있는 화살표 지우기 */
     .dropdown-toggle::after {
       display: none;
     }
+
     /* 버튼  */
     .btnHeader {
       color: #212529;
@@ -79,38 +88,73 @@
       border-color: transparent;
       border-radius: 20px;
     }
+
     .btnHeader:hover {
       border-radius: 20px;
     }
 
-    /* 열렸을 때 */
-    .btn-light[aria-expanded='true'] .fa-chevron-up {
-      transform: rotate(-180deg);
-      transition: transform 0.3s;
+    /* 반응형 스타일 */
+    /* @media (max-width: 768px) { */
+    @media (max-width: 574px) {
+      .cHeader {
+        /* flex-direction: column; */
+        padding-left: 0;
+        padding-right: 0;
+        padding-top: 0; /* 상단 여백 축소 */
+        padding-bottom: 0; /* 하단 여백 축소 */
+        margin-top: 2px;
+        margin-bottom: 2px;
+      }
+
+      .left-content {
+        text-align: left; /* 로고 이미지 왼쪽 정렬 */
+      }
+
+      .right-content {
+        text-align: right; /* 텍스트 우측 정렬 */
+        /* margin-left: 30px; */
+      }
+
+      .header-font {
+        padding: 10px 5px; /* 패딩 값 조절 */
+        margin-left: 0.1rem;
+        font-size: 0.8rem; /* 텍스트 크기 축소 */
+      }
+
+      .logo {
+        height: 2em; /* 로고 이미지 크기 축소 */
+        text-align: left; /* 로고 이미지 왼쪽 정렬 */
+        margin-bottom: 5px; /* 로고와 작성하기, 로그인 간격 조절 */
+      }
+
+      .dropdown-item {
+        font-size: 0.8rem;
+        width: 100%;
+        /* text-align: right; */
+        padding: 0.5rem 0.7rem;
+      }
+
+      /* .hide-write {
+        visibility: hidden;
+      } */
     }
 
-    /* 닫혔을 때 */
-    .btn-light[aria-expanded='false'] .fa-chevron-up {
-      transform: rotate(0deg);
-      transition: transform 0.3s;
+    /* @media (min-width: 769px) and (max-width: 1024px) { */
+    @media (min-width: 575px) and (max-width: 1024px) {
+      .header-font {
+        font-size: 1.2rem;
+      }
     }
   </style>
 </head>
 <div class="cHeader">
   <div class="left-content">
     <a href="/">
-      <img
-        src="/static/img/header-logo-2.png"
-        alt="logo"
-        class="logo"
-        height="45em"
-      />
+      <img src="/static/img/header-logo-2.png" alt="logo" class="logo" height="45em" />
     </a>
   </div>
   <div class="right-content">
-    <a class="header-font" onclick="moveToMakePost()" style="cursor: pointer"
-      >작성하기</a
-    >
+    <a class="header-font hide-write" onclick="moveToMakePost()" style="cursor: pointer">작성하기</a>
     <% if (isLogin === true) { %>
     <div class="dropdown">
       <button
@@ -122,18 +166,10 @@
       >
         <% if (userData && userData.userImgPath) { %>
         <!-- 프로필 이미지가 있을 때 -->
-        <img
-          src="/<%= userData.userImgPath %>"
-          alt="프로필 이미지"
-          class="dropdownImg"
-        />
+        <img src="/<%= userData.userImgPath %>" alt="프로필 이미지" class="dropdownImg" />
         <% } else { %>
         <!-- 프로필 이미지가 없을 때 기본 이미지 -->
-        <img
-          src="/static/svg/person.svg"
-          alt="사용자 메뉴"
-          class="dropdownImg"
-        />
+        <img src="/static/svg/person.svg" alt="사용자 메뉴" class="dropdownImg" />
         <% } %>
         <!-- 화살표 아이콘 -->
         <i class="fa-solid fa-chevron-up fa-sm"></i>
@@ -141,6 +177,9 @@
       <ul class="dropdown-menu">
         <li>
           <a class="dropdown-item" href="#" onclick="logout()">로그아웃</a>
+        </li>
+        <li>
+          <a class="dropdown-item" onclick="moveToMakePost()" style="cursor: pointer">작성하기</a>
         </li>
         <li><a class="dropdown-item" href="/users/profile">마이페이지</a></li>
         <li>
@@ -151,9 +190,7 @@
         </li>
       </ul>
       <% } else { %>
-      <a href="/login" class="header-font" style="margin-left: 1.5rem"
-        >로그인</a
-      >
+      <a href="/login" class="header-font">로그인</a>
       <% } %>
     </div>
   </div>

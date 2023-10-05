@@ -1,8 +1,6 @@
 const { User } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
-// const Filter = require('bad-words');
-// const filter = new Filter();
 
 // 회원가입 창 렌더링
 exports.getJoin = (req, res) => {
@@ -11,15 +9,6 @@ exports.getJoin = (req, res) => {
 
   try {
     if (isLogin) {
-      // res.status(301).send({
-      //   isLogin,
-      //   currentUser: req.session.user,
-      //   success: false,
-      //   msg: '이미 로그인되어있어서 회원가입 페이지로 이동시키면 안됨',
-      // });
-      // return;
-
-      // 이 경우 세션 삭제 후 다시 회원가입 할 수 있도록 함
       req.session.destroy((err) => {
         if (err) {
           console.log(err);
@@ -82,7 +71,6 @@ async function checkIfValueIsDuplicate(field, value) {
 
 // 회원 가입 시 사용자 생성
 exports.postUser = async (req, res) => {
-  console.log(req.body);
   try {
     let { uId, pw, uName, email, isSesac, campus } = req.body;
 
@@ -93,15 +81,6 @@ exports.postUser = async (req, res) => {
         msg: '입력 필드 중 하나 이상이 누락되었습니다.',
       });
     }
-
-    // 비속어 검사 - 근데 말그대로 필터링 되는 방식이라.. 좀 애매함
-    // const containsBadWord = filter.isProfane(uId) || filter.isProfane(uName);
-    // if (containsBadWord) {
-    //   return res.status(400).send({
-    //     OK: false,
-    //     msg: '비속어가 포함되어 있습니다.',
-    //   });
-    // }
 
     // 중복 검사 (uId, uNname)
     const uIdIsDuplicate = await User.count({ where: { uId } });
@@ -134,16 +113,7 @@ exports.postUser = async (req, res) => {
     });
     res.status(200).send(newUser);
   } catch (err) {
-    // 기타 데이터베이스 오류
     console.log(err);
-    // res.status(500).send({
-    //   OK: false,
-    //   msg: '데이터베이스 오류 발생',
-    // });
-    // return;
-
-    // [태균] 비속어 관련
-    // 미들웨어에서 던진 에러를 처리 : 닉네임에만 적용. 비속어있을 경우 status 코드 400 발생
     res.status(err.statusCode || 500).send({
       msg: err.message,
       OK: false,
@@ -155,17 +125,8 @@ exports.postUser = async (req, res) => {
 exports.login = (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
-  console.log(req.session.user);
   try {
     if (isLogin) {
-      // res.status(301).send({
-      //   isLogin,
-      //   currentUser: req.session.user,
-      //   success: false,
-      //   msg: '이미 로그인 되어 있습니다.',
-      // });
-      // return;
-
       // 이 경우 세션 삭제 후 다시 로그인 할 수 있도록 함
       req.session.destroy((err) => {
         if (err) {
@@ -217,7 +178,6 @@ exports.userLogin = async (req, res) => {
     // 로그인 성공처리. 세션에 uId 저장
     req.session.user = resultUser.uId;
     req.session.userImgPath = resultUser.userImgPath;
-    console.log('login >>>', req.session.user);
 
     // 성공 응답 보내주기
     return res.status(200).json({
@@ -225,8 +185,8 @@ exports.userLogin = async (req, res) => {
       currentLoginUser: req.session.user,
     });
   } else {
-    return res.status(402).json({ message: '비밀번호가 일치하지 않습니다. ' });
     // 비밀번호 불일치
+    return res.status(402).json({ message: '비밀번호가 일치하지 않습니다. ' });
   }
 };
 
@@ -256,17 +216,9 @@ const comparePassword = (password, hashedPassword) => {
 exports.id = (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
-  console.log(req.session.user);
+
   try {
     if (isLogin) {
-      // res.status(301).send({
-      //   isLogin,
-      //   currentUser: req.session.user,
-      //   success: false,
-      //   msg: '이미 로그인 되어 있습니다.',
-      // });
-      // return;
-
       // 이 경우 세션 삭제 후
       req.session.destroy((err) => {
         if (err) {
@@ -323,8 +275,7 @@ exports.findId = async (req, res) => {
   }
 };
 
-// controllers/emailVerificationController.js
-
+// 이메일 인증여부 확인 함수
 async function checkIfEmailVerified(uId) {
   try {
     // 사용자 아이디를 기반으로 User 모델을 조회합니다.
@@ -349,6 +300,9 @@ async function checkIfEmailVerified(uId) {
   }
 }
 
+// 인증여부 확인 처리
+// POST
+// /checkEmailVerify
 exports.checkEmailVerify = async (req, res) => {
   const { uId } = req.body;
 
@@ -365,7 +319,7 @@ exports.checkEmailVerify = async (req, res) => {
     }
 
     const isEmailVerified = await checkIfEmailVerified(uId);
-    console.log('>>>>>>>>>>>>>>>>>>>>', isEmailVerified);
+
     res.json({ isEmailVerified });
   } catch (error) {
     console.error('이메일 인증 여부 확인 중 오류 발생:', error);
@@ -377,17 +331,9 @@ exports.checkEmailVerify = async (req, res) => {
 exports.pw = (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
-  console.log(req.session.user);
+
   try {
     if (isLogin) {
-      // res.status(301).send({
-      //   isLogin,
-      //   currentUser: req.session.user,
-      //   success: false,
-      //   msg: '이미 로그인 되어 있습니다.',
-      // });
-      // return;
-
       // 이 경우 세션 삭제 후
       req.session.destroy((err) => {
         if (err) {
@@ -421,7 +367,6 @@ exports.pw = (req, res) => {
 // 비밀번호 재설정 기능
 exports.updatePassword = async (req, res) => {
   const { uId, pw } = req.body;
-  console.log(req.body);
 
   try {
     // 데이터베이스에서 일치하는 사용자를 조회
@@ -464,17 +409,9 @@ exports.updatePassword = async (req, res) => {
 exports.login = (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
-  console.log(req.session.user);
+
   try {
     if (isLogin) {
-      // res.status(301).send({
-      //   isLogin,
-      //   currentUser: req.session.user,
-      //   success: false,
-      //   msg: '이미 로그인 되어 있습니다.',
-      // });
-      // return;
-
       // 이 경우 세션 삭제 후 다시 로그인 할 수 있도록 함
       req.session.destroy((err) => {
         if (err) {
@@ -506,16 +443,14 @@ exports.login = (req, res) => {
 };
 
 const nodemailer = require('nodemailer');
-const smtpTransport = require('../config/email.js');
+const smtpTransport = require('../config/email');
 
 const verificationCodes = {};
 
-/////////////////////////////////////////////////
 // 이메일 인층 창 렌더링
 exports.getEmail = async (req, res) => {
   // 세션 검사
   let isLogin = req.session.user ? true : false;
-  console.log(req.session.user);
 
   try {
     if (isLogin) {
@@ -565,7 +500,6 @@ var generateRandomNumber = function (min, max) {
 
 // 인증 이메일 발신
 exports.postEmail = async (req, res) => {
-  console.log(req.session);
   let isLogin = req.session.user ? true : false;
 
   if (isLogin) {
@@ -594,7 +528,7 @@ exports.postEmail = async (req, res) => {
 
         // 이메일 옵션 설정
         const mailOptions = {
-          from: 'oliviamoon1124@naver.com', // 발신자 이메일 주소
+          from: 'sesacin@naver.com', // 발신자 이메일 주소
           to: email, // 목적지 이메일 주소
           subject: '인증 관련 메일입니다.',
           html: '<h1>인증번호를 입력해주세요\n\n\n\n\n\n</h1>' + number,
@@ -642,7 +576,7 @@ exports.postEmail = async (req, res) => {
 
     // 이메일 옵션 설정
     const mailOptions = {
-      from: 'oliviamoon1124@naver.com', // 발신자 이메일 주소
+      from: 'sesacin@naver.com', // 발신자 이메일 주소
       to: email, // 목적지 이메일 주소
       subject: '인증 관련 메일입니다.',
       html: '<h1>인증번호를 입력해주세요\n\n\n\n\n\n</h1>' + number,
@@ -669,7 +603,6 @@ exports.postEmail = async (req, res) => {
 // '/verify' 엔드포인트를 생성
 exports.postVerify = async (req, res) => {
   const { verificationCode } = req.body;
-  console.log(req.session.email);
 
   if (req.session.verificationCode == verificationCode) {
     // 클라이언트에서 보낸 인증 코드와 저장된 코드를 비교

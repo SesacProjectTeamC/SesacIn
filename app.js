@@ -11,7 +11,7 @@ const indexRouter = require('./routes/index');
 const questionRouter = require('./routes/questionRouter');
 const boardRouter = require('./routes/boardRouter');
 const usersRouter = require('./routes/usersRouter');
-const uploadRouter = require('./routes/uploadRouter'); // uploadRouter 불러오기
+const uploadRouter = require('./routes/uploadRouter');
 
 // sequelize 모듈을 불러옵니다.
 const { sequelize } = require('./models');

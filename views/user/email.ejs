@@ -3,13 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- 스크립트: 종속성을 고려하여 순서대로 배치 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- 스타일시트: Bootstrap을 먼저, 그 다음 사용자 정의 스타일 -->
     <link
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
@@ -131,7 +129,6 @@
         const modalText = document.getElementById('cautionText');
         modalText.textContent = message;
 
-        // 모달 창 표시
         $('#cautionModal').modal('show');
       }
 
@@ -142,7 +139,6 @@
           '.findPw_form_email_verification'
         );
 
-        // 이메일을 서버로 보내 인증 코드를 요청
         axios({
           method: 'POST',
           url: '/email',
@@ -151,8 +147,6 @@
           },
         })
           .then((response) => {
-            // 이메일을 성공적으로 보냈을 때, 인증 코드 입력란을 표시
-
             setModalTextAndShow('인증 코드가 이메일로 전송되었습니다.');
           })
           .catch((error) => {
@@ -180,9 +174,11 @@
           },
         })
           .then((response) => {
-            // 서버에서의 인증이 성공하면 사용자에게 메시지를 표시하고, 다음 단계로 진행
             setModalTextAndShow('이메일 인증이 성공적으로 완료되었습니다.');
-            // 여기에 다음 단계로 넘어가는 코드를 추가
+
+            setTimeout(function () {
+              window.location.href = '/';
+            }, 2000);
           })
           .catch((error) => {
             const status = error.response.status;
