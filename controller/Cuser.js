@@ -395,7 +395,9 @@ exports.updatePassword = async (req, res) => {
         }
       );
 
-      return res.status(200).json({ message: '비밀번호가 업데이트되었습니다.' });
+      return res
+        .status(200)
+        .json({ message: '비밀번호가 업데이트되었습니다.' });
     }
   } catch (error) {
     console.error('비밀번호 재설정 오류:', error);
@@ -441,7 +443,7 @@ exports.login = (req, res) => {
 };
 
 const nodemailer = require('nodemailer');
-const smtpTransport = require('../config/email.js');
+const smtpTransport = require('../config/email');
 
 const verificationCodes = {};
 
@@ -526,7 +528,7 @@ exports.postEmail = async (req, res) => {
 
         // 이메일 옵션 설정
         const mailOptions = {
-          from: 'oliviamoon1124@naver.com', // 발신자 이메일 주소
+          from: 'sesacin@naver.com', // 발신자 이메일 주소
           to: email, // 목적지 이메일 주소
           subject: '인증 관련 메일입니다.',
           html: '<h1>인증번호를 입력해주세요\n\n\n\n\n\n</h1>' + number,
@@ -552,7 +554,9 @@ exports.postEmail = async (req, res) => {
         });
       } else {
         // 사용자 정보가 올바르지 않은 경우
-        return res.status(401).json({ error: '이메일 정보가 올바르지 않습니다.!!' });
+        return res
+          .status(401)
+          .json({ error: '이메일 정보가 올바르지 않습니다.!!' });
       }
     } catch (error) {
       console.error('이메일 전송 중 오류 발생:', error);
@@ -572,7 +576,7 @@ exports.postEmail = async (req, res) => {
 
     // 이메일 옵션 설정
     const mailOptions = {
-      from: 'oliviamoon1124@naver.com', // 발신자 이메일 주소
+      from: 'sesacin@naver.com', // 발신자 이메일 주소
       to: email, // 목적지 이메일 주소
       subject: '인증 관련 메일입니다.',
       html: '<h1>인증번호를 입력해주세요\n\n\n\n\n\n</h1>' + number,
@@ -581,12 +585,16 @@ exports.postEmail = async (req, res) => {
     // 이메일 전송
     smtpTransport.sendMail(mailOptions, (err, response) => {
       if (err) {
-        res.status(402).json({ ok: false, error: '메일 전송에 실패하였습니다.' });
+        res
+          .status(402)
+          .json({ ok: false, error: '메일 전송에 실패하였습니다.' });
       } else {
         // 서버에서 만든 인증코드를 세션에 저장
         req.session.verificationCode = number;
         req.session.email = email;
-        res.status(200).json({ ok: true, error: '메일 전송에 성공하였습니다.' });
+        res
+          .status(200)
+          .json({ ok: true, error: '메일 전송에 성공하였습니다.' });
       }
     });
   }
@@ -606,7 +614,10 @@ exports.postVerify = async (req, res) => {
 
       if (user) {
         // 사용자가 존재하는 경우, emailVerify 필드를 업데이트합니다.
-        await User.update({ emailVerify: true }, { where: { email: req.session.email } });
+        await User.update(
+          { emailVerify: true },
+          { where: { email: req.session.email } }
+        );
 
         // 인증에 성공한 경우, 현재 로그인 세션을 유지합니다.
         req.session.user = user.uId;
@@ -618,7 +629,9 @@ exports.postVerify = async (req, res) => {
       }
     } catch (error) {
       console.error('인증 업데이트 오류:', error);
-      res.status(402).json({ ok: false, msg: '인증 업데이트 중 오류가 발생했습니다.' });
+      res
+        .status(402)
+        .json({ ok: false, msg: '인증 업데이트 중 오류가 발생했습니다.' });
     }
   } else {
     res.status(404).json({
