@@ -31,7 +31,6 @@
         <h2>비밀번호 찾기</h2>
 
         <form name="findPw" id="form_findPw">
-          <!-- 아이디 입력란 -->
           <div class="findPw_form_uId">
             <input type="text" class="findPw_form_uId" id="uId" name="uId" placeholder="아이디" required>
             <button type="button" class="btn btn-primary" onclick="emailVerified()">인증 여부</button>
@@ -39,7 +38,6 @@
           <div class="caution" id="cautionId"></div>
           <br><br>
     
-          <!-- 비밀번호 입력란 (기본적으로 숨김) -->
         <div class="findPw_form_password" style="display: none;">
           <input type="password" class="findPw_form_password" 
           pattern="^(?=.*[\W_])[A-Za-z\d\W_]{6,}$"
@@ -66,12 +64,10 @@
         </div>
 
     
-          <!-- 이메일 입력란 (기본적으로 숨김) -->
           <div class="findPw_form_email" style="display: none;">
             <input type="email" class="findPw_form_email" id="email" name="email" placeholder="이메일" required>
             <button type="button" class="btn btn-primary" id='sendVerificationCodeBtn' onclick="sendVerificationCode()">인증 요청</button>
           </div>
-          <!-- 이메일 인증 코드 입력란 (기본적으로 숨김) -->
           <div class="findPw_form_email_verification" style="display: none;">
             <input type="text" class="findPw_form_email_verification" id="verificationCode" name="verificationCode" placeholder="인증 코드" required>
             <button type="button" class="btn btn-primary" id='verifyEmailCodeBtn' onclick="verifyEmailCode()">인증 확인</button>
@@ -104,7 +100,6 @@
   </div>
     <script>
 
-      //input 유효성 검사
       function checkFormValidity() {
         const form_findPw = document.forms['form_findPw'];
         const pwInput = form_findPw.pw;
@@ -113,7 +108,6 @@
 
 
 
-        // 각 입력 필드의 유효성 검사 결과를 가져옴
         const pwValid = pwInput.validity.valid;
         const pwCheckValid =
           pwCheckInput.validity.valid && pwCheckInput.value === pwInput.value;
@@ -130,7 +124,6 @@
       form_findPw.pwCheck.addEventListener('input', checkFormValidity);
 
 
-      // pw 필드 포커스가 벗어났을 때
       function checkPwFormat() {
         const pwInput = document.getElementById('pw');
         const pwErrorMessage = document.getElementById('pwErrorMessage');
@@ -138,17 +131,14 @@
         const pwCheckErrorMessage = document.getElementById('pwCheckErrorMessage');
 
         if (!pwInput.validity.valid) {
-          // 형식이 올바르지 않은 경우 알림을 표시
           const errorMessage =
             '비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다.';
           pwErrorMessage.textContent = errorMessage;
           pwErrorMessage.style.display = 'block';
         } else {
-          // 형식이 올바른 경우 알림을 숨김
           pwErrorMessage.style.display = 'none';
         }
       }
-      // 비밀번호 일치 여부
       const pwInput = document.getElementById('pw');
       const pwCheckInput = document.getElementById('pwCheck');
       const pwCheckErrorMessage = document.getElementById(
@@ -158,11 +148,9 @@
 
       function checkPasswordMatch() {
         if (pwInput.value !== pwCheckInput.value) {
-          // 비밀번호가 일치하지 않는 경우 에러 메시지를 표시합니다.
           pwCheckErrorMessage.textContent = '비밀번호가 일치하지 않습니다.';
           pwCheckErrorMessage.style.display = 'block';
         } else {
-          // 비밀번호가 일치하는 경우 에러 메시지를 숨깁니다.
           pwCheckErrorMessage.style.display = 'none';
         }
       }
@@ -173,7 +161,6 @@
         const modalText = document.getElementById('cautionText');
         modalText.textContent = message;
 
-        // 모달 창 표시
         $('#cautionModal').modal('show');
       }
 
@@ -194,16 +181,13 @@
             const isEmailVerified = response.data.isEmailVerified;
 
             if (isEmailVerified) {
-              // 이메일이 인증된 경우, 비밀번호 입력란 표시
               showPasswordInput();
             } else {
-              // 이메일이 인증되지 않은 경우, 이메일 입력란 표시
               showEmailInput();
             }
           })
           .catch((error) => {
             if (error.response.status === 404) {
-              // 사용자가 없는 경우, 모달에 메시지 표시
               setModalTextAndShow('사용자를 찾을 수 없습니다.');
             } else {
               console.error('에러:', error);
@@ -216,16 +200,16 @@
         const emailForm = document.querySelector('.findPw_form_email');
         const verificationCodeForm = document.querySelector('.findPw_form_email_verification');
 
-        // 이메일을 서버로 보내 인증 코드를 요청
         axios
           .post('/email', { email: emailInput.value })
           .then((response) => {
-            // 이메일을 성공적으로 보냈을 때, 인증 코드 입력란을 표시
+            setModalTextAndShow('이메일이 전송되었습니다.');
             verificationCodeForm.style.display = 'block';
-            // 이메일 입력란을 숨김
             emailForm.style.display = 'none';
           })
           .catch((error) => {
+            setModalTextAndShow('이메일 전송 중 오류 발생.');
+
             console.error('에러:', error);
           });
       }
@@ -241,7 +225,7 @@
           },
         })
           .then((response) => {
-            // 인증에 성공한 경우, 비밀번호 입력란을 표시하고 인증 코드 입력란을 숨김
+            setModalTextAndShow('이메일이 인증되었습니다.');
             showPasswordInput();
           })
           .catch((error) => {
@@ -264,7 +248,6 @@
 
 
       function showPasswordInput() {
-        // 비밀번호 입력란을 표시하고, 이메일 입력란을 숨깁니다.
         document.querySelector('.findPw_form_password').style.display = 'block';
         document.querySelector('.findPw_form_email').style.display = 'none';
         document.querySelector('.findPw_form_email_verification').style.display = 'none';
@@ -272,7 +255,6 @@
       }
 
       function showEmailInput() {
-        // 이메일 입력란을 표시하고, 비밀번호 입력란을 숨깁니다.
         document.querySelector('.findPw_form_password').style.display = 'none';
         document.querySelector('.findPw_form_email').style.display = 'block';
       }
