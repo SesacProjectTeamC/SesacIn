@@ -344,6 +344,10 @@ user {
 }
 
 @media (max-width: 450px) {
+  #c3-img {
+    margin-left: 100px;
+  }
+
   .qnaMenu {
     font-size: 18px;
     margin: 0px 0px 8px;
@@ -353,10 +357,21 @@ user {
     height: 25px;
   }
 
+  .carousel-c1-title {
+    padding: 0;
+  }
+
+  #c1-title-1 {
+    font-size: 22px;
+  }
+  #c1-title-2 {
+    font-size: 16px;
+  }
+
   .carousel-c3-codingon {
     font-size: 20px;
     top: 64%;
-    left: 80%;
+    left: 120%;
     margin: auto;
   }
 
