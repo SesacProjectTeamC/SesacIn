@@ -159,3 +159,106 @@ Q&A 게시판
 - 비속어 필터
 - 유효성 검사
 - 회원 탈퇴
+
+
+
+## 디렉토리 구조
+
+```bash
+├── README.md
+├── api.http
+├── app.js
+├── config
+│   ├── config.json
+│   └── email.js
+├── controller
+│   ├── Canswer.js
+│   ├── Cboard.js
+│   ├── Ccomment.js
+│   ├── Cmain.js
+│   ├── Cprofile.js
+│   ├── Cquestion.js
+│   ├── Cupload.js
+│   └── Cuser.js
+├── middlewares
+│   ├── badWordsFilter
+│   │   └── badWordsFilter.js
+│   ├── multer
+│   │   └── multerConfig.js
+│   ├── needToLogin.js
+│   ├── session
+│   │   └── session.js
+│   └── swagger
+│       ├── swagger.js
+│       └── swaggerDefinition.json
+├── models
+│   ├── Answer.js
+│   ├── Board.js
+│   ├── Comment.js
+│   ├── Like.js
+│   ├── Question.js
+│   ├── User.js
+│   └── index.js
+├── routes
+│   ├── boardRouter.js
+│   ├── index.js
+│   ├── profileRouterToBeDelete.js
+│   ├── questionRouter.js
+│   ├── uploadRouter.js
+│   └── usersRouter.js
+├── static
+│   ├── editor
+│   │   ├── ckeditor.js
+│   │   └── editorStyle.css
+│   ├── editorImg
+│   ├── img
+│   ├── js
+│   │   ├── boardDetail.js
+│   │   ├── edit.js
+│   │   ├── index.js
+│   │   ├── listMain.js
+│   │   ├── main.js
+│   │   ├── post.js
+│   │   ├── profile.js
+│   │   └── questionDetail.js
+│   ├── profileImg
+│   └── svg
+└── views
+    ├── 404.ejs
+    ├── community
+    │   ├── boardDetail.ejs
+    │   ├── edit.ejs
+    │   ├── listMain.ejs
+    │   ├── post.ejs
+    │   └── questionDetail.ejs
+    ├── components
+    │   ├── carousel.ejs
+    │   ├── cdn.ejs
+    │   ├── footer.ejs
+    │   ├── freeBoardCard.ejs
+    │   ├── header.ejs
+    │   └── questionBoardCard.ejs
+    ├── main.ejs
+    ├── styles
+    │   ├── boardDetail.css
+    │   ├── editProfile.css
+    │   ├── email.css
+    │   ├── findId.css
+    │   ├── findPw.css
+    │   ├── globalstyle.css
+    │   ├── index.css
+    │   ├── listMain.css
+    │   ├── login.css
+    │   ├── post.css
+    │   ├── profile.css
+    │   └── register.css
+    └── user
+        ├── editprofile.ejs
+        ├── email.ejs
+        ├── findId.ejs
+        ├── findPw.ejs
+        ├── join.ejs
+        ├── login.ejs
+        └── profile.ejs
+
+```
