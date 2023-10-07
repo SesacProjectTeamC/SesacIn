@@ -99,11 +99,11 @@ $ npm start
 
 ## ERD
 &nbsp;
-<img src="./static/img/ERD.png">
+<img src="./static/img/ERD.png" width="600px" height="600px">
 
 ## 와이프레임
 &nbsp;
-<img src="./static/img/%EC%99%80%EC%9D%B4%EC%96%B4%20%ED%94%84%EB%A0%88%EC%9E%84.png">
+<img src="./static/img/%EC%99%80%EC%9D%B4%EC%96%B4%20%ED%94%84%EB%A0%88%EC%9E%84.png" width="600px" height="600px">
 
 
 - ID 및 닉네임 중복 체크
