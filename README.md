@@ -1,6 +1,6 @@
 # SesacIn (Sesac + 지식in)
 
-<center><img src="./static/img/header-logo-2.png" width="300"></center>
+<center><img src="./static/img/header-logo-2.png" width="500"></center>
 새싹 캠퍼스 학생들을 위한 SesacIn 커뮤니티 프로젝트입니다.
 
 &nbsp;
@@ -12,6 +12,8 @@
 새싹인들을 위한 지식 공유 커뮤니티입니다.
 
 <a link="https://sesacin.online/">새싹인 서비스 바로가기
+
+<a link="https://polydactyl-cello-2db.notion.site/1st-team-c-9010d350c97a44f3b9786e0799632f06?pvs=4">새싹인 프로젝트 기록 사이트 바로가기
 &nbsp;
 
 🕰️ 개발 기간
@@ -43,7 +45,7 @@ $ npm start
 
 | 프론트 개발 | 프론트 개발 | 백엔드 개발 | 백엔드 개발 |백엔드 개발 |
 |---|---|---|---|---|
-| <img src="static/img/profile_sehwa.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_sehwa.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_sehwa.jpeg" width="100px" height="100px" alt="이미지 설명">| <img src="static/img/profile_sehwa.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_hyojin.jpeg" width="100px" height="100px" alt="이미지 설명">
+| <img src="static/img/profile_sangwoo.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_chaelim.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_sehwa.jpeg" width="100px" height="100px" alt="이미지 설명">| <img src="static/img/profile_taegyun.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_hyojin.jpeg" width="100px" height="100px" alt="이미지 설명">
 | <a link="https://github.com/Sangwoo97">@sangwoo | <a link="https://github.com/ellin45">@chaelim | <a link="https://github.com/loveflora">@sehwa | <a link="https://github.com/hotdog7778">@taegyun | <a link="https://github.com/jinnymoon1124">@hyojin
 | 김상우 | 정채림 | 김세화 | 김태균 | 문효진    
 
@@ -82,23 +84,26 @@ $ npm start
 
 📌 주요 기능
 --
-
+|          |        |
 |----------|--------| 
 | 로그인 | 회원가입 |
-|![register](./static/img/login.gif)|![register](./static/img/register.gif) |
-|Q&A 게시판 , 자유 게시판 글 작성|아이디찾기 |비밀번호 찾기|
-|![register](./static/img/%EA%B8%80%20%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0.gif)|![register](./static/img/%EC%95%84%EC%9D%B4%EB%94%94%EC%B0%BE%EA%B8%B0.gif)|
-|![register](./static/img/비밀번호_찾기.gif)
+|<img src="./static/img/login.gif" width="300px" height="300px">|<img src="./static/img/register.gif" width="300px" height="300px">|
+|아이디찾기 |비밀번호 찾기|
+|<img src="./static/img/아이디찾기.gif" width="300px" height="300px">|<img src="./static/img/비밀번호_찾기.gif" width="300px" height="300px">|
 |Q&A 게시판질문에 대한 답변 작성,답변에 대한 댓글 작성|자유게시판 글에 댓글 작성 및 수정|
-|![register](./static/img/Q%26A%EA%B2%8C%EC%8B%9C%ED%8C%90%EB%8B%B5%EB%B3%80%EB%8C%93%EA%B8%80.gif)|![register](./static/img/%EC%9E%90%EC%9C%A0%EA%B2%8C%EC%8B%9C%ED%8C%90_%EB%8C%93%EA%B8%80.gif)|
-|내가 작성한 Q&A 게시판 글 조회 | 내가 작성한 Q&A 게시판 글 조회|
-|![register]|![register]|
-|내가 선택한 좋아요 글 조회 | 내가 작성한 댓글 조회|
-|![register]|![register]|
+|<img src="./static/img/Q%26A%EA%B2%8C%EC%8B%9C%ED%8C%90%EB%8B%B5%EB%B3%80%EB%8C%93%EA%B8%80.gif" width="300px" height="300px">|<img src="./static/img/%EC%9E%90%EC%9C%A0%EA%B2%8C%EC%8B%9C%ED%8C%90_%EB%8C%93%EA%B8%80.gif" width="300px" height="300px">|
+|Q&A 게시판 , 자유 게시판 글 작성|마이페이지 내 게시글, 좋아요, 댓글 조회| 
+|<img src="./static/img/%EA%B8%80%20%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0.gif" width="300px" height="300px">|<img src="./static/img/%EB%A7%88%EC%9D%B4%ED%8E%98%EC%9D%B4%EC%A7%80_%EC%A1%B0%ED%9A%8C.gif" width="300px" height="300px">|
 
 
-사용 가이드
 
+## ERD
+&nbsp;
+<img src="./static/img/ERD.png">
+
+## 와이프레임
+&nbsp;
+<img src="./static/img/%EC%99%80%EC%9D%B4%EC%96%B4%20%ED%94%84%EB%A0%88%EC%9E%84.png">
 
 
 - ID 및 닉네임 중복 체크
