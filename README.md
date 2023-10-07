@@ -82,18 +82,19 @@ $ npm start
 
 📌 주요 기능
 --
-회원가입 
 
-|로그인 | 회원가입 | 
-|---|---
-|Q&A 게시판 글 작성|자유 게시판 글 작성|
-|<img alt="login">|<img alt="register">|
+|----------|--------| 
+| 로그인 | 회원가입 |
+|![register](./static/img/login.gif)|![register](./static/img/register.gif) |
+|Q&A 게시판 , 자유 게시판 글 작성|아이디찾기 |비밀번호 찾기|
+|![register](./static/img/%EA%B8%80%20%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0.gif)|![register](./static/img/%EC%95%84%EC%9D%B4%EB%94%94%EC%B0%BE%EA%B8%B0.gif)|
+|![register](./static/img/비밀번호_찾기.gif)
 |Q&A 게시판질문에 대한 답변 작성,답변에 대한 댓글 작성|자유게시판 글에 댓글 작성 및 수정|
-|<img alt="login">|<img alt="register">|
+|![register](./static/img/Q%26A%EA%B2%8C%EC%8B%9C%ED%8C%90%EB%8B%B5%EB%B3%80%EB%8C%93%EA%B8%80.gif)|![register](./static/img/%EC%9E%90%EC%9C%A0%EA%B2%8C%EC%8B%9C%ED%8C%90_%EB%8C%93%EA%B8%80.gif)|
 |내가 작성한 Q&A 게시판 글 조회 | 내가 작성한 Q&A 게시판 글 조회|
-|<img alt="login">|<img alt="register">|
+|![register]|![register]|
 |내가 선택한 좋아요 글 조회 | 내가 작성한 댓글 조회|
-|<img alt="login">|<img alt="register">|
+|![register]|![register]|
 
 
 사용 가이드
