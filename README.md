@@ -20,17 +20,36 @@
 
 &nbsp;
 
+## 시작 가이드
+### Requirements
+For building and running the application you need:
+
+- [Node.js 20.7.0](https://www.npmjs.com/package/node/v/20.7.0)
+- [Npm 10.2.0](https://www.npmjs.com/package/npm/v/10.2.0)
+
+
+### Installation
+``` bash
+$ git clone https://github.com/SesacProjectTeamC/SesacIn.git
+```
+
+```
+$ npm i
+$ npm start
+```
+
+
 ### 🧑‍🤝‍🧑 팀 구성
 
 | 프론트 개발 | 프론트 개발 | 백엔드 개발 | 백엔드 개발 |백엔드 개발 |
 |---|---|---|---|---|
-| <img src=""> | <img src=""> | <img src=""> | <img src=""> | <img src="">|
+| <img src="static/img/profile_sehwa.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_sehwa.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_sehwa.jpeg" width="100px" height="100px" alt="이미지 설명">| <img src="static/img/profile_sehwa.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_hyojin.jpeg" width="100px" height="100px" alt="이미지 설명">
 | <a link="https://github.com/Sangwoo97">@sangwoo | <a link="https://github.com/ellin45">@chaelim | <a link="https://github.com/loveflora">@sehwa | <a link="https://github.com/hotdog7778">@taegyun | <a link="https://github.com/jinnymoon1124">@hyojin
 | 김상우 | 정채림 | 김세화 | 김태균 | 문효진    
 
 
 
-| 이름    | 담당 업무                                        |
+| 이름    | 담당 역할                                      |
 |-------|------------------------------------------------|
 | 김상우 | 메인 페이지 및 게시판 작성 및 상세 페이지 구현     |
 | 정채림 | 사용자 관련 페이지 구현, 마이페이지 게시글 분류 정리|
@@ -43,17 +62,21 @@
 
 ### ⚙️ 개발 환경
 
-**[BE]** ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white), 	![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
-
-
-**[DB]** 	![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white), ![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white)
-
-
 **[FE]**
- ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white), ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white), ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E),![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=for-the-badge&logo=bootstrap&logoColor=white) Ejs 3.1.9
+ ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
  
+**[BE]** ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)	![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+
+
+**[DB]** 	![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white) ![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white)
+
+
  **[SERVER]**
  	![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+
+**[COMMUNITY]**
+![SLACK](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)
+![NOTION](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white)
 &nbsp;
 
 
