@@ -1,5 +1,5 @@
 body {
-  font-size: large;
+  font-size: small;
   margin: 0;
   padding: 0;
   height: 100vh;
@@ -7,7 +7,7 @@ body {
 }
 
 header {
-  padding: 2rem;
+  padding: 1.5rem;
   width: 100%;
   text-align: start;
   cursor: pointer;
@@ -27,8 +27,8 @@ header {
 
 img {
   display: flex;
-  width: 17rem;
-  height: 6rem;
+  width: 10rem;
+  height: auto;
   margin-left: auto;
   margin-right: auto;
 }
@@ -39,24 +39,25 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 530px;
-  height: 750px;
-  border: 5px solid var(--border-color);
-  border-radius: 20px;
-  padding: 50px 20px;
+  width: 50vw;
+  height: 85%;
+  border: 3px solid var(--border-color);
+  border-radius: 10px;
+  padding: 20px;
   flex-wrap: wrap;
 }
 
 h2 {
   color: var(--border-color);
   font-weight: bold;
+  font-size: 1.5rem;
 }
 
 .uId,
 .email,
 .uName,
 .pw {
-  width: 7.5rem;
+  width: 5.9rem;
 }
 
 .input-wrapper .userId {
@@ -184,4 +185,77 @@ button[disabled] {
   pointer-events: none;
   opacity: 0.6;
   cursor: default;
+}
+
+@media (max-width: 680px) {
+  body {
+    font-size: small;
+  }
+
+  header {
+    padding: 1rem;
+  }
+
+  img {
+    width: 8rem;
+  }
+
+  main {
+    width: 90%;
+    max-width: 300px;
+    min-width: 250px;
+    border-width: 3px;
+    border-radius: 10px;
+    padding: 20px;
+    height: 80%;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  .uId,
+  .email,
+  .uName,
+  .pw {
+    width: auto;
+  }
+
+  .form_profile input {
+    padding: 5px 8px;
+  }
+
+  .form_profile label {
+    margin-right: 0.25rem;
+    font-size: 0.6rem;
+  }
+
+  .input-wrapper2 {
+    margin-top: 0.5rem;
+  }
+
+  .modal-content {
+    font-size: 0.8rem;
+  }
+
+  #deletebtn {
+    font-size: 0.8rem;
+  }
+  .alert {
+    position: relative;
+    margin: -1rem 0rem;
+    border: none;
+    border-radius: none;
+    font-size: 0.4rem;
+  }
+
+  .alert-danger {
+    color: red;
+    background-color: transparent;
+    border-color: none;
+  }
+  button.profileEdit {
+    font-size: small;
+    height: 2rem;
+  }
 }

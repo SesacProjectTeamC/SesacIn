@@ -51,6 +51,12 @@
   background-image: linear-gradient(to bottom, #ffc4c0, #ffa2af);
 }
 
+.wrapper-condingon {
+  background-image: linear-gradient(to bottom, #ffccc8, #fd96a4);
+  display: flex;
+  align-items: center;
+}
+
 .carousel-c3-codingon {
   margin: auto;
   width: 300px;
@@ -338,6 +344,10 @@ user {
 }
 
 @media (max-width: 450px) {
+  #c3-img {
+    margin-left: 100px;
+  }
+
   .qnaMenu {
     font-size: 18px;
     margin: 0px 0px 8px;
@@ -347,13 +357,42 @@ user {
     height: 25px;
   }
 
+  .carousel-c1-title {
+    padding: 0;
+  }
+
+  #c1-title-1 {
+    font-size: 22px;
+  }
+  #c1-title-2 {
+    font-size: 16px;
+  }
+
   .carousel-c3-codingon {
     font-size: 20px;
+    top: 64%;
+    left: 120%;
+    margin: auto;
+  }
+
+  .wrapper-condingon {
+    align-items: flex-start;
+  }
+
+  .c3-title {
+    font-size: 20px;
+    margin: auto;
+    padding: 12px;
   }
 
   .carousel-c3-img {
     width: 20%;
+    left: -50%;
   }
+}
+
+.carousel-c3-img .d-block {
+  height: 70%;
 }
 
 .btn.focus,

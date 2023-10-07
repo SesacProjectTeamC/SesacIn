@@ -195,7 +195,6 @@
             style="display: none"
           ></div>
 
-          <!-- 새싹 크루인지 확인 -->
           <div class="input-group-text" id="basic-addon2">새싹 크루입니까?</div>
           <div class="form-check-inline">
             <input
@@ -221,7 +220,6 @@
             <label class="form-check-label" for="gridRadios2"> 아니요 </label>
           </div>
 
-          <!-- 새싹 캠퍼스 선택 -->
           <div id="campusDiv" class="input-group mb-3">
             <label
               class="input-group-text"
@@ -300,7 +298,6 @@
       </main>
     </div>
     <script>
-      //input 유효성 검사
       function checkFormValidity() {
         const form_register = document.forms['form_register'];
         const idInput = form_register.uId;
@@ -310,7 +307,6 @@
         const emailInput = form_register.email;
         const registerButton = document.getElementById('registerButton');
 
-        // 각 입력 필드의 유효성 검사 결과를 가져옴
         const idValid = idInput.validity.valid;
         const pwValid = pwInput.validity.valid;
         const pwCheckValid =
@@ -332,19 +328,16 @@
       form_register.uName.addEventListener('input', checkFormValidity);
       form_register.emailVisible.addEventListener('input', checkFormValidity);
 
-      // 새싹 크루 -> 아니오
       function onNoSelected() {
         const campusDiv = document.getElementById('campusDiv');
         campusDiv.style.display = 'none'; 
       }
 
-      // 새싹 크루 -> 예
       function onYesSelected() {
         const campusDiv = document.getElementById('campusDiv');
         campusDiv.style.display = 'block'; 
       }
 
-      // 라디오 버튼의 변경 이벤트-> 이벤트 핸들러
       document
         .querySelector('input[name="isSesac"][value="false"]')
         .addEventListener('change', onNoSelected);
@@ -352,76 +345,60 @@
         .querySelector('input[name="isSesac"][value="true"]')
         .addEventListener('change', onYesSelected);
 
-      // 페이지 로드했을 때 초기 상태 설정
-      // if (document.querySelector('input[name="isSesac"][value="false"]').checked) {
-      //   onNoSelected();
-      // } else {
-      //   onYesSelected();
-      // }
-      // ID 중복 확인 버튼 활성화/비활성화 함수
+
       function toggleDuplicateCheckButtonId(disabled) {
         const duplicateCheckButtonId = document.getElementById(
           'duplicateCheckButtonId'
         );
         duplicateCheckButtonId.disabled = disabled;
       }
-      // 닉네임 중복 확인 버튼 활성화/비활성화 함수
       function toggleDuplicateCheckButtonName(disabled) {
         const duplicateCheckButtonName = document.getElementById(
           'duplicateCheckButtonName'
         );
         duplicateCheckButtonName.disabled = disabled;
       }
-      // 아이디 필드 포커스가 벗어났을 때
       function checkIdFormat() {
         const idInput = document.getElementById('uId');
         const idErrorMessage = document.getElementById('idErrorMessage');
 
         if (!idInput.validity.valid) {
-          // 형식이 올바르지 않은 경우 알림을 표시
           const errorMessage =
             'ID는 영문으로 6자 이상 12자 이하로 구성되어야 합니다.';
           idErrorMessage.textContent = errorMessage;
           idErrorMessage.style.display = 'block';
-          toggleDuplicateCheckButtonId(true); // 버튼 비활성화
+          toggleDuplicateCheckButtonId(true); 
         } else {
-          // 형식이 올바른 경우 알림을 숨김
           idErrorMessage.style.display = 'none';
-          toggleDuplicateCheckButtonId(false); // 버튼 활성화
+          toggleDuplicateCheckButtonId(false);
         }
       }
-      // pw 필드 포커스가 벗어났을 때
       function checkPwFormat() {
         const pwInput = document.getElementById('pw');
         const pwErrorMessage = document.getElementById('pwErrorMessage');
 
         if (!pwInput.validity.valid) {
-          // 형식이 올바르지 않은 경우 알림을 표시
           const errorMessage =
             '비밀번호는 특수문자를 포함하여 6자 이상이어야 합니다.';
           pwErrorMessage.textContent = errorMessage;
           pwErrorMessage.style.display = 'block';
         } else {
-          // 형식이 올바른 경우 알림을 숨김
           pwErrorMessage.style.display = 'none';
         }
       }
-      // 닉네임 필드 포커스가 벗어났을 때
       function checkNameFormat() {
         const nameInput = document.getElementById('uName');
         const nameErrorMessage = document.getElementById('nameErrorMessage');
 
         if (!nameInput.validity.valid) {
-          // 형식이 올바르지 않은 경우 알림을 표시
           const errorMessage =
             '닉네임은 한글, 영문, 숫자로 2자 이상 12자 이하로 구성되어야 합니다.';
           nameErrorMessage.textContent = errorMessage;
           nameErrorMessage.style.display = 'block';
-          toggleDuplicateCheckButtonName(true); // 버튼 비활성화
+          toggleDuplicateCheckButtonName(true); 
         } else {
-          // 형식이 올바른 경우 알림을 숨김
           nameErrorMessage.style.display = 'none';
-          toggleDuplicateCheckButtonName(false); // 버튼 활성화
+          toggleDuplicateCheckButtonName(false); 
         }
       }
 
@@ -430,7 +407,6 @@
         return emailRegex.test(email);
       }
 
-      // 이메일 유효성 검사 함수
       function checkEmailFormat() {
         const emailInputVisible = document.getElementById('emailVisible');
         const emailInputHidden = document.getElementById('email');
@@ -441,19 +417,15 @@
         const emailPrefix = emailInputVisible.value.split('@')[0];
 
         if (selectedDomain === '') {
-          // 직접 입력된 경우
           if (!isValidEmail(emailInputVisible.value)) {
-            // 이메일 주소가 유효하지 않은 경우 알림을 표시
             emailErrorMessage.textContent =
               '올바른 이메일 형식을 입력해주세요.';
             emailErrorMessage.style.display = 'block';
           } else {
             emailErrorMessage.style.display = 'none';
-            // 직접 입력인 경우 hidden 필드에도 동일한 값을 설정
             emailInputHidden.value = emailInputVisible.value;
           }
         } else {
-          // 도메인 선택된 경우
           const fullEmail = emailPrefix + selectedDomain;
           if (!isValidEmail(fullEmail)) {
             emailErrorMessage.textContent =
@@ -461,19 +433,15 @@
             emailErrorMessage.style.display = 'block';
           } else {
             emailErrorMessage.style.display = 'none';
-            // 선택한 도메인 값과 조합하여 hidden 필드에 설정
             emailInputHidden.value = emailPrefix + selectedDomain;
           }
         }
       }
 
-      // 이메일 입력 필드의 입력 이벤트 리스너 등록
       const emailInputVisible = document.getElementById('emailVisible');
       const emailInputHidden = document.getElementById('email');
       emailInputVisible.addEventListener('input', checkEmailFormat);
       emailInputHidden.addEventListener('input', checkEmailFormat);
-
-      // 비밀번호 일치 여부
       const pwInput = document.getElementById('pw');
       const pwCheckInput = document.getElementById('pwCheck');
       const pwCheckErrorMessage = document.getElementById(
@@ -482,17 +450,14 @@
 
       function checkPasswordMatch() {
         if (pwInput.value !== pwCheckInput.value) {
-          // 비밀번호가 일치하지 않는 경우 에러 메시지를 표시합니다.
           pwCheckErrorMessage.textContent = '비밀번호가 일치하지 않습니다.';
           pwCheckErrorMessage.style.display = 'block';
         } else {
-          // 비밀번호가 일치하는 경우 에러 메시지를 숨깁니다.
           pwCheckErrorMessage.style.display = 'none';
         }
       }
       pwCheckInput.addEventListener('input', checkPasswordMatch);
 
-      // 중복 확인
       function checkDuplicate(field) {
         const value = document.getElementById(field).value;
         hideAllDuplicateMessages();
@@ -518,7 +483,6 @@
             console.error('중복 확인 요청 중 오류 발생:', error);
           });
       }
-      // // 중복 메시지 표시
       function setDuplicateMessage(field, message) {
         const duplicateMessage = document.getElementById(
           `${field === 'uId' ? 'id' : 'name'}DuplicateMessage`
@@ -526,17 +490,14 @@
         duplicateMessage.textContent = message;
         duplicateMessage.style.display = 'block';
       }
-      // 중복 확인 필드 목록
       const fields = ['uId', 'uName'];
 
-      // 다른 데 클릭하면 중복 확인 메시지를 없앰
       document.addEventListener('click', (event) => {
         const target = event.target;
         if (!fields.includes(target.id)) {
           hideAllDuplicateMessages();
         }
       });
-      // 중복 확인 메시지를 숨기는 함수
       function hideAllDuplicateMessages() {
         for (const field of fields) {
           const duplicateMessage = document.getElementById(
@@ -552,7 +513,6 @@
         ssacCampus.textContent = '';
       }
 
-      // 회원가입 요청
       function register() {
         const form_register = document.forms['form_register'];
 
@@ -580,7 +540,6 @@
             },
           })
             .then((res) => {
-              //입력 항목 초기화
               resetFormInputs();
               window.location.href = '/login';
             })
@@ -601,28 +560,21 @@
             });
         }
       }
-      // 모달창
       function setModalTextAndShow(message) {
         $('#cautionText').text(message);
         $('#cautionModal').modal('show');
       }
-      //입력 항목 초기화
       function resetFormInputs() {
         const form_register = document.forms['form_register'];
         form_register.uId.value = '';
         form_register.pw.value = '';
         form_register.uName.value = '';
         form_register.email.value = '';
-        form_register.isSesac[0].checked = true; // "네" 선택
-        form_register.campus.selectedIndex = 0; // "선택" 선택
+        form_register.isSesac[0].checked = true; 
+        form_register.campus.selectedIndex = 0; 
       }
 
-      // //뒤로가기 버튼 클릭시 로그인 창으로 돌아감
-      // function goToLogin() {
-      // window.location.href = '/login';
-      // }
 
-      //뒤로가기 버튼 클릭시 홈으로 이동
       function goTohome() {
         window.location.href = '/';
       }
