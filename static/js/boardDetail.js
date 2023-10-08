@@ -1,3 +1,34 @@
+const bLikeHandler = (bId) => {
+  axios({
+    method: 'PATCH',
+    url: `/board/detail/like/${bId}`,
+  })
+    .then((res) => {
+      if (res) {
+        const cnt = document.querySelector('.likeImg');
+        const curImg = cnt.children[0].getAttribute('src');
+        cnt.children[1].innerHTML =
+          curImg === '/static/svg/heart-fill.svg'
+            ? Number(cnt.children[1].innerHTML) - 1
+            : Number(cnt.children[1].innerHTML) + 1;
+        cnt.children[0].setAttribute(
+          'src',
+          curImg === '/static/svg/heart-fill.svg'
+            ? '/static/svg/heart.svg'
+            : '/static/svg/heart-fill.svg'
+        );
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.response.status === 401) {
+        openModal(err.response.data);
+      } else {
+        openModal('서버오류 발생');
+      }
+    });
+};
+
 function addComment(bId) {
   const comment = document.querySelector('.form-control');
 

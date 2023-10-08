@@ -9,7 +9,6 @@
     <script defer src="/static/js/boardDetail.js"></script>
     <link rel="stylesheet" href="/static/editor/editorStyle.css" />
     <link rel="icon" href="/../../static/img/favicon.ico" type="image/x-icon" />
-
   </head>
   <body class="container">
     <%- include('../components/header', { isLogin: isLogin }) %>
@@ -49,7 +48,7 @@
               width="24px"
               class="svg"
             />
-            <%= boardData.likeCount%>
+            <div><%= boardData.likeCount%></div>
           </div>
 
           <% } else if(bResult) { %>
@@ -64,7 +63,7 @@
               width="24px"
               class="svg"
             />
-            <%= boardData.likeCount %>
+            <div><%= boardData.likeCount %></div>
           </div>
 
           <% } %>
@@ -81,6 +80,7 @@
         </div>
 
         <div id="bTime"><%= cDate %></div>
+        <div id="cbTime"><%= cDate.slice(5, cDate.length) %></div>
       </div>
 
       <div class="bContent ck-content"><%- boardData.content %></div>
@@ -251,27 +251,4 @@
       </div>
     </div>
   </body>
-  <script>
-    // === 세화 ===
-    // 좋아요 기능
-    const bLikeHandler = (bId) => {
-      axios({
-        method: "PATCH",
-        url: `/board/detail/like/${bId}`,
-      })
-        .then((res) => {
-          console.log(res);
-          if (res) {
-            document.location.href = `/board/detail/${bId}`;
-          }
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            openModal(err.response.data);
-          } else {
-            openModal("서버오류 발생");
-          }
-        });
-    };
-  </script>
 </html>
