@@ -15,8 +15,6 @@ const uploadRouter = require('./routes/uploadRouter');
 
 // sequelize 모듈을 불러옵니다.
 const { sequelize } = require('./models');
-// swagger 모듈을 불러옵니다.
-const { swaggerUi, swaggerSpec } = require('./middlewares/swagger/swagger');
 // 세션 설정 모듈을 불러옵니다.
 const configureSession = require('./middlewares/session/session');
 
@@ -32,9 +30,6 @@ configureSession(app);
 
 // users 라우터로 이동 // 마이페이지, 회원 관련
 app.use('/users', usersRouter);
-
-// swagger
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // 파일 업로드 라우터로 이동
 app.use('/upload', uploadRouter);
