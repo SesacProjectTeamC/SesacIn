@@ -294,3 +294,21 @@ textarea {
   --bs-btn-disabled-bg: ##71bd66;
   --bs-btn-disabled-border-color: ##71bd66;
 }
+
+#cbTime {
+  font-size: 14px;
+  color: lightgray;
+  display: none;
+}
+
+@media (max-width: 530px) {
+  #bTitle {
+    font-size: 28px;
+  }
+  #bTime {
+    display: none;
+  }
+  #cbTime {
+    display: block;
+  }
+}
