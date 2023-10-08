@@ -39,8 +39,8 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 75vw;
-  height: 85%;
+  width: 30vw;
+  height: 50vh;
   border: 3px solid var(--border-color);
   border-radius: 10px;
   padding: 20px;
@@ -127,7 +127,7 @@ form#login_form a:last-of-type {
   transition: background-color 0.3s ease-in-out;
   align-items: center;
   margin-top: 1rem;
-  margin-left: 2rem;
+  margin-left: 2.5rem;
   cursor: pointer;
   font-weight: bold;
 }
@@ -192,7 +192,7 @@ form#login_form a:last-of-type {
   box-shadow: 0 0 0 0.2rem #71bd6685;
   outline: 0px;
 }
-@media (max-width: 500px) {
+@media (max-width: 900px) {
   body {
     font-size: small;
   }
