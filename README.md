@@ -1,6 +1,7 @@
 # SesacIn (Sesac + 지식in)
 
-<center><img src="./static/img/header-logo-2.png" width="500"></center>
+<center><img src="./static/img/header-logo-2.png" width="500" />
+
 새싹 캠퍼스 학생들을 위한 SesacIn 커뮤니티 프로젝트입니다.
 
 &nbsp;
@@ -19,12 +20,12 @@
 🕰️ 개발 기간
 --
 23.09.06일 - 23.09.22일
-
+</center>
 &nbsp;
 
 ## 시작 가이드
 ### Requirements
-For building and running the application you need:
+
 
 - [Node.js 20.7.0](https://www.npmjs.com/package/node/v/20.7.0)
 - [Npm 10.2.0](https://www.npmjs.com/package/npm/v/10.2.0)
@@ -89,7 +90,7 @@ $ npm start
 | 로그인 | 회원가입 |
 |<img src="./static/img/login.gif" width="300px" height="300px">|<img src="./static/img/register.gif" width="300px" height="300px">|
 |아이디찾기 |비밀번호 찾기|
-|<img src="./static/img/아이디찾기.gif" width="300px" height="300px">|<img src="./static/img/비밀번호_찾기.gif" width="300px" height="300px">|
+|<img src="./static/img/아이디찾기.gif" width="300px" height="300px">|<img src="./static/img/%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8_%EC%B0%BE%EA%B8%B0.gif" width="300px" height="300px">|
 |Q&A 게시판질문에 대한 답변 작성,답변에 대한 댓글 작성|자유게시판 글에 댓글 작성 및 수정|
 |<img src="./static/img/Q%26A%EA%B2%8C%EC%8B%9C%ED%8C%90%EB%8B%B5%EB%B3%80%EB%8C%93%EA%B8%80.gif" width="300px" height="300px">|<img src="./static/img/%EC%9E%90%EC%9C%A0%EA%B2%8C%EC%8B%9C%ED%8C%90_%EB%8C%93%EA%B8%80.gif" width="300px" height="300px">|
 |Q&A 게시판 , 자유 게시판 글 작성|마이페이지 내 게시글, 좋아요, 댓글 조회| 
@@ -101,7 +102,7 @@ $ npm start
 &nbsp;
 <img src="./static/img/ERD.png" width="600px" height="600px">
 
-## 와이프레임
+## 와이어 프레임
 &nbsp;
 <img src="./static/img/%EC%99%80%EC%9D%B4%EC%96%B4%20%ED%94%84%EB%A0%88%EC%9E%84.png" width="600px" height="600px">
 
