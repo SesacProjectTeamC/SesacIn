@@ -46,6 +46,10 @@ a {
   border-color: var(--bs-pagination-hover-border-color);
 }
 
+.sDate {
+  display: none;
+}
+
 @media (max-width: 1200px) {
   /* viewport width가 480px 이하일 때 */
   .bInfo {
@@ -53,5 +57,18 @@ a {
   }
   .cDate {
     width: 20%;
+  }
+}
+
+@media (max-width: 770px) {
+  /* viewport width가 480px 이하일 때 */
+  .bLike {
+    display: none;
+  }
+  .sDate {
+    display: block;
+  }
+  .bDate {
+    display: none;
   }
 }

@@ -50,7 +50,7 @@
               width="24px"
               class="svg"
             />
-            <%= data.likeCount%>
+            <div><%= data.likeCount%></div>
           </div>
 
           <% } else if(qResult) { %>
@@ -65,7 +65,7 @@
               width="24px"
               class="svg"
             />
-            <%= data.likeCount %>
+            <div><%= data.likeCount %></div>
           </div>
 
           <% } %>
@@ -82,6 +82,9 @@
         </div>
 
         <div id="bTime"><%= questionCreateAt %></div>
+        <div id="cbTime">
+          <%= questionCreateAt.slice(5, questionCreateAt.length) %>
+        </div>
       </div>
 
       <div class="bContent ck-content"><%- data.content %></div>
@@ -407,28 +410,4 @@
       </div>
     </div>
   </body>
-  <script>
-    // === 세화 ===
-    // 좋아요 기능
-    const bLikeHandler = (qId) => {
-      axios({
-        method: 'PATCH',
-        url: `/question/${qId}`,
-      })
-        .then((res) => {
-          if (res) {
-            console.log(res);
-            document.location.href = `/question/${qId}`;
-          }
-        })
-        .catch((err) => {
-          console.log(err.response.status);
-          if (err.response.status === 401) {
-            openModal(err.response.data);
-          } else {
-            openModal('서버오류 발생');
-          }
-        });
-    };
-  </script>
 </html>

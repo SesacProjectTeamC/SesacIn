@@ -1,3 +1,34 @@
+const bLikeHandler = (qId) => {
+  axios({
+    method: 'PATCH',
+    url: `/question/${qId}`,
+  })
+    .then((res) => {
+      if (res) {
+        const cnt = document.querySelector('.likeImg');
+        const curImg = cnt.children[0].getAttribute('src');
+        cnt.children[1].innerHTML =
+          curImg === '/static/svg/heart-fill.svg'
+            ? Number(cnt.children[1].innerHTML) - 1
+            : Number(cnt.children[1].innerHTML) + 1;
+        cnt.children[0].setAttribute(
+          'src',
+          curImg === '/static/svg/heart-fill.svg'
+            ? '/static/svg/heart.svg'
+            : '/static/svg/heart-fill.svg'
+        );
+      }
+    })
+    .catch((err) => {
+      console.log(err.response.status);
+      if (err.response.status === 401) {
+        openModal(err.response.data);
+      } else {
+        openModal('서버오류 발생');
+      }
+    });
+};
+
 function addComment(qId, aId, userName, img) {
   const content = document.querySelector(`#commentArea${aId}`).value;
   if (content.length < 10) {
@@ -22,7 +53,9 @@ function addComment(qId, aId, userName, img) {
         );
         const count = document.querySelector(`.commentCount${aId}`);
 
-        const newCount = '댓글 ' + String(Number(count.innerHTML.replace('댓글', '').trim()) + 1);
+        const newCount =
+          '댓글 ' +
+          String(Number(count.innerHTML.replace('댓글', '').trim()) + 1);
         count.innerHTML = newCount;
       })
       .catch((err) => {
@@ -182,7 +215,9 @@ function deleteComment(qId, cId, aId) {
 
       const count = document.querySelector(`.commentCount${aId}`);
 
-      const newCount = '댓글 ' + String(Number(count.innerHTML.replace('댓글', '').trim()) - 1);
+      const newCount =
+        '댓글 ' +
+        String(Number(count.innerHTML.replace('댓글', '').trim()) - 1);
       count.innerHTML = newCount;
     })
     .catch((error) => {
@@ -275,5 +310,7 @@ const postAnswer = (qId) => {
 const toggleComment = (component, aId) => {
   component.classList.toggle('commentActive');
   document.querySelector(`#commentC${aId}`).classList.toggle('answerCommentC');
-  document.querySelector(`#commentC${aId}`).classList.toggle('answerCommentCShow');
+  document
+    .querySelector(`#commentC${aId}`)
+    .classList.toggle('answerCommentCShow');
 };

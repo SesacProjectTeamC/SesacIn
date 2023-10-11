@@ -1,5 +1,5 @@
 body {
-  font-size: large;
+  font-size: medium;
   margin: 0;
   padding: 0;
   height: 100vh;
@@ -7,7 +7,7 @@ body {
 }
 
 header {
-  padding: 2rem;
+  padding: 1.5rem;
   width: 100%;
   text-align: start;
   cursor: pointer;
@@ -22,34 +22,34 @@ header {
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  margin-top: 3rem;
 }
 
 img {
   display: flex;
-  width: 17rem;
-  height: 6rem;
+  width: 10rem;
+  height: auto;
   margin-left: auto;
   margin-right: auto;
 }
 
 main {
+  margin: 20px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-width: 500px;
-  width: 600px;
-  height: 700px;
-  border: 5px solid var(--border-color);
-  background-color: rgb(255, 255, 255);
-  border-radius: 20px;
-  padding: 50px 30px;
+  width: 100%;
+  height: 85%;
+  border: 3px solid var(--border-color);
+  border-radius: 10px;
+  padding: 30px 20px;
   flex-wrap: wrap;
 }
 
 h2 {
+  margin-bottom: 3rem;
   font-weight: bold;
+  font-size: 1.5rem;
 }
 
 .input-group-text {
@@ -132,7 +132,7 @@ label.isSesac {
   margin-left: 0.5rem;
 }
 
-.form-check-input[type="radio"] {
+.form-check-input[type='radio'] {
   appearance: none;
   width: 20px;
   height: 20px;
@@ -143,7 +143,7 @@ label.isSesac {
   cursor: pointer;
 }
 
-.form-check-input[type="radio"]:checked {
+.form-check-input[type='radio']:checked {
   background-color: var(--border-color);
 }
 
@@ -177,6 +177,9 @@ label.isSesac {
 
 #basic-addon2 {
   width: 10rem;
+}
+#inputGroupSelect01 {
+  width: 18rem;
 }
 
 .btn-primary {
@@ -228,4 +231,71 @@ button[disabled] {
   color: red;
   background-color: transparent;
   border-color: none;
+}
+@media (max-width: 550px) {
+  body {
+    font-size: small;
+  }
+
+  header {
+    padding: 1rem;
+  }
+
+  img {
+    width: 8rem;
+  }
+
+  main {
+    min-width: 200px;
+    padding: 30px 10px;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  .modal-content {
+    font-size: 0.8rem;
+  }
+
+  .alert {
+    position: relative;
+    margin: -1rem 0rem;
+    border: none;
+    border-radius: none;
+    font-size: 0.4rem;
+  }
+  .form-select {
+    width: 6.5rem;
+  }
+
+  #inputGroupSelect01,
+  .form-check-inline {
+    width: 100%;
+  }
+
+  .alert-danger {
+    color: red;
+    background-color: transparent;
+    border-color: none;
+  }
+  #basic-addon1,
+  #basic-addon2 {
+    width: auto;
+    padding: 0.5rem;
+  }
+  #campusLabel {
+    width: auto;
+    padding: 0.5rem 1.5rem;
+  }
+
+  .input-group-text {
+    font-size: small;
+  }
+
+  button.btn.btn-primary {
+    font-size: 8px;
+    padding: 0px;
+    width: 4rem;
+  }
 }

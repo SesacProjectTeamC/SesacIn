@@ -21,7 +21,7 @@
           <th scope="col" style="width: 7%">ID</th>
           <th scope="col">제목</th>
           <th scope="col" class="bInfo">글쓴이</th>
-          <th scope="col" class="bInfo">추천수</th>
+          <th scope="col" class="bInfo bLike">추천수</th>
           <th scope="col" class="bInfo cDate">작성일</th>
         </tr>
       </thead>
@@ -35,8 +35,11 @@
           <th><%= i + 1 %></th>
           <td style="text-align: start"><%= boardData[i].title%></td>
           <td><%= boardData[i].uName%></td>
-          <td><%= boardData[i].likeCount%></td>
-          <td><%= boardCreateAt[i]%></td>
+          <td class="bLike"><%= boardData[i].likeCount%></td>
+          <td class="bDate"><%= boardCreateAt[i]%></td>
+          <td class="sDate">
+            <%= boardCreateAt[i].slice(5, boardCreateAt[i].length)%>
+          </td>
         </tr>
         <%}%> <%} else{%> <%for(let i = 0; i < questionData.length; i++){%>
         <tr
@@ -46,8 +49,11 @@
           <th><%= i + 1 %></th>
           <td style="text-align: start"><%= questionData[i].title%></td>
           <td><%= questionData[i].uName%></td>
-          <td><%= questionData[i].likeCount%></td>
-          <td><%= questionCreateAt[i]%></td>
+          <td class="bLike"><%= questionData[i].likeCount%></td>
+          <td class="bDate"><%= questionCreateAt[i]%></td>
+          <td class="sDate">
+            <%= questionCreateAt[i].slice(5, questionCreateAt[i].length)%>
+          </td>
         </tr>
         <%}%> <%}%>
       </tbody>

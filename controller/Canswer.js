@@ -1,13 +1,13 @@
-const { Question, Answer, uLike, Comment } = require('../models');
+const { Question, Answer, uLike } = require("../models");
 
 //=== 답변 목록 가져오기 ===
 exports.getAnswers = async (req, res) => {
   try {
     const answers = await Answer.findAll();
-    res.render('questionTest', { answerData: answers });
+    res.render("questionTest", { answerData: answers });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -16,10 +16,10 @@ exports.getCreateAnswer = async (req, res) => {
   try {
     const { qId } = req.params;
 
-    res.render('answerCreateTest', { data: qId });
+    res.render("answerCreateTest", { data: qId });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -27,7 +27,7 @@ exports.getCreateAnswer = async (req, res) => {
 exports.postAnswer = async (req, res) => {
   try {
     if (!req.session.user) {
-      res.redirect('/login');
+      res.redirect("/login");
       return;
     }
 
@@ -59,7 +59,7 @@ exports.postAnswer = async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -72,15 +72,14 @@ exports.getEditAnswer = async (req, res) => {
       where: { aId },
     });
 
-    // 작성자가 아니면 404 화면으로
     if (req.session.user !== answer.uId) {
-      return res.render('404');
+      return res.render("404");
     }
 
-    res.render('answerEditTest', { data: qId, answerData: answer });
+    res.render("answerEditTest", { data: qId, answerData: answer });
   } catch (err) {
     console.error(err);
-    res.send('Internal Server Error');
+    res.send("Internal Server Error");
   }
 };
 
@@ -91,13 +90,12 @@ exports.patchAnswer = async (req, res) => {
 
     const { content } = req.body;
 
-    // 답변 내용이 비어 있는 경우
     if (!content) {
       res.status(400).send({
         success: false,
         isLogin,
         currentLoginUser: req.session.user,
-        msg: '데이터에 빈값이 있습니다.',
+        msg: "데이터에 빈값이 있습니다.",
       });
     }
 
@@ -105,7 +103,7 @@ exports.patchAnswer = async (req, res) => {
       { content },
       {
         where: { aId },
-      }
+      },
     );
 
     res.send({
@@ -113,7 +111,7 @@ exports.patchAnswer = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
@@ -138,13 +136,12 @@ exports.deleteAnswer = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
 
 //=== 답변 좋아요 누르기 ===
 exports.likeAnswer = async (req, res) => {
-  // 세션 검사
   let isLogin = req.session.user || false;
 
   try {
@@ -174,7 +171,10 @@ exports.likeAnswer = async (req, res) => {
       });
 
       // (2) 답변 likeCount 업데이트 +1
-      await Answer.update({ likeCount: getAnswer.likeCount + 1 }, { where: { aId } });
+      await Answer.update(
+        { likeCount: getAnswer.likeCount + 1 },
+        { where: { aId } },
+      );
     } else if (uLikeFind) {
       // 2) uLike findOne -> 있으면,
       // (1) 좋아요 -> uLike 해당 aId 삭제함
@@ -186,7 +186,10 @@ exports.likeAnswer = async (req, res) => {
       });
 
       // (2) 답변 likeCount 업데이트 -1
-      await Answer.update({ likeCount: getAnswer.likeCount - 1 }, { where: { aId } });
+      await Answer.update(
+        { likeCount: getAnswer.likeCount - 1 },
+        { where: { aId } },
+      );
     }
 
     const answers = await Answer.findAll({
@@ -217,6 +220,6 @@ exports.likeAnswer = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(500).send('Internet Server Error!!!');
+    res.status(500).send("Internet Server Error!!!");
   }
 };
