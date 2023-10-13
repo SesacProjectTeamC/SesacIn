@@ -12,9 +12,9 @@
 &nbsp;
 새싹인들을 위한 지식 공유 커뮤니티입니다.
 
-<a link="https://sesacin.online/">새싹인 서비스 바로가기
+[새싹인 서비스 바로가기]("https://sesacin.online/")
 
-<a link="https://polydactyl-cello-2db.notion.site/1st-team-c-9010d350c97a44f3b9786e0799632f06?pvs=4">새싹인 프로젝트 기록 사이트 바로가기
+[새싹인 프로젝트 기록 사이트 바로가기]("https://polydactyl-cello-2db.notion.site/1st-team-c-9010d350c97a44f3b9786e0799632f06?pvs=4")
 &nbsp;
 
 🕰️ 개발 기간
@@ -47,7 +47,7 @@ $ npm start
 | 프론트 개발 | 프론트 개발 | 백엔드 개발 | 백엔드 개발 |백엔드 개발 |
 |---|---|---|---|---|
 | <img src="static/img/profile_sangwoo.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_chaelim.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_sehwa.jpeg" width="100px" height="100px" alt="이미지 설명">| <img src="static/img/profile_taegyun.jpeg" width="100px" height="100px" alt="이미지 설명"> | <img src="static/img/profile_hyojin.jpeg" width="100px" height="100px" alt="이미지 설명">
-| <a link="https://github.com/Sangwoo97">@sangwoo | <a link="https://github.com/ellin45">@chaelim | <a link="https://github.com/loveflora">@sehwa | <a link="https://github.com/hotdog7778">@taegyun | <a link="https://github.com/jinnymoon1124">@hyojin
+|  [@sangwoo](https://github.com/Sangwoo97) | [@chaelim](https://github.com/ellin45") | [@sehwa]("https://github.com/loveflora")| [@taegyun]("https://github.com/hotdog7778") | [@hyojin]("https://github.com/jinnymoon1124">)
 | 김상우 | 정채림 | 김세화 | 김태균 | 문효진    
 
 
