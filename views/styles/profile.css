@@ -108,6 +108,14 @@ button:hover {
   transition: 0.3s;
 }
 
+.qna:hover {
+  border-radius: 10px 0 0 10px;
+}
+
+.commented:hover {
+  border-radius: 0 10px 10px 0;
+}
+
 .row {
   display: flex;
   justify-content: center;
@@ -132,7 +140,7 @@ button:focus {
 .row.row-cols-4 {
   display: flex;
   justify-content: center;
-  border: 3px solid var(--main-color);
+  border: 3px solid #aec289;
   border-radius: 1rem;
   margin: 1px 0 10px 0;
   width: 100%;
@@ -162,7 +170,7 @@ form[name="profile"] {
   align-items: stretch;
   flex-direction: column;
   color: white;
-  border: 3px solid var(--main-color);
+  border: 3px solid #aec289;
   border-radius: 10px;
 }
 

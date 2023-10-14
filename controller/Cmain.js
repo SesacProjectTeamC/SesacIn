@@ -1,6 +1,5 @@
-const { Question, Board, Answer, Comment, uLike, User, sequelize } = require('../models');
-const { Op } = require('sequelize');
-const moment = require('moment');
+const { Question, Board, User, sequelize } = require("../models");
+const moment = require("moment");
 
 //=== 메인페이지,질문 목록 가져오기 ===
 // 메인페이지 렌더링
@@ -14,12 +13,14 @@ exports.getMainPage = async (req, res) => {
     let page = parseInt(req.params.page) || 1;
     let pageSize = parseInt(req.params.pageSize) || 20;
     let offset = (page - 1) * pageSize;
-    let sortField = req.params.sortField || 'createdAt';
-    let sortOrder = req.params.sortOrder || 'desc';
+    let sortField = req.params.sortField || "createdAt";
+    let sortOrder = req.params.sortOrder || "desc";
 
     // 페이지 수 (올림처리)
     const questionTotalCount = await Question.count();
-    const questionPageCount = parseInt(Math.ceil(questionTotalCount / pageSize));
+    const questionPageCount = parseInt(
+      Math.ceil(questionTotalCount / pageSize),
+    );
     const boardTotalCount = await Board.count();
     const boardPageCount = parseInt(Math.ceil(boardTotalCount / pageSize)); // 페이지 수 (올림처리)
 
@@ -49,13 +50,13 @@ exports.getMainPage = async (req, res) => {
     // 1. 질문
     const questionCreateAt = [];
     for (q of paginatedQuestion) {
-      questionCreateAt.push(moment(q.createdAt).format('YYYY-MM-DD'));
+      questionCreateAt.push(moment(q.createdAt).format("YYYY-MM-DD"));
     }
     // 2. 답변
     // 날짜 데이터 포맷 변경
     const boardCreateAt = [];
     for (b of paginatedBoard) {
-      boardCreateAt.push(moment(b.createdAt).format('YYYY-MM-DD'));
+      boardCreateAt.push(moment(b.createdAt).format("YYYY-MM-DD"));
     }
 
     if (isLogin) {
@@ -65,7 +66,7 @@ exports.getMainPage = async (req, res) => {
         where: { uId },
       });
 
-      res.status(200).render('main', {
+      res.status(200).render("main", {
         questionData: paginatedQuestion,
         questionCreateAt,
         questionPageCount,
@@ -78,7 +79,7 @@ exports.getMainPage = async (req, res) => {
         userData: user,
       });
     } else {
-      res.status(200).render('main', {
+      res.status(200).render("main", {
         questionData: paginatedQuestion,
         questionCreateAt,
         questionPageCount,
@@ -92,6 +93,6 @@ exports.getMainPage = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send('Internet Server Error!!!');
+    res.send("Internet Server Error!!!");
   }
 };
