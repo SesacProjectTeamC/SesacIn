@@ -40,7 +40,6 @@ main {
   justify-content: center;
   align-items: center;
   width: 30vw;
-  height: 50vh;
   border: 3px solid var(--border-color);
   border-radius: 10px;
   padding: 20px;
@@ -64,13 +63,13 @@ form#login_form {
   display: flex;
   flex-direction: column;
 }
-label[for='login_form_id']:hover,
-label[for='login_form_pw']:hover {
+label[for="login_form_id"]:hover,
+label[for="login_form_pw"]:hover {
   color: var(--hover-color2);
 }
 
-input[class='login_form_id'],
-input[class='login_form_pw'] {
+input[class="login_form_id"],
+input[class="login_form_pw"] {
   border: none;
   outline: none;
   box-shadow: 0px 2px 0px 0px var(--main-color);
@@ -78,8 +77,8 @@ input[class='login_form_pw'] {
   transition: box-shadow 0.3s ease-in-out;
   width: 100%;
 }
-input[class='login_form_id']:hover,
-input[class='login_form_pw']:hover {
+input[class="login_form_id"]:hover,
+input[class="login_form_pw"]:hover {
   border: none;
   outline: none;
   box-shadow: 0px 0px 0px 1px var(--hover-color);
@@ -206,62 +205,10 @@ form#login_form a:last-of-type {
   }
 
   main {
-    width: 70%;
+    width: 90%;
     border-width: 3px;
     border-radius: 10px;
     padding: 20px;
-    height: 80%;
-  }
-
-  h2 {
-    font-size: 1rem;
-    text-align: center;
-    margin-left: 0;
-  }
-
-  .modal-content {
-    font-size: 0.8rem;
-  }
-
-  .alert {
-    position: relative;
-    margin: -1rem 0rem;
-    border: none;
-    border-radius: none;
-    font-size: 0.4rem;
-  }
-
-  .alert-danger {
-    color: red;
-    background-color: transparent;
-    border-color: none;
-  }
-  .btn-primary {
-    font-size: small;
-    width: 100px;
-    height: 30px;
-    margin-left: 1.8rem;
-  }
-}
-@media (min-width: 901px) {
-  body {
-    font-size: small;
-  }
-
-  header {
-    padding: 1rem;
-  }
-
-  img {
-    width: 8rem;
-  }
-
-  main {
-    width: 70%;
-    border-width: 3px;
-    border-radius: 10px;
-    padding: 20px;
-    height: 80%;
   }
 
   h2 {
