@@ -243,3 +243,54 @@ form#login_form a:last-of-type {
     margin-left: 1.8rem;
   }
 }
+@media (min-width: 901px) {
+  body {
+    font-size: small;
+  }
+
+  header {
+    padding: 1rem;
+  }
+
+  img {
+    width: 8rem;
+  }
+
+  main {
+    width: 90%;
+    border-width: 3px;
+    border-radius: 10px;
+    padding: 20px;
+    height: 80%;
+  }
+
+  h2 {
+    font-size: 1rem;
+    text-align: center;
+    margin-left: 0;
+  }
+
+  .modal-content {
+    font-size: 0.8rem;
+  }
+
+  .alert {
+    position: relative;
+    margin: -1rem 0rem;
+    border: none;
+    border-radius: none;
+    font-size: 0.4rem;
+  }
+
+  .alert-danger {
+    color: red;
+    background-color: transparent;
+    border-color: none;
+  }
+  .btn-primary {
+    font-size: small;
+    width: 100px;
+    height: 30px;
+    margin-left: 1.8rem;
+  }
+}
