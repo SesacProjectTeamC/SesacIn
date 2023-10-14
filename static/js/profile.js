@@ -1,61 +1,69 @@
 function change(buttonType) {
-  const contentDiv = document.getElementById('content');
-  const cautionDiv = document.getElementById('caution');
-  cautionDiv.style.display = 'none';
+  const contentDiv = document.getElementById("content");
+  const cautionDiv = document.getElementById("caution");
+
+  cautionDiv.style.display = "none";
   axios({
-    method: 'GET',
+    method: "GET",
     url: `/users/profile/${buttonType}`,
   })
     .then((response) => {
       const data = response.data;
-      if (buttonType === 'liked') {
+      if (buttonType === "liked") {
         liked(data, contentDiv);
         return;
-      } else if (buttonType === 'commented') {
+      } else if (buttonType === "commented") {
         commented(data, contentDiv);
         return;
-      } else if (buttonType === 'qna') {
+      } else if (buttonType === "qna") {
         qna(data, contentDiv);
         return;
-      } else if (buttonType === 'free') {
+      } else if (buttonType === "free") {
         free(data, contentDiv);
         return;
       } else {
-        contentDiv.style.display = 'none';
+        contentDiv.style.display = "none";
       }
     })
     .catch((error) => {
-      console.error('Error fetching data:', error);
-      contentDiv.style.display = 'none';
+      console.error("Error fetching data:", error);
+      contentDiv.style.display = "none";
     });
 }
 
+const emptyData = (text) => {
+  const cautionDiv = document.getElementById("caution");
+
+  cautionDiv.style.display = "block";
+  cautionDiv.style.padding = "20px";
+  cautionDiv.style.borderRadius = "10px";
+  content.style.display = "none";
+  cautionDiv.innerHTML = text;
+};
+
 //=== 1. qna 게시글 ===
 const qna = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.getElementById('caution');
+  contentDiv.innerHTML = "";
 
-  if (data.postData.length === 0) {
-    cautionDiv.style.display = 'block';
-    content.style.display = 'none';
-    cautionDiv.innerHTML = '작성한 게시글이 없습니다.';
+  if (data.qnaData.length === 0) {
+    emptyData("작성한 게시글이 없습니다.");
     return;
   }
-  content.style.display = 'block';
+  content.style.display = "block";
 
-  for (let i = 0; i < data.postData.length; i++) {
+  for (let i = 0; i < data.qnaData.length; i++) {
     contentDiv.innerHTML += [
       `
       <div class="postedQuestion">
-      <a href ="/question/${data.postData[i].qId}">
+      <a href ="/question/${data.qnaData[i].qId}">
         <div class="qnaList">
-        <div class="question title">${data.postData[i].title}</div>
-        <div class="question content">${data.postData[i].content}</div>
+        <div class="question title">${data.qnaData[i].title}</div>
+        <div class="question content">${data.qnaData[i].content}</div>
         <div class="like">
         <img src="../../static/svg/heart.svg" alt="좋아요" width="5px" class="svg"/>
-        <p>${data.postData[i].likeCount}</p>
+        <p>${data.qnaData[i].likeCount}</p>
         <img src="../../static/img/question-and-answer.png" alt="답변개수" width="5px" class="svg"/>
-        <p>${data.postAnswerCount[i]}</p>
+        <p>${data.qnaAnswerCount[i]}</p>
         </div>
         </div>
         </a> 
@@ -68,17 +76,14 @@ const qna = (data, contentDiv) => {
 
 //=== 2. 자유 게시판 ===
 const free = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.querySelector('#caution');
+  contentDiv.innerHTML = "";
 
   if (data.boardsData.length === 0) {
-    cautionDiv.style.display = 'block';
-    cautionDiv.innerHTML = '작성한 게시글이 없습니다.';
-    contentDiv.style.display = 'none';
+    emptyData("작성한 게시글이 없습니다.");
     return;
   }
 
-  contentDiv.style.display = 'block';
+  contentDiv.style.display = "block";
   for (let i = 0; i < data.boardsData.length; i++) {
     contentDiv.innerHTML += [
       `
@@ -104,10 +109,17 @@ const free = (data, contentDiv) => {
 
 //=== 3. 좋아요 선택한 글 ===
 const liked = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.getElementById('caution');
+  contentDiv.innerHTML = "";
+  contentDiv.style.display = "block";
 
-  contentDiv.style.display = 'block';
+  if (
+    data.likeQuestionData.length === 0 &&
+    data.likeAnswerData.length === 0 &&
+    data.likeBoardData.length === 0
+  ) {
+    emptyData("좋아요 누른 글이 없습니다.");
+    return;
+  }
 
   if (data.likeQuestionData || data.likeBoardData || data.likeAnswerData) {
     if (data.likeQuestionData) {
@@ -181,20 +193,18 @@ const liked = (data, contentDiv) => {
         ];
       }
     }
-  } else if (data.likeAnswerData.length === 0 && data.likeBoardData.length === 0 && data.likeAnswerData.length === 0) {
-    cautionDiv.style.display = 'block';
-    cautionDiv.innerHTML = '좋아요 누른 글이 없습니다.';
-    contentDiv.style.display = 'none';
-    return;
   }
 };
 
 //=== 4. 댓글 단 글 (전체 qna랑 free 둘다 가져옴) ===
 const commented = (data, contentDiv) => {
-  contentDiv.innerHTML = '';
-  const cautionDiv = document.getElementById('caution');
+  contentDiv.innerHTML = "";
+  contentDiv.style.display = "block";
 
-  contentDiv.style.display = 'block';
+  if (data.commentData.length === 0) {
+    emptyData("작성한 댓글이 없습니다.");
+    return;
+  }
 
   if (data.commentData.length > 0) {
     for (let i = 0; i < data.commentData.length; i++) {
@@ -226,41 +236,36 @@ const commented = (data, contentDiv) => {
         ];
       }
     }
-  } else if (data.commentData.length === 0) {
-    cautionDiv.style.display = 'block';
-    cautionDiv.innerHTML = '작성한 댓글이 없습니다.';
-    contentDiv.style.display = 'none';
-    return;
   }
 };
 
 function isSesac(data) {
-  const sesacElements = document.getElementsByClassName('sesac_badge');
+  const sesacElements = document.getElementsByClassName("sesac_badge");
   axios({
-    method: 'GET',
-    url: '/users/profile',
+    method: "GET",
+    url: "/users/profile",
   })
     .then((response) => {
       const data = response.data;
       if (data.isSesac === true) {
         for (let element of sesacElements) {
-          element.style.display = ''; 
+          element.style.display = "";
         }
       } else {
         for (let element of sesacElements) {
-          element.style.display = 'none'; 
+          element.style.display = "none";
         }
       }
     })
     .catch((error) => {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     });
 }
 
 function editProfile() {
   axios({
-    method: 'GET',
-    url: '/users/editprofile',
+    method: "GET",
+    url: "/users/editprofile",
   }).then((res) => {
     if (res) {
     }
@@ -269,16 +274,16 @@ function editProfile() {
 
 function userProfileImgUpload() {
   const formData = new FormData();
-  const file = document.getElementById('fileInput');
+  const file = document.getElementById("fileInput");
 
-  formData.append('userImgFile', file.files[0]);
+  formData.append("userImgFile", file.files[0]);
 
   axios({
-    method: 'post',
-    url: '/upload/image/user',
+    method: "post",
+    url: "/upload/image/user",
     data: formData,
     header: {
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "multipart/form-data",
     },
   })
     .then((res) => {
@@ -286,26 +291,26 @@ function userProfileImgUpload() {
     })
     .catch((err) => {
       if (err.response.status) {
-        alert('err.response.data.error');
+        alert("err.response.data.error");
       } else {
-        alert('지원하지 않는 파일 형식입니다.');
+        alert("지원하지 않는 파일 형식입니다.");
       }
     });
 }
 
 function goTohome() {
-  window.location.href = '/';
+  window.location.href = "/";
 }
 
 function userLogout() {
   axios({
-    method: 'post',
-    url: '/logout',
+    method: "post",
+    url: "/logout",
   })
     .then((response) => {
-      window.location.href = '/';
+      window.location.href = "/";
     })
     .catch((error) => {
-      window.location.href = '/404';
+      window.location.href = "/404";
     });
 }

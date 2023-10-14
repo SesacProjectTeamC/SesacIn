@@ -1,6 +1,5 @@
-const { User } = require('../models');
-const { Op } = require('sequelize');
-const bcrypt = require('bcrypt');
+const { User } = require("../models");
+const bcrypt = require("bcrypt");
 
 // 회원가입 창 렌더링
 exports.getJoin = (req, res) => {
@@ -14,14 +13,14 @@ exports.getJoin = (req, res) => {
           console.log(err);
           return;
         }
-        res.redirect('/join');
+        res.redirect("/join");
       });
     } else {
-      res.render('user/join', {
+      res.render("user/join", {
         isLogin,
         currentUser: req.session.user,
         success: true,
-        msg: '회원가입창 페이지 렌더링 처리 성공',
+        msg: "회원가입창 페이지 렌더링 처리 성공",
       });
     }
   } catch (error) {
@@ -29,7 +28,7 @@ exports.getJoin = (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: '서버 에러 발생',
+      msg: "서버 에러 발생",
     });
   }
 };
@@ -43,14 +42,14 @@ exports.checkDuplicate = async (req, res) => {
 
     res.json({ isDuplicate });
   } catch (error) {
-    console.error('중복 확인 중 오류 발생:', error);
-    res.status(500).json({ error: '서버 오류' });
+    console.error("중복 확인 중 오류 발생:", error);
+    res.status(500).json({ error: "서버 오류" });
   }
 };
 
 // 중복 확인 로직 수행
 async function checkIfValueIsDuplicate(field, value) {
-  if (field === 'uId') {
+  if (field === "uId") {
     // 아이디 중복 확인
     const existingUser = await User.findOne({
       where: {
@@ -58,7 +57,7 @@ async function checkIfValueIsDuplicate(field, value) {
       },
     });
     return !!existingUser;
-  } else if (field === 'uName') {
+  } else if (field === "uName") {
     // 닉네임 중복 확인
     const existingUser = await User.findOne({
       where: {
@@ -78,7 +77,7 @@ exports.postUser = async (req, res) => {
     if (!uId || !pw || !uName || !email || !isSesac || !campus) {
       return res.status(400).json({
         OK: false,
-        msg: '입력 필드 중 하나 이상이 누락되었습니다.',
+        msg: "입력 필드 중 하나 이상이 누락되었습니다.",
       });
     }
 
@@ -91,12 +90,12 @@ exports.postUser = async (req, res) => {
         OK: false,
         uIdIsDuplicate,
         uNameIsDuplicate,
-        msg: 'uId 또는 uNname 가 이미 존재합니다.',
+        msg: "uId 또는 uNname 가 이미 존재합니다.",
       });
     }
 
     // 새싹 크루 아니라고 선택했을 때 캠퍼스 값 없이 db 저장
-    if (isSesac === 'false') {
+    if (isSesac === "false") {
       campus = null;
     }
 
@@ -108,7 +107,7 @@ exports.postUser = async (req, res) => {
       pw: pw,
       uName: uName,
       email: email,
-      isSesac: isSesac === 'true',
+      isSesac: isSesac === "true",
       campus: campus,
     });
     res.status(200).send(newUser);
@@ -133,17 +132,17 @@ exports.login = (req, res) => {
           console.log(err);
           return;
         }
-        res.redirect('/login');
+        res.redirect("/login");
       });
     } else {
-      res.render('user/login', {
-        title: 'test',
+      res.render("user/login", {
+        title: "test",
         uId: req.body,
         pw: req.body,
         isLogin,
         currentUser: req.session.user,
         success: true,
-        msg: '로그인 페이지 렌더링 정상 처리',
+        msg: "로그인 페이지 렌더링 정상 처리",
       });
     }
   } catch (error) {
@@ -151,7 +150,7 @@ exports.login = (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: '로그인 페이지 렌더링 중 서버 에러 발생',
+      msg: "로그인 페이지 렌더링 중 서버 에러 발생",
       error,
     });
   }
@@ -167,7 +166,7 @@ exports.userLogin = async (req, res) => {
 
   // 아이디 검사
   if (resultUser === null) {
-    return res.status(401).json({ message: '사용자를 찾을 수 없습니다.' });
+    return res.status(401).json({ message: "사용자를 찾을 수 없습니다." });
   }
 
   // 암호 검사
@@ -181,12 +180,12 @@ exports.userLogin = async (req, res) => {
 
     // 성공 응답 보내주기
     return res.status(200).json({
-      message: '로그인 성공',
+      message: "로그인 성공",
       currentLoginUser: req.session.user,
     });
   } else {
     // 비밀번호 불일치
-    return res.status(402).json({ message: '비밀번호가 일치하지 않습니다. ' });
+    return res.status(402).json({ message: "비밀번호가 일치하지 않습니다. " });
   }
 };
 
@@ -197,7 +196,7 @@ exports.userLogout = (req, res) => {
       console.log(err);
       return;
     }
-    res.redirect('/');
+    res.redirect("/");
   });
 };
 
@@ -225,17 +224,17 @@ exports.id = (req, res) => {
           console.log(err);
           return;
         }
-        res.redirect('/findId');
+        res.redirect("/findId");
       });
     } else {
-      res.render('user/findId', {
-        title: 'test',
+      res.render("user/findId", {
+        title: "test",
         uId: req.body,
         pw: req.body,
         isLogin,
         currentUser: req.session.user,
         success: true,
-        msg: '아이디찾기 페이지 렌더링 정상 처리',
+        msg: "아이디찾기 페이지 렌더링 정상 처리",
       });
     }
   } catch (error) {
@@ -243,7 +242,7 @@ exports.id = (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: '아이디찾기 페이지 렌더링 중 서버 에러 발생',
+      msg: "아이디찾기 페이지 렌더링 중 서버 에러 발생",
       error,
     });
   }
@@ -267,11 +266,11 @@ exports.findId = async (req, res) => {
       res.send({ uId: user.uId }); // 아이디를 표시하는 페이지 렌더링
     } else {
       // 사용자를 찾지 못한 경우
-      return res.status(401).json({ message: '사용자를 찾을 수 없습니다.' });
+      return res.status(401).json({ message: "사용자를 찾을 수 없습니다." });
     }
   } catch (error) {
-    console.error('아이디 찾기 오류:', error);
-    res.status(500).send('아이디 찾기 중 오류가 발생했습니다.');
+    console.error("아이디 찾기 오류:", error);
+    res.status(500).send("아이디 찾기 중 오류가 발생했습니다.");
   }
 };
 
@@ -295,8 +294,8 @@ async function checkIfEmailVerified(uId) {
       return false;
     }
   } catch (error) {
-    console.error('이메일 인증 여부 확인 중 오류 발생:', error);
-    throw new Error('이메일 인증 여부 확인 중 오류가 발생했습니다.');
+    console.error("이메일 인증 여부 확인 중 오류 발생:", error);
+    throw new Error("이메일 인증 여부 확인 중 오류가 발생했습니다.");
   }
 }
 
@@ -315,15 +314,15 @@ exports.checkEmailVerify = async (req, res) => {
 
     if (!user) {
       // 사용자를 찾지 못한 경우 404 Not Found 상태 코드를 응답으로 보냅니다.
-      return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+      return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
     }
 
     const isEmailVerified = await checkIfEmailVerified(uId);
 
     res.json({ isEmailVerified });
   } catch (error) {
-    console.error('이메일 인증 여부 확인 중 오류 발생:', error);
-    res.status(500).json({ error: '서버 오류' });
+    console.error("이메일 인증 여부 확인 중 오류 발생:", error);
+    res.status(500).json({ error: "서버 오류" });
   }
 };
 
@@ -340,17 +339,17 @@ exports.pw = (req, res) => {
           console.log(err);
           return;
         }
-        res.redirect('/findPw');
+        res.redirect("/findPw");
       });
     } else {
-      res.render('user/findPw', {
-        title: 'test',
+      res.render("user/findPw", {
+        title: "test",
         uId: req.body,
         pw: req.body,
         isLogin,
         currentUser: req.session.user,
         success: true,
-        msg: '비밀번호찾기 페이지 렌더링 정상 처리',
+        msg: "비밀번호찾기 페이지 렌더링 정상 처리",
       });
     }
   } catch (error) {
@@ -358,7 +357,7 @@ exports.pw = (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: '비밀번호찾기 페이지 렌더링 중 서버 에러 발생',
+      msg: "비밀번호찾기 페이지 렌더링 중 서버 에러 발생",
       error,
     });
   }
@@ -378,12 +377,12 @@ exports.updatePassword = async (req, res) => {
 
     if (!user) {
       // 사용자를 찾지 못한 경우
-      return res.status(401).json({ error: '사용자를 찾을 수 없습니다.' });
+      return res.status(401).json({ error: "사용자를 찾을 수 없습니다." });
     } else {
       if (!pw) {
         return res.status(400).json({
           OK: false,
-          msg: '입력 필드 중 하나 이상이 누락되었습니다.',
+          msg: "입력 필드 중 하나 이상이 누락되었습니다.",
         });
       }
       const hashedPw = hashPassword(pw); // 새 변수에 할당
@@ -392,16 +391,16 @@ exports.updatePassword = async (req, res) => {
         { pw: hashedPw },
         {
           where: { uId: uId },
-        }
+        },
       );
 
       return res
         .status(200)
-        .json({ message: '비밀번호가 업데이트되었습니다.' });
+        .json({ message: "비밀번호가 업데이트되었습니다." });
     }
   } catch (error) {
-    console.error('비밀번호 재설정 오류:', error);
-    res.status(500).send('비밀번호 재설정 도중 오류가 발생했습니다.');
+    console.error("비밀번호 재설정 오류:", error);
+    res.status(500).send("비밀번호 재설정 도중 오류가 발생했습니다.");
   }
 };
 
@@ -418,17 +417,17 @@ exports.login = (req, res) => {
           console.log(err);
           return;
         }
-        res.redirect('/login');
+        res.redirect("/login");
       });
     } else {
-      res.render('user/login', {
-        title: 'test',
+      res.render("user/login", {
+        title: "test",
         uId: req.body,
         pw: req.body,
         isLogin,
         currentUser: req.session.user,
         success: true,
-        msg: '로그인 페이지 렌더링 정상 처리',
+        msg: "로그인 페이지 렌더링 정상 처리",
       });
     }
   } catch (error) {
@@ -436,14 +435,14 @@ exports.login = (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: '로그인 페이지 렌더링 중 서버 에러 발생',
+      msg: "로그인 페이지 렌더링 중 서버 에러 발생",
       error,
     });
   }
 };
 
-const nodemailer = require('nodemailer');
-const smtpTransport = require('../config/email');
+const nodemailer = require("nodemailer");
+const smtpTransport = require("../config/email");
 
 const verificationCodes = {};
 
@@ -464,22 +463,22 @@ exports.getEmail = async (req, res) => {
       if (loggedInUser) {
         loggedInUserEmail = loggedInUser.email;
 
-        res.render('user/email', {
+        res.render("user/email", {
           isLogin,
           currentUser: req.session.user,
           loggedInUserEmail, // 현재 로그인된 사용자의 이메일을 뷰에 전달
           success: true,
-          msg: '페이지 렌더링 처리 성공',
+          msg: "페이지 렌더링 처리 성공",
         });
       } else {
-        res.status(404).json({ ok: false, msg: '사용자를 찾을 수 없습니다.' });
+        res.status(404).json({ ok: false, msg: "사용자를 찾을 수 없습니다." });
       }
     } else {
-      res.render('user/email', {
+      res.render("user/email", {
         isLogin,
         currentUser: req.session.user,
         success: true,
-        msg: '페이지 렌더링 처리 성공',
+        msg: "페이지 렌더링 처리 성공",
       });
     }
   } catch (error) {
@@ -487,7 +486,7 @@ exports.getEmail = async (req, res) => {
       isLogin,
       currentUser: req.session.user,
       success: false,
-      msg: '서버 에러 발생',
+      msg: "서버 에러 발생",
     });
   }
 };
@@ -528,10 +527,10 @@ exports.postEmail = async (req, res) => {
 
         // 이메일 옵션 설정
         const mailOptions = {
-          from: 'sesacin@naver.com', // 발신자 이메일 주소
+          from: "sesacin@naver.com", // 발신자 이메일 주소
           to: email, // 목적지 이메일 주소
-          subject: '인증 관련 메일입니다.',
-          html: '<h1>인증번호를 입력해주세요\n\n\n\n\n\n</h1>' + number,
+          subject: "인증 관련 메일입니다.",
+          html: "<h1>인증번호를 입력해주세요\n\n\n\n\n\n</h1>" + number,
         };
 
         // 이메일 전송
@@ -539,7 +538,7 @@ exports.postEmail = async (req, res) => {
           if (err) {
             return res.status(402).json({
               ok: false,
-              error: '메일 전송에 실패하였습니다.!!!!!!!!!!!!!!',
+              error: "메일 전송에 실패하였습니다.!!!!!!!!!!!!!!",
             });
           } else {
             // 서버에서 만든 인증코드를 세션에 저장
@@ -548,7 +547,7 @@ exports.postEmail = async (req, res) => {
 
             return res.status(200).json({
               ok: true,
-              msg: '메일 전송에 성공하였습니다.!!!!!!!!!!!!!',
+              msg: "메일 전송에 성공하였습니다.!!!!!!!!!!!!!",
             });
           }
         });
@@ -556,11 +555,11 @@ exports.postEmail = async (req, res) => {
         // 사용자 정보가 올바르지 않은 경우
         return res
           .status(401)
-          .json({ error: '이메일 정보가 올바르지 않습니다.!!' });
+          .json({ error: "이메일 정보가 올바르지 않습니다.!!" });
       }
     } catch (error) {
-      console.error('이메일 전송 중 오류 발생:', error);
-      return res.status(500).json({ ok: false, error: '서버 오류' });
+      console.error("이메일 전송 중 오류 발생:", error);
+      return res.status(500).json({ ok: false, error: "서버 오류" });
     }
   } else {
     const number = generateRandomNumber(111111, 999999);
@@ -576,10 +575,10 @@ exports.postEmail = async (req, res) => {
 
     // 이메일 옵션 설정
     const mailOptions = {
-      from: 'sesacin@naver.com', // 발신자 이메일 주소
+      from: "sesacin@naver.com", // 발신자 이메일 주소
       to: email, // 목적지 이메일 주소
-      subject: '인증 관련 메일입니다.',
-      html: '<h1>인증번호를 입력해주세요\n\n\n\n\n\n</h1>' + number,
+      subject: "인증 관련 메일입니다.",
+      html: "<h1>인증번호를 입력해주세요\n\n\n\n\n\n</h1>" + number,
     };
 
     // 이메일 전송
@@ -587,14 +586,14 @@ exports.postEmail = async (req, res) => {
       if (err) {
         res
           .status(402)
-          .json({ ok: false, error: '메일 전송에 실패하였습니다.' });
+          .json({ ok: false, error: "메일 전송에 실패하였습니다." });
       } else {
         // 서버에서 만든 인증코드를 세션에 저장
         req.session.verificationCode = number;
         req.session.email = email;
         res
           .status(200)
-          .json({ ok: true, error: '메일 전송에 성공하였습니다.' });
+          .json({ ok: true, error: "메일 전송에 성공하였습니다." });
       }
     });
   }
@@ -616,27 +615,27 @@ exports.postVerify = async (req, res) => {
         // 사용자가 존재하는 경우, emailVerify 필드를 업데이트합니다.
         await User.update(
           { emailVerify: true },
-          { where: { email: req.session.email } }
+          { where: { email: req.session.email } },
         );
 
         // 인증에 성공한 경우, 현재 로그인 세션을 유지합니다.
         req.session.user = user.uId;
         req.session.userImgPath = user.userImgPath;
 
-        res.status(200).json({ ok: true, msg: '인증에 성공하였습니다.' });
+        res.status(200).json({ ok: true, msg: "인증에 성공하였습니다." });
       } else {
-        res.status(401).json({ ok: false, msg: '사용자를 찾을 수 없습니다.' });
+        res.status(401).json({ ok: false, msg: "사용자를 찾을 수 없습니다." });
       }
     } catch (error) {
-      console.error('인증 업데이트 오류:', error);
+      console.error("인증 업데이트 오류:", error);
       res
         .status(402)
-        .json({ ok: false, msg: '인증 업데이트 중 오류가 발생했습니다.' });
+        .json({ ok: false, msg: "인증 업데이트 중 오류가 발생했습니다." });
     }
   } else {
     res.status(404).json({
       ok: false,
-      msg: '인증에 실패하였습니다. 올바른 코드를 입력하세요.',
+      msg: "인증에 실패하였습니다. 올바른 코드를 입력하세요.",
     });
   }
 };

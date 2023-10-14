@@ -1,4 +1,4 @@
-const { Question, Answer, Comment } = require("../models");
+const { Comment } = require("../models");
 const moment = require("moment");
 
 //=== 댓글 등록 GET ===
